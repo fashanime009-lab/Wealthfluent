@@ -14,10 +14,11 @@ export default function ToolsPage() {
       icon: "📊",
     },
     {
-      title: "Portfolio Tracker",
-      desc: "Track investments and asset allocation.",
-      icon: "📈",
-    },
+  title: "Portfolio Tracker",
+  desc: "Track investments and monitor portfolio performance.",
+  icon: "📊",
+  route: "/portfolio-tracker",
+},
     {
       title: "Inflation Calculator",
       desc: "Estimate purchasing power impact over time.",
@@ -116,9 +117,22 @@ export default function ToolsPage() {
                   {tool.desc}
                 </p>
 
-                <button className="bg-cyan-500 hover:bg-cyan-400 transition px-6 py-3 rounded-2xl text-black font-bold">
-                  Coming Soon
-                </button>
+                {tool.route ? (
+
+  <Link
+    to={tool.route}
+    className="inline-flex items-center justify-center bg-cyan-500 hover:bg-cyan-400 transition px-6 py-3 rounded-2xl text-black font-bold w-full"
+  >
+    Open Tool
+  </Link>
+
+) : (
+
+  <button className="bg-white/10 border border-white/10 text-slate-300 px-6 py-3 rounded-2xl font-bold w-full cursor-not-allowed">
+    Coming Soon
+  </button>
+
+)}
               </div>
             ))}
           </div>

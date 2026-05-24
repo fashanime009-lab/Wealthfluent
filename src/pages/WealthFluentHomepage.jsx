@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useFinance } from "../context/FinanceContext";
 import axios from "axios";
 import { useEffect } from "react";
+
+import FinanceOrbHero from "../components/FinanceOrbHero";
 export default function WealthFluentHomepage() {
     const { sipData } = useFinance();
     const [mobileMenu, setMobileMenu] = useState(false);
@@ -146,6 +148,12 @@ sensex:
       icon: "🌴",
       route: "/retirement-calculator",
     },
+    {
+  title: "Wealth Age Tool",
+  desc: "Discover your financial age and wealth personality.",
+  icon: "🧠",
+  route: "/wealth-age-calculator",
+},
   ];
 const investedAmount =
   sipData.monthlyInvestment *
@@ -182,7 +190,7 @@ const marketOpen =
   currentMinutes <= 930;   // 15:30
 
   return (
-    <div className="min-h-screen bg-[#050b16] text-white overflow-hidden relative">
+    <div className="min-h-screen bg-[#020617] text-white overflow-hidden relative">
 
   {/* Background Effects */}
   <div className="absolute top-[-200px] left-[-200px] w-[500px] h-[500px] bg-cyan-500/20 blur-[140px] rounded-full" />
@@ -190,6 +198,9 @@ const marketOpen =
   <div className="absolute top-[40%] right-[-200px] w-[500px] h-[500px] bg-blue-500/20 blur-[160px] rounded-full" />
 
   <div className="absolute bottom-[-250px] left-[30%] w-[600px] h-[600px] bg-cyan-400/10 blur-[180px] rounded-full" />
+  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.12),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,0.10),transparent_30%)]" />
+
+<div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.7)_1px,transparent_1px)] bg-[size:90px_90px]" />
 
   <div className="relative z-10">
       {/* Navbar */}
@@ -287,12 +298,15 @@ const marketOpen =
     </div>
   )}
 </header>
-
+<FinanceOrbHero />
       {/* Hero */}
-      <section className="relative">
+      <section className="relative overflow-hidden">
+        <div className="absolute right-[-150px] top-[50px] w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px]" />
+
+<div className="absolute left-[-200px] bottom-[-100px] w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(0,255,255,0.15),transparent_45%)]" />
 
-        <div className="max-w-7xl mx-auto px-6 py-28 relative">
+        <div className="max-w-7xl mx-auto px-6 py-36 relative">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left */}
             <div>
@@ -300,11 +314,11 @@ const marketOpen =
                 ⚡ Smart Finance Tools For Everyone
               </div>
 
-              <h1 className="text-6xl md:text-8xl font-black leading-[0.95] tracking-[-3px]">
-                Free Finance Tools
-                <span className="block text-cyan-400">
-                  Built For Growth
-                </span>
+              <h1 className="text-5xl md:text-7xl xl:text-8xl font-black leading-[0.9] tracking-[-4px] max-w-4xl">
+                Control Your Wealth
+<span className="block text-transparent bg-gradient-to-r from-cyan-300 via-blue-400 to-cyan-500 bg-clip-text">
+Intelligently
+</span>
               </h1>
 
               <p className="text-slate-300 text-2xl leading-relaxed mt-8 max-w-2xl">
@@ -317,7 +331,7 @@ const marketOpen =
                 
   <Link
     to="/calculators"
-    className="group relative overflow-hidden bg-cyan-500 hover:bg-cyan-400 transition-all duration-300 px-10 py-5 rounded-3xl text-black font-black shadow-[0_0_40px_rgba(0,255,255,0.25)] hover:scale-105"
+   className="group relative overflow-hidden rounded-2xl bg-cyan-400 px-8 py-4 font-bold text-black transition-all duration-300 hover:scale-[1.03] hover:bg-cyan-300 shadow-lg shadow-cyan-500/20"
   >
     <span className="relative z-10">
       Start Calculating
@@ -332,12 +346,7 @@ const marketOpen =
   >
     Explore Tools
   </a>
-  <Link
-  to="/wealth-dashboard"
-  className="border border-cyan-400/20 bg-cyan-500/10 hover:bg-cyan-500/20 transition px-10 py-5 rounded-3xl font-semibold"
->
-  Wealth Dashboard
-</Link>
+
 </div>
 
               {/* Stats */}
@@ -375,8 +384,9 @@ const marketOpen =
             </div>
 
             {/* Right Dashboard */}
-            <div className="bg-white/[0.04] border border-white/10 rounded-[40px] backdrop-blur-2xl shadow-[0_0_80px_rgba(0,255,255,0.08)] p-8 backdrop-blur-xl shadow-2xl">
+            <div className="relative bg-[#0b1220]/90 border border-white/10 rounded-[40px] p-10 shadow-2xl shadow-black/40 overflow-hidden">
               <div className="flex items-center justify-between mb-8">
+                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-cyan-400/10 to-transparent" />
                 <div>
                   <p className="text-slate-400 text-sm">
                     Portfolio Growth
@@ -498,7 +508,7 @@ const marketOpen =
   </div>
 
   {/* Passive Income */}
-  <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-400/10 rounded-3xl p-6">
+  <div className="bg-[#0b1220] border border-cyan-400/10 rounded-3xl p-6">
 
     <div className="flex items-center justify-between">
       <div>
@@ -545,7 +555,7 @@ const marketOpen =
         </div>
       </section>
 {/* Market Overview */}
-<section className="max-w-7xl mx-auto px-6 py-28 relative">
+<section className="max-w-7xl mx-auto px-6 py-36 relative">
   <div className="flex items-center justify-between mb-14 flex-wrap gap-5">
     <div>
       <p className="text-cyan-400 font-semibold mb-3">
@@ -572,14 +582,14 @@ const marketOpen =
 
   <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6">
     {/* Card 1 */}
-    <div className="bg-white/5 border border-white/10 rounded-[30px] p-8 hover:border-cyan-400/20 transition">
+    <div className="bg-[#0b1220]/80 border border-white/10 rounded-[40px] p-8 hover:border-cyan-400/30 hover:bg-[#111827] transition-all duration-500 hover:-translate-y-2">
       <div className="flex items-center justify-between mb-8">
         <div>
           <p className="text-slate-400 text-sm mb-2">
             NIFTY 50
           </p>
 
-          <h3 className="text-4xl font-black">
+          <h3 className="text-3xl xl:text-4xl font-black tracking-tight">
             {marketData.nifty?.price
   ? marketData.nifty.price.toLocaleString()
   : "Unavailable"}
@@ -607,14 +617,14 @@ const marketOpen =
     </div>
 
     {/* Card 2 */}
-    <div className="bg-white/5 border border-white/10 rounded-[30px] p-8 hover:border-cyan-400/20 transition">
+    <div className="bg-[#0b1220]/80 border border-white/10 rounded-[40px] p-8 hover:border-cyan-400/30 hover:bg-[#111827] transition-all duration-500 hover:-translate-y-2">
       <div className="flex items-center justify-between mb-8">
         <div>
           <p className="text-slate-400 text-sm mb-2">
             SENSEX
           </p>
 
-          <h3 className="text-4xl font-black">
+         <h3 className="text-3xl xl:text-4xl font-black tracking-tight">
   {marketData.sensex?.price
     ? marketData.sensex.price.toLocaleString()
     : "Unavailable"}
@@ -642,14 +652,14 @@ const marketOpen =
     </div>
 
     {/* Card 3 */}
-    <div className="bg-white/5 border border-white/10 rounded-[30px] p-8 hover:border-cyan-400/20 transition">
+    <div className="bg-[#0b1220]/80 border border-white/10 rounded-[40px] p-8 hover:border-cyan-400/30 hover:bg-[#111827] transition-all duration-500 hover:-translate-y-2">
       <div className="flex items-center justify-between mb-8">
         <div>
           <p className="text-slate-400 text-sm mb-2">
             GOLD
           </p>
 
-          <h3 className="text-4xl font-black">
+          <h3 className="text-3xl xl:text-4xl font-black tracking-tight">
             ₹{
   marketData.gold?.price
     ? marketData.gold.price.toLocaleString()
@@ -679,14 +689,14 @@ const marketOpen =
     </div>
 
     {/* Card 4 */}
-    <div className="bg-white/5 border border-white/10 rounded-[30px] p-8 hover:border-cyan-400/20 transition">
+    <div className="bg-[#0b1220]/80 border border-white/10 rounded-[40px] p-8 hover:border-cyan-400/30 hover:bg-[#111827] transition-all duration-500 hover:-translate-y-2">
       <div className="flex items-center justify-between mb-8">
         <div>
           <p className="text-slate-400 text-sm mb-2">
             BITCOIN
           </p>
 
-          <h3 className="text-4xl font-black">
+          <h3 className="text-3xl xl:text-4xl font-black tracking-tight">
             $
 {
   marketData.bitcoin?.price
@@ -729,7 +739,7 @@ const marketOpen =
             TRENDING INSIGHT
           </p>
 
-          <h3 className="text-4xl font-black">
+          <h3 className="text-3xl xl:text-4xl font-black tracking-tight">
             Market Momentum
           </h3>
         </div>
@@ -793,7 +803,7 @@ const marketOpen =
       {/* Calculators */}
       <section
         id="calculators"
-        className="max-w-7xl mx-auto px-6 py-28 relative"
+        className="max-w-7xl mx-auto px-6 py-36 relative"
       >
         <div className="flex items-center justify-between mb-14">
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition duration-500" />
@@ -812,9 +822,9 @@ const marketOpen =
           {calculators.map((item, index) => (
             <div
               key={index}
-              className="group relative overflow-hidden bg-white/[0.04] border border-white/10 rounded-[36px] p-8 hover:border-cyan-400/30 hover:-translate-y-3 transition-all duration-500 backdrop-blur-xl"
+             className="group relative overflow-hidden bg-[#0b1220]/80 border border-white/10 rounded-[36px] p-8 hover:border-cyan-400/30 hover:-translate-y-3 transition-all duration-500"
             >
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 shadow-[0_0_30px_rgba(0,255,255,0.15)] border border-cyan-400/20 flex items-center justify-center text-4xl mb-8">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-400/20 flex items-center justify-center text-4xl mb-8">
                 {item.icon}
               </div>
 
@@ -840,7 +850,7 @@ const marketOpen =
      {/* Articles */}
 <section
   id="articles"
-  className="max-w-7xl mx-auto px-6 py-28 relative"
+ className="max-w-7xl mx-auto px-6 py-36 relative"
 >
   <div className="flex items-end justify-between mb-14 flex-wrap gap-6">
     <div>
@@ -985,7 +995,7 @@ const marketOpen =
     {/* Tool 1 */}
     <Link
       to="/sip-calculator"
-      className="group bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-400/10 rounded-[30px] p-8 hover:border-cyan-400/30 transition duration-300 hover:-translate-y-2"
+      className="group bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-400/10 rounded-[40px] p-8 hover:border-cyan-400/30 transition duration-300 hover:-translate-y-2"
     >
       <div className="text-5xl mb-6">📈</div>
 
@@ -1011,7 +1021,7 @@ const marketOpen =
     {/* Tool 2 */}
     <Link
       to="/emi-calculator"
-      className="group bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-cyan-400/10 rounded-[30px] p-8 hover:border-cyan-400/30 transition duration-300 hover:-translate-y-2"
+      className="group bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-cyan-400/10 rounded-[40px] p-8 hover:border-cyan-400/30 transition duration-300 hover:-translate-y-2"
     >
       <div className="text-5xl mb-6">🏦</div>
 
@@ -1037,7 +1047,7 @@ const marketOpen =
     {/* Tool 3 */}
     <Link
       to="/retirement-calculator"
-      className="group bg-gradient-to-br from-purple-500/10 to-cyan-500/10 border border-cyan-400/10 rounded-[30px] p-8 hover:border-cyan-400/30 transition duration-300 hover:-translate-y-2"
+      className="group bg-gradient-to-br from-purple-500/10 to-cyan-500/10 border border-cyan-400/10 rounded-[40px] p-8 hover:border-cyan-400/30 transition duration-300 hover:-translate-y-2"
     >
       <div className="text-5xl mb-6">🌴</div>
 
@@ -1063,7 +1073,7 @@ const marketOpen =
     {/* Tool 4 */}
     <Link
       to="/fd-calculator"
-      className="group bg-gradient-to-br from-orange-500/10 to-cyan-500/10 border border-cyan-400/10 rounded-[30px] p-8 hover:border-cyan-400/30 transition duration-300 hover:-translate-y-2"
+      className="group bg-gradient-to-br from-orange-500/10 to-cyan-500/10 border border-cyan-400/10 rounded-[40px] p-8 hover:border-cyan-400/30 transition duration-300 hover:-translate-y-2"
     >
       <div className="text-5xl mb-6">💰</div>
 
@@ -1089,7 +1099,7 @@ const marketOpen =
 </section>
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-400/20 rounded-[40px] p-14 text-center">
+        <div className="bg-[#0b1220] border border-cyan-400/20 rounded-[40px] p-14 text-center">
           <p className="text-cyan-400 font-semibold mb-4">
             START SMARTER FINANCIAL PLANNING
           </p>

@@ -17,6 +17,9 @@ import CalculatorsPage from "./pages/CalculatorsPage";
 import ToolsPage from "./pages/ToolsPage";
 import WealthDashboardPage from "./pages/WealthDashboardPage";
 import ScrollToTop from "./components/ScrollToTop";
+import FIRECalculatorPage from "./pages/FIRECalculatorPage";
+import WealthAgeCalculatorPage from "./pages/WealthAgeCalculatorPage";
+import PortfolioTrackerPage from "./pages/PortfolioTrackerPage";
 
 export default function App() {
   return (
@@ -39,6 +42,9 @@ export default function App() {
         <Route path="/calculators" element={<CalculatorsPage />} />
         <Route path="/tools" element={<ToolsPage />} />
         <Route path="/wealth-dashboard" element={<WealthDashboardPage />} />
+        <Route path="/fire-calculator" element={<FIRECalculatorPage />} />
+        <Route path="/wealth-age-calculator" element={<WealthAgeCalculatorPage />} />
+        <Route path="/portfolio-tracker" element={<PortfolioTrackerPage />} />
       </Routes>
     </BrowserRouter>
   );
