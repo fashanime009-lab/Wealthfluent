@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTheme } from "../context/ThemeContext";
 import {
   ArrowUpRight,
   Sparkles,
@@ -23,26 +24,59 @@ const stats = [
 ];
 
 export default function FinanceOrbHero() {
+  const { darkMode } = useTheme();
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[#030712] text-white">
+    <section
+  className={`
+  relative
+  min-h-screen
+  overflow-hidden
+  transition-all
+  duration-500
+  ${
+    darkMode
+      ? "bg-[#030712] text-white"
+      : "bg-white text-slate-900"
+  }
+`}
+>
       {/* BACKGROUND */}
       <div className="pointer-events-none absolute inset-0">
         {/* grid */}
         <div
           className="absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px)
-            `,
-            backgroundSize: "70px 70px",
-          }}
+        style={{
+  backgroundImage: `
+  linear-gradient(
+    to right,
+    ${
+      darkMode
+        ? "rgba(255,255,255,0.08)"
+        : "rgba(15,23,42,0.06)"
+    } 1px,
+    transparent 1px
+  ),
+  linear-gradient(
+    to bottom,
+    ${
+      darkMode
+        ? "rgba(255,255,255,0.08)"
+        : "rgba(15,23,42,0.06)"
+    } 1px,
+    transparent 1px
+  )
+`,
+}}
         />
 
         {/* glow */}
-        <div className="absolute -left-40 top-0 h-[600px] w-[600px] rounded-full bg-cyan-500/20 blur-[140px]" />
+        {darkMode && (
+  <div className="absolute -left-40 top-0 h-[600px] w-[600px] rounded-full bg-cyan-500/20 blur-[140px]" />
+)}
+{darkMode && (
         <div className="absolute right-0 bottom-0 h-[500px] w-[500px] rounded-full bg-blue-600/20 blur-[140px]" />
-      </div>
+     )}
+        </div>
 
       {/* HERO */}
       <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl items-center gap-20 px-6 py-16 lg:grid-cols-2 lg:px-10">
@@ -61,7 +95,13 @@ export default function FinanceOrbHero() {
 
             <Sparkles className="h-4 w-4 text-cyan-200" />
 
-            <span className="text-sm font-medium text-cyan-100">
+            <span
+  className={`text-sm font-medium ${
+    darkMode
+      ? "text-cyan-100"
+      : "text-cyan-700"
+  }`}
+>
               AI-Powered Financial Intelligence
             </span>
           </div>
@@ -98,11 +138,25 @@ export default function FinanceOrbHero() {
 
             <br />
 
-            <span className="text-white/30">Smarter.</span>
+            <span
+  className={
+    darkMode
+      ? "text-white/30"
+      : "text-slate-300"
+  }
+>
+  Smarter.
+</span>
           </h1>
 
           {/* description */}
-          <p className="mt-10 max-w-xl text-lg leading-relaxed text-white/55">
+          <p
+  className={`mt-10 max-w-xl text-lg leading-relaxed ${
+    darkMode
+      ? "text-white/55"
+      : "text-slate-600"
+  }`}
+>
             An AI-driven finance platform that tracks assets, automates growth
             strategies, and optimizes portfolios in real time — so your capital
             never sleeps.
@@ -117,7 +171,19 @@ export default function FinanceOrbHero() {
               </span>
             </button>
 
-            <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-8 py-4 font-medium backdrop-blur-xl transition hover:bg-white/[0.08]">
+           <button
+  className={`
+    inline-flex items-center gap-2 rounded-2xl
+    ${
+      darkMode
+        ? "border border-white/10 bg-white/[0.04]"
+        : "border border-slate-200 bg-slate-50"
+    }
+    px-8 py-4
+    font-medium
+    backdrop-blur-xl
+  `}
+>
               <Activity className="h-4 w-4 text-cyan-300" />
               View Live Analytics
             </button>
@@ -125,18 +191,46 @@ export default function FinanceOrbHero() {
 
           {/* ticker */}
           <div className="relative mt-12 overflow-hidden">
-            <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-20 bg-gradient-to-r from-[#030712] to-transparent" />
-            <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-20 bg-gradient-to-l from-[#030712] to-transparent" />
+            <div
+  className={`pointer-events-none absolute left-0 top-0 z-10 h-full w-20 ${
+    darkMode
+      ? "bg-gradient-to-r from-[#030712] to-transparent"
+      : "bg-gradient-to-r from-white to-transparent"
+  }`}
+/>
+            <div
+  className={`pointer-events-none absolute right-0 top-0 z-10 h-full w-20 ${
+    darkMode
+      ? "bg-gradient-to-l from-[#030712] to-transparent"
+      : "bg-gradient-to-l from-white to-transparent"
+  }`}
+/>
 
             <div className="flex w-max animate-[marquee_28s_linear_infinite] gap-3">
               {[...tickers, ...tickers].map((t, i) => (
                 <div
                   key={i}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm backdrop-blur-xl"
+                className={`
+inline-flex items-center gap-2 rounded-full
+
+${
+  darkMode
+    ? "border border-white/10 bg-white/[0.03]"
+    : "border border-slate-200 bg-slate-50"
+}
+
+px-4 py-2 text-sm
+`} 
                 >
-                  <span className="font-semibold text-white/90">
-                    {t.sym}
-                  </span>
+                  <span
+  className={`font-semibold ${
+    darkMode
+      ? "text-white/90"
+      : "text-slate-800"
+  }`}
+>
+  {t.sym}
+</span>
 
                   <span
                     className={
@@ -155,15 +249,29 @@ export default function FinanceOrbHero() {
             {stats.map((s) => (
               <div
                 key={s.title}
-                className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-2xl"
+              className={`
+rounded-3xl p-6
+
+${
+  darkMode
+    ? "border border-white/10 bg-white/[0.03]"
+    : "border border-slate-200 bg-white shadow-sm"
+}
+`} 
               >
                 <h3 className="text-3xl font-black tracking-tight">
                   {s.title}
                 </h3>
 
-                <p className="mt-2 text-sm text-white/45">
-                  {s.sub}
-                </p>
+                <p
+  className={`mt-2 text-sm ${
+    darkMode
+      ? "text-white/45"
+      : "text-slate-500"
+  }`}
+>
+  {s.sub}
+</p>
               </div>
             ))}
           </div>
@@ -177,17 +285,48 @@ export default function FinanceOrbHero() {
           className="relative hidden lg:flex items-center justify-center"
         >
           {/* glow */}
-          <div className="absolute h-[500px] w-[500px] rounded-full bg-cyan-500/15 blur-[120px]" />
+          {darkMode && (
+  <div className="absolute h-[500px] w-[500px] rounded-full bg-cyan-500/15 blur-[120px]" />
+)}
 
           {/* graph wrapper */}
-          <div className="relative w-[620px]">
+          <div className="relative w-full max-w-[620px]">
             {/* portfolio card */}
-            <div className="absolute left-0 top-10 z-20 rounded-2xl border border-cyan-400/20 bg-[#07111f]/80 px-5 py-4 backdrop-blur-2xl">
-              <p className="text-xs uppercase tracking-widest text-white/40">
-                Portfolio
-              </p>
+            <div
+  className={`
+    absolute
+    left-0
+    top-10
+    z-20
+    rounded-2xl
+    px-5
+    py-4
+    backdrop-blur-2xl
+    border border-cyan-400/20
+    ${
+      darkMode
+        ? "bg-[#07111f]/80"
+        : "bg-white shadow-lg"
+    }
+  `}
+>
+              <p
+  className={`text-xs uppercase tracking-widest ${
+    darkMode
+      ? "text-white/40"
+      : "text-slate-500"
+  }`}
+>
+  Portfolio
+</p>
 
-              <h3 className="mt-1 text-3xl font-black text-white">
+              <h3
+  className={`mt-1 text-3xl font-black ${
+    darkMode
+      ? "text-white"
+      : "text-slate-900"
+  }`}
+>
                 ₹12.8L
               </h3>
 
@@ -198,7 +337,13 @@ export default function FinanceOrbHero() {
 
             {/* AI signal */}
             <div className="absolute right-0 top-28 z-20 rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-5 py-4 backdrop-blur-2xl">
-              <p className="text-xs uppercase tracking-widest text-white/40">
+              <p
+  className={`text-xs uppercase tracking-widest ${
+    darkMode
+      ? "text-white/40"
+      : "text-slate-500"
+  }`}
+>
                 AI Signal
               </p>
 
@@ -208,18 +353,34 @@ export default function FinanceOrbHero() {
             </div>
 
             {/* graph */}
-            <div className="relative h-[420px] overflow-hidden rounded-[40px] border border-white/10 bg-gradient-to-b from-cyan-500/[0.08] to-transparent backdrop-blur-3xl">
+            <div className={`
+relative h-[420px]
+overflow-hidden
+rounded-[40px]
+backdrop-blur-3xl
+
+${
+  darkMode
+    ? "border border-white/10 bg-gradient-to-b from-cyan-500/[0.08] to-transparent"
+    : "border border-slate-200 bg-white shadow-xl"
+}
+`}>
               {/* grid */}
               <div
-                className="absolute inset-0 opacity-[0.08]"
-                style={{
-                  backgroundImage: `
-                    linear-gradient(to right, rgba(255,255,255,0.3) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255,255,255,0.3) 1px, transparent 1px)
-                  `,
-                  backgroundSize: "70px 70px",
-                }}
-              />
+  className="absolute inset-0 opacity-[0.08]"
+  style={{
+    backgroundImage: darkMode
+      ? `
+        linear-gradient(to right, rgba(255,255,255,0.3) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.3) 1px, transparent 1px)
+      `
+      : `
+        linear-gradient(to right, rgba(15,23,42,0.15) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15,23,42,0.15) 1px, transparent 1px)
+      `,
+    backgroundSize: "70px 70px",
+  }}
+/>
 
               {/* graph glow */}
               <div className="absolute bottom-0 left-1/2 h-[220px] w-[400px] -translate-x-1/2 rounded-full bg-cyan-500/20 blur-[100px]" />
@@ -289,7 +450,13 @@ export default function FinanceOrbHero() {
               </svg>
 
               {/* months */}
-              <div className="absolute bottom-5 left-6 right-6 flex justify-between text-xs text-white/30">
+              <div
+  className={`absolute bottom-5 left-6 right-6 flex justify-between text-xs ${
+    darkMode
+      ? "text-white/30"
+      : "text-slate-500"
+  }`}
+>
                 <span>Jan</span>
                 <span>Feb</span>
                 <span>Mar</span>

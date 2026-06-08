@@ -4,11 +4,14 @@ import App from "./App";
 import "./index.css";
 
 import { FinanceProvider } from "./context/FinanceContext";
+import { ThemeProvider } from "./context/ThemeContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <FinanceProvider>
-      <App />
-    </FinanceProvider>
+    <ThemeProvider>
+      <FinanceProvider>
+        <App />
+      </FinanceProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );

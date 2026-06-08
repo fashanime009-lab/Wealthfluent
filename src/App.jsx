@@ -21,6 +21,7 @@ import FIRECalculatorPage from "./pages/FIRECalculatorPage";
 import WealthAgeCalculatorPage from "./pages/WealthAgeCalculatorPage";
 import PortfolioTrackerPage from "./pages/PortfolioTrackerPage";
 
+
 export default function App() {
   return (
     <BrowserRouter>
