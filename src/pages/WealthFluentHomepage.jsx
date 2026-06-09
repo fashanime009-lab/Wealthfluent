@@ -4,11 +4,15 @@ import axios from "axios";
 
 import { useFinance } from "../context/FinanceContext";
 import { useTheme } from "../context/ThemeContext";
+import { BookOpen } from "lucide-react";
 
 import {
   TrendingUp,
   Wallet,
   Landmark,
+  Banknote,
+  Receipt,
+   Clock3,
   Target,
   ArrowRight,
   Moon,
@@ -20,6 +24,7 @@ import {
   ShieldCheck,
   Globe,
   Sparkles,
+  Users,
 } from "lucide-react";
 
 import {
@@ -180,6 +185,8 @@ sensex:
 
   const interval = setInterval(fetchMarketData, 30000);
 
+
+
   return () => clearInterval(interval);
 }, []);
   const calculators = [
@@ -290,7 +297,60 @@ const progress = Math.min(
   (futureValue / goal) * 100,
   100
 );
+const [selectedGoal, setSelectedGoal] = useState("1cr");
+const applyGoal = (goal) => {
+  setSelectedGoal(goal);
 
+  if (goal === "1cr") {
+    setSimulator({
+      sip: 10000,
+      years: 20,
+      returnRate: 12,
+    });
+  }
+
+  if (goal === "5cr") {
+    setSimulator({
+      sip: 25000,
+      years: 25,
+      returnRate: 12,
+    });
+  }
+
+  if (goal === "fire") {
+    setSimulator({
+      sip: 50000,
+      years: 30,
+      returnRate: 14,
+    });
+  }
+};
+const displayData = {
+  nifty: {
+    price: marketData?.nifty?.price || 25120,
+    change: marketData?.nifty?.change || 0.82,
+  },
+
+  sensex: {
+    price: marketData?.sensex?.price || 82350,
+    change: marketData?.sensex?.change || 0.71,
+  },
+
+  gold: {
+    price: marketData?.gold?.price || 101250,
+    change: marketData?.gold?.change || 0.32,
+  },
+
+  bitcoin: {
+    price: marketData?.bitcoin?.price || 105320,
+    change: marketData?.bitcoin?.change || 2.41,
+  },
+
+  fearGreed: {
+    value: marketData?.fearGreed?.value || 72,
+    text: marketData?.fearGreed?.text || "Greed",
+  },
+};
   return (
   <div
 className={darkMode
@@ -311,114 +371,291 @@ className={darkMode
 
   <div className="relative z-10">
       {/* Navbar */}
-<header className="
-sticky top-0 z-50
-border-b border-slate-200
-dark:border-white/10
+<header
+  className="
+  sticky
+  top-0
+  z-50
 
-bg-[#f8fafc]/80
-dark:bg-slate-950/70
+  border-b
+  border-slate-200/80
+  dark:border-white/10
 
-shadow-lg
-dark:shadow-2xl dark:shadow-cyan-500/5
+  bg-white/80
+  dark:bg-[#020617]/80
 
-backdrop-blur-xl
-">
-  <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-    {/* Logo */}
-    <Link to="/">
-      <h1 className="text-3xl font-black tracking-tight drop-shadow-lg">
-        Wealth<span className="text-cyan-400">Fluent</span>
-      </h1>
-    </Link>
+  backdrop-blur-xl
+  "
+>
 
-    {/* Desktop Nav */}
-    <nav className="
-hidden lg:flex items-center gap-8 text-sm
-text-slate-700
-dark:text-slate-300
-">
-      <a href="#calculators" className="hover:text-blue-600
-dark:hover:text-whitetransition">
-        Calculators
-      </a>
+  <div className="max-w-7xl mx-auto px-6">
 
-      <a href="#articles" className="hover:text-blue-600
-dark:hover:text-white transition">
-        Articles
-      </a>
+    <div className="h-20 flex items-center justify-between">
 
-      <Link to="/about" className="hover:text-blue-600
-dark:hover:text-white transition">
-        About
+      {/* Logo */}
+
+      <Link
+        to="/"
+        className="flex items-center gap-3"
+      >
+
+        <div
+          className="
+          w-11
+          h-11
+
+          rounded-2xl
+
+          bg-gradient-to-br
+          from-blue-500
+          to-cyan-500
+
+          flex
+          items-center
+          justify-center
+
+          text-white
+          "
+        >
+          <TrendingUp size={20} />
+        </div>
+
+        <div>
+
+          <h1
+            className="
+            text-2xl
+
+            font-black
+
+            tracking-tight
+
+            text-slate-900
+            dark:text-white
+            "
+          >
+            Wealth
+            <span className="text-blue-500">
+              Fluent
+            </span>
+          </h1>
+
+        </div>
+
       </Link>
 
-      <Link to="/contact" className="hover:text-blue-600
-dark:hover:text-whitetransition">
-        Contact
-      </Link>
-    </nav>
+      {/* Desktop Nav */}
 
-    {/* Desktop Button */}
-    <div className="hidden lg:flex items-center gap-3">
-  <button
-    onClick={() => setDarkMode(!darkMode)}
-    className="
-    w-12
-    h-12
-    rounded-2xl
-    border
-    border-slate-300
-    dark:border-white/10
-    bg-white
-    dark:bg-white/5
-    flex
-    items-center
-    justify-center
-    text-xl
-    transition
-    "
-  >
-    {darkMode ? "☀️" : "🌙"}
-  </button>
+      <nav
+        className="
+        hidden
+        lg:flex
 
-  <Link
-    to="/tools"
-    className="
-    bg-blue-600
-    hover:bg-blue-700
-    dark:bg-cyan-500
-    dark:hover:bg-cyan-400
-    transition
-    px-5
-    py-3
-    rounded-2xl
-    text-white
-    dark:text-black
-    font-bold
-    "
-  >
-    Explore Tools
-  </Link>
-</div>
+        items-center
 
-    {/* Mobile Button */}
-    <button
-      onClick={() => setMobileMenu(!mobileMenu)}
-      className="lg:hidden w-12 h-12 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-center text-2xl"
-    >
-      {mobileMenu ? "✕" : "☰"}
-    </button>
+        gap-8
+        "
+      >
+
+        <a
+          href="#calculators"
+          className="
+          text-slate-600
+          dark:text-slate-300
+
+          hover:text-blue-500
+
+          transition
+          "
+        >
+          Calculators
+        </a>
+
+        <a
+          href="#articles"
+          className="
+          text-slate-600
+          dark:text-slate-300
+
+          hover:text-blue-500
+
+          transition
+          "
+        >
+          Guides
+        </a>
+
+        <Link
+          to="/about"
+          className="
+          text-slate-600
+          dark:text-slate-300
+
+          hover:text-blue-500
+
+          transition
+          "
+        >
+          About
+        </Link>
+
+        <Link
+          to="/contact"
+          className="
+          text-slate-600
+          dark:text-slate-300
+
+          hover:text-blue-500
+
+          transition
+          "
+        >
+          Contact
+        </Link>
+
+      </nav>
+
+      {/* Right Side */}
+
+      <div
+        className="
+        hidden
+        lg:flex
+
+        items-center
+
+        gap-3
+        "
+      >
+
+        {/* Theme Toggle */}
+
+        <button
+  onClick={() => setDarkMode(!darkMode)}
+  className="
+  w-12
+  h-12
+
+  rounded-2xl
+
+  border
+  border-slate-200
+  dark:border-white/10
+
+  bg-white
+  dark:bg-white/5
+
+  flex
+  items-center
+  justify-center
+
+  transition-all
+  "
+>
+  {darkMode ? "☀️" : "🌙"}
+</button>
+
+        {/* CTA */}
+
+        <Link
+          to="/sip-calculator"
+          className="
+          inline-flex
+
+          items-center
+
+          gap-2
+
+          px-5
+          py-3
+
+          rounded-2xl
+
+          bg-gradient-to-r
+          from-blue-500
+          to-cyan-500
+
+          text-white
+
+          font-semibold
+
+          hover:scale-105
+
+          transition-all
+          "
+        >
+          Start Planning
+          <ChevronRight size={18} />
+        </Link>
+
+      </div>
+
+      {/* Mobile Button */}
+
+      <button
+        onClick={() => setMobileMenu(!mobileMenu)}
+        className="
+        lg:hidden
+
+        w-12
+        h-12
+
+        rounded-2xl
+
+        border
+        border-slate-200
+        dark:border-white/10
+
+        bg-white
+        dark:bg-white/5
+
+        flex
+        items-center
+        justify-center
+
+        text-slate-900
+        dark:text-white
+        "
+      >
+        {mobileMenu ? (
+          <X size={22} />
+        ) : (
+          <Menu size={22} />
+        )}
+      </button>
+
+    </div>
+
   </div>
 
   {/* Mobile Menu */}
+
   {mobileMenu && (
-    <div className="lg:hidden border-t border-white/10 bg-[#07111f]">
-      <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-5">
+
+    <div
+      className="
+      lg:hidden
+
+      border-t
+      border-slate-200
+      dark:border-white/10
+
+      bg-white
+      dark:bg-[#071120]
+      "
+    >
+
+      <div className="px-6 py-6 flex flex-col gap-4">
+
         <a
           href="#calculators"
           onClick={() => setMobileMenu(false)}
-          className="text-slate-300 hover:text-white transition"
+          className="
+          py-3
+
+          text-slate-700
+          dark:text-slate-300
+          "
         >
           Calculators
         </a>
@@ -426,15 +663,25 @@ dark:hover:text-whitetransition">
         <a
           href="#articles"
           onClick={() => setMobileMenu(false)}
-          className="text-slate-300 hover:text-white transition"
+          className="
+          py-3
+
+          text-slate-700
+          dark:text-slate-300
+          "
         >
-          Articles
+          Guides
         </a>
 
         <Link
           to="/about"
           onClick={() => setMobileMenu(false)}
-          className="text-slate-300 hover:text-white transition"
+          className="
+          py-3
+
+          text-slate-700
+          dark:text-slate-300
+          "
         >
           About
         </Link>
@@ -442,7 +689,12 @@ dark:hover:text-whitetransition">
         <Link
           to="/contact"
           onClick={() => setMobileMenu(false)}
-          className="text-slate-300 hover:text-white transition"
+          className="
+          py-3
+
+          text-slate-700
+          dark:text-slate-300
+          "
         >
           Contact
         </Link>
@@ -450,37 +702,85 @@ dark:hover:text-whitetransition">
         <Link
           to="/sip-calculator"
           onClick={() => setMobileMenu(false)}
-          className="bg-cyan-500 hover:bg-cyan-400 transition px-5 py-4 rounded-2xl text-black font-bold text-center mt-3"
+          className="
+          mt-4
+
+          bg-gradient-to-r
+          from-blue-500
+          to-cyan-500
+
+          text-white
+
+          text-center
+
+          py-4
+
+          rounded-2xl
+
+          font-semibold
+          "
         >
-          Explore Tools
+          Start Planning
         </Link>
+
       </div>
+
     </div>
+
   )}
+
 </header>
-<section
-className="
-relative
-overflow-hidden
+<section className="relative overflow-hidden">
 
-bg-gradient-to-b
+  {/* Background */}
+  <div className="absolute inset-0 overflow-hidden">
 
-from-white
-to-[#f4f7fb]
+    <div className="
+    absolute
+    top-0
+    left-0
+    w-[500px]
+    h-[500px]
+    bg-blue-500/10
+    blur-[140px]
+    rounded-full
+    " />
 
-dark:from-[#020617]
-dark:to-[#020617]
-"
->
+    <div className="
+    absolute
+    bottom-0
+    right-0
+    w-[500px]
+    h-[500px]
+    bg-cyan-500/10
+    blur-[140px]
+    rounded-full
+    " />
 
-  <div className="absolute inset-0">
-    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[900px] bg-blue-500/10 blur-[180px] rounded-full" />
   </div>
 
-  <div className="max-w-7xl mx-auto px-6 py-32 relative z-10">
+  <div className="
+  relative
+  z-10
 
-    <div className="grid lg:grid-cols-2 gap-20 items-center">
+  max-w-7xl
+  mx-auto
 
+  px-6
+
+  py-24
+  ">
+
+    <div className="
+    grid
+    lg:grid-cols-2
+
+    gap-20
+
+    items-center
+    ">
+
+      {/* LEFT */}
       <div>
 
         <div className="
@@ -488,51 +788,76 @@ dark:to-[#020617]
         items-center
         gap-2
 
+        px-4
+        py-2
+
+        rounded-full
+
         bg-blue-500/10
 
         text-blue-500
 
-        px-4 py-2
-
-        rounded-full
+        font-medium
 
         mb-8
         ">
           <Sparkles size={16} />
-          Wealth Planning Platform
+          Wealth Intelligence Platform
         </div>
 
         <h1 className="
-        text-6xl
+        text-5xl
         md:text-7xl
         xl:text-8xl
 
         font-black
 
         leading-[0.9]
+
+        tracking-tight
         ">
+
           Build Wealth
-          <span className="block text-blue-500">
-            With Confidence.
+
+          <span className="
+          block
+
+          bg-gradient-to-r
+          from-blue-500
+          via-cyan-400
+          to-blue-600
+
+          bg-clip-text
+          text-transparent
+          ">
+            Like The Top 1%
           </span>
+
         </h1>
 
         <p className="
         mt-8
+
         text-xl
+
+        max-w-xl
 
         text-slate-600
         dark:text-slate-400
-
-        max-w-xl
         ">
-          Professional finance calculators,
-          live market insights,
-          and long-term wealth planning tools
-          built for modern investors.
+          Powerful calculators, wealth projections,
+          portfolio insights and market intelligence
+          designed for long-term investors.
         </p>
 
-        <div className="flex gap-4 mt-10">
+        <div className="
+        flex
+        flex-wrap
+
+        gap-4
+
+        mt-10
+        ">
 
           <Link
             to="/sip-calculator"
@@ -540,17 +865,20 @@ dark:to-[#020617]
             bg-blue-600
             hover:bg-blue-700
 
-            px-8 py-4
+            text-white
+
+            px-8
+            py-4
 
             rounded-2xl
-
-            text-white
 
             font-semibold
 
             flex
             items-center
             gap-2
+
+            transition
             "
           >
             Start Planning
@@ -560,14 +888,18 @@ dark:to-[#020617]
           <Link
             to="/tools"
             className="
+            px-8
+            py-4
+
+            rounded-2xl
+
             border
 
             border-slate-300
             dark:border-white/10
 
-            px-8 py-4
-
-            rounded-2xl
+            bg-white
+            dark:bg-white/5
 
             font-semibold
             "
@@ -577,605 +909,559 @@ dark:to-[#020617]
 
         </div>
 
-      </div>
-
-      <div className="relative hidden lg:block h-[550px]">
+        {/* TRUST STATS */}
 
         <div className="
-        absolute
+        grid
+        grid-cols-3
 
-        top-0
-        left-0
+        gap-8
 
-        w-[350px]
-
-        bg-white
-dark:bg-[#0f172a]
-
-border
-border-slate-200
-dark:border-white/5
-
-        rounded-[32px]
-
-        shadow-2xl
-
-        p-8
+        mt-16
         ">
-          <div className="flex items-center gap-3 mb-6">
-            <Wallet className="text-blue-500" />
-            Portfolio Value
+
+          <div>
+            <h3 className="
+            text-3xl
+            font-black
+            ">
+              100K+
+            </h3>
+
+            <p className="
+            text-sm
+            text-slate-500
+            ">
+              Investors
+            </p>
           </div>
 
-          <h3 className="text-5xl font-black">
-            ₹12.8L
-          </h3>
+          <div>
+            <h3 className="
+            text-3xl
+            font-black
+            ">
+              ₹500Cr+
+            </h3>
 
-          <p className="text-emerald-500 mt-4 font-semibold">
-            +18.2% this year
-          </p>
-
-          <div className="h-28 mt-6">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData}>
-                <Area
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#2563eb"
-                  fill="#2563eb20"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="
-        absolute
-        right-0
-        top-24
-
-       bg-white
-dark:bg-[#0f172a]
-
-border
-border-slate-200
-dark:border-white/5
-
-        rounded-[32px]
-
-        shadow-2xl
-
-        p-8
-        ">
-          <TrendingUp
-            size={32}
-            className="text-emerald-500"
-          />
-
-          <h3 className="text-4xl font-black mt-4">
-            +18.2%
-          </h3>
-
-          <p className="text-slate-400">
-            Annual Growth
-          </p>
-        </div>
-
-        <div className="
-        absolute
-
-        bottom-20
-        left-12
-
-        w-[300px]
-
-        bg-white
-dark:bg-[#0f172a]
-
-border
-border-slate-200
-dark:border-white/5
-
-        rounded-[32px]
-
-        shadow-2xl
-
-        p-8
-        ">
-          <div className="flex items-center gap-3 mb-5">
-            <Target className="text-blue-500" />
-            Goal Progress
+            <p className="
+            text-sm
+            text-slate-500
+            ">
+              Simulated
+            </p>
           </div>
 
-          <div className="h-3 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden">
-            <div className="w-[78%] h-full bg-blue-500" />
+          <div>
+            <h3 className="
+            text-3xl
+            font-black
+            ">
+              24/7
+            </h3>
+
+            <p className="
+            text-sm
+            text-slate-500
+            ">
+              Available
+            </p>
           </div>
 
-          <p className="mt-4 font-semibold">
-            78% Completed
-          </p>
-        </div>
-
-        <div className="
-        absolute
-
-        bottom-0
-        right-12
-
-        bg-blue-600
-
-        text-white
-
-        rounded-[32px]
-
-        shadow-2xl
-
-        p-8
-        ">
-          <Landmark size={30} />
-
-          <p className="mt-4 text-white/70">
-            Passive Income
-          </p>
-
-          <h3 className="text-4xl font-black">
-            ₹33K
-          </h3>
         </div>
 
       </div>
 
+      {/* RIGHT DASHBOARD */}
+
+      <div className="relative hidden lg:block">
+
+  <div
+    className="
+    bg-white
+dark:bg-[#071120]
+
+    border
+    border-slate-200
+    dark:border-white/10
+
+    rounded-[40px]
+
+    p-8
+
+    shadow-[0_20px_80px_rgba(15,23,42,0.12)]
+    dark:shadow-none
+    "
+  >
+    {/* Header */}
+
+    <div className="flex justify-between items-start">
+
+      <div>
+
+        <p className="text-slate-500 dark:text-slate-400">
+          Projected Wealth
+        </p>
+
+        <h2
+          className="
+          text-5xl
+          xl:text-6xl
+
+          font-black
+
+          mt-3
+
+          text-slate-900
+          dark:text-white
+          "
+        >
+          ₹{Math.round(futureValue).toLocaleString()}
+        </h2>
+
+        <p className="mt-3 text-emerald-500 font-semibold">
+          +{growthPercentage}% gain
+        </p>
+
+      </div>
+
+      <div
+        className="
+        bg-emerald-500/10
+
+        text-emerald-500
+
+        px-4
+        py-2
+
+        rounded-2xl
+
+        font-semibold
+        "
+      >
+        Growing
+      </div>
+
     </div>
 
-  </div>
+    {/* Chart */}
 
-</section>
-<section className="max-w-7xl mx-auto px-6 -mt-16 relative z-20">
-  <div className="grid md:grid-cols-4 gap-6">
+    <div className="h-[260px] mt-10">
 
-    <div className="bg-white
-dark:bg-[#0b1220]
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={chartData}>
 
-shadow-[0_8px_30px_rgba(15,23,42,0.06)]
-dark:shadow-none rounded-3xl p-6 border border-slate-200 dark:border-white/10">
-      <p className="text-slate-600 dark:text-slate-400 text-sm">Financial Tools</p>
-      <h3 className="text-4xl font-black mt-2 text-slate-900 dark:text-white">7+</h3>
-    </div>
+          <defs>
 
-    <div className="bg-white
-dark:bg-[#0b1220]
+            <linearGradient
+              id="wealthGradient"
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="1"
+            >
+              <stop
+                offset="0%"
+                stopColor="#3b82f6"
+                stopOpacity={0.4}
+              />
 
-shadow-[0_8px_30px_rgba(15,23,42,0.06)]
-dark:shadow-none rounded-3xl p-6 border border-slate-200 dark:border-white/10">
-      <p className="text-slate-600 dark:text-slate-400 text-sm">Free Access</p>
-      <h3 className="text-4xl font-black mt-2 text-slate-900 dark:text-white">100%</h3>
-    </div>
+              <stop
+                offset="100%"
+                stopColor="#3b82f6"
+                stopOpacity={0}
+              />
+            </linearGradient>
 
-    <div className="bg-white
-dark:bg-[#0b1220]
+          </defs>
 
-shadow-[0_8px_30px_rgba(15,23,42,0.06)]
-dark:shadow-none rounded-3xl p-6 border border-slate-200 dark:border-white/10">
-      <p className="text-slate-600 dark:text-slate-400 text-sm">Availability</p>
-      <h3 className="text-4xl font-black mt-2 text-slate-900 dark:text-white">24/7</h3>
-    </div>
-
-    <div className="bg-white
-dark:bg-[#0b1220]
-
-shadow-[0_8px_30px_rgba(15,23,42,0.06)]
-dark:shadow-none rounded-3xl p-6 border border-slate-200 dark:border-white/10">
-      <p className="text-slate-600 dark:text-slate-400 text-sm">Coverage</p>
-      <h3 className="text-4xl font-black mt-2 text-slate-900 dark:text-white">Global</h3>
-    </div>
-
-  </div>
-</section>
-    {/* Wealth Dashboard Showcase */}
-{/* Wealth Simulator */}
-<section className="max-w-7xl mx-auto px-6 py-24">
-
-  <div className="mb-20">
-
-    <p className="text-blue-500 font-semibold uppercase tracking-[0.2em]">
-      Wealth Simulator
-    </p>
-
-    <h2 className="
-    text-5xl
-    md:text-6xl
-
-    font-black
-
-    mt-4
-    ">
-      Visualize Your Future Wealth
-    </h2>
-
-    <p className="
-    mt-6
-
-    max-w-2xl
-
-    text-lg
-
-    text-slate-600
-    dark:text-slate-400
-    ">
-      Experiment with monthly investments,
-      time horizon, and expected returns to
-      understand how compounding grows wealth.
-    </p>
-
-  </div>
-
-  <div className="
-  grid
-
-  lg:grid-cols-[1.4fr_0.9fr]
-
-  gap-8
-  ">
-
-    {/* RESULTS */}
-    <div
-      className="
-      bg-white
-dark:bg-[#0f172a]
-
-border
-border-slate-200
-dark:border-white/5
-
-      rounded-[40px]
-
-      shadow-[0_10px_40px_rgba(15,23,42,0.08)]
-dark:shadow-none
-
-      p-8
-      "
-    >
-
-      <p className="text-slate-500">
-        Future Wealth Projection
-      </p>
-
-      <h2 className="
-      text-6xl
-      md:text-7xl
-
-      font-black
-
-      mt-4
-
-      text-blue-500
-      ">
-        ₹{Math.round(futureValue).toLocaleString()}
-      </h2>
-
-      <p className="
-      mt-4
-
-      text-slate-500
-      ">
-        Estimated portfolio value after
-        {simulator.years} years.
-      </p>
-
-      {/* Progress */}
-      <div className="mt-10">
-
-        <div className="flex justify-between mb-3">
-
-          <span className="font-medium">
-            ₹1 Crore Goal
-          </span>
-
-          <span className="font-bold text-blue-500">
-            {progress.toFixed(1)}%
-          </span>
-
-        </div>
-
-        <div className="
-        h-4
-
-        bg-slate-200
-        dark:bg-white/10
-
-        rounded-full
-        overflow-hidden
-        ">
-          <div
-            className="
-            h-full
-
-            bg-gradient-to-r
-            from-blue-500
-            to-cyan-400
-            "
-            style={{
-              width: `${progress}%`,
-            }}
+          <Area
+            type="monotone"
+            dataKey="value"
+            stroke="#3b82f6"
+            strokeWidth={4}
+            fill="url(#wealthGradient)"
           />
+
+        </AreaChart>
+      </ResponsiveContainer>
+
+    </div>
+
+    {/* Bottom Grid */}
+
+    <div className="grid grid-cols-2 gap-8 mt-10">
+
+      {/* Allocation */}
+
+      <div>
+
+        <h4 className="font-bold mb-5 text-slate-900 dark:text-white">
+          Wealth Allocation
+        </h4>
+
+        <div className="space-y-5">
+
+          <div>
+
+            <div className="flex justify-between mb-2">
+
+              <span className="text-slate-600 dark:text-slate-300">
+                Invested
+              </span>
+
+              <span className="font-semibold text-slate-900 dark:text-white">
+                {Math.round(
+                  (invested / futureValue) * 100
+                ) || 0}
+                %
+              </span>
+
+            </div>
+
+            <div className="h-2 bg-slate-200 dark:bg-white/10 rounded-full">
+              <div
+                className="h-full bg-blue-500 rounded-full"
+                style={{
+                  width: `${Math.min(
+                    (invested / futureValue) * 100,
+                    100
+                  )}%`,
+                }}
+              />
+            </div>
+
+          </div>
+
+          <div>
+
+            <div className="flex justify-between mb-2">
+
+              <span className="text-slate-600 dark:text-slate-300">
+                Profit
+              </span>
+
+              <span className="font-semibold text-slate-900 dark:text-white">
+                {Math.round(
+                  (profit / futureValue) * 100
+                ) || 0}
+                %
+              </span>
+
+            </div>
+
+            <div className="h-2 bg-slate-200 dark:bg-white/10 rounded-full">
+
+              <div
+                className="h-full bg-emerald-500 rounded-full"
+                style={{
+                  width: `${Math.min(
+                    (profit / futureValue) * 100,
+                    100
+                  )}%`,
+                }}
+              />
+
+            </div>
+
+          </div>
+
+          <div>
+
+            <div className="flex justify-between mb-2">
+
+              <span className="text-slate-600 dark:text-slate-300">
+                Goal
+              </span>
+
+              <span className="font-semibold text-slate-900 dark:text-white">
+                {progress.toFixed(0)}%
+              </span>
+
+            </div>
+
+            <div className="h-2 bg-slate-200 dark:bg-white/10 rounded-full">
+
+              <div
+                className="h-full bg-cyan-500 rounded-full"
+                style={{
+                  width: `${progress}%`,
+                }}
+              />
+
+            </div>
+
+          </div>
+
         </div>
 
       </div>
 
       {/* Metrics */}
-      <div className="
-      grid
-      md:grid-cols-2
 
-      gap-6
+      <div>
 
-      mt-10
-      ">
+        <h4 className="font-bold mb-5 text-slate-900 dark:text-white">
+          Wealth Snapshot
+        </h4>
 
-        <div className="
-        bg-slate-50
-        dark:bg-white/5
+        <div className="space-y-6">
 
-        rounded-3xl
+          <div className="flex justify-between">
 
-        p-7
-min-h-[210px]
-        ">
-          <p className="text-slate-600 dark:text-slate-400 text-sm">
-            Total Invested
-          </p>
+            <span className="text-slate-600 dark:text-slate-300">
+              Invested
+            </span>
 
-          <h3 className="text-3xl font-black mt-3">
-            ₹{invested.toLocaleString()}
-          </h3>
-        </div>
+            <span className="font-bold text-slate-900 dark:text-white">
+              ₹{Math.round(invested).toLocaleString()}
+            </span>
 
-        <div className="
-        bg-slate-50
-        dark:bg-white/5
+          </div>
 
-        rounded-3xl
+          <div className="flex justify-between">
 
-        p-7
-min-h-[210px]
-        ">
-          <p className="text-slate-600 dark:text-slate-400 text-sm">
-            Wealth Gain
-          </p>
+            <span className="text-slate-600 dark:text-slate-300">
+              Wealth Gain
+            </span>
 
-          <h3 className="
-          text-3xl
-          font-black
+            <span className="font-bold text-emerald-500">
+              ₹{Math.round(profit).toLocaleString()}
+            </span>
 
-          mt-3
+          </div>
 
-          text-emerald-500
-          ">
-            ₹{Math.round(profit).toLocaleString()}
-          </h3>
-        </div>
+          <div className="flex justify-between">
 
-        <div className="
-        bg-slate-50
-        dark:bg-white/5
+            <span className="text-slate-600 dark:text-slate-300">
+              Monthly Income
+            </span>
 
-        rounded-3xl
+            <span className="font-bold text-slate-900 dark:text-white">
+              ₹{Math.round(
+                passiveIncome
+              ).toLocaleString()}
+            </span>
 
-        p-7
-min-h-[210px]
-        ">
-          <p className="text-slate-600 dark:text-slate-400 text-sm">
-            Passive Income
-          </p>
+          </div>
 
-          <h3 className="
-          text-3xl
-          font-black
+          <div className="flex justify-between">
 
-          mt-3
+            <span className="text-slate-600 dark:text-slate-300">
+              Wealth Multiple
+            </span>
 
-          text-blue-500
-          ">
-            ₹{Math.round(passiveIncome).toLocaleString()}
-          </h3>
-        </div>
+            <span className="font-bold text-blue-500">
+              {wealthMultiplier}×
+            </span>
 
-        <div className="
-        bg-slate-50
-        dark:bg-white/5
+          </div>
 
-        rounded-3xl
-
-        p-7
-min-h-[210px]
-        ">
-         <p className="text-slate-600 dark:text-slate-400 text-sm">
-            Wealth Multiplier
-          </p>
-
-          <h3 className="
-          text-3xl
-          font-black
-
-          mt-3
-          ">
-            {wealthMultiplier}×
-          </h3>
         </div>
 
       </div>
 
     </div>
 
-    {/* CONTROLS */}
-    <div
-      className="
-     bg-white
-dark:bg-[#0f172a]
+  </div>
 
-border
-border-slate-200
-dark:border-white/5
+</div>
 
-      rounded-[40px]
+    </div>
 
-      shadow-[0_10px_40px_rgba(15,23,42,0.08)]
-dark:shadow-none
+  </div>
 
-      p-8
-      "
-    >
+</section>
+<section className="max-w-7xl mx-auto px-6 relative z-20 -mt-12">
 
-      <h3 className="
-      text-3xl
-      font-black
+  <div
+    className="
+    bg-white
+    dark:bg-[#071120]
 
-      mb-10
-      ">
-        Investment Settings
-      </h3>
+    border
+    border-slate-200
+    dark:border-white/10
 
-      {/* SIP */}
-      <div className="mb-10">
+    rounded-[40px]
 
-        <div className="
-        flex
-        justify-between
+    p-8
 
-        mb-3
-        ">
-          <span>
-            Monthly SIP
-          </span>
+    shadow-[0_20px_60px_rgba(15,23,42,0.08)]
+    dark:shadow-none
+    "
+  >
 
-          <span className="
-          font-bold
-          text-blue-500
-          ">
-            ₹{simulator.sip.toLocaleString()}
-          </span>
-        </div>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
 
-        <input
-          type="range"
-          min="1000"
-          max="100000"
-          step="500"
-          value={simulator.sip}
-          onChange={(e) =>
-            setSimulator({
-              ...simulator,
-              sip: Number(e.target.value),
-            })
-          }
-          className="w-full accent-blue-500"
-        />
-
-      </div>
-
-      {/* YEARS */}
-      <div className="mb-10">
+      {/* Card 1 */}
+      <div className="relative">
 
         <div className="
+        w-12
+        h-12
+
+        rounded-2xl
+
+        bg-blue-500/10
+
         flex
-        justify-between
+        items-center
+        justify-center
 
-        mb-3
+        mb-5
         ">
-          <span>
-            Duration
-          </span>
-
-          <span className="
-          font-bold
-          text-blue-500
-          ">
-            {simulator.years} Years
-          </span>
+          <BarChart3
+            size={22}
+            className="text-blue-500"
+          />
         </div>
-
-        <input
-          type="range"
-          min="1"
-          max="40"
-          value={simulator.years}
-          onChange={(e) =>
-            setSimulator({
-              ...simulator,
-              years: Number(e.target.value),
-            })
-          }
-          className="w-full accent-blue-500"
-        />
-
-      </div>
-
-      {/* RETURN */}
-      <div>
-
-        <div className="
-        flex
-        justify-between
-
-        mb-3
-        ">
-          <span>
-            Expected Return
-          </span>
-
-          <span className="
-          font-bold
-          text-blue-500
-          ">
-            {simulator.returnRate}%
-          </span>
-        </div>
-
-        <input
-          type="range"
-          min="6"
-          max="18"
-          value={simulator.returnRate}
-          onChange={(e) =>
-            setSimulator({
-              ...simulator,
-              returnRate: Number(e.target.value),
-            })
-          }
-          className="w-full accent-blue-500"
-        />
-
-      </div>
-
-      {/* Summary Box */}
-      <div className="
-      mt-12
-
-      bg-blue-500
-
-      rounded-3xl
-
-      p-7
-min-h-[210px]
-
-      text-white
-      ">
-
-        <p className="text-white/70">
-          Monthly Wealth Potential
-        </p>
 
         <h3 className="
         text-4xl
         font-black
 
-        mt-3
+        text-slate-900
+        dark:text-white
         ">
-          ₹{Math.round(passiveIncome).toLocaleString()}
+          7+
         </h3>
 
-        <p className="mt-3 text-white/70">
-          Estimated passive income using a 4% withdrawal strategy.
+        <p className="
+        mt-2
+
+        text-slate-500
+        ">
+          Financial Tools
+        </p>
+
+      </div>
+
+      {/* Card 2 */}
+      <div className="relative">
+
+        <div className="
+        w-12
+        h-12
+
+        rounded-2xl
+
+        bg-emerald-500/10
+
+        flex
+        items-center
+        justify-center
+
+        mb-5
+        ">
+          <TrendingUp
+            size={22}
+            className="text-emerald-500"
+          />
+        </div>
+
+        <h3 className="
+        text-4xl
+        font-black
+
+        text-slate-900
+        dark:text-white
+        ">
+          ₹500Cr+
+        </h3>
+
+        <p className="
+        mt-2
+
+        text-slate-500
+        ">
+          Wealth Simulated
+        </p>
+
+      </div>
+
+      {/* Card 3 */}
+      <div className="relative">
+
+        <div className="
+        w-12
+        h-12
+
+        rounded-2xl
+
+        bg-cyan-500/10
+
+        flex
+        items-center
+        justify-center
+
+        mb-5
+        ">
+          <Globe
+            size={22}
+            className="text-cyan-500"
+          />
+        </div>
+
+        <h3 className="
+        text-4xl
+        font-black
+
+        text-slate-900
+        dark:text-white
+        ">
+          24/7
+        </h3>
+
+        <p className="
+        mt-2
+
+        text-slate-500
+        ">
+          Live Access
+        </p>
+
+      </div>
+
+      {/* Card 4 */}
+      <div className="relative">
+
+        <div className="
+        w-12
+        h-12
+
+        rounded-2xl
+
+        bg-violet-500/10
+
+        flex
+        items-center
+        justify-center
+
+        mb-5
+        ">
+          <Users
+            size={22}
+            className="text-violet-500"
+          />
+        </div>
+
+        <h3 className="
+        text-4xl
+        font-black
+
+        text-slate-900
+        dark:text-white
+        ">
+          100K+
+        </h3>
+
+        <p className="
+        mt-2
+
+        text-slate-500
+        ">
+          Investors
         </p>
 
       </div>
@@ -1185,480 +1471,1131 @@ min-h-[210px]
   </div>
 
 </section>
-{/* Market Overview */}
-{/* Market Dashboard */}
-<section className="max-w-7xl mx-auto px-6 py-24">
+    {/* Wealth Dashboard Showcase */}
+{/* Wealth Simulator */}
+<section className="max-w-7xl mx-auto px-6 py-32">
 
-  <div className="mb-16">
+  {/* Heading */}
+  <div className="text-center mb-20">
 
     <div className="
     inline-flex
-
     items-center
     gap-2
+
+    px-4
+    py-2
+
+    rounded-full
 
     bg-blue-500/10
 
     text-blue-500
 
-    px-4 py-2
-
-    rounded-full
-
-    mb-6
+    font-medium
     ">
-      <BarChart3 size={16} />
-      Live Market Dashboard
+      <Sparkles size={16} />
+      Wealth Simulator
     </div>
 
     <h2 className="
     text-5xl
-    md:text-6xl
+    md:text-7xl
 
     font-black
+
+    tracking-tight
+
+    mt-6
     ">
-      Markets At A Glance
+      Build Your
+      <span className="block text-blue-500">
+        First Crore
+      </span>
     </h2>
 
     <p className="
-    mt-5
+    mt-6
 
-    text-lg
+    text-xl
+
+    max-w-3xl
+
+    mx-auto
 
     text-slate-600
     dark:text-slate-400
-
-    max-w-2xl
     ">
-      Track major financial assets,
-      investor sentiment, and market
-      momentum in real time.
+      Explore how small monthly investments
+      compound into life-changing wealth.
+      Adjust the sliders and instantly see
+      your future financial freedom.
     </p>
 
   </div>
 
-  {/* Market Cards */}
   <div className="
   grid
+  lg:grid-cols-[1.5fr_0.8fr]
 
-  lg:grid-cols-4
-  md:grid-cols-2
-
-  gap-6
+  gap-8
   ">
 
-    {/* NIFTY */}
-    <div className="
-   bg-white
-dark:bg-[#0f172a]
+    {/* LEFT PANEL */}
+
+  <div
+className="
+bg-white
+dark:bg-[#071120]
 
 border
 border-slate-200
-dark:border-white/5
+dark:border-white/10
 
-    rounded-[32px]
+rounded-[40px]
 
-   shadow-[0_10px_40px_rgba(15,23,42,0.08)]
+p-10
+
+shadow-[0_20px_50px_rgba(15,23,42,0.06)]
 dark:shadow-none
+"
+>
 
-    p-7
-min-h-[210px]
-    ">
+  <div className="
+  flex
+  items-center
+  justify-between
+  mb-8
+  ">
 
-      <div className="
-      flex
-      justify-between
-
-      items-start
-      ">
-        <div>
-          <p className="text-slate-600 dark:text-slate-400 text-sm">
-            NIFTY 50
-          </p>
-
-          <h3 className="
-          text-3xl
-
-          font-black
-
-          mt-2
-          ">
-            {marketData.nifty?.price
-              ? marketData.nifty.price.toLocaleString()
-              : "--"}
-          </h3>
-        </div>
-
-        <TrendingUp
-          className="text-emerald-500"
-        />
-      </div>
+    <div>
 
       <p className="
-      text-emerald-500
-
-      font-semibold
-
-      mt-3
+      text-slate-500
+      dark:text-slate-400
       ">
-        {marketData.nifty?.change
-          ? `${marketData.nifty.change.toFixed(2)}%`
-          : "--"}
+        Future Wealth Projection
       </p>
 
-      <div className="h-20 mt-4">
+      <h2 className="
+      text-5xl
+      md:text-7xl
 
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={bullishData}>
-            <Area
-              type="monotone"
-              dataKey="value"
-              stroke="#10b981"
-              fill="#10b98120"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
+      font-black
 
-      </div>
+      tracking-tight
+
+      mt-3
+
+      text-slate-900
+      dark:text-white
+      ">
+        ₹{Math.round(futureValue).toLocaleString()}
+      </h2>
 
     </div>
 
-    {/* SENSEX */}
     <div className="
-    bg-white
-dark:bg-[#0f172a]
+    px-5
+    py-3
 
-border
-border-slate-200
-dark:border-white/5
+    rounded-2xl
 
-    rounded-[32px]
+    bg-emerald-500/10
 
-    shadow-[0_10px_40px_rgba(15,23,42,0.08)]
-dark:shadow-none
+    text-emerald-600
 
-    p-7
-min-h-[210px]
+    font-semibold
+    ">
+      +{growthPercentage}%
+    </div>
+
+  </div>
+
+  <div className="
+  bg-slate-50
+  dark:bg-white/[0.03]
+
+  rounded-3xl
+
+  p-6
+  mb-8
+  ">
+
+    <div className="
+    flex
+    justify-between
+
+    mb-3
     ">
 
-      <div className="
-      flex
-      justify-between
-
-      items-start
+      <span className="
+      text-slate-600
+      dark:text-slate-400
       ">
-        <div>
+        ₹1 Crore Goal
+      </span>
 
-          <p className="text-slate-600 dark:text-slate-400 text-sm">
-            SENSEX
-          </p>
-
-          <h3 className="
-          text-3xl
-
-          font-black
-
-          mt-2
-          ">
-            {marketData.sensex?.price
-              ? marketData.sensex.price.toLocaleString()
-              : "--"}
-          </h3>
-
-        </div>
-
-        <Landmark
-          className="text-blue-500"
-        />
-      </div>
-
-      <p className="
+      <span className="
+      font-bold
       text-blue-500
-
-      font-semibold
-
-      mt-3
       ">
-        {marketData.sensex?.change
-          ? `${marketData.sensex.change.toFixed(2)}%`
-          : "--"}
-      </p>
-
-      <div className="h-20 mt-4">
-
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={bullishData}>
-            <Area
-              type="monotone"
-              dataKey="value"
-              stroke="#2563eb"
-              fill="#2563eb20"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-
-      </div>
+        {progress.toFixed(1)}%
+      </span>
 
     </div>
 
-    {/* GOLD */}
     <div className="
-   bg-white
-dark:bg-[#0f172a]
+    h-3
 
-border
-border-slate-200
-dark:border-white/5
+    bg-slate-200
+    dark:bg-white/10
 
-    rounded-[32px]
-
-   shadow-[0_10px_40px_rgba(15,23,42,0.08)]
-dark:shadow-none
-
-    p-7
-min-h-[210px]
+    rounded-full
+    overflow-hidden
     ">
 
-      <div className="
-      flex
-      justify-between
+      <div
+      className="
+      h-full
 
-      items-start
-      ">
-
-        <div>
-
-          <p className="text-slate-600 dark:text-slate-400 text-sm">
-            GOLD
-          </p>
-
-          <h3 className="
-          text-3xl
-
-          font-black
-
-          mt-2
-          ">
-            ₹{marketData.gold?.price
-              ? marketData.gold.price.toLocaleString()
-              : "--"}
-          </h3>
-
-        </div>
-
-        <Wallet
-          className="text-yellow-500"
-        />
-      </div>
-
-      <p className="
-      text-yellow-500
-
-      font-semibold
-
-      mt-3
-      ">
-        {marketData.gold?.change
-          ? `${marketData.gold.change.toFixed(2)}%`
-          : "--"}
-      </p>
-
-      <div className="h-20 mt-4">
-
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={goldData}>
-            <Area
-              type="monotone"
-              dataKey="value"
-              stroke="#eab308"
-              fill="#eab30820"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-
-      </div>
-
-    </div>
-
-    {/* BITCOIN */}
-    <div className="
-    bg-white
-dark:bg-[#0f172a]
-
-border
-border-slate-200
-dark:border-white/5
-
-    rounded-[32px]
-
-    shadow-[0_10px_40px_rgba(15,23,42,0.08)]
-dark:shadow-none
-
-    p-7
-min-h-[210px]
-    ">
-
-      <div className="
-      flex
-      justify-between
-
-      items-start
-      ">
-
-        <div>
-
-          <p className="text-slate-600 dark:text-slate-400 text-sm">
-            BITCOIN
-          </p>
-
-          <h3 className="
-          text-3xl
-
-          font-black
-
-          mt-2
-          ">
-            ${marketData.bitcoin?.price
-              ? marketData.bitcoin.price.toLocaleString()
-              : "--"}
-          </h3>
-
-        </div>
-
-        <TrendingUp
-          className="text-orange-500"
-        />
-      </div>
-
-      <p className="
-      text-orange-500
-
-      font-semibold
-
-      mt-3
-      ">
-        {marketData.bitcoin?.change
-          ? `${marketData.bitcoin.change.toFixed(2)}%`
-          : "--"}
-      </p>
-
-      <div className="h-20 mt-4">
-
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={btcData}>
-            <Area
-              type="monotone"
-              dataKey="value"
-              stroke="#f97316"
-              fill="#f9731620"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-
-      </div>
+      bg-gradient-to-r
+      from-blue-500
+      to-cyan-500
+      "
+      style={{
+        width:`${progress}%`
+      }}
+      />
 
     </div>
 
   </div>
 
-  {/* Bottom Panel */}
   <div className="
   grid
+  grid-cols-2
+  lg:grid-cols-4
 
-  lg:grid-cols-[2fr_1fr]
-
-  gap-6
-
-  mt-8
+  gap-4
   ">
 
-    {/* Insight Card */}
     <div className="
-    bg-gradient-to-br
+    bg-slate-50
+    dark:bg-white/[0.03]
 
-    from-blue-500
-via-blue-600
-to-indigo-700
+    rounded-3xl
 
-    rounded-[40px]
-
-    p-10
-
-    text-white
+    p-5
     ">
-
-      <p className="text-white/70 mb-3">
-        Market Insight
-      </p>
-
-      <h3 className="
-      text-4xl
-
-      font-black
-      ">
-        Long-Term Investing Continues To Win
-      </h3>
-
       <p className="
-      mt-5
+      text-xs
 
-      text-white/80
+      uppercase
 
-      text-lg
-
-      max-w-2xl
-      ">
-        Consistent SIP investments and disciplined
-        portfolio allocation remain the most reliable
-        path toward long-term wealth creation.
-      </p>
-
-    </div>
-
-    {/* Fear Greed */}
-    <div className="
-    bg-white
-dark:bg-[#0f172a]
-
-border
-border-slate-200
-dark:border-white/5
-
-    rounded-[40px]
-
-    shadow-[0_10px_40px_rgba(15,23,42,0.08)]
-dark:shadow-none
-
-    p-8
-
-    text-center
-    ">
-
-      <p className="text-slate-500">
-        Market Sentiment
-      </p>
-
-      <h3 className="
-      text-5xl
-
-      font-black
-
-      mt-4
-
-      text-blue-500
-      ">
-        {marketData.fearGreed?.value || "--"}
-      </h3>
-
-      <p className="
-      mt-3
+      tracking-wider
 
       text-slate-500
       ">
-        {marketData.fearGreed?.text || "Loading"}
+        Invested
       </p>
 
+      <h3 className="
+      text-2xl
+      font-black
+
+      mt-2
+
+      text-slate-900
+      dark:text-white
+      ">
+        ₹{invested.toLocaleString()}
+      </h3>
     </div>
+
+    <div className="
+    bg-emerald-500/10
+
+    rounded-3xl
+
+    p-5
+    ">
+      <p className="
+      text-xs
+
+      uppercase
+
+      tracking-wider
+
+      text-emerald-600
+      ">
+        Profit
+      </p>
+
+      <h3 className="
+      text-2xl
+      font-black
+
+      mt-2
+
+      text-emerald-500
+      ">
+        ₹{Math.round(profit).toLocaleString()}
+      </h3>
+    </div>
+
+    <div className="
+    bg-blue-500/10
+
+    rounded-3xl
+
+    p-5
+    ">
+      <p className="
+      text-xs
+
+      uppercase
+
+      tracking-wider
+
+      text-blue-600
+      ">
+        Income
+      </p>
+
+      <h3 className="
+      text-2xl
+      font-black
+
+      mt-2
+
+      text-blue-500
+      ">
+        ₹{Math.round(passiveIncome).toLocaleString()}
+      </h3>
+    </div>
+
+    <div className="
+    bg-violet-500/10
+
+    rounded-3xl
+
+    p-5
+    ">
+      <p className="
+      text-xs
+
+      uppercase
+
+      tracking-wider
+
+      text-violet-600
+      ">
+        Multiple
+      </p>
+
+      <h3 className="
+      text-2xl
+      font-black
+
+      mt-2
+
+      text-violet-500
+      ">
+        {wealthMultiplier}×
+      </h3>
+    </div>
+
+  </div>
+
+</div>
+
+    {/* CONTROLS */}
+
+  <div
+  className="
+  bg-white
+  dark:bg-[#071120]
+
+  border
+  border-slate-200
+  dark:border-white/10
+
+  rounded-[40px]
+
+  p-8
+
+  shadow-[0_20px_50px_rgba(15,23,42,0.06)]
+  dark:shadow-none
+  "
+>
+
+  {/* HEADER */}
+
+  <div className="mb-10">
+
+    <div className="
+    inline-flex
+    items-center
+    gap-2
+
+    px-3
+    py-2
+
+    rounded-full
+
+    bg-blue-500/10
+
+    text-blue-500
+
+    text-xs
+    font-semibold
+    uppercase
+    tracking-wider
+    ">
+      Wealth Controls
+    </div>
+
+    <h3 className="
+    text-3xl
+    font-black
+
+    mt-5
+
+    text-slate-900
+    dark:text-white
+    ">
+      Customize Projection
+    </h3>
+
+    <p className="
+    mt-2
+
+    text-slate-500
+    dark:text-slate-400
+    ">
+      Adjust values and instantly see
+      your future wealth potential.
+    </p>
+
+  </div>
+
+  {/* SIP */}
+
+  <div className="mb-8">
+
+    <div className="flex justify-between mb-3">
+
+      <span className="
+      text-slate-600
+      dark:text-slate-400
+      ">
+        Monthly SIP
+      </span>
+
+      <span className="
+      font-bold
+      text-blue-500
+      ">
+        ₹{simulator.sip.toLocaleString()}
+      </span>
+
+    </div>
+
+    <input
+      type="range"
+      min="1000"
+      max="100000"
+      step="500"
+      value={simulator.sip}
+      onChange={(e) =>
+        setSimulator({
+          ...simulator,
+          sip: Number(e.target.value),
+        })
+      }
+      className="w-full accent-blue-500"
+    />
+
+  </div>
+
+  {/* YEARS */}
+
+  <div className="mb-8">
+
+    <div className="flex justify-between mb-3">
+
+      <span className="
+      text-slate-600
+      dark:text-slate-400
+      ">
+        Duration
+      </span>
+
+      <span className="
+      font-bold
+      text-blue-500
+      ">
+        {simulator.years} Years
+      </span>
+
+    </div>
+
+    <input
+      type="range"
+      min="1"
+      max="40"
+      value={simulator.years}
+      onChange={(e) =>
+        setSimulator({
+          ...simulator,
+          years: Number(e.target.value),
+        })
+      }
+      className="w-full accent-blue-500"
+    />
+
+  </div>
+
+  {/* RETURN */}
+
+  <div>
+
+    <div className="flex justify-between mb-3">
+
+      <span className="
+      text-slate-600
+      dark:text-slate-400
+      ">
+        Expected Return
+      </span>
+
+      <span className="
+      font-bold
+      text-blue-500
+      ">
+        {simulator.returnRate}%
+      </span>
+
+    </div>
+
+    <input
+      type="range"
+      min="6"
+      max="18"
+      value={simulator.returnRate}
+      onChange={(e) =>
+        setSimulator({
+          ...simulator,
+          returnRate: Number(e.target.value),
+        })
+      }
+      className="w-full accent-blue-500"
+    />
+
+  </div>
+
+  {/* QUICK GOALS */}
+
+  <div className="mt-10">
+
+    <p className="
+    font-semibold
+    mb-4
+
+    text-slate-900
+    dark:text-white
+    ">
+      Quick Goals
+    </p>
+
+    <div className="grid grid-cols-3 gap-3">
+
+      <button
+    onClick={() => applyGoal("1cr")}
+    className={`
+      py-3
+      rounded-2xl
+      font-semibold
+      transition-all
+      duration-300
+
+      ${
+        selectedGoal === "1cr"
+          ? `
+          bg-gradient-to-r
+          from-blue-500
+          to-cyan-500
+          text-white
+          shadow-lg
+          shadow-blue-500/20
+          `
+          : `
+          bg-slate-100
+          dark:bg-white/[0.05]
+
+          text-slate-700
+          dark:text-slate-300
+
+          hover:bg-slate-200
+          dark:hover:bg-white/[0.08]
+          `
+      }
+    `}
+  >
+    ₹1 Cr
+  </button>
+
+  <button
+    onClick={() => applyGoal("5cr")}
+    className={`
+      py-3
+      rounded-2xl
+      font-semibold
+      transition-all
+      duration-300
+
+      ${
+        selectedGoal === "5cr"
+          ? `
+          bg-gradient-to-r
+          from-blue-500
+          to-cyan-500
+          text-white
+          shadow-lg
+          shadow-blue-500/20
+          `
+          : `
+          bg-slate-100
+          dark:bg-white/[0.05]
+
+          text-slate-700
+          dark:text-slate-300
+
+          hover:bg-slate-200
+          dark:hover:bg-white/[0.08]
+          `
+      }
+    `}
+  >
+    ₹5 Cr
+  </button>
+
+  <button
+    onClick={() => applyGoal("fire")}
+    className={`
+      py-3
+      rounded-2xl
+      font-semibold
+      transition-all
+      duration-300
+
+      ${
+        selectedGoal === "fire"
+          ? `
+          bg-gradient-to-r
+          from-orange-500
+          to-red-500
+          text-white
+          shadow-lg
+          shadow-orange-500/20
+          `
+          : `
+          bg-slate-100
+          dark:bg-white/[0.05]
+
+          text-slate-700
+          dark:text-slate-300
+
+          hover:bg-slate-200
+          dark:hover:bg-white/[0.08]
+          `
+      }
+    `}
+  >
+    FIRE
+  </button>
+    </div>
+
+  </div>
+
+  {/* STRATEGY */}
+
+  <div className="
+  mt-8
+
+  bg-slate-50
+  dark:bg-white/[0.03]
+
+  rounded-3xl
+
+  p-5
+  ">
+
+    <p className="
+    text-xs
+
+    uppercase
+
+    tracking-wider
+
+    text-slate-500
+    ">
+      Suggested Strategy
+    </p>
+
+    <h4 className="
+    text-xl
+
+    font-bold
+
+    text-slate-500
+    mt-2
+    ">
+      Growth Portfolio
+    </h4>
+
+    <p className="
+    mt-2
+
+    text-sm
+
+    text-slate-500
+    ">
+      Suitable for long-term wealth
+      creation and retirement planning.
+    </p>
+
+  </div>
+
+  {/* SUMMARY */}
+
+  <div className="
+  mt-8
+
+  bg-gradient-to-br
+  from-blue-500
+  via-blue-600
+  to-indigo-700
+
+  rounded-[32px]
+
+  p-8
+
+  text-white
+  ">
+
+    <p className="text-white/70">
+      Monthly Wealth Potential
+    </p>
+
+    <h3 className="
+    text-5xl
+
+    font-black
+
+    mt-3
+    ">
+      ₹{Math.round(passiveIncome).toLocaleString()}
+    </h3>
+
+    <p className="
+    mt-3
+
+    text-white/80
+    ">
+      Estimated passive income using
+      the 4% withdrawal rule.
+    </p>
+
+  </div>
+
+</div>
+</div>
+</section>
+{/* Market Overview */}
+{/* Market Dashboard */}
+<section className="max-w-7xl mx-auto px-6 py-28">
+
+  {/* Header */}
+
+  <div className="mb-16">
+
+    <div
+      className="
+      inline-flex
+      items-center
+      gap-2
+
+      bg-blue-500/10
+
+      text-blue-500
+
+      px-4
+      py-2
+
+      rounded-full
+
+      mb-6
+      "
+    >
+      <BarChart3 size={16} />
+      Live Market Dashboard
+    </div>
+
+   <h2
+className="
+text-5xl
+md:text-7xl
+
+font-black
+
+tracking-tight
+
+text-slate-900
+dark:text-white
+
+"
+>
+Markets
+
+<span
+className="
+block
+
+bg-gradient-to-r
+from-blue-500
+to-cyan-500
+
+bg-clip-text
+text-transparent
+"
+>
+At A Glance
+</span>
+
+</h2>
+
+    <p
+      className="
+      mt-6
+
+      text-lg
+
+      text-slate-600
+      dark:text-slate-400
+
+      max-w-2xl
+      "
+    >
+      Track major financial assets,
+      investor sentiment and market momentum
+      from one unified dashboard.
+    </p>
+
+  </div>
+
+  {/* Top Cards */}
+
+  <div
+    className="
+    grid
+
+    lg:grid-cols-[1fr_1fr_1fr_1.4fr]
+
+    gap-6
+    "
+  >
+
+    {/* NIFTY */}
+
+    <div className="
+bg-white
+dark:bg-[#071120]
+
+border
+border-slate-200
+dark:border-white/10
+
+rounded-[32px]
+
+p-7
+
+shadow-sm
+hover:shadow-xl
+
+transition-all
+duration-300
+">
+
+  <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-5">
+    <TrendingUp className="text-emerald-500" size={20} />
+  </div>
+
+  <p className="text-slate-500 dark:text-slate-400 text-sm">
+    NIFTY 50
+  </p>
+
+  <h3 className="text-3xl font-black mt-2 text-slate-900 dark:text-white">
+    {displayData.nifty.price.toLocaleString()}
+  </h3>
+
+  <p className="mt-3 font-semibold text-emerald-500">
+    +{displayData.nifty.change}%
+  </p>
+
+</div>
+
+    {/* SENSEX */}
+
+    <div className="
+bg-white
+dark:bg-[#071120]
+
+border
+border-slate-200
+dark:border-white/10
+
+rounded-[32px]
+
+p-7
+
+shadow-sm
+hover:shadow-xl
+
+transition-all
+duration-300
+">
+
+  <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-5">
+    <Landmark className="text-blue-500" size={20} />
+  </div>
+
+  <p className="text-slate-500 dark:text-slate-400 text-sm">
+    SENSEX
+  </p>
+
+  <h3 className="text-3xl font-black mt-2 text-slate-900 dark:text-white">
+    {displayData.sensex.price.toLocaleString()}
+  </h3>
+
+  <p className="mt-3 font-semibold text-blue-500">
+    +{displayData.sensex.change}%
+  </p>
+
+</div>
+
+    {/* GOLD */}
+
+    <div className="
+bg-white
+dark:bg-[#071120]
+
+border
+border-slate-200
+dark:border-white/10
+
+rounded-[32px]
+
+p-7
+
+shadow-sm
+hover:shadow-xl
+
+transition-all
+duration-300
+">
+
+  <div className="w-12 h-12 rounded-2xl bg-yellow-500/10 flex items-center justify-center mb-5">
+    <Wallet className="text-yellow-500" size={20} />
+  </div>
+
+  <p className="text-slate-500 dark:text-slate-400 text-sm">
+    GOLD
+  </p>
+
+  <h3 className="text-3xl font-black mt-2 text-slate-900 dark:text-white">
+    ₹{displayData.gold.price.toLocaleString()}
+  </h3>
+
+  <p className="mt-3 font-semibold text-yellow-500">
+    +{displayData.gold.change}%
+  </p>
+
+</div>
+
+    {/* FEATURED BITCOIN */}
+    <div className="
+bg-gradient-to-br
+from-orange-500
+via-orange-600
+to-red-500
+
+rounded-[32px]
+
+p-8
+
+text-white
+">
+
+  <div className="flex justify-between">
+
+    <div>
+
+      <p className="text-white/70">
+        Bitcoin
+      </p>
+
+      <h3 className="text-5xl font-black mt-2">
+        ${displayData.bitcoin.price.toLocaleString()}
+      </h3>
+
+    </div>
+
+    <TrendingUp />
+  </div>
+
+  <p className="mt-5 text-2xl font-bold">
+    +{displayData.bitcoin.change}%
+  </p>
+
+  <div className="mt-8 bg-white/10 rounded-3xl p-5">
+
+    <p className="text-white/70 text-sm">
+      Strong Momentum
+    </p>
+
+    <p className="font-semibold mt-1">
+      Crypto Market Leader
+    </p>
+
+  </div>
+
+</div>
+
+  </div>
+
+  {/* Bottom Row */}
+
+  <div
+    className="
+    grid
+
+    lg:grid-cols-[2fr_1fr]
+
+    gap-6
+
+    mt-8
+    "
+  >
+
+    {/* Insight */}
+
+    <div
+      className="
+      bg-gradient-to-br
+
+      from-blue-500
+      via-blue-600
+      to-indigo-700
+
+      rounded-[40px]
+
+      p-10
+
+      text-white
+      "
+    >
+
+      <p className="text-white/70">
+        Market Insight
+      </p>
+
+      <h3 className="text-4xl font-black mt-4">
+        Today's Market Outlook
+      </h3>
+
+      <p className="mt-5 text-white/80 text-lg max-w-2xl">
+        Consistent SIP investments,
+        diversification and long-term discipline
+        continue to outperform emotional investing.
+      </p>
+
+      <div className="flex flex-wrap gap-3 mt-6">
+
+        <span className="px-3 py-2 rounded-full bg-white/10">
+          SIP
+        </span>
+
+        <span className="px-3 py-2 rounded-full bg-white/10">
+          Long Term
+        </span>
+
+        <span className="px-3 py-2 rounded-full bg-white/10">
+          Diversification
+        </span>
+
+      </div>
+
+    </div>
+
+    {/* Fear & Greed */}
+
+    <div className="
+bg-white
+dark:bg-[#071120]
+
+border
+border-slate-200
+dark:border-white/10
+
+rounded-[40px]
+
+p-8
+
+text-center
+">
+
+  <p className="text-slate-500 dark:text-slate-400">
+    Market Sentiment
+  </p>
+
+  <div className="
+  w-32
+  h-32
+
+  mx-auto
+  mt-6
+
+  rounded-full
+
+  bg-blue-500/10
+
+  flex
+  items-center
+  justify-center
+  ">
+
+    <span className="text-5xl font-black text-blue-500">
+      {displayData.fearGreed.value}
+    </span>
+
+  </div>
+
+  <p className="
+  mt-6
+
+  text-lg
+
+  font-semibold
+
+  text-slate-900
+  dark:text-white
+  ">
+    {displayData.fearGreed.text}
+  </p>
+
+</div>
 
   </div>
 
@@ -1667,26 +2604,80 @@ dark:shadow-none
 {/* Finance Tools */}
 <section
   id="calculators"
-  className="max-w-7xl mx-auto px-6 py-24"
+  className="max-w-7xl mx-auto px-6 py-28"
 >
+  {/* Header */}
 
-  <div className="mb-16">
+  <div className="text-center mb-20">
 
-    <p className="text-blue-500 font-semibold uppercase tracking-[0.2em]">
-      Finance Tools
-    </p>
+    <div
+      className="
+      inline-flex
+      items-center
+      gap-2
 
-    <h2 className="text-5xl md:text-6xl font-black mt-4">
+      bg-blue-500/10
+
+      text-blue-500
+
+      px-4
+      py-2
+
+      rounded-full
+
+      mb-6
+      "
+    >
+      <Wallet size={16} />
+      WealthFluent Tools
+    </div>
+
+    <h2
+      className="
+      text-5xl
+      md:text-7xl
+
+      font-black
+
+      tracking-tight
+
+      text-slate-900
+      dark:text-white
+      "
+    >
       Everything You Need
-      <br />
-      To Manage Money
+      <span className="block text-blue-500">
+        To Manage Money
+      </span>
     </h2>
+
+    <p
+      className="
+      mt-6
+
+      max-w-3xl
+
+      mx-auto
+
+      text-lg
+
+      text-slate-600
+      dark:text-slate-400
+      "
+    >
+      Powerful calculators and planning tools
+      designed to help you invest smarter,
+      retire earlier and build lasting wealth.
+    </p>
 
   </div>
 
+  {/* Tools Grid */}
+
   <div className="grid lg:grid-cols-12 gap-6">
 
-    {/* FEATURED SIP */}
+    {/* SIP CALCULATOR */}
+
     <Link
       to="/sip-calculator"
       className="
@@ -1694,271 +2685,861 @@ dark:shadow-none
 
       bg-gradient-to-br
       from-blue-500
-via-blue-600
-to-indigo-700
-
-      text-white
+      via-blue-600
+      to-indigo-700
 
       rounded-[40px]
 
       p-10
 
+      text-white
+
+      overflow-hidden
+
+      relative
+
       group
       "
     >
 
-      <TrendingUp size={40} />
+      <div className="relative z-10">
 
-      <h3 className="text-4xl font-black mt-8">
-        SIP Calculator
-      </h3>
+        <div className="
+        w-16
+        h-16
 
-      <p className="mt-4 text-white/80">
-        Project long-term wealth growth with
-        systematic investment planning.
-      </p>
+        rounded-2xl
 
-      <div className="mt-8 flex items-center gap-2 font-semibold">
-        Open Tool
-        <ChevronRight />
+        bg-white/10
+
+        flex
+        items-center
+        justify-center
+        ">
+          <TrendingUp size={32} />
+        </div>
+
+        <h3 className="
+        text-4xl
+
+        font-black
+
+        mt-8
+        ">
+          SIP Calculator
+        </h3>
+
+        <p className="
+        mt-4
+
+        text-white/80
+
+        max-w-md
+        ">
+          Project long-term wealth growth
+          using systematic investment planning.
+        </p>
+
+        <div className="
+        flex
+        flex-wrap
+
+        gap-3
+
+        mt-8
+        ">
+
+          <span className="
+          px-3
+          py-2
+
+          rounded-full
+
+          bg-white/10
+
+          text-sm
+          ">
+            Most Popular
+          </span>
+
+          <span className="
+          px-3
+          py-2
+
+          rounded-full
+
+          bg-white/10
+
+          text-sm
+          ">
+            Long-Term Investing
+          </span>
+
+        </div>
+
+        <div className="
+        mt-8
+
+        flex
+        items-center
+
+        gap-2
+
+        font-semibold
+        ">
+          Open Tool
+          <ChevronRight />
+        </div>
+
       </div>
 
     </Link>
 
-    {/* FEATURED EMI */}
+    {/* EMI CALCULATOR */}
+
     <Link
       to="/emi-calculator"
       className="
       lg:col-span-6
 
       bg-white
-dark:bg-[#0f172a]
+      dark:bg-[#071120]
 
-border
-border-slate-200
-dark:border-white/5
+      border
+      border-slate-200
+      dark:border-white/10
 
       rounded-[40px]
 
       p-10
 
-      shadow-[0_10px_40px_rgba(15,23,42,0.08)]
-dark:shadow-none
+      shadow-[0_10px_30px_rgba(15,23,42,0.05)]
+      dark:shadow-none
 
       group
+
+      hover:-translate-y-1
+      hover:shadow-xl
+
+      transition-all
       "
     >
 
-      <Landmark
-        size={40}
-        className="text-blue-500"
-      />
+      <div className="
+      w-16
+      h-16
 
-      <h3 className="text-4xl font-black mt-8">
+      rounded-2xl
+
+      bg-blue-500/10
+
+      flex
+      items-center
+      justify-center
+      ">
+        <Landmark
+          size={32}
+          className="text-blue-500"
+        />
+      </div>
+
+      <h3 className="
+      text-4xl
+
+      font-black
+
+      mt-8
+
+      text-slate-900
+      dark:text-white
+      ">
         EMI Calculator
       </h3>
 
-      <p className="mt-4 text-slate-400">
+      <p className="
+      mt-4
+
+      text-slate-600
+      dark:text-slate-400
+      ">
         Calculate monthly loan repayments
-        instantly.
+        instantly with accurate projections.
       </p>
 
-      <div className="mt-8 flex items-center gap-2 font-semibold text-blue-500">
+      <div className="
+      mt-8
+
+      inline-flex
+
+      items-center
+      gap-2
+
+      px-4
+      py-2
+
+      rounded-full
+
+      bg-blue-500/10
+
+      text-blue-500
+      ">
+        Home Loan
+      </div>
+
+      <div className="
+      mt-8
+
+      flex
+      items-center
+
+      gap-2
+
+      text-blue-500
+
+      font-semibold
+      ">
         Open Tool
         <ChevronRight />
       </div>
 
     </Link>
 
+    {/* SMALL CARDS */}
+
     {[
       {
         title: "FD Calculator",
         route: "/fd-calculator",
+        icon: Banknote,
+        color: "text-emerald-500",
       },
       {
         title: "GST Calculator",
         route: "/gst-calculator",
+        icon: Receipt,
+        color: "text-orange-500",
       },
       {
         title: "CAGR Calculator",
         route: "/cagr-calculator",
+        icon: TrendingUp,
+        color: "text-blue-500",
       },
       {
         title: "Retirement",
         route: "/retirement-calculator",
+        icon: Target,
+        color: "text-violet-500",
       },
       {
         title: "Wealth Age",
         route: "/wealth-age-calculator",
+        icon: Clock3,
+        color: "text-cyan-500",
       },
-    ].map((tool) => (
+      {
+        title: "All Tools",
+        route: "/tools",
+        icon: ArrowRight,
+        color: "text-blue-500",
+      },
+    ].map((tool) => {
+      const Icon = tool.icon;
 
-      <Link
-        key={tool.title}
-        to={tool.route}
-        className="
-        lg:col-span-4
+      return (
+        <Link
+          key={tool.title}
+          to={tool.route}
+          className="
+          lg:col-span-4
 
-        bg-white
-dark:bg-[#0f172a]
+          bg-white
+          dark:bg-[#071120]
 
-border
-border-slate-200
-dark:border-white/5
+          border
+          border-slate-200
+          dark:border-white/10
 
-        rounded-[32px]
+          rounded-[32px]
 
-        shadow-lg
+          p-8
 
-        p-8
+          shadow-[0_10px_30px_rgba(15,23,42,0.05)]
+          dark:shadow-none
 
-        hover:-translate-y-1
+          hover:-translate-y-1
+          hover:shadow-xl
 
-        transition
-        "
-      >
+          transition-all
 
-        <h3 className="text-2xl font-black text-slate-900 dark:text-white">
-          {tool.title}
-        </h3>
+          group
+          "
+        >
 
-        <p className="mt-3 text-slate-500">
-          Open calculator
-        </p>
+          <div className={tool.color}>
+            <Icon size={28} />
+          </div>
 
-      </Link>
+          <h3
+            className="
+            text-2xl
 
-    ))}
+            font-black
+
+            mt-6
+
+            text-slate-900
+            dark:text-white
+            "
+          >
+            {tool.title}
+          </h3>
+
+          <p
+            className="
+            mt-3
+
+            text-slate-600
+            dark:text-slate-400
+            "
+          >
+            Open calculator
+          </p>
+
+          <div
+            className="
+            mt-6
+
+            flex
+            items-center
+
+            gap-2
+
+            text-blue-500
+
+            font-semibold
+
+            opacity-0
+            group-hover:opacity-100
+
+            transition-all
+            "
+          >
+            Launch Tool
+            <ChevronRight size={18} />
+          </div>
+
+        </Link>
+      );
+    })}
 
   </div>
 
 </section>
 
      {/* Articles */}
-<section className="max-w-7xl mx-auto px-6 py-24">
+<section className="max-w-7xl mx-auto px-6 py-28">
 
-  <div className="text-center mb-20">
+  {/* Header */}
 
-    <p className="text-blue-500 font-semibold uppercase tracking-[0.2em]">
-      Why WealthFluent
-    </p>
+ <div className="text-center mb-20">
 
-    <h2 className="text-5xl md:text-6xl font-black mt-4">
-      Built For Modern Investors
+  {/* Badge */}
+  <div
+    className="
+    inline-flex
+    items-center
+    gap-2
+
+    px-5 py-2
+
+    rounded-full
+
+    bg-blue-500/10
+    dark:bg-blue-500/10
+
+    border
+    border-blue-500/20
+
+    text-blue-500
+
+    font-medium
+    "
+  >
+    <ShieldCheck size={16} />
+    Why WealthFluent
+  </div>
+
+  {/* Heading */}
+  <div className="mt-8">
+
+    <h2
+      className="
+      text-5xl
+      md:text-7xl
+
+      font-black
+
+      tracking-tight
+
+      text-slate-900
+      dark:text-white
+      "
+    >
+      Built For
+    </h2>
+
+    <h2
+      className="
+      text-6xl
+      md:text-8xl
+
+      font-black
+
+      tracking-tight
+
+      mt-2
+
+      bg-gradient-to-r
+      from-blue-500
+      via-cyan-400
+      to-blue-600
+
+      bg-clip-text
+      text-transparent
+      "
+    >
+      Modern Investors
     </h2>
 
   </div>
 
-  <div className="grid md:grid-cols-3 gap-8">
+  {/* Decorative Line */}
+  <div
+    className="
+    w-32
+    h-1
 
-    <div className="
-    bg-gradient-to-b
-from-white
-to-slate-50
+    mx-auto
 
-dark:from-[#0f172a]
-dark:to-[#111827]
-dark:bg-[#0f172a]
+    mt-8
 
-border
-border-slate-200
-dark:border-white/5
+    rounded-full
 
-    rounded-[40px]
+    bg-gradient-to-r
+    from-blue-500
+    via-cyan-400
+    to-blue-600
+    "
+  />
 
-    shadow-[0_10px_40px_rgba(15,23,42,0.08)]
-dark:shadow-none
+  {/* Description */}
+  <p
+    className="
+    mt-8
 
-    p-10
-    ">
+    max-w-3xl
+    mx-auto
 
-      <TrendingUp
-        size={40}
-        className="text-blue-500"
-      />
+    text-lg
+    md:text-xl
 
-      <h3 className="text-3xl font-black mt-6">
-        Smart Planning
+    leading-relaxed
+
+    text-slate-600
+    dark:text-slate-400
+    "
+  >
+    Everything you need to plan, track, grow and manage
+    wealth with confidence using powerful calculators,
+    real-time insights and intelligent financial tools.
+  </p>
+
+</div>
+
+  {/* Main Grid */}
+
+  <div className="grid lg:grid-cols-12 gap-6">
+
+    {/* Featured Trust Card */}
+
+    <div
+      className="
+      lg:col-span-5
+
+      bg-gradient-to-br
+      from-blue-500
+      via-blue-600
+      to-indigo-700
+
+      rounded-[40px]
+
+      p-10
+
+      text-white
+      "
+    >
+
+      <div className="
+      w-16
+      h-16
+
+      rounded-2xl
+
+      bg-white/10
+
+      flex
+      items-center
+      justify-center
+      ">
+        <TrendingUp size={32} />
+      </div>
+
+      <h3 className="
+      text-4xl
+
+      font-black
+
+      mt-8
+      ">
+        Smart Wealth Planning
       </h3>
 
-      <p className="mt-4 text-slate-600 dark:text-slate-400">
-        Visualize future wealth and
-        retirement outcomes instantly.
+      <p className="
+      mt-5
+
+      text-white/80
+
+      text-lg
+      ">
+        Simulate future wealth,
+        retirement goals,
+        passive income
+        and investment growth instantly.
       </p>
+
+      <div className="
+      grid
+      grid-cols-2
+
+      gap-4
+
+      mt-10
+      ">
+
+        <div>
+          <h4 className="text-3xl font-black">
+            7+
+          </h4>
+          <p className="text-white/70">
+            Financial Tools
+          </p>
+        </div>
+
+        <div>
+          <h4 className="text-3xl font-black">
+            24/7
+          </h4>
+          <p className="text-white/70">
+            Available
+          </p>
+        </div>
+
+      </div>
 
     </div>
 
-    <div className="
-    bg-gradient-to-b
-from-white
-to-slate-50
+    {/* Right Side */}
 
-dark:from-[#0f172a]
-dark:to-[#111827]
-dark:bg-[#0f172a]
+    <div className="lg:col-span-7 grid md:grid-cols-2 gap-6">
 
-border
-border-slate-200
-dark:border-white/5
+      {/* Card */}
 
-    rounded-[40px]
+      <div
+        className="
+        bg-white
+        dark:bg-[#071120]
 
-    shadow-[0_10px_40px_rgba(15,23,42,0.08)]
-dark:shadow-none
+        border
+        border-slate-200
+        dark:border-white/10
 
-    p-10
-    ">
+        rounded-[32px]
 
-      <ShieldCheck
-        size={40}
-        className="text-emerald-500"
-      />
+        p-8
 
-      <h3 className="text-3xl font-black mt-6">
-        No Signup Required
-      </h3>
+        hover:-translate-y-1
+        hover:shadow-xl
 
-      <p className="mt-4 text-slate-600 dark:text-slate-400">
-        Use every calculator for free
-        without creating an account.
-      </p>
+        transition-all
+        "
+      >
 
-    </div>
+        <div
+          className="
+          w-14
+          h-14
 
-    <div className="
-    bg-gradient-to-b
-from-white
-to-slate-50
+          rounded-2xl
 
-dark:from-[#0f172a]
-dark:to-[#111827]
-dark:bg-[#0f172a]
+          bg-emerald-500/10
 
-border
-border-slate-200
-dark:border-white/5
+          flex
+          items-center
+          justify-center
+          "
+        >
+          <ShieldCheck
+            size={28}
+            className="text-emerald-500"
+          />
+        </div>
 
-    rounded-[40px]
+        <h3
+          className="
+          text-2xl
 
-    shadow-[0_10px_40px_rgba(15,23,42,0.08)]
-dark:shadow-none
+          font-black
 
-    p-10
-    ">
+          mt-6
 
-      <Globe
-        size={40}
-        className="text-blue-500"
-      />
+          text-slate-900
+          dark:text-white
+          "
+        >
+          No Signup Required
+        </h3>
 
-      <h3 className="text-3xl font-black mt-6">
-        Global Access
-      </h3>
+        <p
+          className="
+          mt-4
 
-      <p className="mt-4 text-slate-600 dark:text-slate-400">
-        Available anywhere with
-        real-time financial tools.
-      </p>
+          text-slate-600
+          dark:text-slate-400
+          "
+        >
+          Access every calculator instantly.
+          No account, no subscription,
+          no hidden restrictions.
+        </p>
+
+      </div>
+
+      {/* Card */}
+
+      <div
+        className="
+        bg-white
+        dark:bg-[#071120]
+
+        border
+        border-slate-200
+        dark:border-white/10
+
+        rounded-[32px]
+
+        p-8
+
+        hover:-translate-y-1
+        hover:shadow-xl
+
+        transition-all
+        "
+      >
+
+        <div
+          className="
+          w-14
+          h-14
+
+          rounded-2xl
+
+          bg-blue-500/10
+
+          flex
+          items-center
+          justify-center
+          "
+        >
+          <Globe
+            size={28}
+            className="text-blue-500"
+          />
+        </div>
+
+        <h3
+          className="
+          text-2xl
+
+          font-black
+
+          mt-6
+
+          text-slate-900
+          dark:text-white
+          "
+        >
+          Global Access
+        </h3>
+
+        <p
+          className="
+          mt-4
+
+          text-slate-600
+          dark:text-slate-400
+          "
+        >
+          Use WealthFluent anywhere
+          on desktop, tablet or mobile
+          without limitations.
+        </p>
+
+      </div>
+
+      {/* Card */}
+
+      <div
+        className="
+        bg-white
+        dark:bg-[#071120]
+
+        border
+        border-slate-200
+        dark:border-white/10
+
+        rounded-[32px]
+
+        p-8
+
+        hover:-translate-y-1
+        hover:shadow-xl
+
+        transition-all
+        "
+      >
+
+        <div
+          className="
+          w-14
+          h-14
+
+          rounded-2xl
+
+          bg-violet-500/10
+
+          flex
+          items-center
+          justify-center
+          "
+        >
+          <BarChart3
+            size={28}
+            className="text-violet-500"
+          />
+        </div>
+
+        <h3
+          className="
+          text-2xl
+
+          font-black
+
+          mt-6
+
+          text-slate-900
+          dark:text-white
+          "
+        >
+          Data Driven
+        </h3>
+
+        <p
+          className="
+          mt-4
+
+          text-slate-600
+          dark:text-slate-400
+          "
+        >
+          Make informed financial
+          decisions using intelligent
+          projections and calculations.
+        </p>
+
+      </div>
+
+      {/* Card */}
+
+      <div
+        className="
+        bg-white
+        dark:bg-[#071120]
+
+        border
+        border-slate-200
+        dark:border-white/10
+
+        rounded-[32px]
+
+        p-8
+
+        hover:-translate-y-1
+        hover:shadow-xl
+
+        transition-all
+        "
+      >
+
+        <div
+          className="
+          w-14
+          h-14
+
+          rounded-2xl
+
+          bg-cyan-500/10
+
+          flex
+          items-center
+          justify-center
+          "
+        >
+          <Clock3
+            size={28}
+            className="text-cyan-500"
+          />
+        </div>
+
+        <h3
+          className="
+          text-2xl
+
+          font-black
+
+          mt-6
+
+          text-slate-900
+          dark:text-white
+          "
+        >
+          Instant Results
+        </h3>
+
+        <p
+          className="
+          mt-4
+
+          text-slate-600
+          dark:text-slate-400
+          "
+        >
+          Every calculation updates
+          instantly as you adjust
+          values and assumptions.
+        </p>
+
+      </div>
 
     </div>
 
@@ -1968,93 +3549,431 @@ dark:shadow-none
 
 <section
   id="articles"
-  className="max-w-7xl mx-auto px-6 py-24"
+  className="max-w-7xl mx-auto px-6 py-28"
 >
 
-  <div className="mb-16">
+  {/* Header */}
 
-    <p className="text-blue-500 font-semibold uppercase tracking-[0.2em]">
-      Finance Guides
-    </p>
+  <div className="text-center mb-20">
 
-    <h2 className="text-5xl md:text-6xl font-black mt-4">
+    <div
+      className="
+      inline-flex
+      items-center
+      gap-2
+
+      px-4
+      py-2
+
+      rounded-full
+
+      bg-blue-500/10
+
+      text-blue-500
+
+      mb-6
+      "
+    >
+      <BookOpen size={16} />
+      Finance Academy
+    </div>
+
+    <h2
+      className="
+      text-5xl
+      md:text-7xl
+
+      font-black
+
+      tracking-tight
+
+      text-slate-900
+      dark:text-white
+      "
+    >
       Learn Investing
-      <br />
-      The Right Way
+      <span className="block text-blue-500">
+        The Right Way
+      </span>
     </h2>
+
+    <p
+      className="
+      mt-6
+
+      max-w-3xl
+
+      mx-auto
+
+      text-lg
+
+      text-slate-600
+      dark:text-slate-400
+      "
+    >
+      Practical investing knowledge,
+      wealth building strategies and
+      financial education designed for
+      long-term success.
+    </p>
 
   </div>
 
-  <div className="grid lg:grid-cols-3 gap-8">
+  {/* Main Grid */}
 
-    {[
-      {
-        image: "/images/sip.jpg",
-        title: "How SIP Builds Wealth",
-        route: "/how-sip-builds-wealth",
-      },
-      {
-        image: "/images/finance.jpg",
-        title: "Financial Habits",
-        route: "/best-financial-habits",
-      },
-      {
-        image: "/images/retirement.jpg",
-        title: "Retirement Planning",
-        route: "/retirement-calculator",
-      },
-    ].map((article) => (
+  <div className="grid lg:grid-cols-12 gap-6">
+
+    {/* Featured Article */}
+
+    <Link
+      to="/how-sip-builds-wealth"
+      className="
+      lg:col-span-7
+
+      relative
+
+      overflow-hidden
+
+      rounded-[40px]
+
+      min-h-[580px]
+
+      group
+      "
+    >
+
+      <img
+        src="/images/sip.jpg"
+        alt="How SIP Builds Wealth"
+        className="
+        absolute
+        inset-0
+
+        w-full
+        h-full
+
+        object-cover
+
+        group-hover:scale-105
+
+        transition-all
+        duration-700
+        "
+      />
+
+      <div
+        className="
+        absolute
+        inset-0
+
+        bg-gradient-to-t
+
+        from-black
+        via-black/50
+        to-transparent
+        "
+      />
+
+      <div
+        className="
+        absolute
+
+        bottom-0
+
+        p-10
+
+        text-white
+        "
+      >
+
+        <div
+          className="
+          inline-flex
+
+          px-4
+          py-2
+
+          rounded-full
+
+          bg-white/10
+
+          backdrop-blur-md
+
+          text-sm
+
+          mb-5
+          "
+        >
+          Featured Guide
+        </div>
+
+        <h3
+          className="
+          text-4xl
+          md:text-5xl
+
+          font-black
+          "
+        >
+          How SIP Builds Wealth
+        </h3>
+
+        <p
+          className="
+          mt-4
+
+          text-white/80
+
+          max-w-xl
+          "
+        >
+          Discover how disciplined investing
+          and compounding can transform
+          small monthly contributions into
+          substantial long-term wealth.
+        </p>
+
+        <div
+          className="
+          mt-6
+
+          flex
+          items-center
+
+          gap-6
+
+          text-white/70
+
+          text-sm
+          "
+        >
+          <span>8 min read</span>
+          <span>Beginner Friendly</span>
+        </div>
+
+      </div>
+
+    </Link>
+
+    {/* Side Articles */}
+
+    <div className="lg:col-span-5 flex flex-col gap-6">
+
+      {/* Card */}
 
       <Link
-        key={article.title}
-        to={article.route}
+        to="/best-financial-habits"
         className="
-        bg-gradient-to-b
-from-white
-to-slate-50
+        bg-white
+        dark:bg-[#071120]
 
-dark:from-[#0f172a]
-dark:to-[#111827]
-dark:bg-[#0f172a]
+        border
+        border-slate-200
+        dark:border-white/10
 
-border
-border-slate-200
-dark:border-white/5
+        rounded-[32px]
 
-        rounded-[40px]
+        p-6
 
-        overflow-hidden
+        flex
 
-        shadow-[0_10px_40px_rgba(15,23,42,0.08)]
-dark:shadow-none
+        gap-5
+
+        hover:-translate-y-1
+        hover:shadow-xl
+
+        transition-all
         "
       >
 
         <img
-          src={article.image}
-          alt={article.title}
+          src="/images/finance.jpg"
+          alt="Financial Habits"
           className="
-          w-full
-          h-64
+          w-32
+          h-32
+
+          rounded-2xl
+
           object-cover
           "
         />
 
-        <div className="p-8">
+        <div>
 
-          <h3 className="text-2xl font-black text-slate-900 dark:text-white">
-            {article.title}
+          <div
+            className="
+            inline-flex
+
+            px-3
+            py-1
+
+            rounded-full
+
+            bg-blue-500/10
+
+            text-blue-500
+
+            text-xs
+
+            mb-3
+            "
+          >
+            Personal Finance
+          </div>
+
+          <h3
+            className="
+            text-2xl
+
+            font-black
+
+            text-slate-900
+            dark:text-white
+            "
+          >
+            Financial Habits
           </h3>
 
-          <p className="mt-4 text-blue-500 font-semibold">
-            Read Article →
+          <p
+            className="
+            mt-2
+
+            text-slate-600
+            dark:text-slate-400
+            "
+          >
+            Daily habits that improve
+            long-term financial health.
           </p>
 
         </div>
 
       </Link>
 
-    ))}
+      {/* Card */}
+
+      <Link
+        to="/retirement-calculator"
+        className="
+        bg-white
+        dark:bg-[#071120]
+
+        border
+        border-slate-200
+        dark:border-white/10
+
+        rounded-[32px]
+
+        p-6
+
+        flex
+
+        gap-5
+
+        hover:-translate-y-1
+        hover:shadow-xl
+
+        transition-all
+        "
+      >
+
+        <img
+          src="/images/retirement.jpg"
+          alt="Retirement Planning"
+          className="
+          w-32
+          h-32
+
+          rounded-2xl
+
+          object-cover
+          "
+        />
+
+        <div>
+
+          <div
+            className="
+            inline-flex
+
+            px-3
+            py-1
+
+            rounded-full
+
+            bg-emerald-500/10
+
+            text-emerald-500
+
+            text-xs
+
+            mb-3
+            "
+          >
+            Retirement
+          </div>
+
+          <h3
+            className="
+            text-2xl
+
+            font-black
+
+            text-slate-900
+            dark:text-white
+            "
+          >
+            Retirement Planning
+          </h3>
+
+          <p
+            className="
+            mt-2
+
+            text-slate-600
+            dark:text-slate-400
+            "
+          >
+            Build a strategy for financial
+            independence and retirement.
+          </p>
+
+        </div>
+
+      </Link>
+
+      {/* Bonus Card */}
+
+      <div
+        className="
+        bg-gradient-to-br
+
+        from-blue-500
+        via-blue-600
+        to-indigo-700
+
+        rounded-[32px]
+
+        p-8
+
+        text-white
+        "
+      >
+
+        <h3 className="text-3xl font-black">
+          New Guides Weekly
+        </h3>
+
+        <p className="mt-4 text-white/80">
+          Learn investing, wealth creation,
+          retirement planning and financial
+          freedom with practical guides.
+        </p>
+
+      </div>
+
+    </div>
 
   </div>
 
@@ -2065,140 +3984,667 @@ dark:shadow-none
 
 
       {/* CTA */}
-      <section className="max-w-7xl mx-auto px-6 pb-32">
+     <section className="max-w-7xl mx-auto px-6 pb-32">
 
-  <div className="
-  bg-gradient-to-br
+  <div
+    className="
+    relative
 
-  from-blue-500
-via-blue-600
-to-indigo-700
+    overflow-hidden
 
-  rounded-[56px]
+    rounded-[56px]
 
-  text-center
+    bg-gradient-to-br
+    from-blue-500
+    via-blue-600
+    to-indigo-700
 
-  px-10
-  py-24
+    px-10
+    py-24
 
-  text-white
-  ">
+    text-white
+    "
+  >
 
-    <p className="uppercase tracking-[0.2em] text-white/70">
-      Start Today
-    </p>
+    {/* Background Glow */}
 
-    <h2 className="
-    text-6xl
+    <div className="absolute inset-0">
 
-    font-black
+      <div
+        className="
+        absolute
 
-    mt-6
-    ">
-      Build Your Wealth
-      <br />
-      With Confidence
-    </h2>
+        top-0
+        left-1/2
 
-    <p className="
-    max-w-2xl
+        -translate-x-1/2
 
-    mx-auto
+        w-[700px]
+        h-[700px]
 
-    mt-6
+        bg-white/10
 
-    text-white/80
-    ">
-      Free calculators, real-time markets,
-      and practical investing tools.
-    </p>
+        rounded-full
 
-    <Link
-      to="/sip-calculator"
-      className="
-      inline-flex
+        blur-[150px]
+        "
+      />
 
-      mt-10
+    </div>
 
-      bg-white
+    {/* Content */}
 
-      text-blue-700
+    <div className="relative z-10 text-center">
 
-      px-8
-      py-4
+      <div
+        className="
+        inline-flex
 
-      rounded-2xl
+        items-center
 
-      font-bold
-      "
-    >
-      Start Planning →
-    </Link>
+        gap-2
+
+        px-4
+        py-2
+
+        rounded-full
+
+        bg-white/10
+
+        backdrop-blur-md
+
+        text-white/90
+
+        mb-8
+        "
+      >
+        <TrendingUp size={16} />
+        Start Your Financial Journey
+      </div>
+
+      <h2
+        className="
+        text-5xl
+        md:text-7xl
+
+        font-black
+
+        tracking-tight
+
+        leading-none
+        "
+      >
+        Build Wealth
+        <span className="block">
+          With Confidence
+        </span>
+      </h2>
+
+      <p
+        className="
+        max-w-3xl
+
+        mx-auto
+
+        mt-8
+
+        text-lg
+
+        text-white/80
+        "
+      >
+        Access powerful calculators,
+        wealth projections, retirement planning,
+        market insights and investing tools —
+        completely free.
+      </p>
+
+      {/* Stats */}
+
+      <div
+        className="
+        flex
+        flex-wrap
+
+        justify-center
+
+        gap-8
+
+        mt-12
+        "
+      >
+
+        <div>
+          <h3 className="text-3xl font-black">
+            7+
+          </h3>
+
+          <p className="text-white/70 text-sm">
+            Finance Tools
+          </p>
+        </div>
+
+        <div>
+          <h3 className="text-3xl font-black">
+            24/7
+          </h3>
+
+          <p className="text-white/70 text-sm">
+            Access
+          </p>
+        </div>
+
+        <div>
+          <h3 className="text-3xl font-black">
+            Free
+          </h3>
+
+          <p className="text-white/70 text-sm">
+            Forever
+          </p>
+        </div>
+
+      </div>
+
+      {/* Buttons */}
+
+      <div
+        className="
+        flex
+        flex-col
+        sm:flex-row
+
+        justify-center
+
+        gap-4
+
+        mt-12
+        "
+      >
+
+        <Link
+          to="/sip-calculator"
+          className="
+          inline-flex
+
+          items-center
+          justify-center
+
+          gap-2
+
+          bg-white
+
+          text-blue-700
+
+          px-8
+          py-4
+
+          rounded-2xl
+
+          font-bold
+
+          hover:scale-105
+
+          transition-all
+          "
+        >
+          Start Planning
+          <ArrowRight size={18} />
+        </Link>
+
+        <Link
+          to="/tools"
+          className="
+          inline-flex
+
+          items-center
+          justify-center
+
+          gap-2
+
+          bg-white/10
+
+          backdrop-blur-md
+
+          border
+          border-white/20
+
+          text-white
+
+          px-8
+          py-4
+
+          rounded-2xl
+
+          font-bold
+
+          hover:bg-white/15
+
+          transition-all
+          "
+        >
+          Explore Tools
+        </Link>
+
+      </div>
+
+    </div>
 
   </div>
 
 </section>
 
       {/* Footer */}
-      <footer className="
-border-t
+     <footer
+  className="
+  relative
 
-border-slate-200
-dark:border-white/10
+  border-t
+  border-slate-200
+  dark:border-white/10
 
-py-12
-">
+  bg-slate-50
+  dark:bg-[#020617]
 
-  <div className="
-  max-w-7xl
-  mx-auto
+  overflow-hidden
+  "
+>
 
-  px-6
+  {/* Glow */}
 
-  flex
-  flex-col
-  md:flex-row
+  <div className="absolute inset-0 overflow-hidden">
 
-  justify-between
+    <div
+      className="
+      absolute
 
-  gap-8
-  ">
+      bottom-0
+      left-1/2
 
-    <div>
+      -translate-x-1/2
 
-      <h2 className="
-      text-3xl
+      w-[700px]
+      h-[400px]
 
-      font-black
-      ">
-        Wealth
-        <span className="text-blue-500">
-          Fluent
-        </span>
-      </h2>
+      bg-blue-500/5
 
-      <p className="
-      mt-3
+      blur-[120px]
 
-      text-slate-500
-      ">
-        Smarter investing starts here.
-      </p>
+      rounded-full
+      "
+    />
+
+  </div>
+
+  <div className="relative z-10 max-w-7xl mx-auto px-6">
+
+    {/* Top */}
+
+    <div
+      className="
+      py-16
+
+      grid
+
+      lg:grid-cols-[1.5fr_1fr_1fr_1fr]
+
+      gap-12
+      "
+    >
+
+      {/* Brand */}
+
+      <div>
+
+        <h2
+          className="
+          text-4xl
+
+          font-black
+
+          text-slate-900
+          dark:text-white
+          "
+        >
+          Wealth
+          <span className="text-blue-500">
+            Fluent
+          </span>
+        </h2>
+
+        <p
+          className="
+          mt-4
+
+          max-w-sm
+
+          text-slate-600
+          dark:text-slate-400
+          "
+        >
+          Smarter investing starts here.
+          Plan wealth, explore markets,
+          and make better financial decisions.
+        </p>
+
+        {/* Stats */}
+
+        <div className="flex gap-8 mt-8">
+
+          <div>
+            <h4 className="
+            text-2xl
+            font-black
+
+            text-slate-900
+            dark:text-white
+            ">
+              7+
+            </h4>
+
+            <p className="
+            text-sm
+
+            text-slate-500
+            dark:text-slate-400
+            ">
+              Tools
+            </p>
+          </div>
+
+          <div>
+            <h4 className="
+            text-2xl
+            font-black
+
+            text-slate-900
+            dark:text-white
+            ">
+              Free
+            </h4>
+
+            <p className="
+            text-sm
+
+            text-slate-500
+            dark:text-slate-400
+            ">
+              Forever
+            </p>
+          </div>
+
+          <div>
+            <h4 className="
+            text-2xl
+            font-black
+
+            text-slate-900
+            dark:text-white
+            ">
+              24/7
+            </h4>
+
+            <p className="
+            text-sm
+
+            text-slate-500
+            dark:text-slate-400
+            ">
+              Access
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Product */}
+
+      <div>
+
+        <h3
+          className="
+          font-bold
+
+          text-slate-900
+          dark:text-white
+
+          mb-5
+          "
+        >
+          Tools
+        </h3>
+
+        <div className="flex flex-col gap-3">
+
+          <Link
+            to="/sip-calculator"
+            className="
+            text-slate-600
+            dark:text-slate-400
+
+            hover:text-blue-500
+
+            transition
+            "
+          >
+            SIP Calculator
+          </Link>
+
+          <Link
+            to="/emi-calculator"
+            className="
+            text-slate-600
+            dark:text-slate-400
+
+            hover:text-blue-500
+
+            transition
+            "
+          >
+            EMI Calculator
+          </Link>
+
+          <Link
+            to="/retirement-calculator"
+            className="
+            text-slate-600
+            dark:text-slate-400
+
+            hover:text-blue-500
+
+            transition
+            "
+          >
+            Retirement Planner
+          </Link>
+
+        </div>
+
+      </div>
+
+      {/* Company */}
+
+      <div>
+
+        <h3
+          className="
+          font-bold
+
+          text-slate-900
+          dark:text-white
+
+          mb-5
+          "
+        >
+          Company
+        </h3>
+
+        <div className="flex flex-col gap-3">
+
+          <Link
+            to="/about"
+            className="
+            text-slate-600
+            dark:text-slate-400
+
+            hover:text-blue-500
+
+            transition
+            "
+          >
+            About Us
+          </Link>
+
+          <Link
+            to="/contact"
+            className="
+            text-slate-600
+            dark:text-slate-400
+
+            hover:text-blue-500
+
+            transition
+            "
+          >
+            Contact
+          </Link>
+
+          <Link
+            to="/articles"
+            className="
+            text-slate-600
+            dark:text-slate-400
+
+            hover:text-blue-500
+
+            transition
+            "
+          >
+            Finance Guides
+          </Link>
+
+        </div>
+
+      </div>
+
+      {/* Legal */}
+
+      <div>
+
+        <h3
+          className="
+          font-bold
+
+          text-slate-900
+          dark:text-white
+
+          mb-5
+          "
+        >
+          Legal
+        </h3>
+
+        <div className="flex flex-col gap-3">
+
+          <Link
+            to="/privacy-policy"
+            className="
+            text-slate-600
+            dark:text-slate-400
+
+            hover:text-blue-500
+
+            transition
+            "
+          >
+            Privacy Policy
+          </Link>
+
+          <Link
+            to="/terms"
+            className="
+            text-slate-600
+            dark:text-slate-400
+
+            hover:text-blue-500
+
+            transition
+            "
+          >
+            Terms of Service
+          </Link>
+
+          <Link
+            to="/disclaimer"
+            className="
+            text-slate-600
+            dark:text-slate-400
+
+            hover:text-blue-500
+
+            transition
+            "
+          >
+            Disclaimer
+          </Link>
+
+        </div>
+
+      </div>
 
     </div>
 
-    <div className="
-    flex
+    {/* Bottom */}
 
-    gap-6
+    <div
+      className="
+      border-t
+      border-slate-200
+      dark:border-white/10
 
-    text-slate-500
-    ">
+      py-6
 
-      <Link to="/about">About</Link>
-      <Link to="/contact">Contact</Link>
-      <Link to="/privacy-policy">Privacy</Link>
-      <Link to="/disclaimer">Disclaimer</Link>
+      flex
+      flex-col
+      md:flex-row
+
+      justify-between
+      items-center
+
+      gap-4
+      "
+    >
+
+      <p
+        className="
+        text-sm
+
+        text-slate-500
+        dark:text-slate-400
+        "
+      >
+        © {new Date().getFullYear()} WealthFluent.
+        All rights reserved.
+      </p>
+
+      <div
+        className="
+        flex
+        items-center
+
+        gap-6
+
+        text-sm
+
+        text-slate-500
+        dark:text-slate-400
+        "
+      >
+
+        <span>Made for Modern Investors</span>
+
+      </div>
 
     </div>
 

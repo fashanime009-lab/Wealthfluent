@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-:root{
+:root {
   --bg: #ffffff;
   --bg-secondary: #f8fafc;
   --card: #ffffff;
@@ -9,28 +9,32 @@
   --border: #e2e8f0;
 }
 
-.dark{
+html.dark {
   --bg: #020617;
-  --bg-secondary: #07111f;
-  --card: #0b1220;
+  --bg-secondary: #071120;
+  --card: #0f172a;
   --text: #ffffff;
   --text-secondary: #94a3b8;
-  --border: rgba(255,255,255,0.1);
+  --border: rgba(255, 255, 255, 0.08);
 }
 
-body{
-  margin:0;
-  font-family:Inter,sans-serif;
-  background:var(--bg);
-  color:var(--text);
+html {
+  scroll-behavior: smooth;
 }
 
-html{
-  scroll-behavior:smooth;
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 html,
 body,
 #root {
   overflow-x: hidden;
+  min-height: 100%;
 }
