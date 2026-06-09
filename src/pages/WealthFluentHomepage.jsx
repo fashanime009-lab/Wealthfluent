@@ -91,6 +91,8 @@ const btcData = [
   sensex: null,
   fearGreed: null,
 });
+const [news, setNews] = useState([]);
+const [newsLoading, setNewsLoading] = useState(true);
 useEffect(() => {
   const fetchMarketData = async () => {
   try {
@@ -182,7 +184,21 @@ sensex:
 };
 
   fetchMarketData();
+const fetchNews = async () => {
+  try {
+    const res = await axios.get(
+      `https://newsdata.io/api/1/news?apikey=pub_3798230f728e4a6090ad3c705557970b&category=business&language=en`
+    );
 
+    setNews(res.data.results?.slice(0, 6) || []);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    setNewsLoading(false);
+  }
+};
+
+fetchNews();
   const interval = setInterval(fetchMarketData, 30000);
 
 
@@ -1469,6 +1485,134 @@ dark:bg-[#071120]
     </div>
 
   </div>
+
+</section>
+<section className="max-w-7xl mx-auto px-6 py-28">
+
+  <div className="mb-16">
+
+    <div className="
+      inline-flex
+      items-center
+      gap-2
+      px-4
+      py-2
+      rounded-full
+      bg-blue-500/10
+      text-blue-500
+      mb-6
+    ">
+      📰 AI News Hub
+    </div>
+
+    <h2 className="
+      text-5xl
+      md:text-7xl
+      font-black
+      tracking-tight
+    ">
+      Latest Market
+      <span className="block text-blue-500">
+        Intelligence
+      </span>
+    </h2>
+
+    <p className="
+      mt-6
+      text-lg
+      text-slate-600
+      dark:text-slate-400
+    ">
+      Real-time financial news from global markets.
+    </p>
+
+  </div>
+
+  {newsLoading ? (
+    <div className="text-center py-20">
+      Loading news...
+    </div>
+  ) : (
+
+    <div className="grid lg:grid-cols-3 gap-6">
+
+      {news.map((article, index) => (
+
+        <a
+          key={index}
+          href={article.link}
+          target="_blank"
+          rel="noreferrer"
+          className="
+          bg-white
+          dark:bg-[#071120]
+
+          border
+          border-slate-200
+          dark:border-white/10
+
+          rounded-[32px]
+
+          overflow-hidden
+
+          hover:-translate-y-1
+          hover:shadow-xl
+
+          transition-all
+          "
+        >
+
+          <img
+            src={
+              article.image_url ||
+              "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3"
+            }
+            alt={article.title}
+            className="
+            w-full
+            h-56
+            object-cover
+            "
+          />
+
+          <div className="p-6">
+
+            <p className="
+            text-xs
+            uppercase
+            text-blue-500
+            font-semibold
+            ">
+              {article.source_id}
+            </p>
+
+            <h3 className="
+            mt-3
+            text-xl
+            font-bold
+            line-clamp-2
+            ">
+              {article.title}
+            </h3>
+
+            <p className="
+            mt-3
+            text-slate-500
+            dark:text-slate-400
+            line-clamp-3
+            ">
+              {article.description}
+            </p>
+
+          </div>
+
+        </a>
+
+      ))}
+
+    </div>
+
+  )}
 
 </section>
     {/* Wealth Dashboard Showcase */}
