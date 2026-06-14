@@ -1,33 +1,39 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import WealthFluentHomepage from "./pages/WealthFluentHomepage";
-import SIPCalculatorPage from "./pages/SIPCalculatorPage";
-import EMICalculatorPage from "./pages/EMICalculatorPage";
-import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
-import DisclaimerPage from "./pages/DisclaimerPage";
 import AboutPage from "./pages/AboutPage";
-import ContactPage from "./pages/ContactPage";
-import FDCalculatorPage from "./pages/FDCalculatorPage";
+import BlogPage from "./pages/BlogsPage";
+import BlogsPage from "./pages/BlogsPage";
 import CAGRCalculatorPage from "./pages/CAGRCalculatorPage";
-import GSTCalculatorPage from "./pages/GSTCalculatorPage";
-import RetirementCalculatorPage from "./pages/RetirementCalculatorPage";
-import SIPWealthArticle from "./pages/articles/SIPWealthArticle";
-import BlogPage from "./pages/BlogPage";
 import CalculatorsPage from "./pages/CalculatorsPage";
-import ToolsPage from "./pages/ToolsPage";
-import WealthDashboardPage from "./pages/WealthDashboardPage";
-import ScrollToTop from "./components/ScrollToTop";
+import ContactPage from "./pages/ContactPage";
+import DisclaimerPage from "./pages/DisclaimerPage";
+import EMICalculatorPage from "./pages/EMICalculatorPage";
+import FDCalculatorPage from "./pages/FDCalculatorPage";
 import FIRECalculatorPage from "./pages/FIRECalculatorPage";
-import WealthAgeCalculatorPage from "./pages/WealthAgeCalculatorPage";
+import GSTCalculatorPage from "./pages/GSTCalculatorPage";
+import NewsPage from "./pages/NewsPage";
 import PortfolioTrackerPage from "./pages/PortfolioTrackerPage";
-
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import QuizzesPage from "./pages/QuizzesPage";
+import RetirementCalculatorPage from "./pages/RetirementCalculatorPage";
+import SIPCalculatorPage from "./pages/SIPCalculatorPage";
+import SIPWealthArticle from "./pages/articles/SIPWealthArticle";
+import ScrollToTop from "./components/ScrollToTop";
+import ToolsPage from "./pages/ToolsPage";
+import WealthAgeCalculatorPage from "./pages/WealthAgeCalculatorPage";
+import WealthDashboardPage from "./pages/WealthDashboardPage";
+import WealthFluentHomepage from "./pages/WealthFluentHomepage";
 
 export default function App() {
   return (
     <BrowserRouter>
-    <ScrollToTop />
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<WealthFluentHomepage />} />
+        <Route path="/news" element={<NewsPage />} />
+        <Route path="/quizzes" element={<QuizzesPage />} />
+        <Route path="/blogs" element={<BlogsPage />} />
+        <Route path="/blog" element={<BlogPage />} />
         <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
         <Route path="/emi-calculator" element={<EMICalculatorPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
@@ -39,7 +45,6 @@ export default function App() {
         <Route path="/gst-calculator" element={<GSTCalculatorPage />} />
         <Route path="/retirement-calculator" element={<RetirementCalculatorPage />} />
         <Route path="/how-sip-builds-wealth" element={<SIPWealthArticle />} />
-        <Route path="/blog" element={<BlogPage />} />
         <Route path="/calculators" element={<CalculatorsPage />} />
         <Route path="/tools" element={<ToolsPage />} />
         <Route path="/wealth-dashboard" element={<WealthDashboardPage />} />

@@ -40,14 +40,6 @@ const NEWSDATA_API_KEY =
 
 const NEWSDATA_URL = `https://newsdata.io/api/1/news?apikey=${NEWSDATA_API_KEY}&category=business&language=en&country=in,us`;
 
-const marketConfig = [
-  { label: "NIFTY 50", symbol: "^NSEI", fallback: { price: 24292.15, change: 0.85 } },
-  { label: "S&P 500", symbol: "^GSPC", fallback: { price: 5633.91, change: 0.58 } },
-  { label: "DOW JONES", symbol: "^DJI", fallback: { price: 39872.99, change: 0.32 } },
-  { label: "NASDAQ", symbol: "^IXIC", fallback: { price: 18647.45, change: 0.75 } },
-  { label: "DAX", symbol: "^GDAXI", fallback: { price: 18235.45, change: 0.41 } },
-];
-
 const fallbackNews = [
   {
     category: "Crypto",
@@ -166,18 +158,6 @@ function formatCurrency(value) {
   }).format(Number.isFinite(value) ? value : 0);
 }
 
-function formatMarketNumber(value) {
-  return new Intl.NumberFormat("en-IN", {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
-  }).format(Number.isFinite(value) ? value : 0);
-}
-
-function percent(value) {
-  const safeValue = Number.isFinite(value) ? value : 0;
-  return `${safeValue >= 0 ? "+" : ""}${safeValue.toFixed(2)}%`;
-}
-
 function stripHtml(value = "") {
   return value
     .replace(/<[^>]*>/g, " ")
@@ -198,39 +178,6 @@ function timeAgo(date) {
   if (hours < 24) return `${hours}h ago`;
 
   return `${Math.floor(hours / 24)}d ago`;
-}
-
-async function fetchYahooMarket(item) {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(item.symbol)}?range=1d&interval=5m`;
-  const response = await fetch(proxyUrl(url));
-  if (!response.ok) throw new Error(`Market request failed for ${item.label}`);
-
-  const data = await response.json();
-  const meta = data?.chart?.result?.[0]?.meta;
-  if (!meta?.regularMarketPrice) throw new Error(`Market data missing for ${item.label}`);
-
-  return {
-    label: item.label,
-    price: meta.regularMarketPrice,
-    change: meta.regularMarketChangePercent ?? item.fallback.change,
-    live: true,
-  };
-}
-
-async function fetchMarketRows() {
-  const results = await Promise.allSettled(marketConfig.map(fetchYahooMarket));
-
-  return results.map((result, index) => {
-    if (result.status === "fulfilled") return result.value;
-
-    const item = marketConfig[index];
-    return {
-      label: item.label,
-      price: item.fallback.price,
-      change: item.fallback.change,
-      live: false,
-    };
-  });
 }
 
 function normalizeNewsDataArticle(article, index) {
@@ -258,7 +205,7 @@ async function fetchNewsDataArticles() {
 
   return articles
     .filter((article) => article.title && article.link)
-    .slice(0, 6)
+    .slice(0, 12)
     .map(normalizeNewsDataArticle);
 }
 
@@ -270,7 +217,7 @@ async function fetchRssArticles() {
   const doc = new DOMParser().parseFromString(xml, "text/xml");
 
   return Array.from(doc.querySelectorAll("item"))
-    .slice(0, 6)
+    .slice(0, 12)
     .map((item, index) => {
       const title = item.querySelector("title")?.textContent?.replace(/\s-\s[^-]+$/, "") || fallbackNews[index % 3].title;
       const desc = stripHtml(item.querySelector("description")?.textContent || fallbackNews[index % 3].desc);
@@ -294,7 +241,14 @@ async function fetchRssArticles() {
 async function fetchFinanceNews() {
   try {
     const apiArticles = await fetchNewsDataArticles();
-    if (apiArticles.length) return apiArticles;
+
+    const uniqueArticles = Array.from(
+      new Map(
+        apiArticles.map(article => [article.link, article])
+      ).values()
+    );
+
+    if (uniqueArticles.length) return uniqueArticles;
   } catch {
     // RSS backup keeps the homepage useful if the API quota or CORS provider fails.
   }
@@ -408,16 +362,7 @@ export default function WealthFluentHomepage() {
   const { sipData } = useFinance();
   const [news, setNews] = useState(fallbackNews);
   const [newsLoading, setNewsLoading] = useState(true);
-  const [markets, setMarkets] = useState(
-    marketConfig.map((item) => ({
-      label: item.label,
-      price: item.fallback.price,
-      change: item.fallback.change,
-      live: false,
-    })),
-  );
-  const [marketsLoading, setMarketsLoading] = useState(true);
-  const [marketUpdatedAt, setMarketUpdatedAt] = useState(null);
+  const [newsUpdatedAt, setNewsUpdatedAt] = useState(null);
   const [selectedQuizAnswer, setSelectedQuizAnswer] = useState("");
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [email, setEmail] = useState("");
@@ -443,36 +388,41 @@ export default function WealthFluentHomepage() {
     }));
   }, [currentValue, investedValue]);
 
-  const loadMarketData = async () => {
-    setMarketsLoading(true);
+  const loadNews = async () => {
+    setNewsLoading(true);
 
     try {
-      const rows = await fetchMarketRows();
-      setMarkets(rows);
-      setMarketUpdatedAt(new Date());
+      const items = await fetchFinanceNews();
+      if (items.length) setNews(items);
     } catch {
-      setMarketUpdatedAt(new Date());
+      setNews(fallbackNews);
     } finally {
-      setMarketsLoading(false);
+      setNewsUpdatedAt(new Date());
+      setNewsLoading(false);
     }
   };
 
   useEffect(() => {
     let mounted = true;
 
-    fetchFinanceNews()
-      .then((items) => {
-        if (mounted && items.length) setNews(items);
-      })
-      .catch(() => {
-        if (mounted) setNews(fallbackNews);
-      })
-      .finally(() => {
-        if (mounted) setNewsLoading(false);
-      });
+    const loadMountedNews = async () => {
+      setNewsLoading(true);
 
-    loadMarketData();
-    const interval = window.setInterval(loadMarketData, 300000);
+      try {
+        const items = await fetchFinanceNews();
+        if (mounted && items.length) setNews(items);
+      } catch {
+        if (mounted) setNews(fallbackNews);
+      } finally {
+        if (mounted) {
+          setNewsUpdatedAt(new Date());
+          setNewsLoading(false);
+        }
+      }
+    };
+
+    loadMountedNews();
+    const interval = window.setInterval(loadMountedNews, 60000);
 
     return () => {
       mounted = false;
@@ -504,7 +454,7 @@ export default function WealthFluentHomepage() {
   };
 
   const isCorrectAnswer = selectedQuizAnswer === "Exchange Traded Fund";
-  const visibleNews = news.slice(0, 3);
+  const visibleNews = news.slice(0, 6);
   const blogNews = news.slice(0, 3);
 
   return (
@@ -524,8 +474,8 @@ export default function WealthFluentHomepage() {
           <nav className="hidden items-center gap-12 text-sm font-medium text-slate-100 md:flex">
             <Link to="/calculators" className="hover:text-blue-300">Calculators</Link>
             <Link to="/tools" className="hover:text-blue-300">Tools</Link>
-            <a href="#finquiz" className="hover:text-blue-300">FinQuiz</a>
-            <Link to="/blog" className="hover:text-blue-300">Blogs</Link>
+            <Link to="/quizzes" className="hover:text-blue-300">FinQuiz</Link>
+            <Link to="/blogs" className="hover:text-blue-300">Blogs</Link>
           </nav>
 
           <div className="flex items-center gap-4">
@@ -563,7 +513,7 @@ export default function WealthFluentHomepage() {
               Stay ahead with real-time updates, AI summaries, and translations.
             </p>
             <Link
-              to="/blog"
+              to="/news"
               className="mt-7 inline-flex rounded-md bg-blue-500 px-6 py-3 text-sm font-bold text-white shadow-[0_12px_25px_rgba(59,130,246,.28)] hover:bg-blue-600"
             >
               View All News
@@ -574,7 +524,7 @@ export default function WealthFluentHomepage() {
             {visibleNews.map((card) => {
               return (
                 <a
-                  key={`${card.title}-${card.time}`}
+                  key={card.link}
                   href={card.link}
                   target="_blank"
                   rel="noreferrer"
@@ -698,8 +648,8 @@ export default function WealthFluentHomepage() {
             <div className="text-base font-bold">My Portfolio <span className="text-slate-500">⌾</span></div>
             <div className="mt-5 text-5xl font-black tracking-tight">{formatCurrency(currentValue)}</div>
             <div className="mt-2 text-sm font-semibold text-emerald-400">+{growth.toFixed(2)}% (Projected)</div>
-            <div className="mt-20 h-56">
-              <ResponsiveContainer width="100%" height="100%">
+            <div className="mt-20 h-56 min-w-0">
+  <ResponsiveContainer width="100%" height={220}>
                 <AreaChart data={portfolioData}>
                   <defs>
                     <linearGradient id="portfolioFill" x1="0" y1="0" x2="0" y2="1">
@@ -754,30 +704,46 @@ export default function WealthFluentHomepage() {
           <DarkPanel>
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-lg font-black">Market Overview</h3>
+                <h3 className="text-lg font-black">Live Content Hub</h3>
                 <p className="mt-2 text-xs text-slate-500">
-                  {marketUpdatedAt ? `Updated ${marketUpdatedAt.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}` : "Updating market data"}
+                  {newsUpdatedAt ? `News refreshed ${newsUpdatedAt.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}` : "Connecting live feeds"}
                 </p>
               </div>
-              <button onClick={loadMarketData} className="grid h-9 w-9 place-items-center rounded-md bg-white/5 text-blue-300 ring-1 ring-white/10" aria-label="Refresh markets">
-                <RefreshCw className={marketsLoading ? "animate-spin" : ""} size={16} />
+              <button onClick={loadNews} className="grid h-9 w-9 place-items-center rounded-md bg-white/5 text-blue-300 ring-1 ring-white/10" aria-label="Refresh live content">
+                <RefreshCw className={newsLoading ? "animate-spin" : ""} size={16} />
               </button>
             </div>
-            <div className="mt-5 flex gap-3 text-sm">
-              <span className="rounded-md bg-blue-500 px-4 py-2 font-semibold">Indices</span>
-              <span className="px-2 py-2 text-slate-400">Top Gainers</span>
-              <span className="px-2 py-2 text-slate-400">Top Losers</span>
+            <div className="mt-6 grid grid-cols-3 gap-3 text-center">
+              <Link to="/news" className="rounded-md bg-white/5 px-3 py-4 ring-1 ring-white/10">
+                <span className="block text-2xl font-black">{news.length}</span>
+                <span className="mt-1 block text-xs text-slate-400">News</span>
+              </Link>
+              <Link to="/quizzes" className="rounded-md bg-white/5 px-3 py-4 ring-1 ring-white/10">
+                <span className="block text-2xl font-black">∞</span>
+                <span className="mt-1 block text-xs text-slate-400">Quizzes</span>
+              </Link>
+              <Link to="/blogs" className="rounded-md bg-white/5 px-3 py-4 ring-1 ring-white/10">
+                <span className="block text-2xl font-black">Live</span>
+                <span className="mt-1 block text-xs text-slate-400">Blogs</span>
+              </Link>
             </div>
-            <div className="mt-5 divide-y divide-slate-800">
-              {markets.map((row) => (
-                <div key={row.label} className="grid grid-cols-[1fr_auto_auto] gap-5 py-4 text-sm">
-                  <span>{row.label}</span>
-                  <span>{formatMarketNumber(row.price)}</span>
-                  <span className={row.change >= 0 ? "font-bold text-emerald-400" : "font-bold text-red-400"}>{percent(row.change)}</span>
-                </div>
-              ))}
+            <div className="mt-6 space-y-3 text-sm text-slate-300">
+              <div className="flex items-center justify-between rounded-md bg-white/5 px-4 py-3">
+                <span>News provider</span>
+                <span className="font-bold text-blue-300">NewsData + RSS backup</span>
+              </div>
+              <div className="flex items-center justify-between rounded-md bg-white/5 px-4 py-3">
+                <span>Quiz source</span>
+                <span className="font-bold text-blue-300">Live article API</span>
+              </div>
+              <div className="flex items-center justify-between rounded-md bg-white/5 px-4 py-3">
+                <span>Refresh cycle</span>
+                <span className="font-bold text-blue-300">Every 60 sec</span>
+              </div>
             </div>
-            <p className="mt-4 text-xs text-slate-500">Live when available. Fallback values appear if a provider is unreachable.</p>
+            <p className="mt-5 text-xs leading-relaxed text-slate-500">
+              Market index numbers were removed from this panel to avoid showing estimated or fallback prices as financial data.
+            </p>
           </DarkPanel>
 
           <DarkPanel id="finquiz">
@@ -809,7 +775,7 @@ export default function WealthFluentHomepage() {
             )}
             <div className="mt-7 flex items-center justify-between">
               <button onClick={submitQuiz} className="rounded-md bg-blue-500 px-6 py-3 text-sm font-bold">Submit Answer</button>
-              <Link to="/blog" className="flex items-center gap-2 text-sm text-blue-300">View All Quizzes <ArrowRight size={14} /></Link>
+              <Link to="/quizzes" className="flex items-center gap-2 text-sm text-blue-300">View All Quizzes <ArrowRight size={14} /></Link>
             </div>
           </DarkPanel>
 
@@ -819,7 +785,7 @@ export default function WealthFluentHomepage() {
               {blogNews.map((item, index) => {
                 return (
                   <a
-                    key={`${item.title}-${index}`}
+                    key={item.link}
                     href={item.link}
                     target="_blank"
                     rel="noreferrer"
@@ -836,7 +802,7 @@ export default function WealthFluentHomepage() {
                 );
               })}
             </div>
-            <Link to="/blog" className="mt-7 flex items-center justify-end gap-2 text-sm text-blue-300">View All Blogs <ArrowRight size={14} /></Link>
+            <Link to="/blogs" className="mt-7 flex items-center justify-end gap-2 text-sm text-blue-300">View All Blogs <ArrowRight size={14} /></Link>
           </DarkPanel>
         </section>
       </main>
@@ -863,9 +829,9 @@ export default function WealthFluentHomepage() {
 
           <div>
             <h4 className="font-bold">Trending Topics</h4>
-            {markets.map((item) => (
-              <Link key={item.label} to="/tools" className="mt-3 block text-sm text-slate-300">{item.label}</Link>
-            ))}
+            <Link to="/news" className="mt-3 block text-sm text-slate-300">Live Finance News</Link>
+            <Link to="/blogs" className="mt-3 block text-sm text-slate-300">Investing Blogs</Link>
+            <Link to="/quizzes" className="mt-3 block text-sm text-slate-300">FinQuiz</Link>
             <Link to="/portfolio-tracker" className="mt-3 block text-sm text-slate-300">Portfolio Tracker</Link>
             <Link to="/fire-calculator" className="mt-3 block text-sm text-slate-300">FIRE Planning</Link>
           </div>
@@ -877,7 +843,7 @@ export default function WealthFluentHomepage() {
               ["Help", "/contact"],
               ["Feedback", "/contact"],
               ["Sitemap", "/"],
-              ["What's New", "/blog"],
+              ["What's New", "/news"],
               ["About Our Ads", "/privacy-policy"],
               ["Terms and Privacy Policy", "/privacy-policy"],
               ["Privacy Dashboard", "/privacy-policy"],
