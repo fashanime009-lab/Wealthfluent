@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import AskFinAI from "../components/AskFinAI";
 import {
   ArrowRight,
   BarChart3,
@@ -677,29 +678,11 @@ export default function WealthFluentHomepage() {
             </div>
           </DarkPanel>
 
-          <form onSubmit={askFinAI} className="rounded-xl bg-gradient-to-br from-blue-500 to-indigo-700 p-6 text-white shadow-[0_18px_45px_rgba(37,99,235,.25)]">
-            <div className="flex gap-4">
-              <div className="grid h-14 w-14 shrink-0 place-items-center rounded-lg bg-white text-blue-500">
-                <Bot size={28} />
-              </div>
-              <div>
-                <h3 className="text-xl font-black">Ask FinAI</h3>
-                <p className="text-sm text-blue-100">Your AI Financial Assistant</p>
-              </div>
-            </div>
-            <p className="mt-5 text-sm leading-relaxed text-blue-50">{assistantReply}</p>
-            <div className="mt-6 flex h-12 items-center rounded-md bg-white/10 pl-5 ring-1 ring-white/10">
-              <input
-                value={question}
-                onChange={(event) => setQuestion(event.target.value)}
-                className="h-full min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-blue-100"
-                placeholder="Type your question..."
-              />
-              <button type="submit" className="grid h-12 w-12 place-items-center text-sky-300" aria-label="Ask FinAI">
-                <Send size={20} />
-              </button>
-            </div>
-          </form>
+          <section className="space-y-8">
+  {/* your other cards */}
+  <AskFinAI />
+  {/* rest of the page */}
+</section>
 
           <DarkPanel>
             <div className="flex items-start justify-between gap-4">
@@ -878,16 +861,7 @@ export default function WealthFluentHomepage() {
         </div>
       </footer>
 
-      <div className="fixed bottom-28 right-8 hidden w-52 rounded-md bg-white p-4 text-xs text-slate-700 shadow-[0_15px_35px_rgba(15,23,42,.18)] ring-1 ring-slate-200 md:block">
-        <div className="flex items-center justify-between font-bold text-slate-900">
-          FinAI Assistant
-          <span className="text-slate-400">×</span>
-        </div>
-        <p className="mt-3">{assistantReply}</p>
-      </div>
-      <a href="#top" className="fixed bottom-8 right-10 grid h-16 w-16 place-items-center rounded-full bg-blue-500 text-white shadow-[0_12px_30px_rgba(37,99,235,.45)]" aria-label="Back to top">
-        <Bot size={30} />
-      </a>
+      
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function RetirementCalculatorPage() {
   const [monthlyInvestment, setMonthlyInvestment] = useState(15000);
@@ -19,251 +21,351 @@ export default function RetirementCalculatorPage() {
   const investedAmount = monthlyInvestment * months;
   const estimatedReturns = futureValue - investedAmount;
 
+  // Format currency
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("en-IN", {
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
   return (
     <>
       <Helmet>
         <title>
           Retirement Calculator India – Retirement Planning Tool
         </title>
-
         <meta
           name="description"
           content="Free Retirement Calculator to estimate retirement corpus, future savings growth, and long-term investment planning."
         />
+        <meta
+          name="keywords"
+          content="retirement calculator, retirement planning, retirement corpus, pension planning"
+        />
       </Helmet>
 
-      <div className="min-h-screen bg-[#07111f] text-white">
-        {/* Header */}
-        <header className="border-b border-white/10 bg-[#07111f]/80 backdrop-blur-xl">
-          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <Link to="/">
-              <h1 className="text-2xl font-black">
-                Wealth<span className="text-cyan-400">Fluent</span>
-              </h1>
-            </Link>
+      <div className="min-h-screen bg-[#f3f7fc] text-slate-800">
+        <Navbar />
 
-            <Link
-              to="/"
-              className="text-cyan-400 hover:text-cyan-300"
-            >
-              ← Back To Home
-            </Link>
-          </div>
-        </header>
-
-        {/* Main */}
-        <section className="max-w-7xl mx-auto px-6 py-20">
-          <div className="mb-14">
-            <p className="text-cyan-400 font-semibold mb-3">
-              RETIREMENT PLANNING TOOL
+        {/* Main Content */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+          {/* Header */}
+          <div className="mb-10">
+            <p className="text-blue-600 font-semibold text-sm uppercase tracking-wider mb-2">
+              Retirement Planning Tool
             </p>
-
-            <h1 className="text-6xl font-black">
+            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
               Retirement Calculator
             </h1>
-
-            <p className="text-slate-400 text-lg mt-6 max-w-3xl">
+            <p className="text-slate-500 text-lg mt-3 max-w-2xl">
               Estimate retirement corpus growth and future wealth
               accumulation through long-term investments and compounding.
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-10">
-            {/* Left */}
-            <div className="bg-white/5 border border-white/10 rounded-[32px] p-8">
-              <h2 className="text-3xl font-black mb-10">
+          {/* Calculator Grid */}
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Left Panel – Inputs */}
+            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
+              <h2 className="text-2xl font-semibold text-slate-800 mb-6">
                 Retirement Planning
               </h2>
 
-              <div className="space-y-10">
+              <div className="space-y-8">
                 {/* Monthly Investment */}
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <label className="text-lg font-semibold">
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-sm font-medium text-slate-600">
                       Monthly Investment
                     </label>
-
-                    <span className="text-cyan-400 text-2xl font-black">
-                      ₹{monthlyInvestment.toLocaleString()}
+                    <span className="text-sm font-semibold text-blue-600">
+                      ₹{formatCurrency(monthlyInvestment)}
                     </span>
                   </div>
-
                   <input
                     type="range"
-                    min="1000"
-                    max="100000"
-                    step="1000"
+                    min="500"
+                    max="1000000"
+                    step="500"
+                    value={monthlyInvestment}
+                    onChange={(e) => setMonthlyInvestment(Number(e.target.value))}
+                    className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  />
+                  <div className="flex justify-between text-xs text-slate-400 mt-1">
+                    <span>₹500</span>
+                    <span>₹10,00,000</span>
+                  </div>
+                  <input
+                    type="number"
+                    min="500"
+                    max="1000000"
+                    step="500"
                     value={monthlyInvestment}
                     onChange={(e) =>
-                      setMonthlyInvestment(Number(e.target.value))
+                      setMonthlyInvestment(Number(e.target.value) || 500)
                     }
-                    className="w-full accent-cyan-400"
+                    className="mt-3 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
 
-                {/* Return */}
+                {/* Expected Return */}
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <label className="text-lg font-semibold">
-                      Expected Annual Return
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-sm font-medium text-slate-600">
+                      Expected Annual Return (%)
                     </label>
-
-                    <span className="text-cyan-400 text-2xl font-black">
+                    <span className="text-sm font-semibold text-blue-600">
                       {annualReturn}%
                     </span>
                   </div>
-
                   <input
                     type="range"
-                    min="1"
-                    max="20"
-                    step="1"
+                    min="-15"
+                    max="30"
+                    step="0.5"
+                    value={annualReturn}
+                    onChange={(e) => setAnnualReturn(Number(e.target.value))}
+                    className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  />
+                  <div className="flex justify-between text-xs text-slate-400 mt-1">
+                    <span>-15%</span>
+                    <span>30%</span>
+                  </div>
+                  <input
+                    type="number"
+                    min="-15"
+                    max="30"
+                    step="0.5"
                     value={annualReturn}
                     onChange={(e) =>
-                      setAnnualReturn(Number(e.target.value))
+                      setAnnualReturn(Number(e.target.value) || 0)
                     }
-                    className="w-full accent-cyan-400"
+                    className="mt-3 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
 
-                {/* Years */}
+                {/* Duration */}
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <label className="text-lg font-semibold">
-                      Investment Duration
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-sm font-medium text-slate-600">
+                      Investment Duration (Years)
                     </label>
-
-                    <span className="text-cyan-400 text-2xl font-black">
+                    <span className="text-sm font-semibold text-blue-600">
                       {years} Years
                     </span>
                   </div>
-
                   <input
                     type="range"
                     min="1"
-                    max="40"
+                    max="50"
+                    step="1"
+                    value={years}
+                    onChange={(e) => setYears(Number(e.target.value))}
+                    className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  />
+                  <div className="flex justify-between text-xs text-slate-400 mt-1">
+                    <span>1 Year</span>
+                    <span>50 Years</span>
+                  </div>
+                  <input
+                    type="number"
+                    min="1"
+                    max="50"
                     step="1"
                     value={years}
                     onChange={(e) =>
-                      setYears(Number(e.target.value))
+                      setYears(Number(e.target.value) || 1)
                     }
-                    className="w-full accent-cyan-400"
+                    className="mt-3 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Right */}
-            <div className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-400/10 rounded-[32px] p-8">
-              <div className="space-y-8">
-                <div className="bg-[#0d1a2b] rounded-3xl p-6 border border-white/10">
-                  <p className="text-slate-400 mb-3">
-                    Estimated Retirement Corpus
-                  </p>
+            {/* Right Panel – Results */}
+            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8 flex flex-col">
+              <div className="mb-6">
+                <p className="text-sm text-slate-500">Estimated Retirement Corpus</p>
+                <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mt-1">
+                  ₹{formatCurrency(futureValue)}
+                </h2>
+              </div>
 
-                  <h2 className="text-5xl font-black text-cyan-400">
-                    ₹{futureValue.toLocaleString()}
-                  </h2>
+              <div className="space-y-4 flex-1">
+                {/* Total Investment */}
+                <div className="bg-slate-50 rounded-2xl p-5">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-600">Total Investment</span>
+                    <span className="text-lg font-semibold text-slate-800">
+                      ₹{formatCurrency(investedAmount)}
+                    </span>
+                  </div>
+                  <div className="mt-3 h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-blue-500 rounded-full"
+                      style={{
+                        width: `${Math.min((investedAmount / futureValue) * 100, 100)}%`,
+                      }}
+                    />
+                  </div>
                 </div>
 
-                <div className="bg-[#0d1a2b] rounded-3xl p-6 border border-white/10">
-                  <p className="text-slate-400 mb-3">
-                    Total Investment
-                  </p>
-
-                  <h2 className="text-4xl font-black">
-                    ₹{investedAmount.toLocaleString()}
-                  </h2>
+                {/* Estimated Returns */}
+                <div className="bg-slate-50 rounded-2xl p-5">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-600">Estimated Returns</span>
+                    <span
+                      className={`text-lg font-semibold ${
+                        estimatedReturns >= 0 ? "text-emerald-600" : "text-red-500"
+                      }`}
+                    >
+                      {estimatedReturns >= 0 ? "+" : "-"}₹
+                      {formatCurrency(Math.abs(estimatedReturns))}
+                    </span>
+                  </div>
+                  <div className="mt-3 h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${
+                        estimatedReturns >= 0 ? "bg-emerald-500" : "bg-red-500"
+                      }`}
+                      style={{
+                        width: `${Math.min(
+                          Math.abs((estimatedReturns / investedAmount) * 100),
+                          100
+                        )}%`,
+                      }}
+                    />
+                  </div>
                 </div>
+              </div>
 
-                <div className="bg-[#0d1a2b] rounded-3xl p-6 border border-white/10">
-                  <p className="text-slate-400 mb-3">
-                    Estimated Returns
-                  </p>
+              {/* CTA Button */}
+              <button
+                onClick={() => {
+                  window.open("https://groww.in/retirement-planning", "_blank");
+                }}
+                className="mt-6 w-full bg-blue-600 hover:bg-blue-700 transition text-white font-semibold py-3.5 rounded-2xl shadow-lg shadow-blue-200 hover:shadow-blue-300/50 text-lg"
+              >
+                Plan Your Retirement
+              </button>
 
-                  <h2 className="text-4xl font-black text-emerald-400">
-                    ₹{estimatedReturns.toLocaleString()}
-                  </h2>
-                </div>
+              {/* Disclaimer */}
+              <div className="mt-6 text-xs text-slate-400 space-y-1 border-t border-slate-100 pt-4">
+                <p>
+                  <span className="font-medium text-slate-500">Disclaimer:</span>{" "}
+                  Please note that these calculators are for illustrations only
+                  and do not represent actual returns.
+                </p>
+                <p>
+                  Stock Market does not have a fixed rate of return and it is
+                  not possible to predict the rate of return.
+                </p>
               </div>
             </div>
           </div>
 
           {/* SEO Content */}
-          <div className="mt-24 space-y-10">
-            <div className="bg-white/5 border border-white/10 rounded-[32px] p-10">
-              <h2 className="text-4xl font-black mb-6">
+          <div className="mt-16 space-y-10">
+            {/* What is Retirement Planning */}
+            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
+              <h2 className="text-2xl font-bold text-slate-800 mb-4">
                 What Is Retirement Planning?
               </h2>
-
-              <p className="text-slate-400 text-lg leading-relaxed">
+              <p className="text-slate-500 leading-relaxed">
                 Retirement planning helps individuals estimate future
                 financial needs and build long-term investment strategies
-                for financial independence after retirement.
+                for financial independence after retirement. It involves
+                calculating the required corpus based on current savings,
+                expected returns, and inflation.
               </p>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-[32px] p-10">
-              <h2 className="text-4xl font-black mb-8">
+            {/* Benefits */}
+            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
+              <h2 className="text-2xl font-bold text-slate-800 mb-6">
                 Benefits Of Retirement Planning
               </h2>
-
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-2xl font-bold text-cyan-400 mb-4">
+                  <h3 className="text-lg font-semibold text-blue-600 mb-2">
                     Financial Independence
                   </h3>
-
-                  <p className="text-slate-400 leading-relaxed">
+                  <p className="text-slate-500 leading-relaxed">
                     Retirement planning helps create sustainable
                     long-term financial security and stability.
                   </p>
                 </div>
-
                 <div>
-                  <h3 className="text-2xl font-bold text-cyan-400 mb-4">
+                  <h3 className="text-lg font-semibold text-blue-600 mb-2">
                     Wealth Growth
                   </h3>
-
-                  <p className="text-slate-400 leading-relaxed">
+                  <p className="text-slate-500 leading-relaxed">
                     Long-term compounding can significantly increase
                     retirement savings over time.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-600 mb-2">
+                    Inflation Protection
+                  </h3>
+                  <p className="text-slate-500 leading-relaxed">
+                    Planning ensures your retirement corpus accounts
+                    for rising cost of living and inflation.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-600 mb-2">
+                    Peace of Mind
+                  </h3>
+                  <p className="text-slate-500 leading-relaxed">
+                    A well-structured plan reduces financial stress
+                    and provides clarity for the future.
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-[32px] p-10">
-              <h2 className="text-4xl font-black mb-8">
+            {/* FAQ */}
+            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
+              <h2 className="text-2xl font-bold text-slate-800 mb-6">
                 Frequently Asked Questions
               </h2>
-
-              <div className="space-y-8">
+              <div className="space-y-6">
                 <div>
-                  <h3 className="text-2xl font-bold mb-3">
+                  <h3 className="text-lg font-semibold text-slate-700">
                     When should I start retirement planning?
                   </h3>
-
-                  <p className="text-slate-400 leading-relaxed">
+                  <p className="text-slate-500 leading-relaxed">
                     Starting early allows investments more time to grow
-                    through the power of compounding.
+                    through the power of compounding. The earlier you start,
+                    the smaller the monthly investments needed.
                   </p>
                 </div>
-
                 <div>
-                  <h3 className="text-2xl font-bold mb-3">
+                  <h3 className="text-lg font-semibold text-slate-700">
                     How much retirement corpus is enough?
                   </h3>
-
-                  <p className="text-slate-400 leading-relaxed">
+                  <p className="text-slate-500 leading-relaxed">
                     Retirement corpus depends on lifestyle goals,
                     inflation, expenses, and expected retirement age.
+                    A common rule is to have 20-30 times your annual expenses.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-700">
+                    What is the 4% rule in retirement?
+                  </h3>
+                  <p className="text-slate-500 leading-relaxed">
+                    The 4% rule suggests withdrawing 4% of your retirement
+                    corpus annually to ensure funds last for 30 years.
                   </p>
                 </div>
               </div>
             </div>
           </div>
         </section>
+
+        <Footer />
       </div>
     </>
   );
