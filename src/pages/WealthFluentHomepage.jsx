@@ -1,117 +1,82 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import AskFinAI from "../components/AskFinAI";
 import {
   ArrowRight,
   BarChart3,
-  Bot,
+  BookOpen,
   BriefcaseBusiness,
   Calculator,
   CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
   CircleDollarSign,
   Clock3,
   Goal,
-  Globe2,
   Grid2X2,
   LineChart,
   Loader2,
   Mail,
-  MessageCircle,
+  Menu,
+  Newspaper,
   PieChart,
   RefreshCw,
-  Send,
-  Share2,
-  ShieldCheck,
+  Sparkles,
   Target,
   TrendingUp,
-  Users,
   Wallet,
+  X,
+  XCircle,
 } from "lucide-react";
-import { Area, AreaChart, ResponsiveContainer } from "recharts";
-
-import { useFinance } from "../context/FinanceContext";
 
 const NEWS_RSS =
-  "https://news.google.com/rss/search?q=finance%20OR%20stock%20market%20OR%20economy%20when:1d&hl=en-IN&gl=IN&ceid=IN:en";
+  "https://news.google.com/rss/search?q=finance%20OR%20investing%20OR%20stock%20market%20OR%20economy%20when:1d&hl=en-IN&gl=IN&ceid=IN:en";
 
-const NEWSDATA_API_KEY =
-  import.meta.env.VITE_NEWSDATA_API_KEY || "pub_3798230f728e4a6090ad3c705557970b";
-
-const NEWSDATA_URL = `https://newsdata.io/api/1/news?apikey=${NEWSDATA_API_KEY}&category=business&language=en&country=in,us`;
-
-const fallbackNews = [
-  {
-    category: "Crypto",
-    time: "Backup",
-    title: "Open Live Finance News",
-    desc: "The live provider is temporarily unavailable. Open Google Finance news for the latest market headlines.",
-    link: "https://news.google.com/search?q=crypto%20finance%20market&hl=en-IN&gl=IN&ceid=IN%3Aen",
-    source: "Google News",
-    image: "crypto",
-  },
-  {
-    category: "Markets",
-    time: "Backup",
-    title: "Open Live Stock Market News",
-    desc: "The live provider is temporarily unavailable. Open the market news feed for current articles.",
-    link: "https://news.google.com/search?q=stock%20market%20finance&hl=en-IN&gl=IN&ceid=IN%3Aen",
-    source: "Google News",
-    image: "markets",
-  },
-  {
-    category: "Economy",
-    time: "Backup",
-    title: "Open Live Economy News",
-    desc: "The live provider is temporarily unavailable. Open the economy news feed for current updates.",
-    link: "https://news.google.com/search?q=india%20economy%20rbi%20finance&hl=en-IN&gl=IN&ceid=IN%3Aen",
-    source: "Google News",
-    image: "rbi",
-  },
-];
+const NEWSDATA_API_KEY = import.meta.env.VITE_NEWSDATA_API_KEY || "";
+const NEWSLETTER_ENDPOINT = import.meta.env.VITE_NEWSLETTER_ENDPOINT || "";
+const SITE_URL =
+  import.meta.env.VITE_SITE_URL ||
+  (typeof window !== "undefined" ? window.location.origin : "https://finaiw.com");
 
 const calculators = [
   {
     title: "Net Worth Calculator",
-    desc: "Calculate your total net worth",
-    icon: LineChart,
-    color: "text-emerald-500",
+    desc: "See what you own, what you owe, and where you stand.",
+    icon: Wallet,
+    color: "text-cyan-500",
     to: "/wealth-dashboard",
   },
   {
     title: "Financial Goal Planner",
-    desc: "Plan and achieve your goals",
+    desc: "Work backwards from the life goal you care about.",
     icon: Target,
     color: "text-blue-500",
     to: "/sip-calculator",
   },
   {
     title: "Mutual Fund Calculator",
-    desc: "Calculate MF returns",
+    desc: "Estimate how regular investing may grow over time.",
     icon: PieChart,
     color: "text-orange-500",
     to: "/sip-calculator",
   },
   {
     title: "Interest Calculator",
-    desc: "Calculate interest easily",
+    desc: "Understand interest without reaching for a spreadsheet.",
     icon: CircleDollarSign,
-    color: "text-purple-500",
+    color: "text-fuchsia-500",
     to: "/fd-calculator",
   },
   {
     title: "Retirement Planning",
-    desc: "Plan your retirement",
+    desc: "Build a practical retirement target and monthly plan.",
     icon: Goal,
-    color: "text-orange-400",
+    color: "text-rose-500",
     to: "/retirement-calculator",
   },
   {
     title: "All Calculators",
-    desc: "Explore all calculators",
+    desc: "Browse every calculator available on FINAIW.",
     icon: Grid2X2,
-    color: "text-blue-500",
+    color: "text-indigo-500",
     to: "/calculators",
   },
 ];
@@ -119,749 +84,813 @@ const calculators = [
 const tools = [
   {
     title: "Market Tools",
-    desc: "Real-time market data & insights",
+    desc: "Explore market-focused research and useful references.",
     icon: TrendingUp,
     color: "text-emerald-500",
     to: "/tools",
   },
   {
     title: "Stock Analysis",
-    desc: "Analyze stocks in depth",
+    desc: "Review a company with a more disciplined checklist.",
     icon: BarChart3,
     color: "text-blue-500",
     to: "/tools",
   },
   {
     title: "Portfolio Tools",
-    desc: "Track & optimize portfolio",
+    desc: "Track investments and keep your allocation organised.",
     icon: BriefcaseBusiness,
     color: "text-orange-500",
     to: "/portfolio-tracker",
   },
-];
-
-const quizAnswers = [
-  "Electronic Trading Fund",
-  "Exchange Traded Fund",
-  "Equity Traded Fund",
-  "Easy Transfer Fund",
+  {
+    title: "All Tools",
+    desc: "Open the complete FINAIW financial toolkit.",
+    icon: Grid2X2,
+    color: "text-violet-500",
+    to: "/tools",
+  },
 ];
 
 function proxyUrl(url) {
   return `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
 }
 
-function formatCurrency(value) {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(Number.isFinite(value) ? value : 0);
-}
-
-function stripHtml(value = "") {
+function cleanText(value = "") {
   return value
     .replace(/<[^>]*>/g, " ")
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&")
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"')
     .replace(/\s+/g, " ")
     .trim();
 }
 
-function timeAgo(date) {
-  const publishedAt = new Date(date).getTime();
-  if (!publishedAt) return "Live";
-
-  const minutes = Math.max(1, Math.floor((Date.now() - publishedAt) / 60000));
-  if (minutes < 60) return `${minutes}m ago`;
-
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-
-  return `${Math.floor(hours / 24)}d ago`;
+function shortDescription(value = "") {
+  const cleaned = cleanText(value);
+  if (!cleaned) return "Open the full story for the latest details and context.";
+  return cleaned.length > 150 ? `${cleaned.slice(0, 147)}...` : cleaned;
 }
 
-function normalizeNewsDataArticle(article, index) {
-  const title = article.title || fallbackNews[index % 3].title;
-  const desc = stripHtml(article.description || article.content || fallbackNews[index % 3].desc);
-  const category = article.category?.[0] || (index === 0 ? "Markets" : index === 1 ? "Economy" : "Finance");
+function formatDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Latest";
 
+  return new Intl.DateTimeFormat("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+}
+
+function normaliseNewsDataArticle(article, index) {
   return {
-    category: category.charAt(0).toUpperCase() + category.slice(1),
-    time: timeAgo(article.pubDate),
-    title,
-    desc: desc.slice(0, 118) || fallbackNews[index % 3].desc,
+    id: article.article_id || article.link || `${article.title}-${index}`,
+    title: cleanText(article.title || "Financial news"),
+    description: shortDescription(article.description || article.content),
     link: article.link,
     source: article.source_name || "NewsData",
-    image: index === 0 ? "markets" : index === 1 ? "rbi" : "crypto",
+    publishedAt: article.pubDate,
+    image: article.image_url || "",
+    category: article.category?.[0] || "Finance",
   };
 }
 
-async function fetchNewsDataArticles() {
-  const response = await fetch(NEWSDATA_URL);
+function extractRssImage(item) {
+  const media =
+    item.querySelector("content")?.getAttribute("url") ||
+    item.querySelector("thumbnail")?.getAttribute("url") ||
+    "";
+
+  if (media) return media;
+
+  const description = item.querySelector("description")?.textContent || "";
+  return description.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1] || "";
+}
+
+async function fetchNewsData() {
+  if (!NEWSDATA_API_KEY) throw new Error("NewsData key is not configured");
+
+  const params = new URLSearchParams({
+    apikey: NEWSDATA_API_KEY,
+    category: "business",
+    language: "en",
+    country: "in,us",
+  });
+
+  const response = await fetch(`https://newsdata.io/api/1/news?${params.toString()}`);
   if (!response.ok) throw new Error("NewsData request failed");
 
   const data = await response.json();
-  const articles = data?.results || [];
-
-  return articles
+  return (data.results || [])
     .filter((article) => article.title && article.link)
-    .slice(0, 12)
-    .map(normalizeNewsDataArticle);
+    .map(normaliseNewsDataArticle);
 }
 
-async function fetchRssArticles() {
+async function fetchGoogleNewsRss() {
   const response = await fetch(proxyUrl(NEWS_RSS));
-  if (!response.ok) throw new Error("News request failed");
+  if (!response.ok) throw new Error("Google News RSS request failed");
 
   const xml = await response.text();
-  const doc = new DOMParser().parseFromString(xml, "text/xml");
+  const document = new DOMParser().parseFromString(xml, "text/xml");
 
-  return Array.from(doc.querySelectorAll("item"))
-    .slice(0, 12)
+  return Array.from(document.querySelectorAll("item"))
+    .filter((item) => item.querySelector("title")?.textContent && item.querySelector("link")?.textContent)
     .map((item, index) => {
-      const title = item.querySelector("title")?.textContent?.replace(/\s-\s[^-]+$/, "") || fallbackNews[index % 3].title;
-      const desc = stripHtml(item.querySelector("description")?.textContent || fallbackNews[index % 3].desc);
-      const link =
-        item.querySelector("link")?.textContent ||
-        "https://news.google.com/search?q=finance%20markets&hl=en-IN&gl=IN&ceid=IN%3Aen";
-      const publishedAt = item.querySelector("pubDate")?.textContent;
+      const fullTitle = cleanText(item.querySelector("title")?.textContent || "");
+      const titleParts = fullTitle.split(" - ");
+      const source = titleParts.length > 1 ? titleParts.pop() : "Google News";
 
       return {
-        category: index === 0 ? "Markets" : index === 1 ? "Economy" : "Finance",
-        time: timeAgo(publishedAt),
-        title,
-        desc: desc.slice(0, 118) || fallbackNews[index % 3].desc,
-        link,
-        source: "Google News",
-        image: fallbackNews[index % 3].image,
+        id: item.querySelector("guid")?.textContent || item.querySelector("link")?.textContent || `${fullTitle}-${index}`,
+        title: titleParts.join(" - ") || fullTitle,
+        description: shortDescription(item.querySelector("description")?.textContent || ""),
+        link: item.querySelector("link")?.textContent,
+        source,
+        publishedAt: item.querySelector("pubDate")?.textContent,
+        image: extractRssImage(item),
+        category: "Finance",
       };
     });
 }
 
-async function fetchFinanceNews() {
-  try {
-    const apiArticles = await fetchNewsDataArticles();
+async function fetchLiveArticles() {
+  const requests = [fetchGoogleNewsRss()];
+  if (NEWSDATA_API_KEY) requests.unshift(fetchNewsData());
 
-    const uniqueArticles = Array.from(
-      new Map(
-        apiArticles.map(article => [article.link, article])
-      ).values()
-    );
-
-    if (uniqueArticles.length) return uniqueArticles;
-  } catch {
-    // RSS backup keeps the homepage useful if the API quota or CORS provider fails.
-  }
-
-  const rssArticles = await fetchRssArticles();
-  if (rssArticles.length) return rssArticles;
-
-  return fallbackNews;
-}
-
-function buildAssistantReply(question) {
-  const query = question.toLowerCase();
-
-  if (query.includes("sip")) {
-    return "For SIP planning, start with a monthly amount, expected return, and timeline. Use the SIP Calculator to compare conservative and optimistic outcomes.";
-  }
-
-  if (query.includes("tax")) {
-    return "For taxes, separate capital gains, salary income, and deductions first. For final filing decisions, confirm with a qualified tax professional.";
-  }
-
-  if (query.includes("stock") || query.includes("market")) {
-    return "Check index trend, company earnings, valuation, debt, and cash flow before investing. Avoid acting on a single headline.";
-  }
-
-  if (query.includes("mutual")) {
-    return "Compare mutual funds by category, expense ratio, rolling returns, downside protection, and fund manager consistency.";
-  }
-
-  return "I can help with SIPs, mutual funds, taxes, portfolio planning, and market basics. Ask a specific question and I will guide you to the right tool.";
-}
-
-function SectionLabel({ icon: Icon, children }) {
-  return (
-    <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-600">
-      <Icon size={14} />
-      {children}
-    </div>
+  const results = await Promise.allSettled(requests);
+  const articles = results.flatMap((result) => (result.status === "fulfilled" ? result.value : []));
+  const uniqueArticles = Array.from(
+    new Map(articles.filter((article) => article.link).map((article) => [article.link, article])).values(),
   );
+
+  if (!uniqueArticles.length) throw new Error("No live articles are available");
+  return uniqueArticles.slice(0, 18);
 }
 
-function NewsImage({ type }) {
-  if (type === "crypto") {
-    return (
-      <div className="relative h-44 overflow-hidden bg-[#071329]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,#32d3ff_0,#1558ff_26%,transparent_48%),linear-gradient(135deg,#021126,#0b3b9f_48%,#031126)]" />
-        <div className="absolute left-7 top-8 h-20 w-20 rotate-45 border-4 border-cyan-200 bg-blue-500/20 shadow-[0_0_35px_rgba(59,130,246,.85)]" />
-        <div className="absolute right-5 top-9 -rotate-6 text-3xl font-black italic text-white drop-shadow-lg">
-          CRYPTO
-          <br />
-          NEWS
+function buildLiveQuiz(articles) {
+  const usableArticles = articles.filter((article) => article.title && article.source);
+  const article = usableArticles[0];
+  if (!article) return null;
+
+  const otherSources = Array.from(
+    new Set(usableArticles.slice(1).map((item) => item.source).filter((source) => source !== article.source)),
+  ).slice(0, 3);
+
+  if (otherSources.length < 3) return null;
+
+  return {
+    question: `Which publisher reported “${article.title}”?`,
+    answer: article.source,
+    options: [article.source, ...otherSources].sort(() => Math.random() - 0.5),
+    articleLink: article.link,
+  };
+}
+
+function BrandMark({ compact = false }) {
+  return (
+    <div className="flex items-center gap-3">
+      <div className={`${compact ? "h-9 w-9" : "h-11 w-11"} grid place-items-center border border-blue-400/40 bg-blue-500/10 text-blue-400`}>
+        <LineChart size={compact ? 20 : 24} strokeWidth={2.4} />
+      </div>
+      <div>
+        <div className={`${compact ? "text-xl" : "text-2xl"} font-black leading-none text-white`}>
+          FIN<span className="text-blue-400">AIW</span>
         </div>
-        <div className="absolute bottom-0 h-16 w-full bg-gradient-to-t from-[#071329] to-transparent" />
-      </div>
-    );
-  }
-
-  if (type === "markets") {
-    return (
-      <div className="relative h-44 overflow-hidden bg-slate-900">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_15%,#c9a48c_0,#8d685d_24%,#0b1020_62%)]" />
-        <div className="absolute left-1/2 top-7 h-24 w-24 -translate-x-1/2 rounded-full bg-[#d6b9a8]" />
-        <div className="absolute left-[42%] top-28 h-16 w-20 -translate-x-1/2 rounded-t-[32px] bg-[#22283a]" />
-        <div className="absolute left-[58%] top-28 h-16 w-20 -translate-x-1/2 rounded-t-[32px] bg-[#161b2b]" />
-        <div className="absolute bottom-0 h-16 w-full bg-gradient-to-t from-[#071329] to-transparent" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative flex h-44 items-center justify-center overflow-hidden bg-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle,#ffffff_0,#f4f8ff_55%,#dbe7f7_100%)]" />
-      <div className="relative grid h-28 w-28 place-items-center rounded-full border-[10px] border-emerald-200 bg-white text-center text-[10px] font-black uppercase text-emerald-700 shadow-inner">
-        Reserve
-        <br />
-        Bank
-        <br />
-        of India
+        <div className="mt-1 text-[9px] font-semibold uppercase text-slate-400">
+          Financial intelligence for real life
+        </div>
       </div>
     </div>
   );
 }
 
-function MiniCard({ item }) {
+function SectionHeading({ icon: Icon, title, description, action }) {
+  return (
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <div className="flex items-center gap-3">
+          <Icon size={24} strokeWidth={2.2} />
+          <h2 className="text-2xl font-black text-slate-950">{title}</h2>
+        </div>
+        <p className="mt-3 text-sm leading-relaxed text-slate-500">{description}</p>
+      </div>
+      {action}
+    </div>
+  );
+}
+
+function NewsFallbackImage({ source }) {
+  return (
+    <div className="grid h-full w-full place-items-center bg-[linear-gradient(135deg,#0b1b31,#163c71)] p-3 text-center text-xs font-black text-blue-100">
+      {source || "FINAIW"}
+    </div>
+  );
+}
+
+function LiveNewsRow({ article }) {
+  return (
+    <a
+      href={article.link}
+      target="_blank"
+      rel="noreferrer"
+      className="group grid grid-cols-[92px_minmax(0,1fr)] gap-4 border-b border-slate-200 py-4 first:pt-0 sm:grid-cols-[110px_minmax(0,1fr)_110px]"
+    >
+      <div className="h-[78px] overflow-hidden rounded-md bg-slate-200 sm:h-[84px]">
+        {article.image ? (
+          <img
+            src={article.image}
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            onError={(event) => {
+              event.currentTarget.style.display = "none";
+              event.currentTarget.nextElementSibling?.classList.remove("hidden");
+            }}
+          />
+        ) : null}
+        <div className={article.image ? "hidden h-full" : "h-full"}>
+          <NewsFallbackImage source={article.source} />
+        </div>
+      </div>
+      <div className="min-w-0 py-1">
+        <h3 className="line-clamp-2 text-sm font-black leading-snug text-slate-900 transition group-hover:text-blue-600 sm:text-base">
+          {article.title}
+        </h3>
+        <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-500 sm:text-sm">{article.description}</p>
+        <span className="mt-2 inline-block text-[11px] font-semibold text-blue-600 sm:hidden">{article.source}</span>
+      </div>
+      <div className="hidden items-center justify-end text-right sm:flex">
+        <div>
+          <div className="text-xs font-semibold text-slate-500">{formatDate(article.publishedAt)}</div>
+          <div className="mt-2 text-[11px] text-blue-600">{article.source}</div>
+        </div>
+      </div>
+    </a>
+  );
+}
+
+function FeatureCard({ item }) {
   const Icon = item.icon;
 
   return (
     <Link
       to={item.to}
-      className="group flex min-h-40 flex-col justify-between rounded-md bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,.06)] ring-1 ring-slate-100 transition hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,23,42,.1)]"
+      className="group flex min-h-[150px] flex-col justify-between rounded-md bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,.05)] ring-1 ring-slate-100 transition hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(15,23,42,.1)]"
     >
       <div>
-        <Icon className={item.color} size={32} strokeWidth={2.1} />
-        <h3 className="mt-5 text-base font-bold text-slate-900">{item.title}</h3>
-        <p className="mt-2 text-sm text-slate-500">{item.desc}</p>
+        <div className="grid h-9 w-9 place-items-center rounded-md bg-slate-50">
+          <Icon className={item.color} size={21} />
+        </div>
+        <h3 className="mt-4 text-sm font-black text-slate-900">{item.title}</h3>
+        <p className="mt-2 text-xs leading-relaxed text-slate-500">{item.desc}</p>
       </div>
-      <ArrowRight className="mt-6 text-slate-400 transition group-hover:translate-x-1 group-hover:text-blue-600" size={16} />
+      <ArrowRight className="mt-4 text-slate-400 transition group-hover:translate-x-1 group-hover:text-blue-600" size={15} />
     </Link>
   );
 }
 
-function DarkPanel({ children, className = "", id }) {
+function DarkPanel({ children, className = "" }) {
   return (
-    <aside id={id} className={`rounded-xl bg-[#061225] p-6 text-white shadow-[0_20px_45px_rgba(15,23,42,.16)] ${className}`}>
+    <aside className={`rounded-xl bg-[#061427] p-6 text-white shadow-[0_18px_42px_rgba(15,23,42,.12)] ${className}`}>
       {children}
     </aside>
   );
 }
 
 export default function WealthFluentHomepage() {
-  const { sipData } = useFinance();
-  const [news, setNews] = useState(fallbackNews);
-  const [newsLoading, setNewsLoading] = useState(true);
-  const [newsUpdatedAt, setNewsUpdatedAt] = useState(null);
-  const [selectedQuizAnswer, setSelectedQuizAnswer] = useState("");
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [newsError, setNewsError] = useState("");
+  const [lastUpdated, setLastUpdated] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState("");
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-  const [question, setQuestion] = useState("");
-  const [assistantReply, setAssistantReply] = useState("Hi! I'm FinAI. How can I help you today?");
+  const [newsletterStatus, setNewsletterStatus] = useState({ type: "", message: "" });
 
-  const investedValue = useMemo(() => {
-    return Number(sipData?.monthlyInvestment || 0) * Number(sipData?.years || 0) * 12 || 7424000;
-  }, [sipData]);
-
-  const currentValue = Number(sipData?.futureValue || 9991479);
-  const gain = Math.max(currentValue - investedValue, 0);
-  const growth = investedValue > 0 ? (gain / investedValue) * 100 : 0;
-  const todayChange = Math.max(currentValue * 0.0125, 0);
-
-  const portfolioData = useMemo(() => {
-    const start = Math.max(investedValue * 0.58, 1);
-    const step = (currentValue - start) / 9;
-
-    return Array.from({ length: 10 }, (_, index) => ({
-      value: Math.max(start + step * index + (index % 3) * currentValue * 0.012, 1),
-    }));
-  }, [currentValue, investedValue]);
-
-  const loadNews = async () => {
-    setNewsLoading(true);
+  const loadNews = useCallback(async () => {
+    setLoading(true);
 
     try {
-      const items = await fetchFinanceNews();
-      if (items.length) setNews(items);
+      const liveArticles = await fetchLiveArticles();
+      setArticles(liveArticles);
+      setLastUpdated(new Date());
+      setNewsError("");
     } catch {
-      setNews(fallbackNews);
+      setArticles([]);
+      setNewsError("Live stories are unavailable right now. Please try again in a moment.");
     } finally {
-      setNewsUpdatedAt(new Date());
-      setNewsLoading(false);
+      setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    let mounted = true;
-
-    const loadMountedNews = async () => {
-      setNewsLoading(true);
-
-      try {
-        const items = await fetchFinanceNews();
-        if (mounted && items.length) setNews(items);
-      } catch {
-        if (mounted) setNews(fallbackNews);
-      } finally {
-        if (mounted) {
-          setNewsUpdatedAt(new Date());
-          setNewsLoading(false);
-        }
-      }
-    };
-
-    loadMountedNews();
-    const interval = window.setInterval(loadMountedNews, 60000);
-
-    return () => {
-      mounted = false;
-      window.clearInterval(interval);
-    };
   }, []);
 
+  useEffect(() => {
+    const initialLoad = window.setTimeout(loadNews, 0);
+    const interval = window.setInterval(loadNews, 60000);
+    return () => {
+      window.clearTimeout(initialLoad);
+      window.clearInterval(interval);
+    };
+  }, [loadNews]);
+
+  const quiz = useMemo(() => buildLiveQuiz(articles), [articles]);
+  const newsRows = articles.slice(0, 8);
+  const popularStories = articles.slice(0, 3);
+  const isCorrect = quiz && selectedAnswer === quiz.answer;
+
   const submitQuiz = () => {
-    if (!selectedQuizAnswer) return;
+    if (!selectedAnswer) return;
     setQuizSubmitted(true);
   };
 
-  const subscribe = (event) => {
+  const submitNewsletter = async (event) => {
     event.preventDefault();
-    if (!email.includes("@")) return;
+    setNewsletterStatus({ type: "", message: "" });
 
-    const subscribers = JSON.parse(window.localStorage.getItem("finaiSubscribers") || "[]");
-    window.localStorage.setItem("finaiSubscribers", JSON.stringify([...new Set([...subscribers, email])]));
-    setSubscribed(true);
-    setEmail("");
+    if (!email.trim() || !email.includes("@")) {
+      setNewsletterStatus({ type: "error", message: "Enter a valid email address." });
+      return;
+    }
+
+    if (!NEWSLETTER_ENDPOINT) {
+      setNewsletterStatus({
+        type: "error",
+        message: "Newsletter signup is not connected yet. Add VITE_NEWSLETTER_ENDPOINT before launch.",
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(NEWSLETTER_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, source: "FINAIW homepage" }),
+      });
+
+      if (!response.ok) throw new Error("Newsletter request failed");
+      setNewsletterStatus({ type: "success", message: "You are on the list. Welcome to FINAIW." });
+      setEmail("");
+    } catch {
+      setNewsletterStatus({ type: "error", message: "Signup failed. Please try again shortly." });
+    }
   };
 
-  const askFinAI = (event) => {
-    event.preventDefault();
-    if (!question.trim()) return;
-
-    setAssistantReply(buildAssistantReply(question));
-    setQuestion("");
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        name: "FINAIW",
+        url: SITE_URL,
+        description: "Practical financial news, calculators, quizzes, and planning tools.",
+      },
+      {
+        "@type": "WebSite",
+        name: "FINAIW",
+        url: SITE_URL,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${SITE_URL}/news?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      },
+    ],
   };
-
-  const isCorrectAnswer = selectedQuizAnswer === "Exchange Traded Fund";
-  const visibleNews = news.slice(0, 6);
-  const blogNews = news.slice(0, 3);
 
   return (
-    <div id="top" className="min-h-screen bg-[#f3f7fc] font-sans text-slate-950">
-      <header className="sticky top-0 z-50 border-b border-slate-800 bg-[#061225] text-white shadow-sm">
-        <div className="mx-auto flex h-[70px] max-w-[1518px] items-center justify-between px-6">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-full bg-blue-500 shadow-[inset_0_0_0_4px_rgba(255,255,255,.14)]">
-              <Bot size={22} />
-            </div>
-            <div>
-              <div className="text-2xl font-black leading-none tracking-tight">FinAI</div>
-              <div className="mt-1 text-xs text-slate-300">AI-Powered Financial Intelligence</div>
-            </div>
+    <div id="top" className="min-h-screen bg-[#f4f7fb] font-sans text-slate-950">
+      <Helmet>
+        <title>FINAIW | Financial News, Calculators and Practical Money Tools</title>
+        <meta
+          name="description"
+          content="FINAIW brings together live financial news, useful calculators, finance quizzes, and practical tools for everyday money decisions."
+        />
+        <meta name="keywords" content="financial news, SIP calculator, retirement calculator, personal finance, investing, FINAIW" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={`${SITE_URL}/`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="FINAIW | Financial intelligence for real life" />
+        <meta
+          property="og:description"
+          content="Live finance stories, practical calculators, fresh quizzes, and useful planning tools."
+        />
+        <meta property="og:url" content={`${SITE_URL}/`} />
+        <meta property="og:site_name" content="FINAIW" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+      </Helmet>
+
+      <header className="sticky top-0 z-50 bg-[#061427] text-white shadow-sm">
+        <div className="mx-auto flex h-[74px] max-w-[1440px] items-center justify-between px-5 lg:px-8">
+          <Link to="/" aria-label="FINAIW home">
+            <BrandMark />
           </Link>
 
-          <nav className="hidden items-center gap-12 text-sm font-medium text-slate-100 md:flex">
-            <Link to="/calculators" className="hover:text-blue-300">Calculators</Link>
-            <Link to="/tools" className="hover:text-blue-300">Tools</Link>
-            <Link to="/quizzes" className="hover:text-blue-300">FinQuiz</Link>
-            <Link to="/blogs" className="hover:text-blue-300">Blogs</Link>
+          <nav className="hidden items-center gap-10 text-sm font-bold text-slate-200 md:flex">
+            <Link to="/calculators" className="transition hover:text-blue-300">Calculators</Link>
+            <Link to="/tools" className="transition hover:text-blue-300">Tools</Link>
+            <Link to="/quizzes" className="transition hover:text-blue-300">FinQuiz</Link>
+            <Link to="/blogs" className="transition hover:text-blue-300">Blogs</Link>
           </nav>
 
-          <div className="flex items-center gap-4">
-            <Link to="/wealth-dashboard" className="hidden rounded-md border border-slate-600 px-7 py-3 text-sm font-semibold text-white transition hover:border-blue-400 sm:block">
-              Login
+          <div className="hidden items-center gap-3 md:flex">
+            <Link
+              to="/wealth-dashboard"
+              className="rounded-md border border-blue-400/30 px-6 py-2.5 text-sm font-bold transition hover:border-blue-300 hover:bg-white/5"
+            >
+              Dashboard
             </Link>
-            <Link to="/sip-calculator" className="rounded-md bg-blue-500 px-7 py-3 text-sm font-semibold text-white shadow-[0_0_20px_rgba(59,130,246,.35)] transition hover:bg-blue-600">
-              Register
+            <Link
+              to="/sip-calculator"
+              className="rounded-md bg-blue-500 px-6 py-2.5 text-sm font-bold shadow-[0_8px_20px_rgba(37,99,235,.25)] transition hover:bg-blue-600"
+            >
+              Start Free
             </Link>
           </div>
+
+          <button
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            className="grid h-10 w-10 place-items-center text-white md:hidden"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {mobileMenuOpen && (
+          <nav className="border-t border-white/10 px-5 py-4 md:hidden">
+            {[
+              ["Calculators", "/calculators"],
+              ["Tools", "/tools"],
+              ["FinQuiz", "/quizzes"],
+              ["Blogs", "/blogs"],
+              ["Dashboard", "/wealth-dashboard"],
+              ["Start Free", "/sip-calculator"],
+            ].map(([label, to]) => (
+              <Link
+                key={label}
+                to={to}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block border-b border-white/5 py-3 text-sm font-bold text-slate-200 last:border-b-0"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+        )}
       </header>
 
-      <main className="mx-auto grid max-w-[1518px] gap-9 px-6 pb-10 pt-4 lg:grid-cols-[minmax(0,1fr)_486px]">
-        <div className="text-center text-sm text-slate-500 lg:col-span-2">
-          We help you make smarter financial decisions.
+      <div className="border-b border-slate-200 bg-white/50 px-5 py-5 text-center text-sm text-slate-500">
+        Clear tools and useful context for better financial decisions.
+      </div>
+
+      <main className="mx-auto grid max-w-[1440px] gap-10 px-5 py-8 lg:grid-cols-[minmax(0,1.8fr)_430px] lg:px-8">
+        <div className="min-w-0">
+          <section aria-labelledby="news-heading">
+            <SectionHeading
+              icon={Newspaper}
+              title="News"
+              description="Fresh finance, economy, investing, and business stories from live publishers."
+              action={
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={loadNews}
+                    className="grid h-10 w-10 place-items-center rounded-md border border-slate-300 bg-white text-slate-600 transition hover:border-blue-400 hover:text-blue-600"
+                    aria-label="Refresh live news"
+                  >
+                    <RefreshCw className={loading ? "animate-spin" : ""} size={17} />
+                  </button>
+                  <Link
+                    to="/news"
+                    className="inline-flex h-10 items-center gap-2 rounded-md border border-slate-400 bg-white px-5 text-sm font-bold text-slate-800 transition hover:border-blue-500 hover:text-blue-600"
+                  >
+                    All News
+                    <ArrowRight size={15} />
+                  </Link>
+                </div>
+              }
+            />
+
+            <div className="mt-7">
+              {loading && !articles.length && (
+                <div className="flex min-h-64 items-center justify-center gap-3 text-sm font-semibold text-slate-500">
+                  <Loader2 className="animate-spin" size={19} />
+                  Loading live financial stories...
+                </div>
+              )}
+
+              {newsError && !articles.length && (
+                <div className="rounded-md border border-amber-200 bg-amber-50 p-6 text-center">
+                  <XCircle className="mx-auto text-amber-600" size={26} />
+                  <p className="mt-3 text-sm font-semibold text-amber-800">{newsError}</p>
+                  <button onClick={loadNews} className="mt-4 rounded-md bg-[#061427] px-5 py-2 text-sm font-bold text-white">
+                    Try Again
+                  </button>
+                </div>
+              )}
+
+              {newsRows.map((article) => (
+                <LiveNewsRow key={article.id} article={article} />
+              ))}
+            </div>
+
+            {lastUpdated && (
+              <p className="mt-3 flex items-center gap-2 text-xs text-slate-400">
+                <Clock3 size={13} />
+                Live feed refreshed at {lastUpdated.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
+              </p>
+            )}
+          </section>
+
+          <section className="mt-12" aria-labelledby="calculators-heading">
+            <SectionHeading
+              icon={Calculator}
+              title="Calculators"
+              description="Straightforward calculators that help turn a money question into a useful next step."
+            />
+            <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+              {calculators.map((item) => (
+                <FeatureCard key={item.title} item={item} />
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-10" aria-labelledby="tools-heading">
+            <SectionHeading
+              icon={BriefcaseBusiness}
+              title="Tools"
+              description="Practical ways to research, organise, and review your financial plan."
+            />
+            <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+              {tools.map((item) => (
+                <FeatureCard key={item.title} item={item} />
+              ))}
+            </div>
+          </section>
         </div>
 
-        <section className="min-w-0">
-          <div className="flex items-center justify-between">
-            <SectionLabel icon={Bot}>AI News</SectionLabel>
-            <span className="mb-5 inline-flex items-center gap-2 text-xs font-semibold text-slate-500">
-              {newsLoading ? <Loader2 className="animate-spin" size={14} /> : <CheckCircle2 size={14} className="text-emerald-500" />}
-              {newsLoading ? "Loading live news" : "Live finance feed"}
-            </span>
-          </div>
-
-          <div className="max-w-3xl">
-            <h1 className="text-5xl font-black leading-[.98] tracking-tight text-slate-950 md:text-6xl">
-              AI-Powered
-              <br />
-              <span className="text-blue-600">Financial News</span>
-            </h1>
-            <p className="mt-5 text-base text-slate-500">
-              Stay ahead with real-time updates, AI summaries, and translations.
-            </p>
-            <Link
-              to="/news"
-              className="mt-7 inline-flex rounded-md bg-blue-500 px-6 py-3 text-sm font-bold text-white shadow-[0_12px_25px_rgba(59,130,246,.28)] hover:bg-blue-600"
-            >
-              View All News
-            </Link>
-          </div>
-
-          <div className="mt-7 grid gap-6 md:grid-cols-3">
-            {visibleNews.map((card) => {
-              return (
-                <a
-                  key={card.link}
-                  href={card.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="overflow-hidden rounded-xl bg-[#061225] text-white shadow-[0_18px_35px_rgba(15,23,42,.14)]"
-                >
-                  <NewsImage type={card.image} />
-                  <div className="p-5">
-                    <div className="flex items-center justify-between text-xs text-blue-300">
-                      <span>{card.category}</span>
-                      <span className="text-slate-400">{card.time}</span>
+        <div className="space-y-6">
+          <DarkPanel>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-black">Popular Stories</h2>
+              <BookOpen className="text-blue-300" size={19} />
+            </div>
+            <div className="mt-6 space-y-5">
+              {popularStories.length ? (
+                popularStories.map((article, index) => (
+                  <a
+                    key={article.id}
+                    href={article.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group flex items-center gap-4"
+                  >
+                    <div
+                      className={`grid h-14 w-14 shrink-0 place-items-center rounded-md ${
+                        index === 0 ? "bg-sky-100 text-sky-600" : index === 1 ? "bg-orange-100 text-orange-600" : "bg-emerald-100 text-emerald-600"
+                      }`}
+                    >
+                      <Newspaper size={21} />
                     </div>
-                    <h2 className="mt-4 min-h-[58px] text-base font-bold leading-snug">{card.title}</h2>
-                    <p className="mt-3 min-h-[64px] text-sm leading-relaxed text-slate-400">{card.desc}</p>
-                  <div className="mt-5 flex gap-3 text-xs text-slate-400">
-                      <span>English</span>
-                      <span>हिंदी</span>
-                      <span>{card.source}</span>
+                    <div className="min-w-0">
+                      <h3 className="line-clamp-2 text-sm font-bold leading-snug transition group-hover:text-blue-300">{article.title}</h3>
+                      <p className="mt-1 text-xs text-slate-400">{article.source}</p>
                     </div>
-                  </div>
-                </a>
-              );
-            })}
-          </div>
-
-          <div className="mt-7 flex items-center justify-between">
-            <div className="flex gap-2">
-              <span className="h-2.5 w-7 rounded-full bg-[#0d3675]" />
-              <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
-              <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
-              <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+                  </a>
+                ))
+              ) : (
+                <p className="text-sm text-slate-400">Popular stories will appear when the live feed connects.</p>
+              )}
             </div>
-            <div className="flex gap-2">
-              <button className="grid h-7 w-7 place-items-center rounded-full bg-white text-slate-400 shadow-sm" aria-label="Previous news">
-                <ChevronLeft size={16} />
-              </button>
-              <button className="grid h-7 w-7 place-items-center rounded-full bg-white text-slate-400 shadow-sm" aria-label="Next news">
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          </div>
-
-          <section id="calculators" className="mt-16">
-            <SectionLabel icon={Calculator}>Calculators</SectionLabel>
-            <h2 className="text-4xl font-black tracking-tight">Financial Calculators</h2>
-            <p className="mt-3 text-sm text-slate-500">Powerful calculators to help you plan, analyze and grow your wealth.</p>
-            <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
-              {calculators.map((item) => (
-                <MiniCard key={item.title} item={item} />
-              ))}
-            </div>
-          </section>
-
-          <section className="mt-16">
-            <SectionLabel icon={BriefcaseBusiness}>Tools</SectionLabel>
-            <h2 className="text-4xl font-black tracking-tight">Financial Tools</h2>
-            <p className="mt-3 text-sm text-slate-500">Smart tools and insights to make better financial decisions.</p>
-            <div className="mt-8 grid gap-8 md:grid-cols-3">
-              {tools.map((item) => (
-                <MiniCard key={item.title} item={item} />
-              ))}
-            </div>
-            <Link
-              to="/tools"
-              className="mt-8 flex min-h-28 items-center justify-between rounded-md bg-white px-7 shadow-[0_10px_30px_rgba(15,23,42,.06)] ring-1 ring-slate-100"
-            >
-              <div className="flex items-center gap-5">
-                <Grid2X2 className="text-purple-500" size={32} />
-                <div>
-                  <h3 className="text-base font-bold">All Tools</h3>
-                  <p className="mt-2 text-sm text-slate-500">Explore all tools</p>
-                </div>
-              </div>
-              <ArrowRight className="text-slate-500" size={18} />
+            <Link to="/blogs" className="mt-7 flex items-center justify-end gap-2 text-sm font-bold text-blue-300">
+              View All Blogs
+              <ArrowRight size={15} />
             </Link>
-          </section>
-
-          <section className="mt-9 grid gap-8 lg:grid-cols-[300px_1fr]">
-            <div className="rounded-md bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,.06)] ring-1 ring-slate-100">
-              <h3 className="mb-6 text-base font-black">Why Choose FinAI?</h3>
-              {[
-                ["AI-Powered Insights", "Smart analysis for better decisions", Bot],
-                ["Real-Time Data", "Live market updates and news", Clock3],
-                ["Secure & Private", "Your data stays on your device", ShieldCheck],
-                ["Trusted Tools", "Built for everyday investors", Wallet],
-              ].map(([title, desc, Icon]) => (
-                <div key={title} className="mb-5 flex items-start gap-4 last:mb-0">
-                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-blue-500 text-white">
-                    <Icon size={16} />
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold">{title}</div>
-                    <div className="mt-1 text-xs text-slate-500">{desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex min-h-[245px] flex-col items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-700 p-8 text-center text-white shadow-[0_18px_45px_rgba(37,99,235,.28)]">
-              <div className="text-xs font-semibold text-blue-100">Live tools for modern investors</div>
-              <h3 className="mt-5 text-5xl font-black leading-tight tracking-tight">
-                Build Wealth
-                <br />
-                With Confidence
-              </h3>
-              <p className="mt-4 text-sm text-blue-100">Smart calculators, market data, finance news and more</p>
-              <div className="mt-7 flex gap-12 text-sm">
-                <span><strong className="block text-lg">7+</strong>Tools</span>
-                <span><strong className="block text-lg">24/7</strong>Access</span>
-                <span><strong className="block text-lg">Free</strong>To Start</span>
-              </div>
-              <div className="mt-7 flex gap-4">
-                <Link to="/sip-calculator" className="rounded-md bg-white px-7 py-3 text-sm font-bold text-blue-600">Get Started</Link>
-                <Link to="/tools" className="rounded-md bg-white/10 px-7 py-3 text-sm font-bold text-white ring-1 ring-white/20">Learn More</Link>
-              </div>
-            </div>
-          </section>
-        </section>
-
-        <section className="space-y-9">
-          <DarkPanel className="min-h-[780px]">
-            <div className="text-base font-bold">My Portfolio <span className="text-slate-500">⌾</span></div>
-            <div className="mt-5 text-5xl font-black tracking-tight">{formatCurrency(currentValue)}</div>
-            <div className="mt-2 text-sm font-semibold text-emerald-400">+{growth.toFixed(2)}% (Projected)</div>
-            <div className="mt-20 h-56 min-w-0">
-  <ResponsiveContainer width="100%" height={220}>
-                <AreaChart data={portfolioData}>
-                  <defs>
-                    <linearGradient id="portfolioFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#2563eb" stopOpacity={0.65} />
-                      <stop offset="100%" stopColor="#2563eb" stopOpacity={0.02} />
-                    </linearGradient>
-                  </defs>
-                  <Area dataKey="value" type="monotone" stroke="#2f7df6" strokeWidth={3} fill="url(#portfolioFill)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="mt-10 grid grid-cols-2 gap-y-8 text-sm">
-              <div className="text-slate-400">Invested Value<br /><strong className="mt-2 block text-lg text-white">{formatCurrency(investedValue)}</strong></div>
-              <div className="text-slate-400">Current Value<br /><strong className="mt-2 block text-lg text-white">{formatCurrency(currentValue)}</strong></div>
-              <div className="text-slate-400">Total Returns<br /><strong className="mt-2 block text-lg text-emerald-400">+{formatCurrency(gain)} <span className="text-sm">(+{growth.toFixed(2)}%)</span></strong></div>
-              <div className="text-slate-400">Today's Change<br /><strong className="mt-2 block text-lg text-emerald-400">+{formatCurrency(todayChange)} <span className="text-sm">(+1.25%)</span></strong></div>
-            </div>
-            <div className="mt-9 space-y-5 text-sm">
-              {[["Equity", "70%", "bg-emerald-400"], ["Debt", "20%", "bg-cyan-400"], ["Cash", "10%", "bg-yellow-400"]].map(([label, value, color]) => (
-                <div key={label}>
-                  <div className="mb-2 flex justify-between"><span>{label}</span><span>{value}</span></div>
-                  <div className="h-1.5 rounded-full bg-slate-700"><div className={`h-full rounded-full ${color}`} style={{ width: value }} /></div>
-                </div>
-              ))}
-            </div>
           </DarkPanel>
 
-          <section className="space-y-8">
-  {/* your other cards */}
-  <AskFinAI />
-  {/* rest of the page */}
-</section>
+          <DarkPanel>
+            <div className="flex items-center gap-2">
+              <Sparkles className="text-blue-300" size={19} />
+              <h2 className="text-lg font-black">FinQuiz of the Day</h2>
+            </div>
+
+            {quiz ? (
+              <>
+                <p className="mt-6 text-sm font-bold leading-relaxed text-slate-100">{quiz.question}</p>
+                <div className="mt-5 space-y-3">
+                  {quiz.options.map((option, index) => {
+                    const chosen = selectedAnswer === option;
+                    const correct = quizSubmitted && option === quiz.answer;
+                    const wrong = quizSubmitted && chosen && option !== quiz.answer;
+
+                    return (
+                      <label key={option} className="flex cursor-pointer items-start gap-3 text-sm text-slate-300">
+                        <input
+                          type="radio"
+                          name="homepage-quiz"
+                          value={option}
+                          checked={chosen}
+                          onChange={(event) => {
+                            setSelectedAnswer(event.target.value);
+                            setQuizSubmitted(false);
+                          }}
+                          className="sr-only"
+                        />
+                        <span
+                          className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border ${
+                            correct
+                              ? "border-emerald-400 bg-emerald-400"
+                              : wrong
+                                ? "border-red-400 bg-red-400"
+                                : chosen
+                                  ? "border-blue-400 bg-blue-500"
+                                  : "border-slate-600"
+                          }`}
+                        >
+                          {(correct || chosen) && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+                        </span>
+                        <span>{String.fromCharCode(65 + index)}. {option}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+                {quizSubmitted && (
+                  <p className={`mt-4 flex items-center gap-2 text-sm font-semibold ${isCorrect ? "text-emerald-400" : "text-red-300"}`}>
+                    {isCorrect ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+                    {isCorrect ? "Correct." : `The answer is ${quiz.answer}.`}
+                  </p>
+                )}
+                <div className="mt-6 flex items-center justify-between gap-4">
+                  <button
+                    onClick={submitQuiz}
+                    disabled={!selectedAnswer}
+                    className="rounded-md bg-blue-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-slate-700"
+                  >
+                    Submit Answer
+                  </button>
+                  <Link to="/quizzes" className="flex items-center gap-2 text-sm font-bold text-blue-300">
+                    View All Quizzes
+                    <ArrowRight size={15} />
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <div className="mt-6 rounded-md bg-white/5 p-4 text-sm text-slate-400">
+                The live quiz will appear after enough publishers are available in the news feed.
+              </div>
+            )}
+          </DarkPanel>
+
+          <div className="rounded-xl bg-[linear-gradient(145deg,#1387ff,#3238dd)] p-8 text-center text-white shadow-[0_18px_45px_rgba(37,99,235,.24)]">
+            <p className="text-xs font-semibold text-blue-100">Useful tools for real decisions</p>
+            <h2 className="mt-5 text-4xl font-black leading-tight">
+              Build Wealth
+              <br />
+              With Confidence
+            </h2>
+            <p className="mx-auto mt-4 max-w-xs text-sm leading-relaxed text-blue-100">
+              Plan a goal, test the numbers, and keep your financial life organised.
+            </p>
+            <div className="mt-7 grid grid-cols-3 gap-3 text-sm">
+              <span><strong className="block text-xl">7+</strong><small className="text-blue-100">Tools</small></span>
+              <span><strong className="block text-xl">24/7</strong><small className="text-blue-100">Access</small></span>
+              <span><strong className="block text-xl">Free</strong><small className="text-blue-100">To Start</small></span>
+            </div>
+            <div className="mt-7 grid grid-cols-2 gap-3">
+              <Link to="/sip-calculator" className="rounded-md bg-white px-5 py-3 text-sm font-bold text-blue-600">
+                Get Started
+              </Link>
+              <Link to="/tools" className="rounded-md bg-white/10 px-5 py-3 text-sm font-bold text-white ring-1 ring-white/20">
+                Learn More
+              </Link>
+            </div>
+          </div>
 
           <DarkPanel>
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-lg font-black">Live Content Hub</h3>
+                <h2 className="text-lg font-black">Live Content Hub</h2>
                 <p className="mt-2 text-xs text-slate-500">
-                  {newsUpdatedAt ? `News refreshed ${newsUpdatedAt.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}` : "Connecting live feeds"}
+                  {lastUpdated
+                    ? `Updated ${lastUpdated.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}`
+                    : "Waiting for the live feed"}
                 </p>
               </div>
-              <button onClick={loadNews} className="grid h-9 w-9 place-items-center rounded-md bg-white/5 text-blue-300 ring-1 ring-white/10" aria-label="Refresh live content">
-                <RefreshCw className={newsLoading ? "animate-spin" : ""} size={16} />
-              </button>
+              <RefreshCw className={loading ? "animate-spin text-blue-300" : "text-blue-300"} size={18} />
             </div>
+
             <div className="mt-6 grid grid-cols-3 gap-3 text-center">
               <Link to="/news" className="rounded-md bg-white/5 px-3 py-4 ring-1 ring-white/10">
-                <span className="block text-2xl font-black">{news.length}</span>
-                <span className="mt-1 block text-xs text-slate-400">News</span>
+                <strong className="block text-2xl">{articles.length || "—"}</strong>
+                <span className="mt-1 block text-xs text-slate-400">Stories</span>
               </Link>
               <Link to="/quizzes" className="rounded-md bg-white/5 px-3 py-4 ring-1 ring-white/10">
-                <span className="block text-2xl font-black">∞</span>
+                <strong className="block text-2xl">∞</strong>
                 <span className="mt-1 block text-xs text-slate-400">Quizzes</span>
               </Link>
               <Link to="/blogs" className="rounded-md bg-white/5 px-3 py-4 ring-1 ring-white/10">
-                <span className="block text-2xl font-black">Live</span>
+                <strong className="block text-xl">Live</strong>
                 <span className="mt-1 block text-xs text-slate-400">Blogs</span>
               </Link>
             </div>
-            <div className="mt-6 space-y-3 text-sm text-slate-300">
-              <div className="flex items-center justify-between rounded-md bg-white/5 px-4 py-3">
-                <span>News provider</span>
-                <span className="font-bold text-blue-300">NewsData + RSS backup</span>
-              </div>
-              <div className="flex items-center justify-between rounded-md bg-white/5 px-4 py-3">
-                <span>Quiz source</span>
-                <span className="font-bold text-blue-300">Live article API</span>
-              </div>
-              <div className="flex items-center justify-between rounded-md bg-white/5 px-4 py-3">
-                <span>Refresh cycle</span>
-                <span className="font-bold text-blue-300">Every 60 sec</span>
-              </div>
-            </div>
-            <p className="mt-5 text-xs leading-relaxed text-slate-500">
-              Market index numbers were removed from this panel to avoid showing estimated or fallback prices as financial data.
-            </p>
-          </DarkPanel>
 
-          <DarkPanel id="finquiz">
-            <h3 className="text-lg font-black">FinQuiz of the Day</h3>
-            <p className="mt-6 font-semibold text-blue-100">What is the full form of ETF?</p>
-            <div className="mt-6 space-y-5 text-sm text-slate-300">
-              {quizAnswers.map((answer, index) => (
-                <label key={answer} className="flex cursor-pointer items-center gap-4">
-                  <input
-                    type="radio"
-                    name="finquiz"
-                    value={answer}
-                    checked={selectedQuizAnswer === answer}
-                    onChange={(event) => {
-                      setSelectedQuizAnswer(event.target.value);
-                      setQuizSubmitted(false);
-                    }}
-                    className="sr-only"
-                  />
-                  <span className={`h-5 w-5 rounded-full border ${selectedQuizAnswer === answer ? "border-blue-400 bg-blue-500" : "border-slate-600"}`} />
-                  {String.fromCharCode(65 + index)}. {answer}
-                </label>
-              ))}
-            </div>
-            {quizSubmitted && (
-              <p className={`mt-5 text-sm font-semibold ${isCorrectAnswer ? "text-emerald-400" : "text-red-300"}`}>
-                {isCorrectAnswer ? "Correct. ETF means Exchange Traded Fund." : "Not quite. The correct answer is Exchange Traded Fund."}
-              </p>
-            )}
-            <div className="mt-7 flex items-center justify-between">
-              <button onClick={submitQuiz} className="rounded-md bg-blue-500 px-6 py-3 text-sm font-bold">Submit Answer</button>
-              <Link to="/quizzes" className="flex items-center gap-2 text-sm text-blue-300">View All Quizzes <ArrowRight size={14} /></Link>
+            <div className="mt-5 space-y-3 text-xs">
+              <div className="flex justify-between rounded-md bg-white/5 px-4 py-3">
+                <span className="text-slate-400">News</span>
+                <span className="font-bold text-slate-200">Publisher feeds</span>
+              </div>
+              <div className="flex justify-between rounded-md bg-white/5 px-4 py-3">
+                <span className="text-slate-400">Quiz</span>
+                <span className="font-bold text-slate-200">Generated from live stories</span>
+              </div>
+              <div className="flex justify-between rounded-md bg-white/5 px-4 py-3">
+                <span className="text-slate-400">Refresh</span>
+                <span className="font-bold text-slate-200">Every 60 seconds</span>
+              </div>
             </div>
           </DarkPanel>
-
-          <DarkPanel>
-            <h3 className="text-lg font-black">Popular Blogs</h3>
-            <div className="mt-6 space-y-5">
-              {blogNews.map((item, index) => {
-                return (
-                  <a
-                    key={item.link}
-                    href={item.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-4"
-                  >
-                    <div className={`h-16 w-16 rounded-md ${index === 1 ? "bg-orange-200" : "bg-emerald-100"}`}>
-                      <div className="h-full w-full rounded-md bg-[linear-gradient(135deg,rgba(6,18,37,.05),rgba(6,18,37,.3))]" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold leading-snug">{item.title}</h4>
-                      <p className="mt-2 text-xs text-slate-400">{item.time}</p>
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
-            <Link to="/blogs" className="mt-7 flex items-center justify-end gap-2 text-sm text-blue-300">View All Blogs <ArrowRight size={14} /></Link>
-          </DarkPanel>
-        </section>
+        </div>
       </main>
 
-      <footer className="bg-[#061225] px-6 py-8 text-white">
-        <div className="mx-auto grid max-w-[1518px] gap-8 md:grid-cols-[280px_1fr_1fr_300px]">
+      <footer className="bg-[#061427] px-5 py-8 text-white lg:px-8">
+        <div className="mx-auto grid max-w-[1440px] gap-10 md:grid-cols-[1.1fr_.8fr_1fr_1.2fr]">
           <div>
-            <Link to="/" className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-full bg-blue-500"><Bot size={21} /></div>
-              <div>
-                <div className="text-2xl font-black leading-none">FinAI</div>
-                <div className="mt-1 text-xs text-slate-400">AI-Powered Financial Intelligence</div>
-              </div>
+            <Link to="/" aria-label="FINAIW home">
+              <BrandMark compact />
             </Link>
-            <p className="mt-8 text-sm">© 2026 FinAI.</p>
-            <p className="mt-3 text-sm">All rights reserved.</p>
-            <div className="mt-7 flex gap-4">
-              <MessageCircle className="text-slate-200" size={22} />
-              <Globe2 className="text-slate-200" size={22} />
-              <Users className="text-slate-200" size={22} />
-              <Share2 className="text-slate-200" size={22} />
-            </div>
+            <p className="mt-7 max-w-xs text-sm leading-relaxed text-slate-400">
+              FINAIW helps people make sense of money with clear tools, fresh context, and fewer buzzwords.
+            </p>
+            <p className="mt-6 text-xs text-slate-500">© {new Date().getFullYear()} FINAIW. All rights reserved.</p>
           </div>
 
           <div>
-            <h4 className="font-bold">Trending Topics</h4>
-            <Link to="/news" className="mt-3 block text-sm text-slate-300">Live Finance News</Link>
-            <Link to="/blogs" className="mt-3 block text-sm text-slate-300">Investing Blogs</Link>
-            <Link to="/quizzes" className="mt-3 block text-sm text-slate-300">FinQuiz</Link>
-            <Link to="/portfolio-tracker" className="mt-3 block text-sm text-slate-300">Portfolio Tracker</Link>
-            <Link to="/fire-calculator" className="mt-3 block text-sm text-slate-300">FIRE Planning</Link>
-          </div>
-
-          <div>
-            <h4 className="font-bold">About Us</h4>
+            <h2 className="text-sm font-black">Explore</h2>
             {[
-              ["Data Disclaimer", "/disclaimer"],
-              ["Help", "/contact"],
-              ["Feedback", "/contact"],
-              ["Sitemap", "/"],
-              ["What's New", "/news"],
-              ["About Our Ads", "/privacy-policy"],
-              ["Terms and Privacy Policy", "/privacy-policy"],
-              ["Privacy Dashboard", "/privacy-policy"],
-              ["Contact Us", "/contact"],
+              ["Live Finance News", "/news"],
+              ["Investing Blogs", "/blogs"],
+              ["FinQuiz", "/quizzes"],
+              ["Portfolio Tracker", "/portfolio-tracker"],
+              ["FIRE Planning", "/fire-calculator"],
             ].map(([label, to]) => (
-              <Link key={label} to={to} className="mt-3 block text-sm text-slate-300">{label}</Link>
+              <Link key={label} to={to} className="mt-3 block text-sm text-slate-400 transition hover:text-white">
+                {label}
+              </Link>
             ))}
           </div>
 
           <div>
-            <form onSubmit={subscribe} className="rounded-md bg-white/5 p-5 ring-1 ring-white/10">
-              <h4 className="font-bold">Subscribe to Newsletter</h4>
-              <p className="mt-2 text-sm text-slate-300">
-                {subscribed ? "You're subscribed. We'll keep you posted." : "Get the latest financial news and insights in your inbox."}
+            <h2 className="text-sm font-black">Company</h2>
+            {[
+              ["Why FINAIW", "/about"],
+              ["Data Disclaimer", "/disclaimer"],
+              ["Help and Feedback", "/contact"],
+              ["Privacy Policy", "/privacy-policy"],
+              ["Contact Us", "/contact"],
+            ].map(([label, to]) => (
+              <Link key={label} to={to} className="mt-3 block text-sm text-slate-400 transition hover:text-white">
+                {label}
+              </Link>
+            ))}
+          </div>
+
+          <div>
+            <form onSubmit={submitNewsletter} className="rounded-md bg-white/5 p-5 ring-1 ring-white/10">
+              <h2 className="text-sm font-black">Subscribe to the Newsletter</h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                A concise roundup of useful financial stories and tools.
               </p>
-              <label className="mt-5 flex h-12 items-center rounded-md bg-white/5 px-4 text-sm text-slate-400 ring-1 ring-white/10">
-                <Mail size={16} />
+              <label className="mt-5 flex h-11 items-center rounded-md bg-[#0d1e34] px-3 ring-1 ring-white/10 focus-within:ring-blue-400">
+                <Mail size={16} className="text-slate-500" />
                 <input
                   type="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
-                  className="ml-3 h-full min-w-0 flex-1 bg-transparent text-white outline-none placeholder:text-slate-400"
+                  className="ml-3 min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-500"
                   placeholder="Enter your email"
+                  aria-label="Email address"
                 />
               </label>
-              <button type="submit" className="mt-4 w-full rounded-md bg-blue-500 py-3 text-sm font-bold">Subscribe</button>
+              <button type="submit" className="mt-3 w-full rounded-md bg-blue-500 py-2.5 text-sm font-bold text-white transition hover:bg-blue-600">
+                Subscribe
+              </button>
+              {newsletterStatus.message && (
+                <p className={`mt-3 text-xs ${newsletterStatus.type === "success" ? "text-emerald-400" : "text-amber-300"}`}>
+                  {newsletterStatus.message}
+                </p>
+              )}
             </form>
-            <Link to="/privacy-policy" className="mt-5 block w-full rounded-md border border-white/20 py-3 text-center text-sm font-semibold text-slate-200">
+            <Link
+              to="/privacy-policy"
+              className="mt-4 block rounded-md border border-white/15 py-2.5 text-center text-sm font-semibold text-slate-300 transition hover:border-blue-400 hover:text-white"
+            >
               Privacy Dashboard
             </Link>
           </div>
         </div>
       </footer>
-
-      
     </div>
   );
 }
