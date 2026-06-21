@@ -4,71 +4,166 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 export default function CalculatorsPage() {
-  const calculators = [
+  // ─── Only calculators that have been created ──────────────────
+  const categories = [
     {
-      title: "SIP Calculator",
-      desc: "Estimate mutual fund SIP returns and wealth growth.",
-      route: "/sip-calculator",
+      name: "Interest Calculators",
+      icon: "📊",
+      description: "Calculate interest, EMIs, returns, and bond yields.",
+      calculators: [
+        {
+          title: "EMI Calculator",
+          desc: "Calculate monthly EMI payments for loans.",
+          route: "/emi-calculator",
+          icon: "🏦",
+          color: "from-emerald-500 to-teal-400",
+        },
+        {
+          title: "Future Value Calculator",
+          desc: "Calculate the future value with compound interest.",
+          route: "/future-value-calculator",
+          icon: "⏳",
+          color: "from-indigo-500 to-blue-400",
+        },
+        {
+          title: "Rate of Return Calculator",
+          desc: "Find the annualized return on your investments.",
+          route: "/rate-of-return-calculator",
+          icon: "📈",
+          color: "from-teal-500 to-cyan-400",
+        },
+        {
+          title: "Bond Yield Calculator",
+          desc: "Calculate current yield and yield to maturity.",
+          route: "/bond-yield-calculator",
+          icon: "📜",
+          color: "from-slate-500 to-gray-400",
+        },
+        {
+          title: "FD Calculator",
+          desc: "Estimate fixed deposit maturity and interest earned.",
+          route: "/fd-calculator",
+          icon: "💰",
+          color: "from-amber-500 to-orange-400",
+        },
+        {
+          title: "GST Calculator",
+          desc: "Add or remove GST from any amount instantly.",
+          route: "/gst-calculator",
+          icon: "🧾",
+          color: "from-red-500 to-rose-400",
+        },
+      ],
+    },
+    {
+      name: "Mutual Fund Calculators",
       icon: "📈",
-      color: "from-blue-500 to-cyan-400",
-      popular: true,
+      description: "Plan your mutual fund investments and SIPs.",
+      calculators: [
+        {
+          title: "SIP Calculator",
+          desc: "Estimate mutual fund SIP returns and wealth growth.",
+          route: "/sip-calculator",
+          icon: "📊",
+          color: "from-blue-500 to-cyan-400",
+          popular: true,
+        },
+        {
+          title: "Goal SIP Calculator",
+          desc: "Find the monthly SIP needed to reach your goal.",
+          route: "/goal-sip",
+          icon: "🎯",
+          color: "from-fuchsia-500 to-pink-400",
+        },
+        {
+          title: "Inflation Calculator",
+          desc: "See how inflation impacts your purchasing power.",
+          route: "/inflation-calculator",
+          icon: "📉",
+          color: "from-amber-500 to-yellow-400",
+        },
+      ],
     },
     {
-      title: "EMI Calculator",
-      desc: "Calculate monthly EMI payments instantly.",
-      route: "/emi-calculator",
-      icon: "🏦",
-      color: "from-emerald-500 to-teal-400",
-    },
-    {
-      title: "FD Calculator",
-      desc: "Estimate FD maturity value and interest earned.",
-      route: "/fd-calculator",
-      icon: "💰",
-      color: "from-amber-500 to-orange-400",
-    },
-    {
-      title: "CAGR Calculator",
-      desc: "Measure annual investment growth rate.",
-      route: "/cagr-calculator",
-      icon: "🚀",
-      color: "from-purple-500 to-pink-400",
-    },
-    {
-      title: "GST Calculator",
-      desc: "Add or remove GST instantly.",
-      route: "/gst-calculator",
-      icon: "🧾",
-      color: "from-red-500 to-rose-400",
-    },
-    {
-      title: "Retirement Calculator",
-      desc: "Plan long-term retirement wealth goals.",
-      route: "/retirement-calculator",
+      name: "Retirement Planning",
       icon: "🌴",
-      color: "from-green-500 to-emerald-400",
+      description: "Plan for a secure and comfortable retirement.",
+      calculators: [
+        {
+          title: "Retirement Calculator",
+          desc: "Plan long-term retirement wealth goals.",
+          route: "/retirement-calculator",
+          icon: "🌅",
+          color: "from-green-500 to-emerald-400",
+        },
+        {
+          title: "FIRE Calculator",
+          desc: "Plan Financial Independence & Retire Early.",
+          route: "/fire-calculator",
+          icon: "🔥",
+          color: "from-rose-500 to-red-400",
+          new: true,
+        },
+        {
+          title: "Annual Retirement Income Calculator",
+          desc: "Calculate your annual income during retirement.",
+          route: "/annual-retirement-income",
+          icon: "💰",
+          color: "from-amber-500 to-orange-400",
+        },
+        {
+          title: "Retirement Investment Tracker",
+          desc: "Track your retirement investments year by year.",
+          route: "/retirement-investment-tracker",
+          icon: "📋",
+          color: "from-sky-500 to-blue-400",
+        },
+      ],
     },
     {
-      title: "FIRE Calculator",
-      desc: "Plan Financial Independence & Retire Early.",
-      route: "/fire-calculator",
-      icon: "🔥",
-      color: "from-rose-500 to-red-400",
-      new: true,
+      name: "Net Worth",
+      icon: "💼",
+      description: "Track your assets, liabilities, and net worth.",
+      calculators: [
+        {
+          title: "Net Worth Calculator",
+          desc: "Track your assets, liabilities, and net worth.",
+          route: "/networth-calculator",
+          icon: "💼",
+          color: "from-cyan-500 to-blue-400",
+        },
+      ],
+    },
+    {
+      name: "Financial Goal Planner",
+      icon: "🎯",
+      description: "Plan your financial goals with asset allocation.",
+      calculators: [
+        {
+          title: "Goal Planner",
+          desc: "Plan your retirement with variable asset allocation.",
+          route: "/goal-planner",
+          icon: "🎯",
+          color: "from-violet-500 to-purple-400",
+        },
+      ],
     },
   ];
+
+  // ─── Total count ──────────────────────────────────────────────
+  const totalCalculators = categories.reduce((sum, cat) => sum + cat.calculators.length, 0);
 
   return (
     <>
       <Helmet>
-        <title>Finance Calculators – WealthFluent</title>
+        <title>SEBI Compliant Financial Calculators – WealthFluent</title>
         <meta
           name="description"
-          content="Explore free finance calculators including SIP, EMI, FD, GST, CAGR, and retirement planning tools."
+          content="Explore SEBI-compliant financial calculators including SIP, EMI, FD, GST, retirement planning, and more."
         />
         <meta
           name="keywords"
-          content="finance calculators, SIP calculator, EMI calculator, FD calculator, GST calculator, CAGR calculator"
+          content="SEBI calculators, finance calculators, SIP calculator, EMI calculator, retirement calculator, mutual fund calculators"
         />
       </Helmet>
 
@@ -85,94 +180,129 @@ export default function CalculatorsPage() {
         {/* Hero */}
         <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 text-center z-10">
           <div className="inline-block bg-blue-100/80 backdrop-blur-sm px-4 py-1.5 rounded-full text-blue-700 font-medium text-sm mb-4 border border-blue-200/50">
-            🧮 Smart Financial Tools
+            📋 SEBI Compliant Financial Tools
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-slate-900 leading-tight mb-6">
-            Free Financial Tools
+            Financial Calculators
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
-              For Better Decisions
+              As per SEBI Guidelines
             </span>
           </h1>
           <p className="text-slate-500 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-            Explore modern finance calculators, investment planning tools,
-            and educational resources designed for smarter wealth growth.
+            Explore SEBI-compliant financial calculators for investment planning,
+            retirement goals, loan management, tax calculations, and more.
           </p>
         </section>
 
-        {/* Calculators Grid */}
-        <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 z-10">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {calculators.map((calc, index) => (
-              <Link
-                key={index}
-                to={calc.route}
-                className="group relative bg-white/80 backdrop-blur-sm border border-white/50 rounded-3xl p-6 md:p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:border-blue-300/70 overflow-hidden"
-              >
-                {/* Gradient glow on hover */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className={`absolute -inset-1 bg-gradient-to-r ${calc.color} rounded-3xl blur-xl opacity-20`}></div>
-                </div>
-
-                {/* Badge */}
-                {calc.popular && (
-                  <span className="absolute top-4 right-4 bg-gradient-to-r from-blue-500 to-cyan-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg shadow-blue-200/50 z-10">
-                    Popular
-                  </span>
-                )}
-                {calc.new && (
-                  <span className="absolute top-4 right-4 bg-gradient-to-r from-rose-500 to-red-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg shadow-rose-200/50 z-10">
-                    New
-                  </span>
-                )}
-
-                <div className="relative z-10">
-                  <div
-                    className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${calc.color} flex items-center justify-center text-3xl shadow-lg shadow-blue-200/50 mb-6 group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    {calc.icon}
-                  </div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-slate-800 mb-3 group-hover:text-blue-600 transition-colors">
-                    {calc.title}
-                  </h2>
-                  <p className="text-slate-500 leading-relaxed mb-6">
-                    {calc.desc}
-                  </p>
-                  <span className="text-blue-600 font-semibold inline-flex items-center group-hover:translate-x-2 transition-transform duration-300">
-                    Open Calculator
-                    <svg
-                      className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                      />
-                    </svg>
-                  </span>
-                </div>
-              </Link>
+        {/* Category Stats */}
+        <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 z-10">
+          <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-3xl p-6 md:p-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 text-center">
+            {categories.map((cat) => (
+              <div key={cat.name} className="flex flex-col items-center">
+                <div className="text-2xl">{cat.icon}</div>
+                <div className="text-xs font-semibold text-slate-700 mt-1 leading-tight">{cat.name}</div>
+                <div className="text-[10px] text-slate-400">{cat.calculators.length} Tools</div>
+              </div>
             ))}
           </div>
         </section>
 
+        {/* Calculators by Category */}
+        <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 z-10">
+          {categories.map((category) => (
+            <div key={category.name} className="mb-16 last:mb-0">
+              {/* Category Header */}
+              <div className="flex items-center gap-3 mb-6">
+                <span className="text-3xl">{category.icon}</span>
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
+                    {category.name}
+                  </h2>
+                  <p className="text-slate-500 text-sm">{category.description}</p>
+                </div>
+              </div>
+
+              {/* Category Grid */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {category.calculators.map((calc) => (
+                  <Link
+                    key={calc.route}
+                    to={calc.route}
+                    className="group relative bg-white/80 backdrop-blur-sm border border-white/50 rounded-2xl p-5 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:border-blue-300/70 overflow-hidden"
+                  >
+                    {/* Gradient glow on hover */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                      <div
+                        className={`absolute -inset-1 bg-gradient-to-r ${calc.color} rounded-2xl blur-xl opacity-20`}
+                      ></div>
+                    </div>
+
+                    {/* Badges */}
+                    {calc.popular && (
+                      <span className="absolute top-3 right-3 bg-gradient-to-r from-blue-500 to-cyan-400 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-lg shadow-blue-200/50 z-10">
+                        Popular
+                      </span>
+                    )}
+                    {calc.new && (
+                      <span className="absolute top-3 right-3 bg-gradient-to-r from-rose-500 to-red-400 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-lg shadow-rose-200/50 z-10">
+                        New
+                      </span>
+                    )}
+
+                    <div className="relative z-10">
+                      <div
+                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${calc.color} flex items-center justify-center text-2xl shadow-lg shadow-blue-200/50 mb-4 group-hover:scale-110 transition-transform duration-300`}
+                      >
+                        {calc.icon}
+                      </div>
+                      <h3 className="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors">
+                        {calc.title}
+                      </h3>
+                      <p className="text-slate-500 text-sm leading-relaxed mb-4">
+                        {calc.desc}
+                      </p>
+                      <span className="text-blue-600 font-semibold text-sm inline-flex items-center group-hover:translate-x-1 transition-transform duration-300">
+                        Open
+                        <svg
+                          className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 7l5 5m0 0l-5 5m5-5H6"
+                          />
+                        </svg>
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+
         {/* Statistics / Social Proof */}
         <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 z-10">
-          <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-3xl p-8 md:p-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+          <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-3xl p-8 md:p-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-3xl font-black text-blue-600">10,000+</div>
-              <div className="text-slate-500 mt-1">Calculations Performed</div>
+              <div className="text-3xl font-black text-blue-600">{totalCalculators}</div>
+              <div className="text-slate-500 mt-1">SEBI Calculators</div>
             </div>
             <div>
-              <div className="text-3xl font-black text-cyan-600">7</div>
-              <div className="text-slate-500 mt-1">Financial Tools Available</div>
+              <div className="text-3xl font-black text-cyan-600">{categories.length}</div>
+              <div className="text-slate-500 mt-1">Categories</div>
             </div>
             <div>
               <div className="text-3xl font-black text-emerald-600">100%</div>
               <div className="text-slate-500 mt-1">Free & Secure</div>
+            </div>
+            <div>
+              <div className="text-3xl font-black text-purple-600">✓ SEBI</div>
+              <div className="text-slate-500 mt-1">Compliant Tools</div>
             </div>
           </div>
         </section>
@@ -181,17 +311,18 @@ export default function CalculatorsPage() {
         <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 z-10">
           <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-3xl p-8 md:p-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-6">
-              Why Use Finance Calculators?
+              SEBI Compliant Financial Calculators
             </h2>
             <p className="text-slate-500 text-lg leading-relaxed mb-6">
-              Finance calculators help users make smarter financial
-              decisions by estimating investments, loan EMIs,
-              retirement planning, tax calculations, and wealth growth.
+              All calculators on this page are designed following SEBI guidelines to provide
+              illustrative and educational value. They help users make informed financial
+              decisions by estimating investments, loan EMIs, retirement planning, tax
+              calculations, and wealth growth.
             </p>
             <p className="text-slate-500 text-lg leading-relaxed mb-8">
-              WealthFluent provides free online financial calculators
-              designed for beginners, investors, students,
-              and personal finance learners.
+              WealthFluent provides free online financial calculators designed for beginners,
+              investors, students, and personal finance learners — all with a clean,
+              user-friendly interface.
             </p>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">

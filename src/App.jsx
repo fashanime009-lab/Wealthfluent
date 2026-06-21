@@ -23,6 +23,15 @@ import ToolsPage from "./pages/ToolsPage";
 import WealthAgeCalculatorPage from "./pages/WealthAgeCalculatorPage";
 import WealthDashboardPage from "./pages/WealthDashboardPage";
 import WealthFluentHomepage from "./pages/WealthFluentHomepage";
+import NetWorthCalculatorPage from "./pages/NetWorthCalculatorPage";
+import GoalPlannerPage from "./pages/GoalPlannerPage";
+import GoalSIPCalculatorPage from "./pages/GoalSIPCalculatorPage";
+import AnnualRetirementIncomePage from "./pages/AnnualRetirementIncomePage";
+import BondYieldCalculatorPage from "./pages/BondYieldCalculatorPage";
+import FutureValueCalculatorPage from "./pages/FutureValueCalculatorPage";
+import InflationCalculatorPage from "./pages/InflationCalculatorPage";
+import RateOfReturnCalculatorPage from "./pages/RateOfReturnCalculatorPage";
+import RetirementInvestmentTrackerPage from "./pages/RetirementInvestmentTrackerPage";
 
 export default function App() {
   return (
@@ -51,6 +60,15 @@ export default function App() {
         <Route path="/fire-calculator" element={<FIRECalculatorPage />} />
         <Route path="/wealth-age-calculator" element={<WealthAgeCalculatorPage />} />
         <Route path="/portfolio-tracker" element={<PortfolioTrackerPage />} />
+        <Route path="/networth-calculator" element={<NetWorthCalculatorPage />} />
+        <Route path="/goal-planner" element={<GoalPlannerPage />} />
+        <Route path="/goal-sip" element={<GoalSIPCalculatorPage />} />
+        <Route path="/annual-retirement-income" element={<AnnualRetirementIncomePage />} />
+        <Route path="/bond-yield-calculator" element={<BondYieldCalculatorPage />} />
+        <Route path="/future-value-calculator" element={<FutureValueCalculatorPage />} />
+        <Route path="/inflation-calculator" element={<InflationCalculatorPage />} />
+        <Route path="/rate-of-return-calculator" element={<RateOfReturnCalculatorPage />} />
+        <Route path="/retirement-investment-tracker" element={<RetirementInvestmentTrackerPage />} />
       </Routes>
     </BrowserRouter>
   );
