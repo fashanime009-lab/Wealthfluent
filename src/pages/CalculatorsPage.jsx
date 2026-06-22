@@ -7,9 +7,9 @@ export default function CalculatorsPage() {
   // ─── Only calculators that have been created ──────────────────
   const categories = [
     {
-      name: "Interest Calculators",
-      icon: "📊",
-      description: "Calculate interest, EMIs, returns, and bond yields.",
+      name: "Interest & Loan Calculators",
+      icon: "🏦",
+      description: "Calculate EMIs, future values, returns, and bond yields.",
       calculators: [
         {
           title: "EMI Calculator",
@@ -56,9 +56,9 @@ export default function CalculatorsPage() {
       ],
     },
     {
-      name: "Mutual Fund Calculators",
+      name: "Mutual Fund & SIP Tools",
       icon: "📈",
-      description: "Plan your mutual fund investments and SIPs.",
+      description: "Plan your mutual fund investments and systematic investing.",
       calculators: [
         {
           title: "SIP Calculator",
@@ -87,7 +87,7 @@ export default function CalculatorsPage() {
     {
       name: "Retirement Planning",
       icon: "🌴",
-      description: "Plan for a secure and comfortable retirement.",
+      description: "Secure your future with smart retirement strategies.",
       calculators: [
         {
           title: "Retirement Calculator",
@@ -121,9 +121,9 @@ export default function CalculatorsPage() {
       ],
     },
     {
-      name: "Net Worth",
+      name: "Wealth & Goal Planning",
       icon: "💼",
-      description: "Track your assets, liabilities, and net worth.",
+      description: "Track your net worth and plan your financial goals.",
       calculators: [
         {
           title: "Net Worth Calculator",
@@ -132,13 +132,6 @@ export default function CalculatorsPage() {
           icon: "💼",
           color: "from-cyan-500 to-blue-400",
         },
-      ],
-    },
-    {
-      name: "Financial Goal Planner",
-      icon: "🎯",
-      description: "Plan your financial goals with asset allocation.",
-      calculators: [
         {
           title: "Goal Planner",
           desc: "Plan your retirement with variable asset allocation.",
@@ -156,14 +149,14 @@ export default function CalculatorsPage() {
   return (
     <>
       <Helmet>
-        <title>SEBI Compliant Financial Calculators – WealthFluent</title>
+        <title>Financial Calculators – WealthFluent</title>
         <meta
           name="description"
-          content="Explore SEBI-compliant financial calculators including SIP, EMI, FD, GST, retirement planning, and more."
+          content="Explore free financial calculators for SIP, EMI, FD, GST, retirement planning, net worth, and more. Make smarter money decisions with WealthFluent."
         />
         <meta
           name="keywords"
-          content="SEBI calculators, finance calculators, SIP calculator, EMI calculator, retirement calculator, mutual fund calculators"
+          content="financial calculators, SIP calculator, EMI calculator, retirement calculator, net worth calculator, mutual fund tools"
         />
       </Helmet>
 
@@ -180,23 +173,23 @@ export default function CalculatorsPage() {
         {/* Hero */}
         <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 text-center z-10">
           <div className="inline-block bg-blue-100/80 backdrop-blur-sm px-4 py-1.5 rounded-full text-blue-700 font-medium text-sm mb-4 border border-blue-200/50">
-            📋 SEBI Compliant Financial Tools
+            🧮 Smart Financial Tools
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-slate-900 leading-tight mb-6">
             Financial Calculators
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
-              As per SEBI Guidelines
+              For Smarter Decisions
             </span>
           </h1>
           <p className="text-slate-500 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-            Explore SEBI-compliant financial calculators for investment planning,
-            retirement goals, loan management, tax calculations, and more.
+            Explore a curated set of financial calculators for investment planning,
+            retirement goals, loan management, tax estimation, and wealth tracking.
           </p>
         </section>
 
         {/* Category Stats */}
         <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 z-10">
-          <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-3xl p-6 md:p-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 text-center">
+          <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-3xl p-6 md:p-10 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center">
             {categories.map((cat) => (
               <div key={cat.name} className="flex flex-col items-center">
                 <div className="text-2xl">{cat.icon}</div>
@@ -290,7 +283,7 @@ export default function CalculatorsPage() {
           <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-3xl p-8 md:p-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-3xl font-black text-blue-600">{totalCalculators}</div>
-              <div className="text-slate-500 mt-1">SEBI Calculators</div>
+              <div className="text-slate-500 mt-1">Financial Tools</div>
             </div>
             <div>
               <div className="text-3xl font-black text-cyan-600">{categories.length}</div>
@@ -301,8 +294,8 @@ export default function CalculatorsPage() {
               <div className="text-slate-500 mt-1">Free & Secure</div>
             </div>
             <div>
-              <div className="text-3xl font-black text-purple-600">✓ SEBI</div>
-              <div className="text-slate-500 mt-1">Compliant Tools</div>
+              <div className="text-3xl font-black text-purple-600">✓ Trusted</div>
+              <div className="text-slate-500 mt-1">By Investors</div>
             </div>
           </div>
         </section>
@@ -311,18 +304,17 @@ export default function CalculatorsPage() {
         <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 z-10">
           <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-3xl p-8 md:p-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-6">
-              SEBI Compliant Financial Calculators
+              Why Use WealthFluent Calculators?
             </h2>
             <p className="text-slate-500 text-lg leading-relaxed mb-6">
-              All calculators on this page are designed following SEBI guidelines to provide
-              illustrative and educational value. They help users make informed financial
-              decisions by estimating investments, loan EMIs, retirement planning, tax
-              calculations, and wealth growth.
+              Our calculators are designed to help you make smarter financial decisions
+              with clarity and confidence. Whether you're planning investments, managing
+              loans, or preparing for retirement, these tools give you data-driven insights
+              at your fingertips.
             </p>
             <p className="text-slate-500 text-lg leading-relaxed mb-8">
-              WealthFluent provides free online financial calculators designed for beginners,
-              investors, students, and personal finance learners — all with a clean,
-              user-friendly interface.
+              WealthFluent is your trusted partner for financial literacy — offering
+              intuitive tools that are both educational and practical for everyday use.
             </p>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
