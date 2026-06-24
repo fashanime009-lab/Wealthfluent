@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+
 import {
   ArrowRight,
   BarChart3,
@@ -482,65 +483,7 @@ export default function WealthFluentHomepage() {
         <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
       </Helmet>
 
-      <header className="sticky top-0 z-50 bg-[#061427] text-white shadow-sm">
-        <div className="mx-auto flex h-[74px] max-w-[1440px] items-center justify-between px-5 lg:px-8">
-          <Link to="/" aria-label="FINAIW home">
-            <BrandMark />
-          </Link>
-
-          <nav className="hidden items-center gap-10 text-sm font-bold text-slate-200 md:flex">
-            <Link to="/calculators" className="transition hover:text-blue-300">Calculators</Link>
-            <Link to="/tools" className="transition hover:text-blue-300">Tools</Link>
-            <Link to="/quizzes" className="transition hover:text-blue-300">FinQuiz</Link>
-            <Link to="/blogs" className="transition hover:text-blue-300">Blogs</Link>
-          </nav>
-
-          <div className="hidden items-center gap-3 md:flex">
-            <Link
-              to="/wealth-dashboard"
-              className="rounded-md border border-blue-400/30 px-6 py-2.5 text-sm font-bold transition hover:border-blue-300 hover:bg-white/5"
-            >
-              Dashboard
-            </Link>
-            <Link
-              to="/sip-calculator"
-              className="rounded-md bg-blue-500 px-6 py-2.5 text-sm font-bold shadow-[0_8px_20px_rgba(37,99,235,.25)] transition hover:bg-blue-600"
-            >
-              Start Free
-            </Link>
-          </div>
-
-          <button
-            onClick={() => setMobileMenuOpen((open) => !open)}
-            className="grid h-10 w-10 place-items-center text-white md:hidden"
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        {mobileMenuOpen && (
-          <nav className="border-t border-white/10 px-5 py-4 md:hidden">
-            {[
-              ["Calculators", "/calculators"],
-              ["Tools", "/tools"],
-              ["FinQuiz", "/quizzes"],
-              ["Blogs", "/blogs"],
-              ["Dashboard", "/wealth-dashboard"],
-              ["Start Free", "/sip-calculator"],
-            ].map(([label, to]) => (
-              <Link
-                key={label}
-                to={to}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block border-b border-white/5 py-3 text-sm font-bold text-slate-200 last:border-b-0"
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
-        )}
-      </header>
+      
 
       <div className="border-b border-slate-200 bg-white/50 px-5 py-5 text-center text-sm text-slate-500">
         Clear tools and useful context for better financial decisions.
@@ -814,83 +757,8 @@ export default function WealthFluentHomepage() {
         </div>
       </main>
 
-      <footer className="bg-[#061427] px-5 py-8 text-white lg:px-8">
-        <div className="mx-auto grid max-w-[1440px] gap-10 md:grid-cols-[1.1fr_.8fr_1fr_1.2fr]">
-          <div>
-            <Link to="/" aria-label="FINAIW home">
-              <BrandMark compact />
-            </Link>
-            <p className="mt-7 max-w-xs text-sm leading-relaxed text-slate-400">
-              FINAIW helps people make sense of money with clear tools, fresh context, and fewer buzzwords.
-            </p>
-            <p className="mt-6 text-xs text-slate-500">© {new Date().getFullYear()} FINAIW. All rights reserved.</p>
-          </div>
-
-          <div>
-            <h2 className="text-sm font-black">Explore</h2>
-            {[
-              ["Live Finance News", "/news"],
-              ["Investing Blogs", "/blogs"],
-              ["FinQuiz", "/quizzes"],
-              ["Portfolio Tracker", "/portfolio-tracker"],
-              ["FIRE Planning", "/fire-calculator"],
-            ].map(([label, to]) => (
-              <Link key={label} to={to} className="mt-3 block text-sm text-slate-400 transition hover:text-white">
-                {label}
-              </Link>
-            ))}
-          </div>
-
-          <div>
-            <h2 className="text-sm font-black">Company</h2>
-            {[
-              ["Why FINAIW", "/about"],
-              ["Data Disclaimer", "/disclaimer"],
-              ["Help and Feedback", "/contact"],
-              ["Privacy Policy", "/privacy-policy"],
-              ["Contact Us", "/contact"],
-            ].map(([label, to]) => (
-              <Link key={label} to={to} className="mt-3 block text-sm text-slate-400 transition hover:text-white">
-                {label}
-              </Link>
-            ))}
-          </div>
-
-          <div>
-            <form onSubmit={submitNewsletter} className="rounded-md bg-white/5 p-5 ring-1 ring-white/10">
-              <h2 className="text-sm font-black">Subscribe to the Newsletter</h2>
-              <p className="mt-2 text-sm leading-relaxed text-slate-400">
-                A concise roundup of useful financial stories and tools.
-              </p>
-              <label className="mt-5 flex h-11 items-center rounded-md bg-[#0d1e34] px-3 ring-1 ring-white/10 focus-within:ring-blue-400">
-                <Mail size={16} className="text-slate-500" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  className="ml-3 min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-500"
-                  placeholder="Enter your email"
-                  aria-label="Email address"
-                />
-              </label>
-              <button type="submit" className="mt-3 w-full rounded-md bg-blue-500 py-2.5 text-sm font-bold text-white transition hover:bg-blue-600">
-                Subscribe
-              </button>
-              {newsletterStatus.message && (
-                <p className={`mt-3 text-xs ${newsletterStatus.type === "success" ? "text-emerald-400" : "text-amber-300"}`}>
-                  {newsletterStatus.message}
-                </p>
-              )}
-            </form>
-            <Link
-              to="/privacy-policy"
-              className="mt-4 block rounded-md border border-white/15 py-2.5 text-center text-sm font-semibold text-slate-300 transition hover:border-blue-400 hover:text-white"
-            >
-              Privacy Dashboard
-            </Link>
-          </div>
-        </div>
-      </footer>
+      
     </div>
+    
   );
 }

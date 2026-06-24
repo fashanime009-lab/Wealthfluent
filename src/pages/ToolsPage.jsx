@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+
 
 export default function ToolsPage() {
   const tools = [
@@ -67,7 +66,7 @@ export default function ToolsPage() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-100/10 rounded-full blur-3xl"></div>
         </div>
 
-        <Navbar />
+       
 
         {/* Hero */}
         <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 text-center z-10">
@@ -201,7 +200,7 @@ export default function ToolsPage() {
           </div>
         </section>
 
-        <Footer />
+       
       </div>
     </>
   );

@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+
 
 export default function DisclaimerPage() {
   return (
@@ -15,7 +14,7 @@ export default function DisclaimerPage() {
       </Helmet>
 
       <div className="min-h-screen bg-[#f3f7fc] text-slate-800">
-        <Navbar />
+        
 
         <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
           <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8 md:p-12">
@@ -288,7 +287,7 @@ export default function DisclaimerPage() {
           </div>
         </section>
 
-        <Footer />
+       
       </div>
     </>
   );

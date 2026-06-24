@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Layout from "./components/Layout";
 
 import AboutPage from "./pages/AboutPage";
 import BlogPage from "./pages/BlogsPage";
@@ -38,6 +39,7 @@ export default function App() {
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
+         <Route element={<Layout />}>
         <Route path="/" element={<WealthFluentHomepage />} />
         <Route path="/news" element={<NewsPage />} />
         <Route path="/quizzes" element={<QuizzesPage />} />
@@ -69,7 +71,9 @@ export default function App() {
         <Route path="/inflation-calculator" element={<InflationCalculatorPage />} />
         <Route path="/rate-of-return-calculator" element={<RateOfReturnCalculatorPage />} />
         <Route path="/retirement-investment-tracker" element={<RetirementInvestmentTrackerPage />} />
+        </Route>
       </Routes>
+      
     </BrowserRouter>
   );
 }

@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { Helmet } from "react-helmet";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+
 
 export default function InflationCalculatorPage() {
   // ─── State ──────────────────────────────────────────────────────
@@ -60,7 +59,7 @@ export default function InflationCalculatorPage() {
       </Helmet>
 
       <div className="min-h-screen bg-[#f3f7fc] text-slate-800">
-        <Navbar />
+        
 
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
           {/* Header */}
@@ -339,7 +338,7 @@ export default function InflationCalculatorPage() {
           </div>
         </section>
 
-        <Footer />
+        
       </div>
     </>
   );
