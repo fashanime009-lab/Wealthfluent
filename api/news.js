@@ -1,3 +1,5 @@
+import { getGNews } from "./providers/gnews.js";
+
 const NEWSDATA_ENDPOINT = "https://newsdata.io/api/1/news";
 const ALLOWED_CATEGORIES = new Set([
   "business",
@@ -78,6 +80,7 @@ function sendJson(res, status, payload) {
 }
 
 export default async function handler(req, res) {
+  console.log("NEWS API HIT");
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
     return sendJson(res, 405, {
@@ -119,21 +122,50 @@ export default async function handler(req, res) {
         Accept: "application/json",
       },
     });
-    const data = await response.json().catch(() => ({}));
+    console.log("Status:", response.status);
+
+const data = await response.json().catch(() => ({}));
+
+console.log("Response:", data);
 
     if (!response.ok || data.status === "error") {
-      console.error("NewsData request failed", {
-        status: response.status,
-        code: data.code,
-        message: data.results?.message || data.message,
-      });
 
-      return sendJson(res, response.ok ? 502 : response.status, {
-        success: false,
-        message: "Live news is unavailable right now. Please try again shortly.",
-        results: [],
-      });
-    }
+  console.warn("NewsData failed. Switching to GNews...");
+
+  try {
+
+    const gnews = await getGNews({
+      category,
+      query,
+      limit,
+    });
+
+    res.setHeader(
+      "Cache-Control",
+      "s-maxage=60, stale-while-revalidate=300"
+    );
+
+    return sendJson(res, 200, {
+      success: true,
+      provider: gnews.provider,
+      fetchedAt: new Date().toISOString(),
+      nextPage: "",
+      results: gnews.results,
+    });
+
+  } catch (gnewsError) {
+
+    console.error("GNews failed:", gnewsError);
+
+    return sendJson(res, 500, {
+      success: false,
+      message: "All news providers are currently unavailable.",
+      results: [],
+    });
+
+  }
+
+}
 
     const results = dedupeArticles((data.results || []).map(normalizeArticle));
 
