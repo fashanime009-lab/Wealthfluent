@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import { fetchNews, NEWS_REFRESH_INTERVAL } from "../services/newsService";
 
 import {
   ArrowRight,
@@ -28,10 +29,8 @@ import {
   XCircle,
 } from "lucide-react";
 
-const NEWS_RSS =
-  "https://news.google.com/rss/search?q=finance%20OR%20investing%20OR%20stock%20market%20OR%20economy%20when:1d&hl=en-IN&gl=IN&ceid=IN:en";
 
-const NEWSDATA_API_KEY = import.meta.env.VITE_NEWSDATA_API_KEY || "";
+
 const NEWSLETTER_ENDPOINT = import.meta.env.VITE_NEWSLETTER_ENDPOINT || "";
 const SITE_URL =
   import.meta.env.VITE_SITE_URL ||
@@ -109,26 +108,7 @@ const tools = [
   },
 ];
 
-function proxyUrl(url) {
-  return `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-}
 
-function cleanText(value = "") {
-  return value
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&#39;/g, "'")
-    .replace(/&quot;/g, '"')
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function shortDescription(value = "") {
-  const cleaned = cleanText(value);
-  if (!cleaned) return "Open the full story for the latest details and context.";
-  return cleaned.length > 150 ? `${cleaned.slice(0, 147)}...` : cleaned;
-}
 
 function formatDate(value) {
   const date = new Date(value);
@@ -139,91 +119,6 @@ function formatDate(value) {
     month: "short",
     year: "numeric",
   }).format(date);
-}
-
-function normaliseNewsDataArticle(article, index) {
-  return {
-    id: article.article_id || article.link || `${article.title}-${index}`,
-    title: cleanText(article.title || "Financial news"),
-    description: shortDescription(article.description || article.content),
-    link: article.link,
-    source: article.source_name || "NewsData",
-    publishedAt: article.pubDate,
-    image: article.image_url || "",
-    category: article.category?.[0] || "Finance",
-  };
-}
-
-function extractRssImage(item) {
-  const media =
-    item.querySelector("content")?.getAttribute("url") ||
-    item.querySelector("thumbnail")?.getAttribute("url") ||
-    "";
-
-  if (media) return media;
-
-  const description = item.querySelector("description")?.textContent || "";
-  return description.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1] || "";
-}
-
-async function fetchNewsData() {
-  if (!NEWSDATA_API_KEY) throw new Error("NewsData key is not configured");
-
-  const params = new URLSearchParams({
-    apikey: NEWSDATA_API_KEY,
-    category: "business",
-    language: "en",
-    country: "in,us",
-  });
-
-  const response = await fetch(`https://newsdata.io/api/1/news?${params.toString()}`);
-  if (!response.ok) throw new Error("NewsData request failed");
-
-  const data = await response.json();
-  return (data.results || [])
-    .filter((article) => article.title && article.link)
-    .map(normaliseNewsDataArticle);
-}
-
-async function fetchGoogleNewsRss() {
-  const response = await fetch(proxyUrl(NEWS_RSS));
-  if (!response.ok) throw new Error("Google News RSS request failed");
-
-  const xml = await response.text();
-  const document = new DOMParser().parseFromString(xml, "text/xml");
-
-  return Array.from(document.querySelectorAll("item"))
-    .filter((item) => item.querySelector("title")?.textContent && item.querySelector("link")?.textContent)
-    .map((item, index) => {
-      const fullTitle = cleanText(item.querySelector("title")?.textContent || "");
-      const titleParts = fullTitle.split(" - ");
-      const source = titleParts.length > 1 ? titleParts.pop() : "Google News";
-
-      return {
-        id: item.querySelector("guid")?.textContent || item.querySelector("link")?.textContent || `${fullTitle}-${index}`,
-        title: titleParts.join(" - ") || fullTitle,
-        description: shortDescription(item.querySelector("description")?.textContent || ""),
-        link: item.querySelector("link")?.textContent,
-        source,
-        publishedAt: item.querySelector("pubDate")?.textContent,
-        image: extractRssImage(item),
-        category: "Finance",
-      };
-    });
-}
-
-async function fetchLiveArticles() {
-  const requests = [fetchGoogleNewsRss()];
-  if (NEWSDATA_API_KEY) requests.unshift(fetchNewsData());
-
-  const results = await Promise.allSettled(requests);
-  const articles = results.flatMap((result) => (result.status === "fulfilled" ? result.value : []));
-  const uniqueArticles = Array.from(
-    new Map(articles.filter((article) => article.link).map((article) => [article.link, article])).values(),
-  );
-
-  if (!uniqueArticles.length) throw new Error("No live articles are available");
-  return uniqueArticles.slice(0, 18);
 }
 
 function buildLiveQuiz(articles) {
@@ -376,26 +271,35 @@ export default function WealthFluentHomepage() {
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [email, setEmail] = useState("");
   const [newsletterStatus, setNewsletterStatus] = useState({ type: "", message: "" });
+  const newsRequestRef = useRef(null);
 
-  const loadNews = useCallback(async () => {
+  const loadNews = useCallback(async ({ force = false } = {}) => {
+    if (newsRequestRef.current) return newsRequestRef.current;
+
     setLoading(true);
 
-    try {
-      const liveArticles = await fetchLiveArticles();
-      setArticles(liveArticles);
-      setLastUpdated(new Date());
-      setNewsError("");
-    } catch {
-      setArticles([]);
-      setNewsError("Live stories are unavailable right now. Please try again in a moment.");
-    } finally {
-      setLoading(false);
-    }
+    const request = fetchNews({ category: "business", limit: 18, force })
+      .then(({ articles: liveArticles, fetchedAt }) => {
+        setArticles(liveArticles.slice(0, 18));
+        setLastUpdated(new Date(fetchedAt));
+        setNewsError("");
+      })
+      .catch((error) => {
+        setArticles([]);
+        setNewsError(error.message || "Live stories are unavailable right now. Please try again in a moment.");
+      })
+      .finally(() => {
+        setLoading(false);
+        newsRequestRef.current = null;
+      });
+
+    newsRequestRef.current = request;
+    return request;
   }, []);
 
   useEffect(() => {
     const initialLoad = window.setTimeout(loadNews, 0);
-    const interval = window.setInterval(loadNews, 60000);
+    const interval = window.setInterval(() => loadNews({ force: true }), NEWS_REFRESH_INTERVAL);
     return () => {
       window.clearTimeout(initialLoad);
       window.clearInterval(interval);
@@ -505,7 +409,7 @@ export default function WealthFluentHomepage() {
               action={
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={loadNews}
+                    onClick={() => loadNews({ force: true })}
                     className="grid h-10 w-10 place-items-center rounded-md border border-slate-300 bg-white text-slate-600 transition hover:border-blue-400 hover:text-blue-600"
                     aria-label="Refresh live news"
                   >
@@ -534,7 +438,7 @@ export default function WealthFluentHomepage() {
                 <div className="rounded-md border border-amber-200 bg-amber-50 p-6 text-center">
                   <XCircle className="mx-auto text-amber-600" size={26} />
                   <p className="mt-3 text-sm font-semibold text-amber-800">{newsError}</p>
-                  <button onClick={loadNews} className="mt-4 rounded-md bg-[#061427] px-5 py-2 text-sm font-bold text-white">
+                  <button onClick={() => loadNews({ force: true })} className="mt-4 rounded-md bg-[#061427] px-5 py-2 text-sm font-bold text-white">
                     Try Again
                   </button>
                 </div>

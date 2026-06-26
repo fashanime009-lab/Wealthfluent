@@ -1,47 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowLeft,
   ArrowUpRight,
   Bot,
-  CheckCircle2,
   Clock3,
-  Loader2,
   RefreshCw,
   Search,
 } from "lucide-react";
-
-const NEWSDATA_API_KEY =
-  import.meta.env.VITE_NEWSDATA_API_KEY || "pub_3798230f728e4a6090ad3c705557970b";
+import { DEFAULT_NEWS_QUERY, fetchNews, NEWS_REFRESH_INTERVAL } from "../services/newsService";
 
 const categories = ["business", "technology", "top"];
-
-function newsUrl({ category = "business", query = "", page = "" }) {
-  const params = new URLSearchParams({
-    apikey: NEWSDATA_API_KEY,
-    language: "en",
-    country: "in,us",
-    category,
-  });
-
-  if (query.trim()) params.set("q", query.trim());
-  if (page) params.set("page", page);
-
-  return `https://newsdata.io/api/1/news?${params.toString()}`;
-}
-
-function fallbackArticles(query = "finance") {
-  return [
-    {
-      id: "fallback-finance",
-      title: "Open Live Finance News",
-      description: "The API is temporarily unavailable. Open a live finance news search for current headlines.",
-      link: `https://news.google.com/search?q=${encodeURIComponent(query || "finance market")}&hl=en-IN&gl=IN&ceid=IN%3Aen`,
-      source: "Google News",
-      publishedAt: new Date().toISOString(),
-    },
-  ];
-}
 
 function timeAgo(date) {
   const publishedAt = new Date(date).getTime();
@@ -53,27 +20,17 @@ function timeAgo(date) {
   return `${Math.floor(hours / 24)}d ago`;
 }
 
-function normalizeArticle(article, index) {
-  return {
-    id: article.article_id || article.link || `${article.title}-${index}`,
-    title: article.title || "Untitled finance update",
-    description: article.description || article.content || "Open the full story for details.",
-    link: article.link,
-    source: article.source_name || "NewsData",
-    publishedAt: article.pubDate || new Date().toISOString(),
-    image: article.image_url,
-  };
-}
-
 export default function NewsPage() {
   const [articles, setArticles] = useState([]);
   const [category, setCategory] = useState("business");
-  const [query, setQuery] = useState("finance OR stock market OR economy");
+  const [query, setQuery] = useState(DEFAULT_NEWS_QUERY);
   const [pageToken, setPageToken] = useState("");
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
-  const [lastUpdated, setLastUpdated] = useState(null);
+  const activeRequestRef = useRef("");
+  const loadArticlesRef = useRef(null);
+  const requestIdRef = useRef(0);
 
   const hasMore = Boolean(pageToken);
 
@@ -86,7 +43,16 @@ export default function NewsPage() {
     });
   }, [articles]);
 
-  const loadArticles = async ({ reset = false } = {}) => {
+  const loadArticles = useCallback(async ({ reset = false, force = false } = {}) => {
+    const nextPage = reset ? "" : pageToken;
+    const requestKey = JSON.stringify({ category, query, page: nextPage });
+
+    if (activeRequestRef.current === requestKey) return;
+
+    activeRequestRef.current = requestKey;
+    const requestId = requestIdRef.current + 1;
+    requestIdRef.current = requestId;
+
     if (reset) {
       setRefreshing(true);
     } else {
@@ -94,39 +60,42 @@ export default function NewsPage() {
     }
 
     try {
-      const response = await fetch(newsUrl({ category, query, page: reset ? "" : pageToken }));
-      if (!response.ok) throw new Error("News API request failed");
+      const data = await fetchNews({ category, query, page: nextPage, limit: 20, force });
+      if (requestId !== requestIdRef.current) return;
 
-      const data = await response.json();
-      const nextArticles = (data.results || []).filter((item) => item.title && item.link).map(normalizeArticle);
-
-      setArticles((current) => (reset ? nextArticles : [...current, ...nextArticles]));
-      setPageToken(data.nextPage || "");
-      setLastUpdated(new Date());
+      setArticles((current) => (reset ? data.articles : [...current, ...data.articles]));
+      setPageToken(data.nextPage);
       setError("");
-    } catch {
-      setArticles((current) => (current.length ? current : fallbackArticles(query)));
+    } catch (newsError) {
+      if (requestId !== requestIdRef.current) return;
       setPageToken("");
-      setLastUpdated(new Date());
-      setError("Live API unavailable. Showing safe live-search fallback.");
+      setError(newsError.message || "Live news is unavailable right now. Please try again shortly.");
     } finally {
-      setLoading(false);
-      setRefreshing(false);
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+        setRefreshing(false);
+      }
+      activeRequestRef.current = "";
     }
-  };
+  }, [category, pageToken, query]);
 
   useEffect(() => {
-    loadArticles({ reset: true });
+    loadArticlesRef.current = loadArticles;
+  }, [loadArticles]);
+
+  useEffect(() => {
+    const initialLoad = window.setTimeout(() => loadArticlesRef.current?.({ reset: true }), 0);
+    return () => window.clearTimeout(initialLoad);
   }, [category]);
 
   useEffect(() => {
-    const interval = window.setInterval(() => loadArticles({ reset: true }), 60000);
+    const interval = window.setInterval(() => loadArticlesRef.current?.({ reset: true, force: true }), NEWS_REFRESH_INTERVAL);
     return () => window.clearInterval(interval);
   }, [category, query]);
 
   const searchNews = (event) => {
     event.preventDefault();
-    loadArticles({ reset: true });
+    loadArticles({ reset: true, force: true });
   };
 
   return (
@@ -192,12 +161,20 @@ export default function NewsPage() {
             >
               <div className="relative h-48 bg-[#061225]">
                 {article.image ? (
-                  <img src={article.image} alt="" className="h-full w-full object-cover" />
-                ) : (
-                  <div className="flex h-full items-center justify-center bg-[radial-gradient(circle_at_30%_20%,#2563eb,transparent_35%),linear-gradient(135deg,#061225,#0f2d55)] text-2xl font-black text-white">
-                    FinAI News
-                  </div>
-                )}
+                  <img
+                    src={article.image}
+                    alt=""
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                    onError={(event) => {
+                      event.currentTarget.style.display = "none";
+                      event.currentTarget.nextElementSibling?.classList.remove("hidden");
+                    }}
+                  />
+                ) : null}
+                <div className={article.image ? "hidden flex h-full items-center justify-center bg-[radial-gradient(circle_at_30%_20%,#2563eb,transparent_35%),linear-gradient(135deg,#061225,#0f2d55)] text-2xl font-black text-white" : "flex h-full items-center justify-center bg-[radial-gradient(circle_at_30%_20%,#2563eb,transparent_35%),linear-gradient(135deg,#061225,#0f2d55)] text-2xl font-black text-white"}>
+                  FinAI News
+                </div>
               </div>
               <div className="p-6">
                 <div className="flex items-center justify-between text-xs font-semibold text-blue-600">
