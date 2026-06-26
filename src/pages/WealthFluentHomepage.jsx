@@ -328,14 +328,16 @@ function LiveNewsRow({ article }) {
   );
 }
 
-function FeatureCard({ item }) {
+function FeatureCard({ item, comingSoon = false }) {
   const Icon = item.icon;
 
-  return (
-    <div
-      to={item.to}
-      className="group flex min-h-[150px] flex-col justify-between rounded-md bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,.05)] ring-1 ring-slate-100 transition hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(15,23,42,.1)]"
-    >
+  const Card = comingSoon ? "div" : Link;
+
+return (
+  <Card
+    {...(!comingSoon ? { to: item.to } : {})}
+    className="group flex min-h-[150px] flex-col justify-between rounded-md bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,.05)] ring-1 ring-slate-100 transition hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(15,23,42,.1)]"
+  >
       <div>
         <div className="grid h-9 w-9 place-items-center rounded-md bg-slate-50">
           <Icon className={item.color} size={21} />
@@ -343,10 +345,16 @@ function FeatureCard({ item }) {
         <h3 className="mt-4 text-sm font-black text-slate-900">{item.title}</h3>
         <p className="mt-2 text-xs leading-relaxed text-slate-500">{item.desc}</p>
       </div>
-      <span className="text-xs font-bold text-slate-400">
-  Coming Soon
-</span>
-    </div>
+      {comingSoon ? (
+  <span className="text-xs font-bold text-slate-400">
+    Coming Soon
+  </span>
+) : (
+  <span className="text-xs font-bold text-blue-600 group-hover:translate-x-1 transition">
+    Open →
+  </span>
+)}
+    </Card>
   );
 }
 
@@ -566,8 +574,12 @@ export default function WealthFluentHomepage() {
             />
             <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
               {tools.map((item) => (
-                <FeatureCard key={item.title} item={item} />
-              ))}
+  <FeatureCard
+    key={item.title}
+    item={item}
+    comingSoon={true}
+  />
+))}
             </div>
           </section>
         </div>
