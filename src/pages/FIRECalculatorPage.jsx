@@ -13,6 +13,7 @@ import {
 
 
 export default function FIRECalculatorPage() {
+  const [currency, setCurrency] = useState("$");
   const [formData, setFormData] = useState({
     currentAge: 25,
     retirementAge: 45,
@@ -81,7 +82,7 @@ export default function FIRECalculatorPage() {
 
   // Format currency
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       maximumFractionDigits: 0,
     }).format(value);
   };
@@ -125,6 +126,25 @@ export default function FIRECalculatorPage() {
             {/* Left Sidebar – Inputs */}
             <div className="xl:sticky xl:top-28 h-fit">
               <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
+              <div className="mb-6">
+  <label className="block text-sm font-medium text-slate-600 mb-2">
+    Currency
+  </label>
+
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+  >
+    <option value="$">USD ($)</option>
+    <option value="€">EUR (€)</option>
+    <option value="£">GBP (£)</option>
+    <option value="₹">INR (₹)</option>
+    <option value="¥">JPY (¥)</option>
+    <option value="A$">AUD (A$)</option>
+    <option value="C$">CAD (C$)</option>
+  </select>
+</div>
                 <h2 className="text-2xl font-semibold text-slate-800 mb-6">
                   Your Financial Details
                 </h2>
@@ -133,9 +153,9 @@ export default function FIRECalculatorPage() {
                   {[
                     { label: "Current Age", name: "currentAge", min: 18, max: 80 },
                     { label: "Retirement Age", name: "retirementAge", min: 20, max: 80 },
-                    { label: "Monthly Expenses (₹)", name: "monthlyExpenses", min: 1000, max: 500000 },
-                    { label: "Current Savings (₹)", name: "currentSavings", min: 0, max: 10000000 },
-                    { label: "Monthly Investment (₹)", name: "monthlyInvestment", min: 0, max: 500000 },
+                    { label: `Monthly Expenses (${currency})`, name: "monthlyExpenses", min: 1000, max: 500000 },
+                    { label: `Current Savings (${currency})`, name: "currentSavings", min: 0, max: 10000000 },
+                    { label: `Monthly Investment (${currency})`, name: "monthlyInvestment", min: 0, max: 500000 },
                     { label: "Expected Return (% p.a.)", name: "expectedReturn", min: 0, max: 30 },
                     { label: "Inflation Rate (% p.a.)", name: "inflationRate", min: 0, max: 15 },
                   ].map((field) => (
@@ -149,7 +169,7 @@ export default function FIRECalculatorPage() {
                             ? formData[field.name]
                             : field.name.includes("Rate") || field.name.includes("Inflation")
                             ? `${formData[field.name]}%`
-                            : `₹${formatCurrency(formData[field.name])}`}
+                            : `${currency}${formatCurrency(formData[field.name])}`}
                         </span>
                       </div>
                       <input
@@ -189,13 +209,13 @@ export default function FIRECalculatorPage() {
                 <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6">
                   <p className="text-sm text-slate-500 mb-1">Estimated Wealth</p>
                   <h3 className="text-2xl font-bold text-blue-600">
-                    ₹{formatCurrency(results.totalWealth)}
+                    {currency}{formatCurrency(results.totalWealth)}
                   </h3>
                 </div>
                 <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6">
                   <p className="text-sm text-slate-500 mb-1">FIRE Number</p>
                   <h3 className="text-2xl font-bold text-slate-800">
-                    ₹{formatCurrency(results.fireNumber)}
+                    {currency}{formatCurrency(results.fireNumber)}
                   </h3>
                 </div>
                 <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6">
@@ -214,18 +234,20 @@ export default function FIRECalculatorPage() {
                     Projected wealth growth over time based on your inputs.
                   </p>
                 </div>
-                <div className="w-full h-[300px] md:h-[400px]">
+                <div className="w-full min-h-[300px] h-[300px] md:h-[400px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={results.chartData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                       <XAxis dataKey="age" stroke="#94a3b8" />
                       <YAxis
                         stroke="#94a3b8"
-                        tickFormatter={(value) => `₹${(value / 100000).toFixed(0)}L`}
+                        tickFormatter={(value) =>
+  `${currency}${(value / 1000000).toFixed(1)}M`
+}
                       />
                       <Tooltip
                         formatter={(value) =>
-                          `₹${new Intl.NumberFormat("en-IN").format(value)}`
+                          `${currency}${new Intl.NumberFormat("en-US").format(value)}`
                         }
                         labelFormatter={(label) => `Age: ${label}`}
                       />
@@ -258,7 +280,7 @@ export default function FIRECalculatorPage() {
                     <p className="text-slate-600 leading-relaxed">
                       Future monthly expenses after inflation may be approximately{" "}
                       <span className="font-bold text-slate-800">
-                        ₹{formatCurrency(results.futureExpenses)}
+                        {currency}{formatCurrency(results.futureExpenses)}
                       </span>.
                     </p>
                   </div>

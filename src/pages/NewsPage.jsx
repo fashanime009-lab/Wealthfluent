@@ -131,18 +131,7 @@ export default function NewsPage() {
 
   return (
     <main className="min-h-screen bg-[#f3f7fc] text-slate-950">
-      <header className="bg-[#061225] px-6 py-5 text-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 text-sm font-semibold text-blue-200">
-            <ArrowLeft size={18} />
-            Back Home
-          </Link>
-          <div className="flex items-center gap-2 text-sm text-slate-300">
-            {refreshing ? <Loader2 className="animate-spin" size={16} /> : <CheckCircle2 className="text-emerald-400" size={16} />}
-            {lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}` : "Connecting live feed"}
-          </div>
-        </div>
-      </header>
+     
 
       <section className="mx-auto max-w-7xl px-6 py-10">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">

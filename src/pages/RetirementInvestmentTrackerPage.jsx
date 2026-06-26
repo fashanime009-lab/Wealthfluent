@@ -4,7 +4,8 @@ import { Helmet } from "react-helmet";
 
 export default function RetirementInvestmentTrackerPage() {
   // ─── State ──────────────────────────────────────────────────────
-  const [annualIncrease, setAnnualIncrease] = useState(10);
+const [annualIncrease, setAnnualIncrease] = useState(10);
+const [currency, setCurrency] = useState("$");
   const [rows, setRows] = useState([
     { id: 1, year: new Date().getFullYear(), target: 0, actual: 0 },
   ]);
@@ -78,7 +79,7 @@ export default function RetirementInvestmentTrackerPage() {
 
   // ─── Format currency ──────────────────────────────────────────
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
@@ -90,7 +91,7 @@ export default function RetirementInvestmentTrackerPage() {
   return (
     <>
       <Helmet>
-        <title>Retirement Investment Tracker – Track Your Retirement Goals</title>
+        <title>Retirement Investment Tracker – Plan & Track Retirement Savings</title>
         <meta
           name="description"
           content="Track your retirement investments year by year. Set annual increase targets and monitor your actual contributions."
@@ -120,6 +121,25 @@ export default function RetirementInvestmentTrackerPage() {
 
           {/* Main Content */}
           <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
+          <div className="mb-8">
+  <label className="block text-sm font-medium text-slate-600 mb-2">
+    Currency
+  </label>
+
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+  >
+    <option value="$">USD ($)</option>
+    <option value="€">EUR (€)</option>
+    <option value="£">GBP (£)</option>
+    <option value="₹">INR (₹)</option>
+    <option value="¥">JPY (¥)</option>
+    <option value="A$">AUD (A$)</option>
+    <option value="C$">CAD (C$)</option>
+  </select>
+</div>
             {/* Annual Increase Input */}
             <div className="mb-8">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -164,10 +184,10 @@ export default function RetirementInvestmentTrackerPage() {
                       Year
                     </th>
                     <th className="text-right py-3 px-3 text-sm font-semibold text-slate-600">
-                      Investment Target (₹)
+                      Investment Target ({currency})
                     </th>
                     <th className="text-right py-3 px-3 text-sm font-semibold text-slate-600">
-                      Actual (₹)
+                      Actual ({currency})
                     </th>
                     <th className="text-center py-3 px-3 text-sm font-semibold text-slate-600 w-[50px]">
                       <span className="sr-only">Actions</span>
@@ -234,10 +254,10 @@ export default function RetirementInvestmentTrackerPage() {
                       Total
                     </td>
                     <td className="py-3 px-3 text-sm font-bold text-slate-700 text-right">
-                      ₹{formatCurrency(totals.totalTarget)}
+                      {currency}{formatCurrency(totals.totalTarget)}
                     </td>
                     <td className="py-3 px-3 text-sm font-bold text-slate-700 text-right">
-                      ₹{formatCurrency(totals.totalActual)}
+                      {currency}{formatCurrency(totals.totalActual)}
                     </td>
                     <td></td>
                   </tr>
@@ -262,11 +282,11 @@ export default function RetirementInvestmentTrackerPage() {
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/50">
                 <p className="text-xs text-slate-500">Total Target</p>
-                <p className="text-xl font-bold text-slate-800">₹{formatCurrency(totals.totalTarget)}</p>
+                <p className="text-xl font-bold text-slate-800">{currency}{formatCurrency(totals.totalTarget)}</p>
               </div>
               <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/50">
                 <p className="text-xs text-slate-500">Total Actual</p>
-                <p className="text-xl font-bold text-blue-600">₹{formatCurrency(totals.totalActual)}</p>
+                <p className="text-xl font-bold text-blue-600">{currency}{formatCurrency(totals.totalActual)}</p>
               </div>
               <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/50">
                 <p className="text-xs text-slate-500">Progress</p>
@@ -281,7 +301,9 @@ export default function RetirementInvestmentTrackerPage() {
               <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/50">
                 <p className="text-xs text-slate-500">Variance</p>
                 <p className={`text-xl font-bold ${totals.variance >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                  {totals.variance >= 0 ? '+' : ''}₹{formatCurrency(totals.variance)}
+                  {totals.variance >= 0 ? '+' : ''}
+{currency}
+{formatCurrency(totals.variance)}
                 </p>
               </div>
             </div>
@@ -357,13 +379,13 @@ export default function RetirementInvestmentTrackerPage() {
                 <div>
                   <h3 className="text-lg font-semibold text-slate-700">How do I determine my annual increase percentage?</h3>
                   <p className="text-slate-500 leading-relaxed">
-                    A good starting point is to match the average inflation rate (around 6-7% in India) plus your expected income growth. Many investors use 10% as a reasonable target for annual increase in retirement investments.
+                    A good starting point is to match the average inflation rate (the average inflation rate in your country) plus your expected income growth. Many investors use 10% as a reasonable target for annual increase in retirement investments.
                   </p>
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-slate-700">What should I include in my retirement investments?</h3>
                   <p className="text-slate-500 leading-relaxed">
-                    Include all investments earmarked for retirement, such as mutual funds (SIPs), PPF, EPF, NPS, stocks, bonds, and any other long-term savings vehicles.
+                    Include all investments earmarked for retirement, such as mutual funds (SIPs), retirement accounts, mutual funds, stocks, bonds, ETFs, and other long-term investments, stocks, bonds, and any other long-term savings vehicles.
                   </p>
                 </div>
                 <div>

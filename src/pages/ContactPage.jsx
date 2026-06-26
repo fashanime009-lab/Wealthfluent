@@ -1,125 +1,190 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Helmet } from "react-helmet";
+
 
 export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  setIsSubmitting(true);
+
+  try {
+    const response = await fetch("/api/contact", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setFormSubmitted(true);
+
+      setFormData({
+        name: "",
+        email: "",
+        message: "",
+      });
+
+      setTimeout(() => {
+        setFormSubmitted(false);
+      }, 5000);
+    } else {
+      alert("Failed to send message.");
+    }
+  } catch (err) {
+    console.error(err);
+
+    alert("Something went wrong.");
+  }
+
+  setIsSubmitting(false);
+};
+
   return (
-    <div className="min-h-screen bg-[#07111f] text-white">
-      {/* Header */}
-      <header className="border-b border-white/10 bg-[#07111f]/80 backdrop-blur-xl">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/">
-            <h1 className="text-2xl font-black">
-              Wealth<span className="text-cyan-400">Fluent</span>
-            </h1>
-          </Link>
+    <>
+      <Helmet>
+        <title>Contact Us – FINAIW</title>
+        <meta
+          name="description"
+          content="Get in touch with FINAIW. We're here to help with your financial questions. Based in Mumbai, India."
+        />
+        <meta
+          name="keywords"
+          content="contact FINAIW, support, feedback, financial intelligence"
+        />
+      </Helmet>
 
-          <Link
-            to="/"
-            className="text-cyan-400 hover:text-cyan-300 transition"
-          >
-            ← Back To Home
-          </Link>
-        </div>
-      </header>
+      <div className="min-h-screen bg-[#f3f7fc] text-slate-800">
+       
 
-      {/* Main */}
-      <section className="max-w-5xl mx-auto px-6 py-20">
-        <div className="mb-14">
-          <p className="text-cyan-400 font-semibold mb-3">
-            CONTACT US
-          </p>
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+          <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8 md:p-12">
+            {/* Header */}
+            <div className="text-center mb-10">
+              <p className="text-sm font-semibold text-blue-600 uppercase tracking-wider mb-2">
+                Get in Touch
+              </p>
+              <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+                We're Here to Help
+              </h1>
+              <p className="text-slate-500 text-lg leading-relaxed max-w-2xl mx-auto">
+                Have a question or feedback? Reach out to us — we'd love to hear from you.
+              </p>
+            </div>
 
-          <h1 className="text-5xl md:text-6xl font-black leading-tight">
-            Get In Touch
-          </h1>
-
-          <p className="text-slate-400 text-lg mt-6 max-w-2xl leading-relaxed">
-            Have questions, feedback, partnership opportunities,
-            or suggestions for new finance tools? Reach out anytime.
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-10">
-          {/* Left */}
-          <div className="bg-white/5 border border-white/10 rounded-[32px] p-8">
-            <h2 className="text-3xl font-black mb-8">
-              Contact Information
-            </h2>
-
-            <div className="space-y-8">
+            {/* Contact Form */}
+            <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
               <div>
-                <p className="text-slate-400 mb-2">
-                  General Inquiries
-                </p>
-
-                <h3 className="text-2xl font-bold text-cyan-400">
-                  contact@wealthfluent.com
-                </h3>
+                <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
+                  Your Name <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  placeholder="Enter your name"
+                />
               </div>
 
               <div>
-                <p className="text-slate-400 mb-2">
-                  Business Partnerships
-                </p>
-
-                <h3 className="text-2xl font-bold text-cyan-400">
-                  partnerships@wealthfluent.com
-                </h3>
+                <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
+                  Email Address <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  placeholder="you@example.com"
+                />
               </div>
 
               <div>
-                <p className="text-slate-400 mb-2">
-                  Response Time
-                </p>
+                <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-1">
+                  Message <span className="text-red-400">*</span>
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="5"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-y"
+                  placeholder="What would you like to tell us?"
+                />
+              </div>
 
-                <h3 className="text-2xl font-bold">
-                  Within 24-48 Hours
-                </h3>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-blue-600 hover:bg-blue-700 transition text-white font-semibold py-3 rounded-xl shadow-sm shadow-blue-200/50 text-lg disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? "Sending..." : "Send Message"}
+              </button>
+
+              {formSubmitted && (
+                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-emerald-700 text-sm text-center">
+                  Thank you! We've received your message and will respond within 24 hours.
+                </div>
+              )}
+            </form>
+
+            {/* Simple contact info */}
+            <div className="mt-12 pt-8 border-t border-slate-200 flex flex-col sm:flex-row justify-center items-center gap-6 text-center">
+              <div>
+                <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">
+                  Email Us
+                </p>
+                <a
+                  href="mailto:support@finaiw.com"
+                  className="text-blue-600 hover:underline font-medium text-lg"
+                >
+                  support@finaiw.com
+                </a>
+              </div>
+              <div className="hidden sm:block w-px h-10 bg-slate-200" />
+              <div>
+                <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">
+                  Location
+                </p>
+                <p className="text-slate-700 font-medium text-lg">Mumbai, India</p>
               </div>
             </div>
+
+            <p className="mt-6 text-sm text-slate-400 text-center">
+              We'll reply to you personally. We're here to help.
+            </p>
           </div>
+        </section>
 
-          {/* Right */}
-          <div className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-400/10 rounded-[32px] p-8">
-            <h2 className="text-3xl font-black mb-8">
-              Why Contact Us?
-            </h2>
-
-            <div className="space-y-6 text-slate-300 leading-relaxed">
-              <p>
-                • Report calculator issues or bugs
-              </p>
-
-              <p>
-                • Suggest new finance tools
-              </p>
-
-              <p>
-                • Partnership and advertising inquiries
-              </p>
-
-              <p>
-                • General feedback and improvements
-              </p>
-
-              <p>
-                • Financial content collaboration
-              </p>
-            </div>
-
-            <div className="mt-10 p-6 bg-[#0d1a2b] border border-white/10 rounded-3xl">
-              <h3 className="text-2xl font-black mb-4">
-                WealthFluent Mission
-              </h3>
-
-              <p className="text-slate-400 leading-relaxed">
-                Building free and accessible financial tools
-                for smarter money management and long-term
-                wealth growth.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+        
+      </div>
+    </>
   );
 }

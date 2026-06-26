@@ -9,7 +9,7 @@ export default function DisclaimerPage() {
         <title>Disclaimer – FINAIW</title>
         <meta
           name="description"
-          content="Read the full disclaimer for FINAIW (Financial Intelligence with AI for Wealth). Learn about our use of calculators, educational content, and limitations of liability."
+          content="Read the FINAIW disclaimer. Learn about our educational content, AI-generated insights, financial calculators, affiliate disclosure, and limitations of liability."
         />
       </Helmet>
 
@@ -89,7 +89,7 @@ export default function DisclaimerPage() {
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1 ml-2">
                   <li>
-                    AI-generated content may contain errors or omissions.
+                    AI-generated content may contain errors, omissions, or outdated information.
                   </li>
                   <li>
                     You are responsible for verifying any AI-generated information 

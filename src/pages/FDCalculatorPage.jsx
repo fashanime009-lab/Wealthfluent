@@ -7,6 +7,7 @@ export default function FDCalculatorPage() {
   const [principal, setPrincipal] = useState(100000);
   const [rate, setRate] = useState(7);
   const [years, setYears] = useState(5);
+  const [currency, setCurrency] = useState("$");
 
   const maturityAmount = Math.round(
     principal * Math.pow(1 + rate / 100, years)
@@ -15,7 +16,7 @@ export default function FDCalculatorPage() {
 
   // Format currency
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       maximumFractionDigits: 0,
     }).format(value);
   };
@@ -23,14 +24,14 @@ export default function FDCalculatorPage() {
   return (
     <>
       <Helmet>
-        <title>FD Calculator India – Fixed Deposit Returns</title>
+        <title>Fixed Deposit Calculator – Deposit Growth & Returns</title>
         <meta
           name="description"
-          content="Free FD Calculator to estimate fixed deposit maturity amount, interest earned, and investment growth with different rates and tenures."
+          content="Free Fixed Deposit Calculator to estimate fixed deposit maturity amount, interest earned, and investment growth with different rates and tenures."
         />
         <meta
           name="keywords"
-          content="FD calculator, fixed deposit calculator, FD returns, investment calculator"
+          content="Fixed Deposit Calculator, fixed deposit calculator, FD returns, investment calculator"
         />
       </Helmet>
 
@@ -45,7 +46,7 @@ export default function FDCalculatorPage() {
               Financial Calculators
             </p>
             <h1 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
-              FD Calculator
+              Fixed Deposit Calculator
             </h1>
             <p className="text-slate-500 text-lg mt-3 max-w-2xl">
               Estimate fixed deposit maturity value and interest earnings
@@ -57,6 +58,25 @@ export default function FDCalculatorPage() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Panel – Inputs */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
+            <div className="mb-6">
+  <label className="block text-sm font-medium text-slate-600 mb-2">
+    Currency
+  </label>
+
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+  >
+    <option value="$">USD ($)</option>
+    <option value="€">EUR (€)</option>
+    <option value="£">GBP (£)</option>
+    <option value="₹">INR (₹)</option>
+    <option value="¥">JPY (¥)</option>
+    <option value="A$">AUD (A$)</option>
+    <option value="C$">CAD (C$)</option>
+  </select>
+</div>
               <h2 className="text-2xl font-semibold text-slate-800 mb-6">
                 Deposit Details
               </h2>
@@ -69,7 +89,7 @@ export default function FDCalculatorPage() {
                       Deposit Amount
                     </label>
                     <span className="text-sm font-semibold text-blue-600">
-                      ₹{formatCurrency(principal)}
+                      {currency}{formatCurrency(principal)}
                     </span>
                   </div>
                   <input
@@ -82,8 +102,8 @@ export default function FDCalculatorPage() {
                     className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
-                    <span>₹1,000</span>
-                    <span>₹50,00,000</span>
+                    <span>{currency}1,000</span>
+<span>{currency}5,000,000</span>
                   </div>
                   <input
                     type="number"
@@ -177,7 +197,7 @@ export default function FDCalculatorPage() {
               <div className="mb-6">
                 <p className="text-sm text-slate-500">Maturity Amount</p>
                 <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mt-1">
-                  ₹{formatCurrency(maturityAmount)}
+                  {currency}{formatCurrency(maturityAmount)}
                 </h2>
               </div>
 
@@ -187,7 +207,7 @@ export default function FDCalculatorPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-slate-600">Interest Earned</span>
                     <span className="text-lg font-semibold text-emerald-600">
-                      ₹{formatCurrency(interestEarned)}
+                      {currency}{formatCurrency(interestEarned)}
                     </span>
                   </div>
                   <div className="mt-3 h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
@@ -205,7 +225,7 @@ export default function FDCalculatorPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-slate-600">Initial Deposit</span>
                     <span className="text-lg font-semibold text-slate-800">
-                      ₹{formatCurrency(principal)}
+                      {currency}{formatCurrency(principal)}
                     </span>
                   </div>
                   <div className="mt-3 h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
@@ -239,14 +259,12 @@ export default function FDCalculatorPage() {
             {/* What is FD Calculator */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
               <h2 className="text-2xl font-bold text-slate-800 mb-4">
-                What Is FD Calculator?
+                What Is Fixed Deposit Calculator?
               </h2>
               <p className="text-slate-500 leading-relaxed">
-                An FD Calculator helps investors estimate fixed deposit maturity
+                An Fixed Deposit Calculator helps investors estimate fixed deposit maturity
                 value and total interest earnings based on investment amount,
-                interest rate, and investment duration. Fixed Deposits are one
-                of the most popular low-risk investment options offered by banks
-                and financial institutions in India.
+                interest rate, and investment duration. Fixed deposits, term deposits, certificates of deposit, and similar savings products are popular low-risk investment options offered by banks and financial institutions worldwide.
               </p>
             </div>
 
@@ -288,7 +306,7 @@ export default function FDCalculatorPage() {
                     Better Savings Planning
                   </h3>
                   <p className="text-slate-500 leading-relaxed">
-                    FD calculators help estimate future maturity value for
+                    Fixed Deposit Calculator help estimate future maturity value for
                     retirement planning, emergency funds, and wealth preservation.
                   </p>
                 </div>
@@ -321,11 +339,10 @@ export default function FDCalculatorPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-slate-700">
-                    Which is better: FD or SIP?
+                    Which is better: Fixed Deposit or Recurring Investment?
                   </h3>
                   <p className="text-slate-500 leading-relaxed">
-                    FDs provide stable fixed returns, while SIP investments
-                    offer potentially higher long-term market-linked growth.
+                    Fixed deposits provide stable returns, while recurring investments in diversified portfolios may offer higher long-term growth but with greater risk.
                   </p>
                 </div>
               </div>

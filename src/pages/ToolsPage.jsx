@@ -5,19 +5,19 @@ import { Helmet } from "react-helmet";
 export default function ToolsPage() {
   const tools = [
     {
-      title: "Goal Planner",
+      title: "Financial Goal Planner",
       desc: "Plan future savings and investment goals.",
       icon: "🎯",
       color: "from-blue-500 to-cyan-400",
     },
     {
-      title: "Risk Analyzer",
+      title: "Investment Risk Analyzer",
       desc: "Understand investment risk profiles.",
       icon: "📊",
       color: "from-purple-500 to-pink-400",
     },
     {
-      title: "Portfolio Tracker",
+      title: "Portfolio Management",
       desc: "Track investments and monitor portfolio performance.",
       icon: "📈",
       //route: "/portfolio-tracker",
@@ -25,7 +25,7 @@ export default function ToolsPage() {
       popular: true,
     },
     {
-      title: "Inflation Calculator",
+      title: "Inflation Insights",
       desc: "Estimate purchasing power impact over time.",
       icon: "📉",
       color: "from-amber-500 to-orange-400",
@@ -80,8 +80,7 @@ export default function ToolsPage() {
             </span>
           </h1>
           <p className="text-slate-500 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-            Explore premium financial planning utilities, investment tools,
-            market resources, and educational finance systems.
+            Discover upcoming financial research tools, portfolio management utilities, investment analysis resources, and educational finance systems.
           </p>
         </section>
 
@@ -144,15 +143,15 @@ export default function ToolsPage() {
           <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-3xl p-8 md:p-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
               <div className="text-3xl font-black text-blue-600">6</div>
-              <div className="text-slate-500 mt-1">Powerful Tools</div>
+              <div className="text-slate-500 mt-1">Upcoming Tools</div>
             </div>
             <div>
               <div className="text-3xl font-black text-cyan-600">100%</div>
               <div className="text-slate-500 mt-1">Free to Use</div>
             </div>
             <div>
-              <div className="text-3xl font-black text-emerald-600">📈</div>
-              <div className="text-slate-500 mt-1">Data-Driven Insights</div>
+              <div className="text-3xl font-black text-emerald-600">🚀</div>
+              <div className="text-slate-500 mt-1">Launching Soon</div>
             </div>
           </div>
         </section>

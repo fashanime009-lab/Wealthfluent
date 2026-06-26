@@ -15,7 +15,7 @@ export default function Navbar() {
 
           <div>
             <div className="text-2xl font-black leading-none tracking-tight">
-              FinAI
+              FINAIW
             </div>
 
             <div className="mt-1 text-xs text-slate-300">
@@ -54,12 +54,7 @@ export default function Navbar() {
   <GoogleTranslate />
 </div>
 
-          <Link
-            to="/wealth-dashboard"
-            className="hidden rounded-md border border-slate-600 px-6 py-3 text-sm font-semibold text-white transition hover:border-blue-400 sm:block"
-          >
-            Login
-          </Link>
+          
 
           <Link
             to="/sip-calculator"

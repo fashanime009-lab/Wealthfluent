@@ -8,6 +8,7 @@ export default function BondYieldCalculatorPage() {
   const [parValue, setParValue] = useState(1000);
   const [couponRate, setCouponRate] = useState(8);
   const [yearsToMaturity, setYearsToMaturity] = useState(10);
+  const [currency, setCurrency] = useState("$");
 
   // ─── Calculations ──────────────────────────────────────────────
   const results = useMemo(() => {
@@ -35,7 +36,7 @@ export default function BondYieldCalculatorPage() {
 
   // ─── Format currency ──────────────────────────────────────────
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(value);
@@ -98,6 +99,25 @@ export default function BondYieldCalculatorPage() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Panel – Inputs */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
+            <div className="mb-6">
+  <label className="block text-sm font-medium text-slate-600 mb-2">
+    Currency
+  </label>
+
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+  >
+    <option value="$">USD ($)</option>
+    <option value="€">EUR (€)</option>
+    <option value="£">GBP (£)</option>
+    <option value="₹">INR (₹)</option>
+    <option value="¥">JPY (¥)</option>
+    <option value="A$">AUD (A$)</option>
+    <option value="C$">CAD (C$)</option>
+  </select>
+</div>
               <h2 className="text-2xl font-semibold text-slate-800 mb-6">
                 Bond Details
               </h2>
@@ -110,7 +130,7 @@ export default function BondYieldCalculatorPage() {
                       Current Price
                     </label>
                     <span className="text-sm font-semibold text-blue-600">
-                      ₹{formatCurrency(currentPrice)}
+                      {currency}{formatCurrency(currentPrice)}
                     </span>
                   </div>
                   <input
@@ -123,8 +143,8 @@ export default function BondYieldCalculatorPage() {
                     className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
-                    <span>₹100</span>
-                    <span>₹10,000</span>
+                    <span>{currency}100</span>
+<span>{currency}10,000</span>
                   </div>
                   <input
                     type="number"
@@ -144,7 +164,7 @@ export default function BondYieldCalculatorPage() {
                       Par Value
                     </label>
                     <span className="text-sm font-semibold text-blue-600">
-                      ₹{formatCurrency(parValue)}
+                      {currency}{formatCurrency(parValue)}
                     </span>
                   </div>
                   <input
@@ -157,8 +177,8 @@ export default function BondYieldCalculatorPage() {
                     className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
-                    <span>₹100</span>
-                    <span>₹10,000</span>
+                    <span>{currency}100</span>
+<span>{currency}10,000</span>
                   </div>
                   <input
                     type="number"
@@ -277,15 +297,15 @@ export default function BondYieldCalculatorPage() {
                   <h3 className="font-semibold text-slate-700 text-sm">Bond Summary</h3>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Coupon Payment</span>
-                    <span className="font-medium">₹{formatCurrency(results.couponPayment)}</span>
+                    <span className="font-medium">{currency}{formatCurrency(results.couponPayment)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Current Price</span>
-                    <span className="font-medium">₹{formatCurrency(currentPrice)}</span>
+                    <span className="font-medium">{currency}{formatCurrency(currentPrice)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Par Value</span>
-                    <span className="font-medium">₹{formatCurrency(parValue)}</span>
+                    <span className="font-medium">{currency}{formatCurrency(parValue)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Years to Maturity</span>
@@ -333,7 +353,7 @@ export default function BondYieldCalculatorPage() {
                   Please note that these calculators are for illustrations only and do not represent actual returns.
                 </p>
                 <p>
-                  Stock Market does not have a fixed rate of return and it is not possible to predict the rate of return.
+                  Bond yields and market prices change over time based on interest rates, credit quality, and market conditions. Actual investment returns may differ from these estimates.
                 </p>
               </div>
             </div>

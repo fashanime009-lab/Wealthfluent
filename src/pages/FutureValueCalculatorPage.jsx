@@ -8,6 +8,7 @@ export default function FutureValueCalculatorPage() {
   const [annualAddition, setAnnualAddition] = useState(12000);
   const [yearsToGrow, setYearsToGrow] = useState(20);
   const [growthRate, setGrowthRate] = useState(12);
+  const [currency, setCurrency] = useState("$");
 
   // ─── Calculations ──────────────────────────────────────────────
   const results = useMemo(() => {
@@ -36,7 +37,7 @@ export default function FutureValueCalculatorPage() {
 
   // ─── Format currency ──────────────────────────────────────────
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
@@ -102,6 +103,25 @@ export default function FutureValueCalculatorPage() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Panel – Inputs */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
+            <div className="mb-6">
+  <label className="block text-sm font-medium text-slate-600 mb-2">
+    Currency
+  </label>
+
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+  >
+    <option value="$">USD ($)</option>
+    <option value="€">EUR (€)</option>
+    <option value="£">GBP (£)</option>
+    <option value="₹">INR (₹)</option>
+    <option value="¥">JPY (¥)</option>
+    <option value="A$">AUD (A$)</option>
+    <option value="C$">CAD (C$)</option>
+  </select>
+</div>
               <h2 className="text-2xl font-semibold text-slate-800 mb-6">
                 Investment Details
               </h2>
@@ -114,7 +134,7 @@ export default function FutureValueCalculatorPage() {
                       Current Principal
                     </label>
                     <span className="text-sm font-semibold text-blue-600">
-                      ₹{formatCurrency(currentPrincipal)}
+                      {currency}{formatCurrency(currentPrincipal)}
                     </span>
                   </div>
                   <input
@@ -127,8 +147,8 @@ export default function FutureValueCalculatorPage() {
                     className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
-                    <span>₹0</span>
-                    <span>₹1,00,00,000</span>
+                    <span>{currency}0</span>
+<span>{currency}10,000,000</span>
                   </div>
                   <input
                     type="number"
@@ -148,7 +168,7 @@ export default function FutureValueCalculatorPage() {
                       Annual Addition
                     </label>
                     <span className="text-sm font-semibold text-blue-600">
-                      ₹{formatCurrency(annualAddition)}
+                      {currency}{formatCurrency(annualAddition)}
                     </span>
                   </div>
                   <input
@@ -161,8 +181,8 @@ export default function FutureValueCalculatorPage() {
                     className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
-                    <span>₹0</span>
-                    <span>₹10,00,000</span>
+                    <span>{currency}0</span>
+<span>{currency}1,000,000</span>
                   </div>
                   <input
                     type="number"
@@ -256,7 +276,7 @@ export default function FutureValueCalculatorPage() {
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
                   <p className="text-sm text-slate-500">Future Value</p>
                   <p className="text-4xl md:text-5xl font-bold text-blue-600 mt-1">
-                    ₹{formatCurrency(results.futureValue)}
+                    {currency}{formatCurrency(results.futureValue)}
                   </p>
                 </div>
 
@@ -275,12 +295,12 @@ export default function FutureValueCalculatorPage() {
                   <h3 className="font-semibold text-slate-700 text-sm">Investment Summary</h3>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Total Invested</span>
-                    <span className="font-medium">₹{formatCurrency(results.totalInvested)}</span>
+                    <span className="font-medium">{currency}{formatCurrency(results.totalInvested)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Total Returns</span>
                     <span className={`font-medium ${results.totalReturns >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                      ₹{formatCurrency(results.totalReturns)}
+                      {currency}{formatCurrency(results.totalReturns)}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm border-t border-slate-200 pt-2">
@@ -306,8 +326,8 @@ export default function FutureValueCalculatorPage() {
                     />
                   </div>
                   <div className="flex justify-between text-xs text-slate-400 mt-2">
-                    <span>₹{formatCurrency(results.totalInvested)}</span>
-                    <span>₹{formatCurrency(results.futureValue)}</span>
+                    <span>{currency}{formatCurrency(results.totalInvested)}</span>
+                    <span>{currency}{formatCurrency(results.futureValue)}</span>
                   </div>
                 </div>
               </div>
@@ -393,7 +413,7 @@ export default function FutureValueCalculatorPage() {
                 <div>
                   <h3 className="text-lg font-semibold text-slate-700">What is a good rate of return for long-term investments?</h3>
                   <p className="text-slate-500 leading-relaxed">
-                    Historically, Indian equity markets have delivered 12-15% CAGR over the long term. Debt instruments offer 6-9% returns. Your ideal rate depends on your risk tolerance and investment goals.
+                    Historically, stock markets have provided positive long-term returns, while bonds and fixed-income investments generally offer lower but more stable returns. Actual results vary by country, market conditions, and investment type. Your ideal rate depends on your risk tolerance and investment goals.
                   </p>
                 </div>
               </div>

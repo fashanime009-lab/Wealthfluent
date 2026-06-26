@@ -1,14 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
 
 export default function CalculatorsPage() {
+  const [searchParams] = useSearchParams();
+
+const selectedCategory = searchParams.get("category");
   // ─── Only calculators that have been created ──────────────────
   const categories = [
     {
+      id: "loan",
       name: "Interest & Loan Calculators",
       icon: "🏦",
-      description: "Calculate EMIs, future values, returns, and bond yields.",
+      description: "Calculate loan payments, future values, investment returns, and bond yields.",
       calculators: [
         {
           title: "EMI Calculator",
@@ -39,15 +43,15 @@ export default function CalculatorsPage() {
           color: "from-slate-500 to-gray-400",
         },
         {
-          title: "FD Calculator",
-          desc: "Estimate fixed deposit maturity and interest earned.",
+          title: "Fixed Deposit Calculator",
+desc: "Estimate deposit maturity value and interest earned.",
           route: "/fd-calculator",
           icon: "💰",
           color: "from-amber-500 to-orange-400",
         },
         {
           title: "GST Calculator",
-          desc: "Add or remove GST from any amount instantly.",
+          desc: "Calculate GST for purchases and business transactions (India).",
           route: "/gst-calculator",
           icon: "🧾",
           color: "from-red-500 to-rose-400",
@@ -55,20 +59,21 @@ export default function CalculatorsPage() {
       ],
     },
     {
-      name: "Mutual Fund & SIP Tools",
+      id: "investment",
+      name: "Investment Planning",
       icon: "📈",
-      description: "Plan your mutual fund investments and systematic investing.",
+      description: "Plan recurring investments and long-term wealth creation.",
       calculators: [
         {
           title: "SIP Calculator",
-          desc: "Estimate mutual fund SIP returns and wealth growth.",
+          desc: "Estimate recurring investment growth over time.",
           route: "/sip-calculator",
           icon: "📊",
           color: "from-blue-500 to-cyan-400",
           popular: true,
         },
         {
-          title: "Goal SIP Calculator",
+          title: "Goal Investment Calculator",
           desc: "Find the monthly SIP needed to reach your goal.",
           route: "/goal-sip",
           icon: "🎯",
@@ -84,6 +89,7 @@ export default function CalculatorsPage() {
       ],
     },
     {
+      id: "retirement",
       name: "Retirement Planning",
       icon: "🌴",
       description: "Secure your future with smart retirement strategies.",
@@ -120,6 +126,8 @@ export default function CalculatorsPage() {
       ],
     },
     {
+      id: "wealth",
+      
       name: "Wealth & Goal Planning",
       icon: "💼",
       description: "Track your net worth and plan your financial goals.",
@@ -141,21 +149,41 @@ export default function CalculatorsPage() {
       ],
     },
   ];
+const filteredCategories =
+  !selectedCategory
+    ? categories
+    : categories.filter((category) => {
+        if (selectedCategory === "loan")
+          return category.id === "loan";
 
+        if (selectedCategory === "investment")
+          return category.id === "investment";
+
+        if (selectedCategory === "retirement")
+          return category.id === "retirement";
+
+        if (selectedCategory === "wealth")
+          return category.id === "wealth";
+
+        if (selectedCategory === "goal")
+          return category.id === "wealth";
+
+        return true;
+      });
   // ─── Total count ──────────────────────────────────────────────
-  const totalCalculators = categories.reduce((sum, cat) => sum + cat.calculators.length, 0);
+  const totalCalculators = filteredCategories.reduce((sum, cat) => sum + cat.calculators.length, 0);
 
   return (
     <>
       <Helmet>
-        <title>Financial Calculators – WealthFluent</title>
+        <title>Financial Calculators – FINAIW</title>
         <meta
           name="description"
-          content="Explore free financial calculators for SIP, EMI, FD, GST, retirement planning, net worth, and more. Make smarter money decisions with WealthFluent."
+          content="Explore free financial calculators for investments, loans, retirement planning, bond yields, net worth, inflation, and more. Make smarter financial decisions with FINAIW."
         />
         <meta
           name="keywords"
-          content="financial calculators, SIP calculator, EMI calculator, retirement calculator, net worth calculator, mutual fund tools"
+          content="financial calculators, investment calculator, loan calculator, retirement calculator, bond yield calculator, net worth calculator, inflation calculator"
         />
       </Helmet>
 
@@ -181,15 +209,14 @@ export default function CalculatorsPage() {
             </span>
           </h1>
           <p className="text-slate-500 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-            Explore a curated set of financial calculators for investment planning,
-            retirement goals, loan management, tax estimation, and wealth tracking.
+            Explore a curated collection of financial calculators for investing, retirement planning, loans, inflation, bond analysis, and wealth management.
           </p>
         </section>
 
         {/* Category Stats */}
         <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 z-10">
           <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-3xl p-6 md:p-10 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center">
-            {categories.map((cat) => (
+            {filteredCategories.map((cat) => (
               <div key={cat.name} className="flex flex-col items-center">
                 <div className="text-2xl">{cat.icon}</div>
                 <div className="text-xs font-semibold text-slate-700 mt-1 leading-tight">{cat.name}</div>
@@ -201,7 +228,7 @@ export default function CalculatorsPage() {
 
         {/* Calculators by Category */}
         <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 z-10">
-          {categories.map((category) => (
+          {filteredCategories.map((category) => (
             <div key={category.name} className="mb-16 last:mb-0">
               {/* Category Header */}
               <div className="flex items-center gap-3 mb-6">
@@ -303,7 +330,7 @@ export default function CalculatorsPage() {
         <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 z-10">
           <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-3xl p-8 md:p-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-6">
-              Why Use WealthFluent Calculators?
+              Why Use FINAIW Calculators?
             </h2>
             <p className="text-slate-500 text-lg leading-relaxed mb-6">
               Our calculators are designed to help you make smarter financial decisions
@@ -312,14 +339,14 @@ export default function CalculatorsPage() {
               at your fingertips.
             </p>
             <p className="text-slate-500 text-lg leading-relaxed mb-8">
-              WealthFluent is your trusted partner for financial literacy — offering
+              FINAIW is your trusted partner for financial literacy — offering
               intuitive tools that are both educational and practical for everyday use.
             </p>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
                 <div className="text-3xl mb-3">📊</div>
                 <h3 className="font-semibold text-slate-800 mb-2">Investment Planning</h3>
-                <p className="text-sm text-slate-500">SIP, CAGR, and retirement calculators to grow your wealth.</p>
+                <p className="text-sm text-slate-500">Investment, CAGR, and retirement calculators to grow your wealth.</p>
               </div>
               <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
                 <div className="text-3xl mb-3">🏦</div>
@@ -329,7 +356,7 @@ export default function CalculatorsPage() {
               <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
                 <div className="text-3xl mb-3">🧾</div>
                 <h3 className="font-semibold text-slate-800 mb-2">Tax & Savings</h3>
-                <p className="text-sm text-slate-500">GST and FD calculators for smarter tax and savings planning.</p>
+                <p className="text-sm text-slate-500">Tax and savings calculators for smarter financial planning.</p>
               </div>
             </div>
             <div className="mt-8 text-xs text-slate-400 border-t border-slate-100 pt-6">

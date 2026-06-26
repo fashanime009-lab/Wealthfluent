@@ -10,6 +10,7 @@ export default function SIPCalculatorPage() {
   const [annualReturn, setAnnualReturn] = useState(12);
   const [years, setYears] = useState(15);
   const [showInvestModal, setShowInvestModal] = useState(false);
+  const [currency, setCurrency] = useState("₹");
 
   // Calculations
   const monthlyRate = annualReturn / 12 / 100;
@@ -47,16 +48,16 @@ export default function SIPCalculatorPage() {
   };
 
   // Format currency
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
+ const formatCurrency = (value) => {
+  return new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 0,
+  }).format(value);
+};
 
   return (
     <>
       <Helmet>
-        <title>SIP Calculator India – Calculate Mutual Fund Returns</title>
+        <title>SIP Calculator – Calculate Investment Growth</title>
         <meta
           name="description"
           content="Free SIP Calculator to estimate mutual fund investment returns with monthly SIP amount, expected returns, and investment duration."
@@ -89,6 +90,25 @@ export default function SIPCalculatorPage() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Panel – Inputs */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
+            <div className="mb-6">
+  <label className="block text-sm font-medium text-slate-600 mb-2">
+    Currency
+  </label>
+
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+  >
+    <option value="$">USD ($)</option>
+    <option value="€">EUR (€)</option>
+    <option value="£">GBP (£)</option>
+    <option value="₹">INR (₹)</option>
+    <option value="¥">JPY (¥)</option>
+    <option value="A$">AUD (A$)</option>
+    <option value="C$">CAD (C$)</option>
+  </select>
+</div>
               <h2 className="text-2xl font-semibold text-slate-800 mb-6">
                 Investment Details
               </h2>
@@ -101,7 +121,7 @@ export default function SIPCalculatorPage() {
                       SIP Amount
                     </label>
                     <span className="text-sm font-semibold text-blue-600">
-                      ₹{formatCurrency(monthlyInvestment)}
+                      {currency}{formatCurrency(monthlyInvestment)}
                     </span>
                   </div>
                   <input
@@ -114,8 +134,8 @@ export default function SIPCalculatorPage() {
                     className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
-                    <span>₹500</span>
-                    <span>₹1,00,000</span>
+                    <span>{currency}500</span>
+<span>{currency}100,000</span>
                   </div>
                   <input
                     type="number"
@@ -209,7 +229,7 @@ export default function SIPCalculatorPage() {
               <div className="mb-6">
                 <p className="text-sm text-slate-500">Future value of your investment:</p>
                 <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mt-1">
-                  ₹{formatCurrency(futureValue)}
+                  {currency}{formatCurrency(futureValue)}
                 </h2>
               </div>
 
@@ -219,7 +239,7 @@ export default function SIPCalculatorPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-slate-600">Your Investment</span>
                     <span className="text-lg font-semibold text-slate-800">
-                      ₹{formatCurrency(investedAmount)}
+                      {currency}{formatCurrency(investedAmount)}
                     </span>
                   </div>
                   <div className="mt-3 h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
@@ -241,8 +261,9 @@ export default function SIPCalculatorPage() {
                         estimatedReturns >= 0 ? "text-emerald-600" : "text-red-500"
                       }`}
                     >
-                      {estimatedReturns >= 0 ? "+" : "-"}₹
-                      {formatCurrency(Math.abs(estimatedReturns))}
+                     {estimatedReturns >= 0 ? "+" : "-"}
+{currency}
+{formatCurrency(Math.abs(estimatedReturns))}
                     </span>
                   </div>
                   <div className="mt-3 h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
@@ -399,14 +420,14 @@ export default function SIPCalculatorPage() {
                     Your SIP Could Grow To
                   </h2>
                   <h3 className="text-5xl font-black text-blue-600 mt-2">
-                    ₹{formatCurrency(futureValue)}
+                    {currency}{formatCurrency(futureValue)}
                   </h3>
 
                   <div className="grid grid-cols-3 gap-4 mt-8">
                     <div className="bg-slate-50 rounded-2xl p-4 text-center">
                       <p className="text-sm text-slate-500">Monthly SIP</p>
                       <p className="text-xl font-bold text-slate-800">
-                        ₹{formatCurrency(monthlyInvestment)}
+                        {currency}{formatCurrency(monthlyInvestment)}
                       </p>
                     </div>
                     <div className="bg-slate-50 rounded-2xl p-4 text-center">
@@ -429,7 +450,7 @@ export default function SIPCalculatorPage() {
                       AI Wealth Insight
                     </h4>
                     <p className="text-sm text-slate-600">
-                      If you increase your SIP by just ₹2,000 every year,
+                      If you increase your monthly investment by just 2,000 units every year,
                       your long-term wealth potential could increase dramatically
                       through compound growth.
                     </p>

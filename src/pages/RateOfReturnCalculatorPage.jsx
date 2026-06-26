@@ -7,6 +7,7 @@ export default function RateOfReturnCalculatorPage() {
   const [presentValue, setPresentValue] = useState(10000);
   const [futureValue, setFutureValue] = useState(50000);
   const [yearsToGrow, setYearsToGrow] = useState(5);
+  const [currency, setCurrency] = useState("$");
 
   // ─── Calculations ──────────────────────────────────────────────
   const rateOfReturn = useMemo(() => {
@@ -17,7 +18,7 @@ export default function RateOfReturnCalculatorPage() {
 
   // ─── Format currency ──────────────────────────────────────────
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
@@ -80,6 +81,25 @@ export default function RateOfReturnCalculatorPage() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Panel – Inputs */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
+            <div className="mb-6">
+  <label className="block text-sm font-medium text-slate-600 mb-2">
+    Currency
+  </label>
+
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+  >
+    <option value="$">USD ($)</option>
+    <option value="€">EUR (€)</option>
+    <option value="£">GBP (£)</option>
+    <option value="₹">INR (₹)</option>
+    <option value="¥">JPY (¥)</option>
+    <option value="A$">AUD (A$)</option>
+    <option value="C$">CAD (C$)</option>
+  </select>
+</div>
               <h2 className="text-2xl font-semibold text-slate-800 mb-6">
                 Investment Details
               </h2>
@@ -92,7 +112,7 @@ export default function RateOfReturnCalculatorPage() {
                       Present Value
                     </label>
                     <span className="text-sm font-semibold text-blue-600">
-                      ₹{formatCurrency(presentValue)}
+                      {currency}{formatCurrency(presentValue)}
                     </span>
                   </div>
                   <input
@@ -105,8 +125,8 @@ export default function RateOfReturnCalculatorPage() {
                     className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
-                    <span>₹100</span>
-                    <span>₹1,00,00,000</span>
+                    <span>{currency}100</span>
+<span>{currency}10,000,000</span>
                   </div>
                   <input
                     type="number"
@@ -126,7 +146,7 @@ export default function RateOfReturnCalculatorPage() {
                       Future Value
                     </label>
                     <span className="text-sm font-semibold text-blue-600">
-                      ₹{formatCurrency(futureValue)}
+                      {currency}{formatCurrency(futureValue)}
                     </span>
                   </div>
                   <input
@@ -139,8 +159,8 @@ export default function RateOfReturnCalculatorPage() {
                     className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
-                    <span>₹100</span>
-                    <span>₹10,00,00,000</span>
+                    <span>{currency}100</span>
+<span>{currency}100,000,000</span>
                   </div>
                   <input
                     type="number"
@@ -209,13 +229,13 @@ export default function RateOfReturnCalculatorPage() {
                   <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/50">
                     <p className="text-xs text-slate-500">Present Value</p>
                     <p className="text-lg font-bold text-slate-800">
-                      ₹{formatCurrency(presentValue)}
+                      {currency}{formatCurrency(presentValue)}
                     </p>
                   </div>
                   <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/50">
                     <p className="text-xs text-slate-500">Future Value</p>
                     <p className="text-lg font-bold text-slate-800">
-                      ₹{formatCurrency(futureValue)}
+                      {currency}{formatCurrency(futureValue)}
                     </p>
                   </div>
                 </div>
@@ -226,7 +246,7 @@ export default function RateOfReturnCalculatorPage() {
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Total Gain</span>
                     <span className={`font-medium ${totalGain >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                      ₹{formatCurrency(totalGain)}
+                      {currency}{formatCurrency(totalGain)}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
@@ -256,8 +276,8 @@ export default function RateOfReturnCalculatorPage() {
                     />
                   </div>
                   <div className="flex justify-between text-xs text-slate-400 mt-2">
-                    <span>₹{formatCurrency(presentValue)}</span>
-                    <span>₹{formatCurrency(futureValue)}</span>
+                    <span>{currency}{formatCurrency(presentValue)}</span>
+                    <span>{currency}{formatCurrency(futureValue)}</span>
                   </div>
                 </div>
               </div>
@@ -331,7 +351,7 @@ export default function RateOfReturnCalculatorPage() {
                 <div>
                   <h3 className="text-lg font-semibold text-slate-700">What is a good rate of return?</h3>
                   <p className="text-slate-500 leading-relaxed">
-                    Historically, Indian equity markets have delivered 12-15% CAGR over long periods. Debt instruments typically offer 6-9% returns. The ideal return depends on your risk tolerance and investment goals.
+                    Historically, stock markets have delivered positive long-term returns, but performance varies by country, asset class, and time period. A good rate of return depends on your goals, risk tolerance, and investment horizon. Debt instruments typically offer 6-9% returns. The ideal return depends on your risk tolerance and investment goals.
                   </p>
                 </div>
                 <div>

@@ -7,6 +7,7 @@ export default function InflationCalculatorPage() {
   const [currentExpenses, setCurrentExpenses] = useState(10000);
   const [inflationRate, setInflationRate] = useState(7);
   const [timePeriod, setTimePeriod] = useState(30);
+  const [currency, setCurrency] = useState("$");
 
   // ─── Calculations ──────────────────────────────────────────────
   const futureCost = useMemo(() => {
@@ -17,7 +18,7 @@ export default function InflationCalculatorPage() {
 
   // ─── Format currency ──────────────────────────────────────────
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(value);
@@ -79,6 +80,25 @@ export default function InflationCalculatorPage() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Panel – Inputs */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
+            <div className="mb-6">
+  <label className="block text-sm font-medium text-slate-600 mb-2">
+    Currency
+  </label>
+
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+  >
+    <option value="$">USD ($)</option>
+    <option value="€">EUR (€)</option>
+    <option value="£">GBP (£)</option>
+    <option value="₹">INR (₹)</option>
+    <option value="¥">JPY (¥)</option>
+    <option value="A$">AUD (A$)</option>
+    <option value="C$">CAD (C$)</option>
+  </select>
+</div>
               <h2 className="text-2xl font-semibold text-slate-800 mb-6">
                 Inflation Details
               </h2>
@@ -88,10 +108,10 @@ export default function InflationCalculatorPage() {
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="text-sm font-medium text-slate-600">
-                      Value of Current Expenses
+                      Current Expense Amount
                     </label>
                     <span className="text-sm font-semibold text-blue-600">
-                      ₹{formatCurrency(currentExpenses)}
+                      {currency}{formatCurrency(currentExpenses)}
                     </span>
                   </div>
                   <input
@@ -104,8 +124,8 @@ export default function InflationCalculatorPage() {
                     className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
-                    <span>₹100</span>
-                    <span>₹10,00,000</span>
+                    <span>{currency}100</span>
+<span>{currency}1,000,000</span>
                   </div>
                   <input
                     type="number"
@@ -199,7 +219,7 @@ export default function InflationCalculatorPage() {
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
                   <p className="text-sm text-slate-500">Future Cost</p>
                   <p className="text-4xl md:text-5xl font-bold text-blue-600 mt-1">
-                    ₹{formatCurrency(futureCost)}
+                    {currency}{formatCurrency(futureCost)}
                   </p>
                 </div>
 
@@ -208,7 +228,7 @@ export default function InflationCalculatorPage() {
                   <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/50">
                     <p className="text-xs text-slate-500">Current Expenses</p>
                     <p className="text-lg font-bold text-slate-800">
-                      ₹{formatCurrency(currentExpenses)}
+                      {currency}{formatCurrency(currentExpenses)}
                     </p>
                   </div>
                   <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/50">
@@ -226,7 +246,7 @@ export default function InflationCalculatorPage() {
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-500">Increase in Cost</span>
                       <span className="font-medium text-amber-600">
-                        +₹{formatCurrency(futureCost - currentExpenses)}
+                        +{currency}{formatCurrency(futureCost - currentExpenses)}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
@@ -276,7 +296,7 @@ export default function InflationCalculatorPage() {
               <h2 className="text-2xl font-bold text-slate-800 mb-4">How to Use This Calculator</h2>
               <ol className="list-decimal list-inside text-slate-500 space-y-2">
                 <li>Enter your current monthly or annual expenses.</li>
-                <li>Set the expected annual inflation rate (historical average in India is ~6-7%).</li>
+                <li>Set the expected annual inflation rate (historical inflation rates vary by country and economic conditions).</li>
                 <li>Choose the time period (years) for which you want to calculate the future cost.</li>
                 <li>The calculator will show the future cost and the impact of inflation on your purchasing power.</li>
               </ol>
@@ -316,9 +336,9 @@ export default function InflationCalculatorPage() {
               <h2 className="text-2xl font-bold text-slate-800 mb-4">Frequently Asked Questions</h2>
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-slate-700">What is the average inflation rate in India?</h3>
+                  <h3 className="text-lg font-semibold text-slate-700">What is a typical inflation rate?</h3>
                   <p className="text-slate-500 leading-relaxed">
-                    India's average inflation rate has historically ranged between 4% to 7%. The RBI targets an inflation rate of 4% (±2%). However, inflation can vary significantly based on economic conditions.
+                    Inflation rates vary by country and over time. Many developed economies have historically targeted around 2%, while emerging economies may experience higher inflation rates. However, inflation can vary significantly based on economic conditions.
                   </p>
                 </div>
                 <div>

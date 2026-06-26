@@ -43,35 +43,35 @@ const calculators = [
     desc: "See what you own, what you owe, and where you stand.",
     icon: Wallet,
     color: "text-cyan-500",
-    to: "/wealth-dashboard",
+    to: "/calculators?category=wealth",
   },
   {
-    title: "Financial Goal Planner",
+    title: "Goal Planning",
     desc: "Work backwards from the life goal you care about.",
     icon: Target,
     color: "text-blue-500",
-    to: "/sip-calculator",
+    to: "/calculators?category=goal",
   },
   {
-    title: "Mutual Fund Calculator",
+    title: "Investment Calculators",
     desc: "Estimate how regular investing may grow over time.",
     icon: PieChart,
     color: "text-orange-500",
-    to: "/sip-calculator",
+    to: "/calculators?category=investment",
   },
   {
-    title: "Interest Calculator",
-    desc: "Understand interest without reaching for a spreadsheet.",
+    title: "Loan Calculators",
+    desc: "Understand loans, deposits and returns.",
     icon: CircleDollarSign,
     color: "text-fuchsia-500",
-    to: "/fd-calculator",
+    to: "/calculators?category=loan",
   },
   {
     title: "Retirement Planning",
     desc: "Build a practical retirement target and monthly plan.",
     icon: Goal,
     color: "text-rose-500",
-    to: "/retirement-calculator",
+    to: "/calculators?category=retirement",
   },
   {
     title: "All Calculators",
@@ -84,32 +84,28 @@ const calculators = [
 
 const tools = [
   {
-    title: "Market Tools",
-    desc: "Explore market-focused research and useful references.",
+    title: "Market Research",
+    desc: "Research companies, sectors, and financial markets.",
     icon: TrendingUp,
     color: "text-emerald-500",
-    to: "/tools",
   },
   {
     title: "Stock Analysis",
-    desc: "Review a company with a more disciplined checklist.",
+    desc: "Analyze businesses using key financial metrics.",
     icon: BarChart3,
     color: "text-blue-500",
-    to: "/tools",
   },
   {
-    title: "Portfolio Tools",
-    desc: "Track investments and keep your allocation organised.",
+    title: "Portfolio Management",
+    desc: "Track and organize your investment portfolio.",
     icon: BriefcaseBusiness,
     color: "text-orange-500",
-    to: "/portfolio-tracker",
   },
   {
-    title: "All Tools",
-    desc: "Open the complete FINAIW financial toolkit.",
+    title: "Financial Toolkit",
+    desc: "Explore upcoming FINAIW financial planning tools.",
     icon: Grid2X2,
     color: "text-violet-500",
-    to: "/tools",
   },
 ];
 
@@ -336,7 +332,7 @@ function FeatureCard({ item }) {
   const Icon = item.icon;
 
   return (
-    <Link
+    <div
       to={item.to}
       className="group flex min-h-[150px] flex-col justify-between rounded-md bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,.05)] ring-1 ring-slate-100 transition hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(15,23,42,.1)]"
     >
@@ -347,8 +343,10 @@ function FeatureCard({ item }) {
         <h3 className="mt-4 text-sm font-black text-slate-900">{item.title}</h3>
         <p className="mt-2 text-xs leading-relaxed text-slate-500">{item.desc}</p>
       </div>
-      <ArrowRight className="mt-4 text-slate-400 transition group-hover:translate-x-1 group-hover:text-blue-600" size={15} />
-    </Link>
+      <span className="text-xs font-bold text-slate-400">
+  Coming Soon
+</span>
+    </div>
   );
 }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet";
 
 
@@ -11,13 +11,13 @@ export default function NetWorthCalculatorPage() {
     fixedDeposits: 200000,
     recurringDeposits: 0,
     debtMutualFunds: 0,
-    ppfSelf: 500000,
-    ppfSpouse: 0,
-    ppfChildren: 0,
-    epf: 0,
-    nps: 1000000,
-    nsc: 0,
-    kvp: 0,
+    retirementAccount: 500000,
+spouseRetirementAccount: 0,
+childrenRetirementAccount: 0,
+employerRetirementPlan: 0,
+governmentRetirementPlan: 1000000,
+governmentBond: 0,
+savingsCertificate: 0,
     corporateDeposits: 0,
     postOfficeDeposits: 0,
     shares: 0,
@@ -40,6 +40,7 @@ export default function NetWorthCalculatorPage() {
   });
 
   // ─── Liability States ──────────────────────────────────────────
+  const [currency, setCurrency] = useState("$");
   const [liabilities, setLiabilities] = useState({
     homeLoan: 2500000,
     carLoan: 0,
@@ -92,7 +93,14 @@ export default function NetWorthCalculatorPage() {
     "businessPartnership", "realEstate", "other1", "other2", "other3", "other4",
     "other5", "other6"
   ];
-  const partialLiquidKeys = ["ppfSelf", "ppfSpouse", "ppfChildren", "epf", "nps", "bonds"];
+ const partialLiquidKeys = [
+  "retirementAccount",
+  "spouseRetirementAccount",
+  "childrenRetirementAccount",
+  "employerRetirementPlan",
+  "governmentRetirementPlan",
+  "bonds"
+];
   const illiquidKeys = []; // none in this list
 
   const liquidAssets = liquidAssetKeys.reduce((sum, key) => sum + (assets[key] || 0), 0);
@@ -104,7 +112,7 @@ export default function NetWorthCalculatorPage() {
 
   // ─── Helper to format currency ──────────────────────────────────
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       maximumFractionDigits: 0,
     }).format(value);
   };
@@ -116,7 +124,7 @@ export default function NetWorthCalculatorPage() {
         <title>Net Worth Calculator – Track Your Financial Health</title>
         <meta
           name="description"
-          content="Calculate your net worth by listing all assets and liabilities. Understand your financial position with SEBI-compliant illustrations."
+          content="Calculate your net worth by listing all assets and liabilities. Understand your financial position with clear asset and liability analysis."
         />
         <meta
           name="keywords"
@@ -140,7 +148,25 @@ export default function NetWorthCalculatorPage() {
               List all your assets and liabilities to get a clear picture of your financial position.
             </p>
           </div>
+<div className="mb-8">
+  <label className="block text-sm font-medium text-slate-600 mb-2">
+    Currency
+  </label>
 
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+  >
+    <option value="$">USD ($)</option>
+    <option value="€">EUR (€)</option>
+    <option value="£">GBP (£)</option>
+    <option value="₹">INR (₹)</option>
+    <option value="¥">JPY (¥)</option>
+    <option value="A$">AUD (A$)</option>
+    <option value="C$">CAD (C$)</option>
+  </select>
+</div>
           {/* Main Grid: Assets & Liabilities side by side */}
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Assets Panel */}
@@ -170,7 +196,7 @@ export default function NetWorthCalculatorPage() {
               </div>
               <div className="mt-6 pt-4 border-t border-slate-200 flex justify-between font-bold text-lg">
                 <span>Total Assets</span>
-                <span className="text-blue-600">₹{formatCurrency(totalAssets)}</span>
+                <span className="text-blue-600">{currency}{formatCurrency(totalAssets)}</span>
               </div>
             </div>
 
@@ -200,7 +226,7 @@ export default function NetWorthCalculatorPage() {
               </div>
               <div className="mt-6 pt-4 border-t border-slate-200 flex justify-between font-bold text-lg">
                 <span>Total Liabilities</span>
-                <span className="text-red-500">₹{formatCurrency(totalLiabilities)}</span>
+                <span className="text-red-500">{currency}{formatCurrency(totalLiabilities)}</span>
               </div>
             </div>
           </div>
@@ -212,16 +238,16 @@ export default function NetWorthCalculatorPage() {
               <div className="space-y-4">
                 <div className="flex justify-between border-b border-slate-100 pb-2">
                   <span className="text-slate-600">Total Assets</span>
-                  <span className="font-bold text-blue-600">₹{formatCurrency(totalAssets)}</span>
+                  <span className="font-bold text-blue-600">{currency}{formatCurrency(totalAssets)}</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-100 pb-2">
                   <span className="text-slate-600">Total Liabilities</span>
-                  <span className="font-bold text-red-500">₹{formatCurrency(totalLiabilities)}</span>
+                  <span className="font-bold text-red-500">{currency}{formatCurrency(totalLiabilities)}</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-100 pb-2">
                   <span className="text-slate-600">Net Worth</span>
                   <span className={`font-bold text-2xl ${netWorth >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                    ₹{formatCurrency(netWorth)}
+                    {currency}{formatCurrency(netWorth)}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -233,15 +259,15 @@ export default function NetWorthCalculatorPage() {
                 <h3 className="font-semibold text-slate-700">Asset Liquidity Breakdown</h3>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Liquid Assets</span>
-                  <span className="font-bold">₹{formatCurrency(liquidAssets)}</span>
+                  <span className="font-bold">{currency}{formatCurrency(liquidAssets)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Partial Liquid Assets</span>
-                  <span className="font-bold">₹{formatCurrency(partialLiquidAssets)}</span>
+                  <span className="font-bold">{currency}{formatCurrency(partialLiquidAssets)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Illiquid Assets</span>
-                  <span className="font-bold">₹{formatCurrency(illiquidAssets)}</span>
+                  <span className="font-bold">{currency}{formatCurrency(illiquidAssets)}</span>
                 </div>
               </div>
             </div>

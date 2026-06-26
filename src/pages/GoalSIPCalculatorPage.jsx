@@ -7,6 +7,7 @@ export default function GoalSIPCalculatorPage() {
   const [goalAmount, setGoalAmount] = useState(500000);
   const [investmentDuration, setInvestmentDuration] = useState(15);
   const [expectedReturn, setExpectedReturn] = useState(12);
+  const [currency, setCurrency] = useState("$");
 
   // ─── Calculations ──────────────────────────────────────────────
   const results = useMemo(() => {
@@ -33,7 +34,7 @@ export default function GoalSIPCalculatorPage() {
 
   // ─── Format currency ──────────────────────────────────────────
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(value);
@@ -55,7 +56,7 @@ export default function GoalSIPCalculatorPage() {
   return (
     <>
       <Helmet>
-        <title>Goal SIP Calculator – Plan Your Financial Goals</title>
+        <title>Goal Investment Calculator – Plan Your Financial Goals</title>
         <meta
           name="description"
           content="Calculate the monthly SIP investment needed to reach your financial goal. Plan your investments with our Goal SIP Calculator."
@@ -87,6 +88,25 @@ export default function GoalSIPCalculatorPage() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Panel – Inputs */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
+            <div className="mb-6">
+  <label className="block text-sm font-medium text-slate-600 mb-2">
+    Currency
+  </label>
+
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+  >
+    <option value="$">USD ($)</option>
+    <option value="€">EUR (€)</option>
+    <option value="£">GBP (£)</option>
+    <option value="₹">INR (₹)</option>
+    <option value="¥">JPY (¥)</option>
+    <option value="A$">AUD (A$)</option>
+    <option value="C$">CAD (C$)</option>
+  </select>
+</div>
               <h2 className="text-2xl font-semibold text-slate-800 mb-6">
                 Investment Details
               </h2>
@@ -99,7 +119,7 @@ export default function GoalSIPCalculatorPage() {
                       Goal Amount
                     </label>
                     <span className="text-sm font-semibold text-blue-600">
-                      ₹{formatCurrency(goalAmount)}
+                      {currency}{formatCurrency(goalAmount)}
                     </span>
                   </div>
                   <input
@@ -112,8 +132,8 @@ export default function GoalSIPCalculatorPage() {
                     className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
-                    <span>₹10,000</span>
-                    <span>₹1,00,00,000</span>
+                    <span>{currency}10,000</span>
+<span>{currency}10,000,000</span>
                   </div>
                   <input
                     type="number"
@@ -207,7 +227,7 @@ export default function GoalSIPCalculatorPage() {
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
                   <p className="text-sm text-slate-500">Monthly SIP Amount</p>
                   <p className="text-4xl md:text-5xl font-bold text-blue-600 mt-1">
-                    ₹{formatCurrency(results.monthlySIP)}
+                    {currency}{formatCurrency(results.monthlySIP)}
                   </p>
                 </div>
 
@@ -216,7 +236,7 @@ export default function GoalSIPCalculatorPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-slate-600">Your Total Investment</span>
                     <span className="text-2xl font-bold text-slate-800">
-                      ₹{formatCurrency(results.totalInvestment)}
+                      {currency}{formatCurrency(results.totalInvestment)}
                     </span>
                   </div>
                   <div className="mt-3 h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
@@ -237,7 +257,7 @@ export default function GoalSIPCalculatorPage() {
                   <h3 className="font-semibold text-slate-700 text-sm">Plan Summary</h3>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Goal Amount</span>
-                    <span className="font-medium">₹{formatCurrency(goalAmount)}</span>
+                    <span className="font-medium">{currency}{formatCurrency(goalAmount)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Investment Duration</span>
@@ -249,7 +269,7 @@ export default function GoalSIPCalculatorPage() {
                   </div>
                   <div className="flex justify-between text-sm border-t border-slate-200 pt-2 font-semibold">
                     <span>Monthly SIP Required</span>
-                    <span className="text-blue-600">₹{formatCurrency(results.monthlySIP)}</span>
+                    <span className="text-blue-600">{currency}{formatCurrency(results.monthlySIP)}</span>
                   </div>
                 </div>
               </div>
@@ -257,7 +277,7 @@ export default function GoalSIPCalculatorPage() {
               {/* CTA Button */}
               <button
                 onClick={() => {
-                  window.open("https://groww.in/mutual-funds", "_blank");
+                  window.open("https://www.investopedia.com/investing-4427685", "_blank");
                 }}
                 className="mt-6 w-full bg-blue-600 hover:bg-blue-700 transition text-white font-semibold py-3.5 rounded-2xl shadow-lg shadow-blue-200 hover:shadow-blue-300/50 text-lg"
               >
@@ -292,7 +312,7 @@ export default function GoalSIPCalculatorPage() {
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
               <h2 className="text-2xl font-bold text-slate-800 mb-4">How to Use This Calculator</h2>
               <ol className="list-decimal list-inside text-slate-500 space-y-2">
-                <li>Enter your financial goal amount (e.g., ₹50,00,000 for a down payment).</li>
+                <li>Enter your financial goal amount (e.g., 500,000 for a home down payment).</li>
                 <li>Set your investment duration (number of years you can invest).</li>
                 <li>Enter the expected annual rate of return from your investments.</li>
                 <li>The calculator will show the monthly SIP amount required and total investment.</li>
@@ -312,7 +332,7 @@ export default function GoalSIPCalculatorPage() {
                 <div>
                   <h3 className="text-lg font-semibold text-blue-600 mb-2">Disciplined Investing</h3>
                   <p className="text-slate-500 leading-relaxed">
-                    SIPs encourage regular investing and rupee cost averaging, reducing market timing risk.
+                    SIPs encourage regular investing and cost averaging, reducing market timing risk.
                   </p>
                 </div>
                 <div>

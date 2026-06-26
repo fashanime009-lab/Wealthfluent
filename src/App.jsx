@@ -13,7 +13,7 @@ import FDCalculatorPage from "./pages/FDCalculatorPage";
 import FIRECalculatorPage from "./pages/FIRECalculatorPage";
 import GSTCalculatorPage from "./pages/GSTCalculatorPage";
 import NewsPage from "./pages/NewsPage";
-import PortfolioTrackerPage from "./pages/PortfolioTrackerPage";
+
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import QuizzesPage from "./pages/QuizzesPage";
 import RetirementCalculatorPage from "./pages/RetirementCalculatorPage";
@@ -21,8 +21,8 @@ import SIPCalculatorPage from "./pages/SIPCalculatorPage";
 import SIPWealthArticle from "./pages/articles/SIPWealthArticle";
 import ScrollToTop from "./components/ScrollToTop";
 import ToolsPage from "./pages/ToolsPage";
-import WealthAgeCalculatorPage from "./pages/WealthAgeCalculatorPage";
-import WealthDashboardPage from "./pages/WealthDashboardPage";
+
+
 import WealthFluentHomepage from "./pages/WealthFluentHomepage";
 import NetWorthCalculatorPage from "./pages/NetWorthCalculatorPage";
 import GoalPlannerPage from "./pages/GoalPlannerPage";
@@ -33,6 +33,9 @@ import FutureValueCalculatorPage from "./pages/FutureValueCalculatorPage";
 import InflationCalculatorPage from "./pages/InflationCalculatorPage";
 import RateOfReturnCalculatorPage from "./pages/RateOfReturnCalculatorPage";
 import RetirementInvestmentTrackerPage from "./pages/RetirementInvestmentTrackerPage";
+import HelpPage from "./pages/HelpPage";
+import FeedbackPage from "./pages/FeedbackPage";
+import SitemapPage from "./pages/SitemapPage";
 
 export default function App() {
   return (
@@ -58,10 +61,10 @@ export default function App() {
         <Route path="/how-sip-builds-wealth" element={<SIPWealthArticle />} />
         <Route path="/calculators" element={<CalculatorsPage />} />
         <Route path="/tools" element={<ToolsPage />} />
-        <Route path="/wealth-dashboard" element={<WealthDashboardPage />} />
+       
         <Route path="/fire-calculator" element={<FIRECalculatorPage />} />
-        <Route path="/wealth-age-calculator" element={<WealthAgeCalculatorPage />} />
-        <Route path="/portfolio-tracker" element={<PortfolioTrackerPage />} />
+       
+       
         <Route path="/networth-calculator" element={<NetWorthCalculatorPage />} />
         <Route path="/goal-planner" element={<GoalPlannerPage />} />
         <Route path="/goal-sip" element={<GoalSIPCalculatorPage />} />
@@ -71,6 +74,9 @@ export default function App() {
         <Route path="/inflation-calculator" element={<InflationCalculatorPage />} />
         <Route path="/rate-of-return-calculator" element={<RateOfReturnCalculatorPage />} />
         <Route path="/retirement-investment-tracker" element={<RetirementInvestmentTrackerPage />} />
+        <Route path="/help" element={<HelpPage />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
+        <Route path="/sitemap" element={<SitemapPage />} />
         </Route>
       </Routes>
       

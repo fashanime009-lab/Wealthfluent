@@ -7,6 +7,7 @@ export default function EMICalculatorPage() {
   const [loanAmount, setLoanAmount] = useState(500000);
   const [interestRate, setInterestRate] = useState(10);
   const [loanYears, setLoanYears] = useState(5);
+  const [currency, setCurrency] = useState("$");
 
   const monthlyRate = interestRate / 12 / 100;
   const months = loanYears * 12;
@@ -23,7 +24,7 @@ export default function EMICalculatorPage() {
 
   // Format currency
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       maximumFractionDigits: 0,
     }).format(value);
   };
@@ -31,7 +32,7 @@ export default function EMICalculatorPage() {
   return (
     <>
       <Helmet>
-        <title>EMI Calculator India – Calculate Loan EMI Instantly</title>
+        <title>Loan EMI Calculator – Calculate Monthly Loan Payments</title>
         <meta
           name="description"
           content="Free EMI Calculator to estimate monthly loan repayments for home, personal, car, and education loans with interest rate and tenure options."
@@ -53,7 +54,7 @@ export default function EMICalculatorPage() {
               Financial Calculators
             </p>
             <h1 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
-              EMI Calculator
+              Loan EMI Calculator
             </h1>
             <p className="text-slate-500 text-lg mt-3 max-w-2xl">
               Calculate monthly EMI payments for home loans, personal loans,
@@ -65,6 +66,25 @@ export default function EMICalculatorPage() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Panel – Inputs */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
+            <div className="mb-6">
+  <label className="block text-sm font-medium text-slate-600 mb-2">
+    Currency
+  </label>
+
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+  >
+    <option value="$">USD ($)</option>
+    <option value="€">EUR (€)</option>
+    <option value="£">GBP (£)</option>
+    <option value="₹">INR (₹)</option>
+    <option value="¥">JPY (¥)</option>
+    <option value="A$">AUD (A$)</option>
+    <option value="C$">CAD (C$)</option>
+  </select>
+</div>
               <h2 className="text-2xl font-semibold text-slate-800 mb-6">
                 Loan Details
               </h2>
@@ -77,7 +97,7 @@ export default function EMICalculatorPage() {
                       Loan Amount
                     </label>
                     <span className="text-sm font-semibold text-blue-600">
-                      ₹{formatCurrency(loanAmount)}
+                      {currency}{formatCurrency(loanAmount)}
                     </span>
                   </div>
                   <input
@@ -90,8 +110,8 @@ export default function EMICalculatorPage() {
                     className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
-                    <span>₹10,000</span>
-                    <span>₹1,00,00,000</span>
+                    <span>{currency}10,000</span>
+<span>{currency}10,000,000</span>
                   </div>
                   <input
                     type="number"
@@ -185,7 +205,7 @@ export default function EMICalculatorPage() {
               <div className="mb-6">
                 <p className="text-sm text-slate-500">Monthly EMI</p>
                 <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mt-1">
-                  ₹{formatCurrency(emi)}
+                  {currency}{formatCurrency(emi)}
                 </h2>
               </div>
 
@@ -195,7 +215,7 @@ export default function EMICalculatorPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-slate-600">Principal Amount</span>
                     <span className="text-lg font-semibold text-slate-800">
-                      ₹{formatCurrency(loanAmount)}
+                      {currency}{formatCurrency(loanAmount)}
                     </span>
                   </div>
                   <div className="mt-3 h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
@@ -213,7 +233,7 @@ export default function EMICalculatorPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-slate-600">Total Interest</span>
                     <span className="text-lg font-semibold text-emerald-600">
-                      ₹{formatCurrency(totalInterest)}
+                      {currency}{formatCurrency(totalInterest)}
                     </span>
                   </div>
                   <div className="mt-3 h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
@@ -231,7 +251,7 @@ export default function EMICalculatorPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-slate-600">Total Payment</span>
                     <span className="text-lg font-semibold text-slate-800">
-                      ₹{formatCurrency(totalPayment)}
+                     {currency}{formatCurrency(totalPayment)}
                     </span>
                   </div>
                   <div className="mt-3 h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
@@ -265,7 +285,7 @@ export default function EMICalculatorPage() {
             {/* What is EMI Calculator */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
               <h2 className="text-2xl font-bold text-slate-800 mb-4">
-                What Is EMI Calculator?
+                What Is a Loan EMI Calculator?
               </h2>
               <p className="text-slate-500 leading-relaxed">
                 An EMI Calculator helps borrowers estimate monthly loan repayments

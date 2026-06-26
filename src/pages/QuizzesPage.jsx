@@ -152,18 +152,7 @@ export default function QuizzesPage() {
 
   return (
     <main className="min-h-screen bg-[#f3f7fc] text-slate-950">
-      <header className="bg-[#061225] px-6 py-5 text-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 text-sm font-semibold text-blue-200">
-            <ArrowLeft size={18} />
-            Back Home
-          </Link>
-          <button onClick={loadQuestions} className="inline-flex items-center gap-2 rounded-md bg-white/10 px-4 py-2 text-sm font-bold ring-1 ring-white/10">
-            <RefreshCw className={loading ? "animate-spin" : ""} size={16} />
-            Refresh Quiz
-          </button>
-        </div>
-      </header>
+      
 
       <section className="mx-auto max-w-7xl px-6 py-10">
         <div className="grid gap-8 lg:grid-cols-[1fr_320px]">

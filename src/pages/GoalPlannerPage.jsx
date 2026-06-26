@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet";
 
 export default function GoalPlannerPage() {
   // ─── State for all input fields ──────────────────────────────────
+  const [currency, setCurrency] = useState("$");
   const [inputs, setInputs] = useState({
     // Expenses
     monthlyExpenses: 25000,
@@ -154,7 +155,7 @@ export default function GoalPlannerPage() {
 
   // ─── Format currency ─────────────────────────────────────────────
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       maximumFractionDigits: 0,
     }).format(value);
   };
@@ -187,7 +188,7 @@ export default function GoalPlannerPage() {
               Financial Goal Planner
             </h1>
             <p className="text-slate-500 text-lg mt-3 max-w-2xl">
-              Plan your retirement with variable asset allocation, inflation-adjusted expenses, and EPF/NPS contributions.
+              Plan your retirement with variable asset allocation, inflation-adjusted expenses, and retirement contributions.
             </p>
           </div>
 
@@ -195,6 +196,25 @@ export default function GoalPlannerPage() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Panel – Inputs */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
+            <div className="mb-6">
+  <label className="block text-sm font-medium text-slate-600 mb-2">
+    Currency
+  </label>
+
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+  >
+    <option value="$">USD ($)</option>
+    <option value="€">EUR (€)</option>
+    <option value="£">GBP (£)</option>
+    <option value="₹">INR (₹)</option>
+    <option value="¥">JPY (¥)</option>
+    <option value="A$">AUD (A$)</option>
+    <option value="C$">CAD (C$)</option>
+  </select>
+</div>
               <h2 className="text-2xl font-semibold text-slate-800 mb-6">Goal Planner Inputs</h2>
 
               <div className="space-y-6 max-h-[600px] overflow-y-auto pr-2">
@@ -203,8 +223,8 @@ export default function GoalPlannerPage() {
                   <h3 className="text-sm font-semibold text-blue-600 mb-3">Current Expenses</h3>
                   <div className="space-y-3">
                     {[
-                      { key: "monthlyExpenses", label: "Current Monthly Expenses (₹)" },
-                      { key: "annualExpenses", label: "Annual Expenses (₹)" },
+                      { key: "monthlyExpenses", label: `Current Monthly Expenses (${currency})` },
+                      { key: "annualExpenses", label: `Annual Expenses (${currency})` },
                     ].map(({ key, label }) => (
                       <div key={key} className="flex items-center gap-3">
                         <label className="text-sm text-slate-600 w-1/2">{label}</label>
@@ -277,10 +297,10 @@ export default function GoalPlannerPage() {
                   <h3 className="text-sm font-semibold text-blue-600 mb-3">Current Investments</h3>
                   <div className="space-y-3">
                     {[
-                      { key: "currentEquityInvestments", label: "Equity Investments (₹)" },
-                      { key: "currentTaxableFixedIncome", label: "Taxable Fixed Income (₹)" },
-                      { key: "currentTaxFreeFixedIncome", label: "Tax-Free Fixed Income (₹)" },
-                      { key: "lumpSumBenefitsAtRetirement", label: "Lump Sum Benefits at Retirement (₹)" },
+                      { key: "currentEquityInvestments", label:`Equity Investments (${currency})` },
+                      { key: "currentTaxableFixedIncome", label: `Fixed Income Investments (${currency})` },
+                      { key: "currentTaxFreeFixedIncome", label: `Tax-Advantaged Investments (${currency})` },
+                      { key: "lumpSumBenefitsAtRetirement", label: `Retirement Benefits (${currency})` },
                     ].map(({ key, label }) => (
                       <div key={key} className="flex items-center gap-3">
                         <label className="text-sm text-slate-600 w-1/2">{label}</label>
@@ -299,12 +319,12 @@ export default function GoalPlannerPage() {
 
                 {/* Section: EPF / NPS */}
                 <div className="pb-2">
-                  <h3 className="text-sm font-semibold text-blue-600 mb-3">EPF / NPS Contributions</h3>
+                  <h3 className="text-sm font-semibold text-blue-600 mb-3">Retirement Contributions</h3>
                   <div className="space-y-3">
                     {[
-                      { key: "monthlyEPFContribution", label: "Monthly EPF Contribution (₹)" },
+                      { key: "monthlyEPFContribution", label: `Monthly Retirement Contribution (${currency})` },
                       { key: "annualEPFIncrease", label: "Annual Increase in Contribution (%)", step: 0.5 },
-                      { key: "epfReturnRate", label: "Expected Return for EPF/NPS (%)", step: 0.5 },
+                      { key: "epfReturnRate", label: "Expected Return on Retirement Contributions (%)", step: 0.5 },
                     ].map(({ key, label, step = 1 }) => (
                       <div key={key} className="flex items-center gap-3">
                         <label className="text-sm text-slate-600 w-1/2">{label}</label>
@@ -332,14 +352,14 @@ export default function GoalPlannerPage() {
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-5 border border-blue-100">
                   <p className="text-sm text-slate-500">Total Corpus Required</p>
                   <p className="text-3xl font-bold text-blue-600">
-                    ₹{formatCurrency(results.totalCorpusRequired)}
+                    {currency}{formatCurrency(results.totalCorpusRequired)}
                   </p>
                 </div>
 
                 <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-5 border border-emerald-100">
                   <p className="text-sm text-slate-500">Net Corpus to be Accumulated</p>
                   <p className={`text-3xl font-bold ${results.netCorpusToAccumulate > 0 ? 'text-emerald-600' : 'text-slate-500'}`}>
-                    ₹{formatCurrency(results.netCorpusToAccumulate)}
+                    {currency}{formatCurrency(results.netCorpusToAccumulate)}
                   </p>
                   {results.netCorpusToAccumulate === 0 && (
                     <p className="text-sm text-emerald-600 mt-1">✓ You're on track!</p>
@@ -359,7 +379,7 @@ export default function GoalPlannerPage() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Monthly Expenses in First Year of Retirement</span>
-                    <span className="font-medium">₹{formatCurrency(results.monthlyExpensesFirstRetirement)}</span>
+                    <span className="font-medium">{currency}{formatCurrency(results.monthlyExpensesFirstRetirement)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Weighted Average Return</span>
@@ -372,19 +392,19 @@ export default function GoalPlannerPage() {
                   <h3 className="font-semibold text-slate-700">Accumulated Corpus at Retirement</h3>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Current Investments (FV)</span>
-                    <span className="font-medium">₹{formatCurrency(results.fvCurrentInvestments)}</span>
+                    <span className="font-medium">{currency}{formatCurrency(results.fvCurrentInvestments)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Lump Sum Benefits (FV)</span>
-                    <span className="font-medium">₹{formatCurrency(results.fvLumpSumBenefits)}</span>
+                    <span className="font-medium">{currency}{formatCurrency(results.fvLumpSumBenefits)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">EPF / NPS Contributions (FV)</span>
-                    <span className="font-medium">₹{formatCurrency(results.fvEPF)}</span>
+                    <span className="text-slate-500">Retirement Contributions (FV)</span>
+                    <span className="font-medium">{currency}{formatCurrency(results.fvEPF)}</span>
                   </div>
                   <div className="border-t border-slate-200 pt-2 flex justify-between font-bold">
                     <span>Total Accumulated</span>
-                    <span>₹{formatCurrency(results.totalAccumulated)}</span>
+                    <span>{currency}{formatCurrency(results.totalAccumulated)}</span>
                   </div>
                 </div>
               </div>
@@ -417,7 +437,7 @@ export default function GoalPlannerPage() {
                 <li>Enter your current monthly and annual expenses.</li>
                 <li>Set your retirement age, current age, and life expectancy.</li>
                 <li>Provide expected inflation rates and post-tax returns for different asset classes.</li>
-                <li>Add your current investments and EPF/NPS contributions.</li>
+                <li>Add your current investments and retirement contributions.</li>
                 <li>The calculator will show your required corpus and how much more you need to save.</li>
               </ol>
             </div>
@@ -427,7 +447,7 @@ export default function GoalPlannerPage() {
                 <li>Expenses grow with inflation until retirement.</li>
                 <li>During retirement, expenses grow with retirement inflation.</li>
                 <li>Asset allocation: 50% equity, 30% taxable fixed, 20% tax-free fixed (adjustable).</li>
-                <li>EPF contributions grow annually at the specified rate.</li>
+                <li>Retirement contributions grow annually at the specified rate.</li>
               </ul>
             </div>
           </div>

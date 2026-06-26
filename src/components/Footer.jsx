@@ -84,12 +84,7 @@ export default function Footer() {
             FinQuiz
           </Link>
 
-          <Link
-            to="/portfolio-tracker"
-            className="mt-3 block text-sm text-slate-300"
-          >
-            Portfolio Tracker
-          </Link>
+         
 
           <Link
             to="/fire-calculator"
@@ -104,25 +99,26 @@ export default function Footer() {
             About Us
           </h4>
 
+<Link to="/about" className="mt-3 block text-sm text-slate-300">
+            Why FINAIW
+          </Link>
           <Link to="/disclaimer" className="mt-3 block text-sm text-slate-300">
             Data Disclaimer
           </Link>
 
-          <Link to="/contact" className="mt-3 block text-sm text-slate-300">
+          <Link to="/help" className="mt-3 block text-sm text-slate-300">
             Help
           </Link>
 
-          <Link to="/contact" className="mt-3 block text-sm text-slate-300">
+          <Link to="/feedback" className="mt-3 block text-sm text-slate-300">
             Feedback
           </Link>
 
-          <Link to="/" className="mt-3 block text-sm text-slate-300">
+          <Link to="/sitemap" className="mt-3 block text-sm text-slate-300">
             Sitemap
           </Link>
 
-          <Link to="/news" className="mt-3 block text-sm text-slate-300">
-            What's New
-          </Link>
+          
 
           <Link
             to="/privacy-policy"

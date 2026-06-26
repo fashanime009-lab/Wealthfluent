@@ -1,4 +1,13 @@
-User-agent: *
-Disallow: /
+# robots.txt for FINAIW
 
-Sitemap: https://yourdomain.com/sitemap.xml
+User-agent: *
+Allow: /
+
+Sitemap: https://finaiw.com/sitemap.xml
+
+# Block admin or sensitive paths (if any)
+# Disallow: /admin/
+# Disallow: /private/
+
+# Crawl delay (optional, be respectful)
+# Crawl-delay: 2

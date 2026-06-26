@@ -10,6 +10,7 @@ export default function AnnualRetirementIncomePage() {
   const [preRetGrowthRate, setPreRetGrowthRate] = useState(12);
   const [yearsToPayOut, setYearsToPayOut] = useState(25);
   const [postRetGrowthRate, setPostRetGrowthRate] = useState(8);
+  const [currency, setCurrency] = useState("$");
 
   // ─── Calculations ──────────────────────────────────────────────
   const results = useMemo(() => {
@@ -54,7 +55,7 @@ export default function AnnualRetirementIncomePage() {
 
   // ─── Format currency ──────────────────────────────────────────
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
@@ -100,6 +101,25 @@ export default function AnnualRetirementIncomePage() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Panel – Inputs */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
+            <div className="mb-6">
+  <label className="block text-sm font-medium text-slate-600 mb-2">
+    Currency
+  </label>
+
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+  >
+    <option value="$">USD ($)</option>
+    <option value="€">EUR (€)</option>
+    <option value="£">GBP (£)</option>
+    <option value="₹">INR (₹)</option>
+    <option value="¥">JPY (¥)</option>
+    <option value="A$">AUD (A$)</option>
+    <option value="C$">CAD (C$)</option>
+  </select>
+</div>
               <h2 className="text-2xl font-semibold text-slate-800 mb-6">
                 Retirement Details
               </h2>
@@ -112,8 +132,11 @@ export default function AnnualRetirementIncomePage() {
                     {/* Current Principal */}
                     <div>
                       <div className="flex justify-between items-center mb-2">
+                        
                         <label className="text-sm font-medium text-slate-600">Current Principal</label>
-                        <span className="text-sm font-semibold text-blue-600">₹{formatCurrency(currentPrincipal)}</span>
+                        
+                        <span className="text-sm font-semibold text-blue-600">{currency}{formatCurrency(currentPrincipal)}</span>
+                        
                       </div>
                       <input
                         type="range"
@@ -124,6 +147,10 @@ export default function AnnualRetirementIncomePage() {
                         onChange={handleChange(setCurrentPrincipal)}
                         className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                       />
+                      <div className="flex justify-between text-xs text-slate-400 mt-1">
+  <span>{currency}0</span>
+  <span>{currency}10,000,000</span>
+</div>
                       <input
                         type="number"
                         min="0"
@@ -139,7 +166,7 @@ export default function AnnualRetirementIncomePage() {
                     <div>
                       <div className="flex justify-between items-center mb-2">
                         <label className="text-sm font-medium text-slate-600">Annual Addition</label>
-                        <span className="text-sm font-semibold text-blue-600">₹{formatCurrency(annualAddition)}</span>
+                        <span className="text-sm font-semibold text-blue-600">{currency}{formatCurrency(annualAddition)}</span>
                       </div>
                       <input
                         type="range"
@@ -150,6 +177,10 @@ export default function AnnualRetirementIncomePage() {
                         onChange={handleChange(setAnnualAddition)}
                         className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                       />
+                      <div className="flex justify-between text-xs text-slate-400 mt-1">
+  <span>{currency}0</span>
+  <span>{currency}1,000,000</span>
+</div>
                       <input
                         type="number"
                         min="0"
@@ -292,7 +323,7 @@ export default function AnnualRetirementIncomePage() {
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
                   <p className="text-sm text-slate-500">Annual Retirement Income</p>
                   <p className="text-4xl md:text-5xl font-bold text-blue-600 mt-1">
-                    ₹{formatCurrency(results.annualIncome)}
+                    {currency}{formatCurrency(results.annualIncome)}
                   </p>
                 </div>
 
@@ -300,7 +331,7 @@ export default function AnnualRetirementIncomePage() {
                 <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-100">
                   <p className="text-sm text-slate-500">Corpus at Retirement</p>
                   <p className="text-3xl font-bold text-emerald-600 mt-1">
-                    ₹{formatCurrency(results.corpusAtRetirement)}
+                    {currency}{formatCurrency(results.corpusAtRetirement)}
                   </p>
                 </div>
 
@@ -309,7 +340,7 @@ export default function AnnualRetirementIncomePage() {
                   <h3 className="font-semibold text-slate-700 text-sm">Investment Summary</h3>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Total Invested (Pre-Retirement)</span>
-                    <span className="font-medium">₹{formatCurrency(results.totalInvested)}</span>
+                    <span className="font-medium">{currency}{formatCurrency(results.totalInvested)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Pre-Retirement Growth Rate</span>
@@ -337,7 +368,7 @@ export default function AnnualRetirementIncomePage() {
                   Please note that these calculators are for illustrations only and do not represent actual returns.
                 </p>
                 <p>
-                  Stock Market does not have a fixed rate of return and it is not possible to predict the rate of return.
+                  Investment returns are not guaranteed. Actual retirement income depends on investment performance, inflation, taxes, fees, and future market conditions.
                 </p>
               </div>
             </div>
@@ -389,7 +420,7 @@ export default function AnnualRetirementIncomePage() {
                 <div>
                   <h3 className="text-lg font-semibold text-slate-700">What is a realistic pre-retirement growth rate?</h3>
                   <p className="text-slate-500 leading-relaxed">
-                    Historically, Indian equity markets have delivered 12-15% CAGR over the long term. For a balanced portfolio, a rate of 10-12% is often used. Debt-heavy portfolios may use 6-8%. Choose based on your asset allocation.
+                    Expected long-term investment returns vary depending on your portfolio, asset allocation, and market conditions. Stocks have historically delivered higher long-term returns than bonds or cash, but they also involve greater risk. Choose assumptions that match your investment strategy. Choose based on your asset allocation.
                   </p>
                 </div>
                 <div>
