@@ -1,24 +1,16 @@
 import { getGNews } from "./providers/gnews.js";
+import { getTheNews } from "./providers/thenews.js";
+let cachedNews = null;
+let cacheTime = 0;
+
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 
 const NEWSDATA_ENDPOINT = "https://newsdata.io/api/1/news";
 const ALLOWED_CATEGORIES = new Set([
   "business",
-  "crime",
-  "domestic",
-  "education",
-  "entertainment",
-  "environment",
-  "food",
-  "health",
-  "lifestyle",
-  "other",
-  "politics",
-  "science",
-  "sports",
   "technology",
-  "top",
-  "tourism",
-  "world",
+  "science",
 ]);
 
 function cleanText(value = "") {
@@ -89,7 +81,12 @@ export default async function handler(req, res) {
       results: [],
     });
   }
-
+if (
+  cachedNews &&
+  Date.now() - cacheTime < CACHE_DURATION
+) {
+  return sendJson(res, 200, cachedNews);
+}
   const apiKey = process.env.NEWSDATA_API_KEY;
 
   if (!apiKey) {
@@ -106,12 +103,12 @@ export default async function handler(req, res) {
   const page = safeString(req.query.page, "").trim();
   const limit = numberInRange(req.query.limit, 20, 1, 50);
 
-  const params = new URLSearchParams({
-    apikey: apiKey,
-    language: "en",
-    category,
-    size: String(limit),
-  });
+ const params = new URLSearchParams({
+  apikey: apiKey,
+  language: "en",
+ q: "finance OR investing OR stock market OR economy OR business OR banking OR cryptocurrency OR bitcoin OR forex OR mutual funds OR ETF OR IPO OR earnings",
+  size: String(limit),
+});
 
   if (query) params.set("q", query);
   if (page) params.set("page", page);
@@ -145,39 +142,117 @@ console.log("Response:", data);
       "s-maxage=60, stale-while-revalidate=300"
     );
 
-    return sendJson(res, 200, {
-      success: true,
-      provider: gnews.provider,
-      fetchedAt: new Date().toISOString(),
-      nextPage: "",
-      results: gnews.results,
-    });
+   const payload = {
+  success: true,
+  provider: gnews.provider,
+  fetchedAt: new Date().toISOString(),
+  nextPage: "",
+  results: gnews.results,
+};
+
+cachedNews = payload;
+cacheTime = Date.now();
+
+return sendJson(res, 200, payload);
 
   } catch (gnewsError) {
 
     console.error("GNews failed:", gnewsError);
 
-    return sendJson(res, 500, {
-      success: false,
-      message: "All news providers are currently unavailable.",
-      results: [],
+    try {
+
+    const news = await getTheNews({
+        category,
+        limit,
     });
+
+    const payload = {
+    success: true,
+    provider: news.provider,
+    fetchedAt: new Date().toISOString(),
+    nextPage: "",
+    results: news.results,
+};
+
+cachedNews = payload;
+cacheTime = Date.now();
+
+return sendJson(res, 200, payload);
+
+} catch(err){
+
+    console.error("TheNewsAPI failed:",err);
+
+    return sendJson(res,500,{
+        success:false,
+        message:"All news providers are unavailable.",
+        results:[]
+    });
+
+}
 
   }
 
 }
 
-    const results = dedupeArticles((data.results || []).map(normalizeArticle));
+    const FINANCE_KEYWORDS = [
+  "finance",
+  "financial",
+  "stock",
+  "stocks",
+  "market",
+  "economy",
+  "economic",
+  "invest",
+  "investment",
+  "bank",
+  "banking",
+  "forex",
+  "crypto",
+  "bitcoin",
+  "ethereum",
+  "mutual fund",
+  "etf",
+  "nasdaq",
+  "dow",
+  "s&p",
+  "inflation",
+  "interest rate",
+  "federal reserve",
+  "earnings",
+  "ipo",
+];
+
+const results = dedupeArticles(
+  (data.results || [])
+    .map(normalizeArticle)
+    .filter((article) => {
+      const text = (
+        article.title +
+        " " +
+        article.description
+      ).toLowerCase();
+
+      return FINANCE_KEYWORDS.some((keyword) =>
+        text.includes(keyword)
+      );
+    })
+);
 
     res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
 
-    return sendJson(res, 200, {
-      success: true,
-      provider: "NewsData.io",
-      fetchedAt: new Date().toISOString(),
-      nextPage: data.nextPage || "",
-      results,
-    });
+    const payload = {
+    success: true,
+    provider: "NewsData.io",
+    fetchedAt: new Date().toISOString(),
+    nextPage: data.nextPage || "",
+    results,
+};
+
+cachedNews = payload;
+cacheTime = Date.now();
+
+return sendJson(res, 200, payload);
   } catch (error) {
     console.error("News endpoint failed", error);
 

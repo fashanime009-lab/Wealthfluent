@@ -58,18 +58,13 @@ body {
 .goog-te-gadget .goog-te-combo {
   background: #0d1b34 !important;
   color: white !important;
-
   border: 1px solid #334155 !important;
   border-radius: 10px !important;
-
   padding: 10px 14px !important;
-
   font-size: 14px !important;
   font-weight: 600 !important;
-
   outline: none !important;
   cursor: pointer !important;
-
   transition: all 0.2s ease !important;
 }
 
@@ -109,4 +104,9 @@ iframe.goog-te-banner-frame {
     padding: 8px 10px !important;
     font-size: 13px !important;
   }
+}
+
+/* ─── Custom Theme Values ─── */
+@theme {
+  --height-18: 4.5rem; /* 72px */
 }

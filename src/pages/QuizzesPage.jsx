@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { fetchNews } from "../services/newsService";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft,
@@ -11,10 +12,9 @@ import {
   XCircle,
 } from "lucide-react";
 
-const NEWSDATA_API_KEY =
-  import.meta.env.VITE_NEWSDATA_API_KEY || "pub_3798230f728e4a6090ad3c705557970b";
 
-const NEWS_URL = `https://newsdata.io/api/1/news?apikey=${NEWSDATA_API_KEY}&category=business&language=en&country=in,us`;
+
+
 
 const fallbackQuestions = [
   {
@@ -41,10 +41,12 @@ function shuffle(items) {
 
 function makeQuestion(article, allArticles, index) {
   const title = article.title;
-  const source = article.source_name || "NewsData";
-  const category = article.category?.[0] || "business";
+  const source =
+  article.source || "News";
+  const category =
+  article.category || "business";
   const otherSources = allArticles
-    .map((item) => item.source_name)
+    .map((item) => item.source)
     .filter((item) => item && item !== source);
   const otherTitles = allArticles
     .map((item) => item.title)
@@ -53,7 +55,7 @@ function makeQuestion(article, allArticles, index) {
 
   if (index % 3 === 0 && otherSources.length >= 3) {
     return {
-      id: article.article_id || `${title}-${index}`,
+      id: article.id || `${title}-${index}`,
       question: `Which source published this finance headline: "${title}"?`,
       options: shuffle([source, ...shuffle(otherSources).slice(0, 3)]),
       answer: source,
@@ -64,7 +66,7 @@ function makeQuestion(article, allArticles, index) {
 
   if (index % 3 === 1 && otherTitles.length >= 3) {
     return {
-      id: article.article_id || `${title}-${index}`,
+      id: article.id || `${title}-${index}`,
       question: `Which headline is currently connected to ${source}?`,
       options: shuffle([title, ...shuffle(otherTitles).slice(0, 3)]),
       answer: title,
@@ -74,21 +76,21 @@ function makeQuestion(article, allArticles, index) {
   }
 
   return {
-    id: article.article_id || `${title}-${index}`,
+    id: article.id || `${title}-${index}`,
     question: `Which topic best matches this live article from ${source}?`,
     options: shuffle([category, "sports", "entertainment", "travel"]),
     answer: category,
-    explanation: `NewsData categorized this article under ${category}.`,
+    explanation: `This article belongs to the ${category} category.`,
     source,
   };
 }
 
 async function fetchQuizQuestions() {
-  const response = await fetch(NEWS_URL);
-  if (!response.ok) throw new Error("Quiz API request failed");
+  const data = await fetchNews({
+  limit: 20,
+});
 
-  const data = await response.json();
-  const articles = (data.results || []).filter((item) => item.title && item.link);
+const articles = data.articles;
   const questions = articles.slice(0, 18).map((article, index) => makeQuestion(article, articles, index));
 
   return questions.length ? questions : fallbackQuestions;

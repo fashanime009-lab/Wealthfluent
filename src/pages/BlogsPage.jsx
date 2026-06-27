@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { fetchNews } from "../services/newsService";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft,
@@ -10,23 +11,11 @@ import {
   Search,
 } from "lucide-react";
 
-const NEWSDATA_API_KEY =
-  import.meta.env.VITE_NEWSDATA_API_KEY || "pub_3798230f728e4a6090ad3c705557970b";
+
 
 const defaultQuery = "personal finance OR investing OR mutual funds OR SIP OR tax OR retirement";
 
-function blogUrl({ query = defaultQuery, page = "" }) {
-  const params = new URLSearchParams({
-    apikey: NEWSDATA_API_KEY,
-    language: "en",
-    country: "in,us",
-    category: "business",
-    q: query,
-  });
 
-  if (page) params.set("page", page);
-  return `https://newsdata.io/api/1/news?${params.toString()}`;
-}
 
 function timeAgo(date) {
   const publishedAt = new Date(date).getTime();
@@ -52,17 +41,7 @@ function fallbackBlogs(query) {
   ];
 }
 
-function normalizeArticle(article, index) {
-  return {
-    id: article.article_id || article.link || `${article.title}-${index}`,
-    title: article.title || "Finance article",
-    description: article.description || article.content || "Open the full article for details.",
-    link: article.link,
-    source: article.source_name || "NewsData",
-    publishedAt: article.pubDate || new Date().toISOString(),
-    image: article.image_url,
-  };
-}
+
 
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState([]);
@@ -93,14 +72,19 @@ export default function BlogsPage() {
     }
 
     try {
-      const response = await fetch(blogUrl({ query, page: reset ? "" : pageToken }));
-      if (!response.ok) throw new Error("Blog API failed");
+      const data = await fetchNews({
+  query,
+  page: reset ? "" : pageToken,
+  force: reset,
+});
 
-      const data = await response.json();
-      const nextBlogs = (data.results || []).filter((item) => item.title && item.link).map(normalizeArticle);
+const nextBlogs = data.articles;
 
-      setBlogs((current) => (reset ? nextBlogs : [...current, ...nextBlogs]));
-      setPageToken(data.nextPage || "");
+setBlogs((current) =>
+  reset ? nextBlogs : [...current, ...nextBlogs]
+);
+
+setPageToken(data.nextPage || "");
       setLastUpdated(new Date());
       setError("");
     } catch {
