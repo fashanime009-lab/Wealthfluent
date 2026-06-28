@@ -32,7 +32,7 @@ export default function NewsPage() {
   const loadArticlesRef = useRef(null);
   const requestIdRef = useRef(0);
 
-  const hasMore = Boolean(pageToken);
+  const hasMore = articles.length >= 20;
 
   const visibleArticles = useMemo(() => {
     const seen = new Set();
@@ -60,11 +60,18 @@ export default function NewsPage() {
     }
 
     try {
-      const data = await fetchNews({ category, query, page: nextPage, limit: 20, force });
+     const data = await fetchNews({
+    type: "news",
+    category,
+    query,
+    page: nextPage,
+    limit: reset ? 20 : articles.length + 20,
+    force,
+});
       if (requestId !== requestIdRef.current) return;
 
       setArticles((current) => (reset ? data.articles : [...current, ...data.articles]));
-      setPageToken(data.nextPage);
+      setPageToken(data.nextPage || "load-more");
       setError("");
     } catch (newsError) {
       if (requestId !== requestIdRef.current) return;

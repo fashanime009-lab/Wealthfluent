@@ -72,9 +72,11 @@ export default function BlogsPage() {
     }
 
     try {
-      const data = await fetchNews({
+     const data = await fetchNews({
+  type: "blogs",
   query,
   page: reset ? "" : pageToken,
+  limit: reset ? 20 : blogs.length + 20,
   force: reset,
 });
 
@@ -84,7 +86,7 @@ setBlogs((current) =>
   reset ? nextBlogs : [...current, ...nextBlogs]
 );
 
-setPageToken(data.nextPage || "");
+setPageToken(data.nextPage || "load-more");
       setLastUpdated(new Date());
       setError("");
     } catch {
@@ -206,7 +208,7 @@ setPageToken(data.nextPage || "");
           </div>
         )}
 
-        {pageToken && (
+        {blogs.length >= 20 && (
           <div className="mt-10 text-center">
             <button onClick={() => loadBlogs()} className="rounded-md bg-blue-500 px-8 py-3 text-sm font-bold text-white">
               Load More Blogs

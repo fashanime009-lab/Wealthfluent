@@ -49,8 +49,15 @@ export function dedupeArticles(articles = []) {
   });
 }
 
-function newsUrl({ category = "business", query = "", page = "", limit = "" } = {}) {
+function newsUrl({
+  type = "news",
+  category = "business",
+  query = "",
+  page = "",
+  limit = "",
+} = {}) {
   const params = new URLSearchParams();
+  params.set("type", type);
   if (category) params.set("category", category);
   if (query.trim()) params.set("q", query.trim());
   if (page) params.set("page", page);
@@ -60,8 +67,21 @@ function newsUrl({ category = "business", query = "", page = "", limit = "" } = 
   return queryString ? `${NEWS_ENDPOINT}?${queryString}` : NEWS_ENDPOINT;
 }
 
-export async function fetchNews({ category = "business", query = "", page = "", limit = 20, force = false } = {}) {
-  const requestKey = JSON.stringify({ category, query, page, limit });
+export async function fetchNews({
+  type = "news",
+  category = "business",
+  query = "",
+  page = "",
+  limit = 20,
+  force = false,
+} = {}) {
+const requestKey = JSON.stringify({
+  type,
+  category,
+  query,
+  page,
+  limit,
+});
   const cached = responseCache.get(requestKey);
 
   if (!force && cached && Date.now() - cached.createdAt < CACHE_TTL) {
@@ -72,7 +92,7 @@ export async function fetchNews({ category = "business", query = "", page = "", 
     return inFlightRequests.get(requestKey);
   }
 
-  const request = fetch(newsUrl({ category, query, page, limit }), {
+  const request = fetch(newsUrl({ type, category, query, page, limit }), {
     headers: { Accept: "application/json" },
   })
     .then(async (response) => {

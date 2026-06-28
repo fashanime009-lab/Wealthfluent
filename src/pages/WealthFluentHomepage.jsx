@@ -396,7 +396,7 @@ export default function WealthFluentHomepage() {
       
 
       <div className="border-b border-slate-200 bg-white/50 px-5 py-5 text-center text-sm text-slate-500">
-        Clear tools and useful context for better financial decisions.
+        Trusted finance calculators, investment tools, live market news, and practical insights for smarter financial decisions.
       </div>
 
       <main className="mx-auto grid max-w-[1440px] gap-10 px-5 py-8 lg:grid-cols-[minmax(0,1.8fr)_430px] lg:px-8">
@@ -404,7 +404,7 @@ export default function WealthFluentHomepage() {
           <section aria-labelledby="news-heading">
             <SectionHeading
               icon={Newspaper}
-              title="News"
+              title="Financial News"
               description="Fresh finance, economy, investing, and business stories from live publishers."
               action={
                 <div className="flex items-center gap-2">
@@ -460,8 +460,8 @@ export default function WealthFluentHomepage() {
           <section className="mt-12" aria-labelledby="calculators-heading">
             <SectionHeading
               icon={Calculator}
-              title="Calculators"
-              description="Straightforward calculators that help turn a money question into a useful next step."
+              title="Investment Calculators"
+              description="Free finance calculators for investing, budgeting, retirement planning, loans, taxes, and wealth management."
             />
             <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
               {calculators.map((item) => (
@@ -473,7 +473,7 @@ export default function WealthFluentHomepage() {
           <section className="mt-10" aria-labelledby="tools-heading">
             <SectionHeading
               icon={BriefcaseBusiness}
-              title="Tools"
+              title="Money Tools"
               description="Practical ways to research, organise, and review your financial plan."
             />
             <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">

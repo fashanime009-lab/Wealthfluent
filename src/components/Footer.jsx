@@ -79,9 +79,9 @@ export default function Footer() {
 
           {/* Trending Topics */}
           <div>
-            <h4 className="font-bold text-white">Trending Topics</h4>
+            <h4 className="font-bold text-white">Trending Finance Topics</h4>
             <ul className="mt-3 space-y-3">
-              <li><Link to="/news" className="text-sm text-slate-300 hover:text-blue-400 transition">Live Finance News</Link></li>
+              <li><Link to="/news" className="text-sm text-slate-300 hover:text-blue-400 transition">Financial News</Link></li>
               <li><Link to="/blogs" className="text-sm text-slate-300 hover:text-blue-400 transition">Investing Blogs</Link></li>
               <li><Link to="/quizzes" className="text-sm text-slate-300 hover:text-blue-400 transition">FinQuiz</Link></li>
               <li><Link to="/fire-calculator" className="text-sm text-slate-300 hover:text-blue-400 transition">FIRE Planning</Link></li>

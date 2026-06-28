@@ -15,7 +15,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between min-h-[64px]">
 
-          {/* Logo - now brand name is visible on all screens */}
+          {/* Logo */}
           <Link
             to="/"
             className="flex items-center gap-2 flex-shrink-0"
@@ -31,8 +31,6 @@ export default function Navbar() {
               <span className="text-[16px] sm:text-[18px] lg:text-[20px] font-extrabold tracking-tight text-white">
                 FINAIW
               </span>
-              {/* You can uncomment the tagline if needed */}
-              {/* <span className="text-[9px] sm:text-[10px] text-slate-400 hidden sm:block">Financial Intelligence</span> */}
             </div>
           </Link>
 
@@ -57,11 +55,10 @@ export default function Navbar() {
 
           {/* Right Side */}
           <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center">
+            {/* Google Translate - always visible */}
+            <div className="flex items-center">
               <GoogleTranslate />
             </div>
-
-          
 
             {/* Mobile menu button */}
             <button
@@ -77,7 +74,7 @@ export default function Navbar() {
         {/* Mobile Navigation */}
         <div
           className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            isOpen ? "max-h-96 py-4" : "max-h-0 py-0"
+            isOpen ? "max-h-[500px] py-4" : "max-h-0 py-0"
           }`}
         >
           <div className="space-y-2 border-t border-blue-500/10 pt-4">
@@ -116,15 +113,8 @@ export default function Navbar() {
             >
               News
             </Link>
-            <div className="pt-2 border-t border-blue-500/10 flex flex-col gap-2">
-              <Link
-                to="/sip-calculator"
-                className="block px-3 py-2 text-sm font-medium text-center text-white bg-blue-500 hover:bg-blue-600 rounded-lg transition"
-                onClick={closeMenu}
-              >
-                Get Started
-              </Link>
-            </div>
+
+            {/* Google Translate in mobile menu */}
             <div className="pt-2 border-t border-blue-500/10">
               <GoogleTranslate />
             </div>

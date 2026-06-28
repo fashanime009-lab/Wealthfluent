@@ -1,7 +1,6 @@
 import { getGNews } from "./providers/gnews.js";
 import { getTheNews } from "./providers/thenews.js";
-let cachedNews = null;
-let cacheTime = 0;
+const cache = new Map();
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
@@ -81,12 +80,7 @@ export default async function handler(req, res) {
       results: [],
     });
   }
-if (
-  cachedNews &&
-  Date.now() - cacheTime < CACHE_DURATION
-) {
-  return sendJson(res, 200, cachedNews);
-}
+
   const apiKey = process.env.NEWSDATA_API_KEY;
 
   if (!apiKey) {
@@ -100,17 +94,45 @@ if (
   const requestedCategory = safeString(req.query.category, "business").toLowerCase();
   const category = ALLOWED_CATEGORIES.has(requestedCategory) ? requestedCategory : "business";
   const query = safeString(req.query.q, "").trim().slice(0, 120);
-  const page = safeString(req.query.page, "").trim();
+  const page = Number.parseInt(
+  safeString(req.query.page, "1"),
+  10
+) || 1;
   const limit = numberInRange(req.query.limit, 20, 1, 50);
+const type = safeString(req.query.type, "news");
+  const cacheKey = JSON.stringify({
+  type,
+  category,
+  query,
+  page,
+  limit,
+});
 
- const params = new URLSearchParams({
+const cached = cache.get(cacheKey);
+
+if (
+  cached &&
+  Date.now() - cached.time < CACHE_DURATION
+) {
+  return sendJson(res, 200, cached.payload);
+}
+
+ const NEWS_QUERY =
+  "finance OR stock market OR economy OR business OR banking OR earnings OR IPO OR companies";
+
+const BLOG_QUERY =
+  "personal finance OR retirement OR SIP OR mutual funds OR tax OR wealth building OR investing guide";
+
+const params = new URLSearchParams({
   apikey: apiKey,
   language: "en",
- q: "finance OR investing OR stock market OR economy OR business OR banking OR cryptocurrency OR bitcoin OR forex OR mutual funds OR ETF OR IPO OR earnings",
+  q: type === "blogs" ? BLOG_QUERY : NEWS_QUERY,
   size: String(limit),
 });
 
-  if (query) params.set("q", query);
+  if (query.trim()) {
+  params.set("q", query.trim());
+}
   if (page) params.set("page", page);
 
   try {
@@ -150,8 +172,10 @@ console.log("Response:", data);
   results: gnews.results,
 };
 
-cachedNews = payload;
-cacheTime = Date.now();
+cache.set(cacheKey, {
+  time: Date.now(),
+  payload,
+});
 
 return sendJson(res, 200, payload);
 
@@ -161,21 +185,24 @@ return sendJson(res, 200, payload);
 
     try {
 
-    const news = await getTheNews({
-        category,
-        limit,
-    });
+   const news = await getTheNews({
+    category,
+    limit,
+    page,
+});
 
     const payload = {
     success: true,
     provider: news.provider,
     fetchedAt: new Date().toISOString(),
-    nextPage: "",
+    nextPage: news.nextPage,
     results: news.results,
 };
 
-cachedNews = payload;
-cacheTime = Date.now();
+cache.set(cacheKey, {
+  time: Date.now(),
+  payload,
+});
 
 return sendJson(res, 200, payload);
 
@@ -249,8 +276,10 @@ const results = dedupeArticles(
     results,
 };
 
-cachedNews = payload;
-cacheTime = Date.now();
+cache.set(cacheKey, {
+  time: Date.now(),
+  payload,
+});
 
 return sendJson(res, 200, payload);
   } catch (error) {

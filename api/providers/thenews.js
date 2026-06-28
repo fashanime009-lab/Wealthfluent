@@ -21,6 +21,7 @@ function shortDescription(value = "") {
 export async function getTheNews({
   category = "business",
   limit = 20,
+  page = 1,
 }) {
 
   const apiKey = process.env.THENEWS_API_KEY;
@@ -29,12 +30,13 @@ export async function getTheNews({
     throw new Error("Missing TheNewsAPI key");
 
   const params = new URLSearchParams({
-    api_token: apiKey,
-    locale: "us",
-    language: "en",
-    categories: category,
-    limit: String(limit),
-  });
+  api_token: apiKey,
+  locale: "us",
+  language: "en",
+  categories: category,
+  limit: String(limit),
+  page: String(page),
+});
 
   const response = await fetch(
     `${ENDPOINT}?${params.toString()}`
@@ -48,8 +50,13 @@ export async function getTheNews({
     );
   }
 
-  return {
+ return {
     provider: "TheNewsAPI",
+
+    nextPage:
+      (data.data || []).length === limit
+        ? String(page + 1)
+        : "",
 
     results: (data.data || []).map((article, index) => ({
       id: article.uuid || index,
