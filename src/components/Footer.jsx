@@ -49,21 +49,50 @@ export default function Footer() {
               />
 
               <div className="hidden sm:flex flex-col leading-none">
-                <span className="text-[18px] lg:text-[20px] font-extrabold tracking-tight text-white">
-                  FINAIW
-                </span>
-                <span className="text-[10px] font-medium text-slate-400 leading-tight">
-                  FINANCIAL INTELLIGENCE WITH AI FOR WEALTH
-                </span>
-              </div>
+  <span
+    className="
+      inline-block
+      bg-gradient-to-r
+      from-white
+      via-sky-200
+      to-blue-500
+      bg-clip-text
+      text-transparent
+      text-[18px]
+      lg:text-[20px]
+      font-black
+      tracking-tight
+      w-fit
+    "
+  >
+    FINAIW
+  </span>
+
+  <span className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.08em] text-slate-400">
+    Financial Intelligence with AI for Wealth
+  </span>
+</div>
             </Link>
 
             {/* Tagline for mobile – shown only on small screens */}
             <div className="sm:hidden mt-1">
-              <span className="text-[20px] font-medium text-white">
-                FINAIW
-              </span>
-            </div>
+  <span
+    className="
+      inline-block
+      bg-gradient-to-r
+      from-white
+      via-sky-200
+      to-blue-500
+      bg-clip-text
+      text-transparent
+      text-[20px]
+      font-black
+      tracking-tight
+    "
+  >
+    FINAIW
+  </span>
+</div>
 
             <p className="mt-4 text-sm text-slate-400">
               © 2026 FINAIW. All rights reserved.

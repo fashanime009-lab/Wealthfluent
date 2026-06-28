@@ -27,11 +27,26 @@ export default function Navbar() {
               className="h-11 lg:h-12 w-auto object-contain"
             />
 
-            <div className="flex flex-col leading-none">
-              <span className="text-[16px] sm:text-[18px] lg:text-[20px] font-extrabold tracking-tight text-white">
-                FINAIW
-              </span>
-            </div>
+           <div className="flex flex-col leading-none">
+  <span
+    className="
+      bg-gradient-to-r
+      from-white
+      via-white
+      via-40%
+      to-sky-400
+      bg-clip-text
+      text-transparent
+      text-[16px] sm:text-[18px] lg:text-[20px]
+      font-black
+      tracking-tight
+      select-none
+      drop-shadow-[0_1px_8px_rgba(59,130,246,0.15)]
+    "
+  >
+    FINAIW
+  </span>
+</div>
           </Link>
 
           {/* Desktop Navigation */}
