@@ -280,6 +280,7 @@ export default function WealthFluentHomepage() {
 
     const request = fetchNews({ category: "business", limit: 18, force })
       .then(({ articles: liveArticles, fetchedAt }) => {
+        
         setArticles(liveArticles.slice(0, 18));
         setLastUpdated(new Date(fetchedAt));
         setNewsError("");
@@ -616,7 +617,7 @@ export default function WealthFluentHomepage() {
               <span><strong className="block text-xl">Free</strong><small className="text-blue-100">To Start</small></span>
             </div>
             <div className="mt-7 grid grid-cols-2 gap-3">
-              <Link to="/sip-calculator" className="rounded-md bg-white px-5 py-3 text-sm font-bold text-blue-600">
+              <Link to="/calculators" className="rounded-md bg-white px-5 py-3 text-sm font-bold text-blue-600">
                 Get Started
               </Link>
               <Link to="/tools" className="rounded-md bg-white/10 px-5 py-3 text-sm font-bold text-white ring-1 ring-white/20">

@@ -234,49 +234,9 @@ return sendJson(res, 200, payload);
 
 }
 
-    const FINANCE_KEYWORDS = [
-  "finance",
-  "financial",
-  "stock",
-  "stocks",
-  "market",
-  "economy",
-  "economic",
-  "invest",
-  "investment",
-  "bank",
-  "banking",
-  "forex",
-  "crypto",
-  "bitcoin",
-  "ethereum",
-  "mutual fund",
-  "etf",
-  "nasdaq",
-  "dow",
-  "s&p",
-  "inflation",
-  "interest rate",
-  "federal reserve",
-  "earnings",
-  "ipo",
-];
-
-const results = dedupeArticles(
-  (data.results || [])
-    .map(normalizeArticle)
-    .filter((article) => {
-      const text = (
-        article.title +
-        " " +
-        article.description
-      ).toLowerCase();
-
-      return FINANCE_KEYWORDS.some((keyword) =>
-        text.includes(keyword)
-      );
-    })
-);
+   const results = dedupeArticles(
+  (data.results || []).map(normalizeArticle)
+).slice(0, limit);
 
     res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
 

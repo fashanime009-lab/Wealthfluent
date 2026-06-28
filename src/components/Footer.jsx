@@ -70,11 +70,40 @@ export default function Footer() {
             </p>
 
             <div className="mt-6 flex gap-4">
-              <MessageCircle size={22} className="text-slate-400 hover:text-blue-400 transition cursor-pointer" />
-              <Globe2 size={22} className="text-slate-400 hover:text-blue-400 transition cursor-pointer" />
-              <Users size={22} className="text-slate-400 hover:text-blue-400 transition cursor-pointer" />
-              <Share2 size={22} className="text-slate-400 hover:text-blue-400 transition cursor-pointer" />
-            </div>
+  <button
+    onClick={async () => {
+      const shareData = {
+        title: "FINAIW",
+        text: "Trusted finance calculators, investment tools, live market news, and practical insights.",
+        url: window.location.origin,
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        } else {
+          await navigator.clipboard.writeText(shareData.url);
+          alert("Website link copied to clipboard!");
+        }
+      } catch (err) {
+        console.log("Share cancelled");
+      }
+    }}
+    className="text-slate-400 transition hover:text-blue-400"
+    aria-label="Share FINAIW"
+  >
+    <Share2 size={22} />
+  </button>
+
+  {/* Phase 2 */}
+  {/* <MessageCircle size={22} className="text-slate-400 hover:text-blue-400 transition cursor-pointer" /> */}
+
+  {/* Phase 2 */}
+  {/* <Globe2 size={22} className="text-slate-400 hover:text-blue-400 transition cursor-pointer" /> */}
+
+  {/* Phase 2 */}
+  {/* <Users size={22} className="text-slate-400 hover:text-blue-400 transition cursor-pointer" /> */}
+</div>
           </div>
 
           {/* Trending Topics */}
