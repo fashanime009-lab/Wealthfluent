@@ -104,35 +104,40 @@ export default function Footer() {
 
           {/* Newsletter & Privacy Dashboard */}
           <div>
-            <form
-              onSubmit={subscribe}
-              className="rounded-md bg-white/5 p-5 ring-1 ring-white/10"
-            >
-              <h4 className="font-bold text-white">Subscribe to Newsletter</h4>
-              <p className="mt-2 text-sm text-slate-300">
-                {subscribed
-                  ? "You're subscribed. We'll keep you posted."
-                  : "Get the latest financial news and insights in your inbox."}
-              </p>
+            <div className="rounded-md bg-white/5 p-4 ring-1 ring-white/10">
+  <div className="inline-flex items-center rounded-full bg-blue-500/20 px-2.5 py-1 text-[11px] font-semibold text-blue-300">
+    🚀 Coming Soon
+  </div>
 
-              <div className="mt-5 flex h-12 items-center rounded-md bg-white/5 px-4 text-sm text-slate-400 ring-1 ring-white/10">
-                <Mail size={16} className="flex-shrink-0" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="ml-3 h-full min-w-0 flex-1 bg-transparent text-white outline-none placeholder:text-slate-500"
-                  placeholder="Enter your email"
-                />
-              </div>
+  <h4 className="mt-3 text-lg font-bold text-white">
+    Newsletter
+  </h4>
 
-              <button
-                type="submit"
-                className="mt-4 w-full rounded-md bg-blue-500 py-3 text-sm font-bold text-white hover:bg-blue-600 transition"
-              >
-                Subscribe
-              </button>
-            </form>
+  <p className="mt-2 text-sm text-slate-400">
+    Premium weekly financial insights, market updates and investing ideas.
+  </p>
+
+  <div className="mt-4 flex items-center gap-3 rounded-md border border-dashed border-white/10 bg-white/5 px-3 py-3">
+    <Mail size={16} className="text-blue-400" />
+
+    <div>
+      <p className="text-sm font-semibold text-white">
+        Stay Tuned
+      </p>
+
+      <p className="text-xs text-slate-500">
+        Free weekly newsletter
+      </p>
+    </div>
+  </div>
+
+  <button
+    disabled
+    className="mt-4 w-full cursor-not-allowed rounded-md bg-slate-700 py-2.5 text-sm font-semibold text-slate-300 opacity-70"
+  >
+    Coming Soon
+  </button>
+</div>
 
             <Link
               to="/privacy-policy"

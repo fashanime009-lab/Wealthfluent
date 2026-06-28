@@ -1,5 +1,6 @@
 import { getGNews } from "./providers/gnews.js";
 import { getTheNews } from "./providers/thenews.js";
+import { rateLimit } from "./lib/rateLimit.js";
 const cache = new Map();
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
@@ -80,7 +81,18 @@ export default async function handler(req, res) {
       results: [],
     });
   }
+const ip =
+  req.headers["x-forwarded-for"] ||
+  req.socket.remoteAddress ||
+  "unknown";
 
+if (!rateLimit(ip, 60, 60000)) {
+  return sendJson(res, 429, {
+    success: false,
+    message: "Too many requests.",
+    results: [],
+  });
+}
   const apiKey = process.env.NEWSDATA_API_KEY;
 
   if (!apiKey) {

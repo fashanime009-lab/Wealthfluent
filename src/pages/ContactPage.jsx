@@ -100,11 +100,13 @@ export default function ContactPage() {
                   type="text"
                   id="name"
                   name="name"
+                  autoComplete="name"
                   value={formData.name}
                   onChange={handleInputChange}
                   required
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                   placeholder="Enter your name"
+                  maxLength={100}
                 />
               </div>
 
@@ -116,11 +118,13 @@ export default function ContactPage() {
                   type="email"
                   id="email"
                   name="email"
+                  autoComplete="email"
                   value={formData.email}
                   onChange={handleInputChange}
                   required
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                   placeholder="you@example.com"
+                  maxLength={100}
                 />
               </div>
 
@@ -137,6 +141,7 @@ export default function ContactPage() {
                   required
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-y"
                   placeholder="What would you like to tell us?"
+                  maxLength={2000}
                 />
               </div>
 

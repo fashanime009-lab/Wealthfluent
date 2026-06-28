@@ -22,22 +22,43 @@ export default function FeedbackPage() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch("/api/feedback", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message);
+    }
+
     setFormSubmitted(true);
-    // In production, send the feedback to your backend or email
+
+    setFormData({
+      name: "",
+      email: "",
+      rating: "5",
+      feedbackType: "suggestion",
+      message: "",
+      subscribe: false,
+    });
+
     setTimeout(() => {
       setFormSubmitted(false);
-      setFormData({
-        name: "",
-        email: "",
-        rating: "5",
-        feedbackType: "suggestion",
-        message: "",
-        subscribe: false,
-      });
-    }, 3000);
-  };
+    }, 4000);
+
+  } catch (err) {
+    alert(err.message || "Unable to send feedback.");
+  }
+};
 
   return (
     <>
