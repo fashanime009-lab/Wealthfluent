@@ -39,6 +39,7 @@ import SitemapPage from "./pages/SitemapPage";
 import HomepageV2 from "./pages/HomepageV2";
 import WorkspacePage from "./pages/WorkspacePage";
 import NetWorthPage from "./pages/NetWorthPage";
+import HomeBuyingJourney from "@/journeys/home-buying/pages/HomeBuyingJourney";
 
 export default function App() {
   return (
@@ -83,6 +84,10 @@ export default function App() {
         <Route path="/HomepageV2" element={<HomepageV2 />} />
         <Route path="/WorkspacePage" element={<WorkspacePage />} />
         <Route path="/NetWorthPage" element={<NetWorthPage />} />
+        <Route
+  path="/journeys/home-buying"
+  element={<HomeBuyingJourney />}
+/>
         </Route>
       </Routes>
       
