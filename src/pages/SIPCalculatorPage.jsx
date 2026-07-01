@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useFinance } from "../context/FinanceContext";
+import { addGoal } from "../services/goalEngine";
 
 
 export default function SIPCalculatorPage() {
@@ -53,7 +54,33 @@ export default function SIPCalculatorPage() {
     maximumFractionDigits: 0,
   }).format(value);
 };
+const handleSaveGoal = () => {
+  addGoal({
+    type: "retirement",
 
+    title: "Retirement Planning",
+
+    target: futureValue,
+
+    current: investedAmount,
+
+    monthlyContribution: monthlyInvestment,
+
+    duration: years,
+
+    expectedReturn: annualReturn,
+
+    calculator: "SIP Calculator",
+
+    lesson: "Retirement Planning",
+
+    xp: 40,
+
+    wealthScore: 8,
+  });
+
+  alert("✅ Retirement goal saved to your Workspace!");
+};
   return (
     <>
       <Helmet>
@@ -221,7 +248,9 @@ export default function SIPCalculatorPage() {
                     className="mt-3 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
+                
               </div>
+              
             </div>
 
             {/* Right Panel – Results */}
@@ -288,8 +317,14 @@ export default function SIPCalculatorPage() {
                 className="mt-6 w-full bg-blue-600 hover:bg-blue-700 transition text-white font-semibold py-3.5 rounded-2xl shadow-lg shadow-blue-200 hover:shadow-blue-300/50 text-lg"
               >
                 Start Investing Smarter
+                
               </button>
-
+<button
+  onClick={handleSaveGoal}
+  className="mt-4 w-full rounded-2xl border border-blue-200 bg-white py-3 font-semibold text-blue-600 transition hover:bg-blue-50"
+>
+  Save as Retirement Goal
+</button>
               {/* Disclaimer */}
               <div className="mt-6 text-xs text-slate-400 space-y-1 border-t border-slate-100 pt-4">
                 <p>

@@ -1,0 +1,190 @@
+.
+├── api
+│   ├── contact.js
+│   ├── feedback.js
+│   ├── lib
+│   │   └── rateLimit.js
+│   ├── news.js
+│   └── providers
+│       ├── gnews.js
+│       └── thenews.js
+├── dist
+│   └── assets
+│       ├── index-B7NCAzeR.js
+│       └── index-DCbcJ_CV.css
+├── eslint.config.js
+├── important_files.txt
+├── index.html
+├── package-lock.json
+├── package.json
+├── project-structure.txt
+├── public
+│   ├── favicon.svg
+│   ├── favicon1.svg
+│   ├── icons.svg
+│   ├── images
+│   ├── robots.txt
+│   └── sitemap.xml
+├── README.md
+├── scripts
+│   └── generate-sitemap.js
+├── src
+│   ├── App.css
+│   ├── App.jsx
+│   ├── assets
+│   │   ├── hero.png
+│   │   ├── logo.webp
+│   │   ├── logo1.png
+│   │   ├── logo2.png
+│   │   ├── logo3.png
+│   │   ├── logo4.png
+│   │   ├── react.svg
+│   │   └── vite.svg
+│   ├── components
+│   │   ├── ArticleLayout.jsx
+│   │   ├── AskFinAI.jsx
+│   │   ├── CalculatorLayout.jsx
+│   │   ├── cards
+│   │   │   └── StatCard.jsx
+│   │   ├── features
+│   │   │   ├── dashboard
+│   │   │   │   └── DashboardOverview.jsx
+│   │   │   ├── goals
+│   │   │   │   ├── GoalCard.jsx
+│   │   │   │   └── GoalList.jsx
+│   │   │   ├── hero
+│   │   │   │   ├── HeroActions.jsx
+│   │   │   │   ├── HeroGreeting.jsx
+│   │   │   │   ├── HeroMission.jsx
+│   │   │   │   ├── HeroSection.jsx
+│   │   │   │   └── HeroSummary.jsx
+│   │   │   ├── home
+│   │   │   │   ├── CalculatorCard.jsx
+│   │   │   │   ├── CalculatorShowcase.jsx
+│   │   │   │   ├── CallToAction.jsx
+│   │   │   │   ├── FeatureCard.jsx
+│   │   │   │   ├── LearningHub.jsx
+│   │   │   │   ├── WhyFINAIW.jsx
+│   │   │   │   └── WorkspacePreview.jsx
+│   │   │   ├── journey
+│   │   │   │   ├── JourneyNode.jsx
+│   │   │   │   ├── JourneyRoadmap.jsx
+│   │   │   │   └── JourneySection.jsx
+│   │   │   ├── networth
+│   │   │   │   ├── AIInsightCard.jsx
+│   │   │   │   ├── AssetAllocation.jsx
+│   │   │   │   ├── AssetsCard.jsx
+│   │   │   │   ├── LiabilitiesCard.jsx
+│   │   │   │   ├── NetWorthChart.jsx
+│   │   │   │   ├── NetWorthHero.jsx
+│   │   │   │   ├── NetWorthSummary.jsx
+│   │   │   │   └── RecentActivity.jsx
+│   │   │   ├── progress
+│   │   │   │   ├── ProgressNode.jsx
+│   │   │   │   └── ProgressRoadmap.jsx
+│   │   │   └── workspace
+│   │   │       ├── ActiveGoalsCard.jsx
+│   │   │       ├── ContinueLearningCard.jsx
+│   │   │       ├── QuickActionsCard.jsx
+│   │   │       ├── TodayFocusCard.jsx
+│   │   │       └── WorkspaceHero.jsx
+│   │   ├── fire
+│   │   │   ├── FIREChart.jsx
+│   │   │   ├── FIREInputs.jsx
+│   │   │   ├── FIREInsights.jsx
+│   │   │   └── FIREResults.jsx
+│   │   ├── Footer.jsx
+│   │   ├── GoogleTranslate.jsx
+│   │   ├── layout
+│   │   │   ├── DashboardSection.jsx
+│   │   │   └── PageContainer.jsx
+│   │   ├── Layout.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── ScrollToTop.jsx
+│   │   └── ui
+│   │       ├── Badge.jsx
+│   │       ├── Button.jsx
+│   │       ├── Card.jsx
+│   │       ├── Progress.jsx
+│   │       └── SectionHeader.jsx
+│   ├── constants
+│   ├── context
+│   │   ├── FinanceContext.jsx
+│   │   └── ThemeContext.jsx
+│   ├── data
+│   │   ├── financialJourney.js
+│   │   ├── goalTemplates.js
+│   │   └── recommendations
+│   │       ├── calculatorRecommendations.js
+│   │       ├── challengeRecommendations.js
+│   │       ├── goalRecommendations.js
+│   │       └── lessonRecommendations.js
+│   ├── docs
+│   │   ├── FINAIW_ARCHITECTURE.md
+│   │   ├── FINAIW_COMPONENT_LIBRARY.md
+│   │   ├── FINAIW_COPYWRITING.md
+│   │   ├── FINAIW_DESIGN_SYSTEM.md
+│   │   ├── FINAIW_NON_NEGOTIABLES.md
+│   │   ├── FINAIW_PRODUCT_BLUEPRINT.md
+│   │   └── FINAIW_ROADMAP.md
+│   ├── hooks
+│   │   ├── useFocus.js
+│   │   ├── useJourney.js
+│   │   ├── useNetWorth.js
+│   │   └── useWorkspace.js
+│   ├── index.css
+│   ├── main.jsx
+│   ├── pages
+│   │   ├── AboutPage.jsx
+│   │   ├── AnnualRetirementIncomePage.jsx
+│   │   ├── articles
+│   │   │   └── SIPWealthArticle.jsx
+│   │   ├── BlogsPage.jsx
+│   │   ├── BondYieldCalculatorPage.jsx
+│   │   ├── CAGRCalculatorPage.jsx
+│   │   ├── CalculatorsPage.jsx
+│   │   ├── ContactPage.jsx
+│   │   ├── DesignSystemPage.jsx
+│   │   ├── DisclaimerPage.jsx
+│   │   ├── EMICalculatorPage.jsx
+│   │   ├── FDCalculatorPage.jsx
+│   │   ├── FeedbackPage.jsx
+│   │   ├── FIRECalculatorPage.jsx
+│   │   ├── FutureValueCalculatorPage.jsx
+│   │   ├── GoalPlannerPage.jsx
+│   │   ├── GoalSIPCalculatorPage.jsx
+│   │   ├── GoalsPage.jsx
+│   │   ├── GSTCalculatorPage.jsx
+│   │   ├── HelpPage.jsx
+│   │   ├── HomepageV2.jsx
+│   │   ├── InflationCalculatorPage.jsx
+│   │   ├── NetWorthCalculatorPage.jsx
+│   │   ├── NetWorthPage.jsx
+│   │   ├── NewsPage.jsx
+│   │   ├── PortfolioTrackerPage.jsx
+│   │   ├── PrivacyPolicyPage.jsx
+│   │   ├── QuizzesPage.jsx
+│   │   ├── RateOfReturnCalculatorPage.jsx
+│   │   ├── RetirementCalculatorPage.jsx
+│   │   ├── RetirementInvestmentTrackerPage.jsx
+│   │   ├── SIPCalculatorPage.jsx
+│   │   ├── SitemapPage.jsx
+│   │   ├── ToolsPage.jsx
+│   │   ├── WealthAgeCalculatorPage.jsx
+│   │   ├── WealthDashboardPage.jsx
+│   │   ├── WealthFluentHomepage.jsx
+│   │   └── WorkspacePage.jsx
+│   ├── services
+│   │   ├── goalEngine.js
+│   │   ├── netWorthEngine.js
+│   │   ├── newsService.js
+│   │   └── workspaceEngine.js
+│   ├── types
+│   └── utils
+│       └── cn.js
+├── ssh -T git@github.com
+├── ssh -T git@github.com.pub
+├── vercel.json
+└── vite.config.js
+
+36 directories, 152 files

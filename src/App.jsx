@@ -36,6 +36,9 @@ import RetirementInvestmentTrackerPage from "./pages/RetirementInvestmentTracker
 import HelpPage from "./pages/HelpPage";
 import FeedbackPage from "./pages/FeedbackPage";
 import SitemapPage from "./pages/SitemapPage";
+import HomepageV2 from "./pages/HomepageV2";
+import WorkspacePage from "./pages/WorkspacePage";
+import NetWorthPage from "./pages/NetWorthPage";
 
 export default function App() {
   return (
@@ -77,6 +80,9 @@ export default function App() {
         <Route path="/help" element={<HelpPage />} />
         <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/sitemap" element={<SitemapPage />} />
+        <Route path="/HomepageV2" element={<HomepageV2 />} />
+        <Route path="/WorkspacePage" element={<WorkspacePage />} />
+        <Route path="/NetWorthPage" element={<NetWorthPage />} />
         </Route>
       </Routes>
       
