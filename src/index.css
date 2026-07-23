@@ -110,3 +110,13 @@ iframe.goog-te-banner-frame {
 @theme {
   --height-18: 4.5rem; /* 72px */
 }
+
+@keyframes toast {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
+}

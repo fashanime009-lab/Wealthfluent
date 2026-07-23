@@ -1,4 +1,13 @@
 import { useState } from "react";
+
+import { useSettings } from "../context/SettingsContext";
+import { useWorkspace } from "../context/WorkspaceContext";
+
+import { formatCurrency } from "../utils/currency";
+
+import Button from "../components/ui/Button";
+
+import { saveCalculatorResult } from "../services/calculators/saveCalculatorResult";
 import { Helmet } from "react-helmet-async";
 
 
@@ -40,7 +49,7 @@ savingsCertificate: 0,
   });
 
   // ─── Liability States ──────────────────────────────────────────
-  const [currency, setCurrency] = useState("$");
+  
   const [liabilities, setLiabilities] = useState({
     homeLoan: 2500000,
     carLoan: 0,
@@ -57,7 +66,15 @@ savingsCertificate: 0,
     other5: 0,
     other6: 0,
   });
+const { settings } = useSettings();
 
+const {
+  saveCalculation,
+  addRecentActivity,
+  updateDashboard,
+} = useWorkspace();
+
+const currency = settings.currency;
   // ─── Update handlers ────────────────────────────────────────────
   const handleAssetChange = (key, value) => {
     setAssets((prev) => ({ ...prev, [key]: Number(value) || 0 }));
@@ -72,7 +89,34 @@ savingsCertificate: 0,
   const totalLiabilities = Object.values(liabilities).reduce((sum, val) => sum + val, 0);
   const netWorth = totalAssets - totalLiabilities;
   const debtToAssetRatio = totalAssets > 0 ? (totalLiabilities / totalAssets * 100).toFixed(2) : 0;
+const handleSaveCalculation = () => {
+  saveCalculatorResult({
+    saveCalculation,
+    addRecentActivity,
+    updateDashboard,
 
+    type: "netWorth",
+
+    title: "Net Worth Calculator",
+
+    values: {
+      assets,
+      liabilities,
+      totalAssets,
+      totalLiabilities,
+      netWorth,
+      debtToAssetRatio,
+    },
+
+    summary: formatCurrency(netWorth, currency),
+
+    dashboard: {
+      netWorth,
+    },
+  });
+
+  alert("✅ Net Worth saved to your Workspace!");
+};
   // Liquidity breakdown (based on category in the design)
   // We classify each asset as liquid, partial liquid, or illiquid.
   // Using the labels from the image:
@@ -110,12 +154,7 @@ savingsCertificate: 0,
   // ─── Effect (optional) ──────────────────────────────────────────
   // You could add a useEffect to log or store results
 
-  // ─── Helper to format currency ──────────────────────────────────
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-US", {
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
+
 
   // ─── Component ──────────────────────────────────────────────────
   return (
@@ -148,25 +187,7 @@ savingsCertificate: 0,
               List all your assets and liabilities to get a clear picture of your financial position.
             </p>
           </div>
-<div className="mb-8">
-  <label className="block text-sm font-medium text-slate-600 mb-2">
-    Currency
-  </label>
 
-  <select
-    value={currency}
-    onChange={(e) => setCurrency(e.target.value)}
-    className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
-  >
-    <option value="$">USD ($)</option>
-    <option value="€">EUR (€)</option>
-    <option value="£">GBP (£)</option>
-    <option value="₹">INR (₹)</option>
-    <option value="¥">JPY (¥)</option>
-    <option value="A$">AUD (A$)</option>
-    <option value="C$">CAD (C$)</option>
-  </select>
-</div>
           {/* Main Grid: Assets & Liabilities side by side */}
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Assets Panel */}
@@ -196,7 +217,7 @@ savingsCertificate: 0,
               </div>
               <div className="mt-6 pt-4 border-t border-slate-200 flex justify-between font-bold text-lg">
                 <span>Total Assets</span>
-                <span className="text-blue-600">{currency}{formatCurrency(totalAssets)}</span>
+                <span className="text-blue-600">{formatCurrency(totalAssets, currency)}</span>
               </div>
             </div>
 
@@ -226,7 +247,9 @@ savingsCertificate: 0,
               </div>
               <div className="mt-6 pt-4 border-t border-slate-200 flex justify-between font-bold text-lg">
                 <span>Total Liabilities</span>
-                <span className="text-red-500">{currency}{formatCurrency(totalLiabilities)}</span>
+                <span className="text-red-500">
+  {formatCurrency(totalLiabilities, currency)}
+</span>
               </div>
             </div>
           </div>
@@ -238,20 +261,27 @@ savingsCertificate: 0,
               <div className="space-y-4">
                 <div className="flex justify-between border-b border-slate-100 pb-2">
                   <span className="text-slate-600">Total Assets</span>
-                  <span className="font-bold text-blue-600">{currency}{formatCurrency(totalAssets)}</span>
+                  <span className="font-bold text-blue-600">{formatCurrency(totalAssets, currency)}</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-100 pb-2">
                   <span className="text-slate-600">Total Liabilities</span>
-                  <span className="font-bold text-red-500">{currency}{formatCurrency(totalLiabilities)}</span>
+                  <span className="font-bold text-red-500">
+  {formatCurrency(totalLiabilities, currency)}
+</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-100 pb-2">
                   <span className="text-slate-600">Net Worth</span>
-                  <span className={`font-bold text-2xl ${netWorth >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                    {currency}{formatCurrency(netWorth)}
-                  </span>
+                  <span
+  className={`font-bold text-2xl ${
+    netWorth >= 0 ? "text-emerald-600" : "text-red-600"
+  }`}
+>
+  {formatCurrency(netWorth, currency)}
+</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Debt to Asset Ratio</span>
+                  
                   <span className="font-bold">{debtToAssetRatio}%</span>
                 </div>
               </div>
@@ -259,18 +289,33 @@ savingsCertificate: 0,
                 <h3 className="font-semibold text-slate-700">Asset Liquidity Breakdown</h3>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Liquid Assets</span>
-                  <span className="font-bold">{currency}{formatCurrency(liquidAssets)}</span>
+                  <span className="font-bold">
+  {formatCurrency(liquidAssets, currency)}
+</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Partial Liquid Assets</span>
-                  <span className="font-bold">{currency}{formatCurrency(partialLiquidAssets)}</span>
+                  <span className="font-bold">
+  {formatCurrency(partialLiquidAssets, currency)}
+</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Illiquid Assets</span>
-                  <span className="font-bold">{currency}{formatCurrency(illiquidAssets)}</span>
+                  <span className="font-bold">
+  {formatCurrency(illiquidAssets, currency)}
+</span>
                 </div>
               </div>
             </div>
+            <div className="mt-8">
+  <Button
+    variant="primary"
+    fullWidth
+    onClick={handleSaveCalculation}
+  >
+    Save to Workspace
+  </Button>
+</div>
           </div>
 
           {/* Disclaimer */}

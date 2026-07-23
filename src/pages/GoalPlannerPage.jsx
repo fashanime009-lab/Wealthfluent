@@ -1,10 +1,26 @@
 import { useState, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
+import { useSettings } from "../context/SettingsContext";
+import { formatCurrency } from "../utils/currency";
+import { useWorkspace } from "../context/WorkspaceContext";
+import { saveCalculatorResult } from "../services/calculators/saveCalculatorResult";
+import Toast from "../components/ui/Toast";
 
 
 export default function GoalPlannerPage() {
+  const { settings } = useSettings();
+const {
+  workspace,
+  saveCalculation,
+  addRecentActivity,
+  updateDashboard,
+  createGoal,
+  updateGoal,
+} = useWorkspace();
+
+const currency = settings.currency;
   // ─── State for all input fields ──────────────────────────────────
-  const [currency, setCurrency] = useState("$");
+ 
   const [inputs, setInputs] = useState({
     // Expenses
     monthlyExpenses: 25000,
@@ -35,7 +51,7 @@ export default function GoalPlannerPage() {
   const handleChange = (key, value) => {
     setInputs((prev) => ({ ...prev, [key]: Number(value) || 0 }));
   };
-
+const [toast, setToast] = useState(false);
   // ─── Calculations ──────────────────────────────────────────────
   const results = useMemo(() => {
     const {
@@ -58,6 +74,8 @@ export default function GoalPlannerPage() {
       annualEPFIncrease,
       epfReturnRate,
     } = inputs;
+
+ 
 
     // Step 3: Total average monthly expenses (annual/12)
     const totalMonthlyExpenses = monthlyExpenses + annualExpenses / 12;
@@ -152,18 +170,69 @@ export default function GoalPlannerPage() {
       netCorpusToAccumulate: Math.round(netCorpusToAccumulate),
     };
   }, [inputs]);
+const handleSaveCalculation = () => {
+  saveCalculatorResult({
+    saveCalculation,
+    addRecentActivity,
+    updateDashboard,
 
-  // ─── Format currency ─────────────────────────────────────────────
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-US", {
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
+    type: "retirement",
 
+    title: "Retirement Planner",
+
+    values: inputs,
+
+    summary: formatCurrency(
+      results.totalCorpusRequired,
+      currency
+    ),
+
+    dashboard: {
+  retirementCorpus: results.totalCorpusRequired,
+
+  retirementShortfall: results.netCorpusToAccumulate,
+
+  retirementAge: inputs.retirementAge,
+
+  passiveIncome: Math.round(
+    results.totalCorpusRequired *
+      (inputs.postTaxReturnCorpus / 100) /
+      12
+  ),
+},
+  });
+const existingGoal = workspace.goals.find(
+  (goal) => goal.type === "retirement"
+);
+
+if (existingGoal) {
+  updateGoal(existingGoal.id, {
+    targetAmount: results.totalCorpusRequired,
+    currentAmount: results.totalAccumulated,
+    monthlyContribution: inputs.monthlyEPFContribution,
+    targetDate: `${inputs.retirementAge}`,
+  });
+} else {
+  createGoal({
+    type: "retirement",
+    title: "Retirement",
+    targetAmount: results.totalCorpusRequired,
+    currentAmount: results.totalAccumulated,
+    monthlyContribution: inputs.monthlyEPFContribution,
+    targetDate: `${inputs.retirementAge}`,
+  });
+}
+setToast(true);
+
+setTimeout(() => {
+  setToast(false);
+}, 3500);
+};
   // ─── Render ──────────────────────────────────────────────────────
   return (
     <>
       <Helmet>
+        
         <title>Financial Goal Planner – Retirement Planning Tool</title>
         <meta
           name="description"
@@ -174,8 +243,14 @@ export default function GoalPlannerPage() {
           content="goal planner, retirement planning, corpus calculator, financial planning, asset allocation"
         />
       </Helmet>
-
+<Toast
+  open={toast}
+  title="Retirement Plan Saved"
+  message="Your retirement plan has been added to your workspace."
+  onClose={() => setToast(false)}
+/>
       <div className="min-h-screen bg-[#f3f7fc] text-slate-800">
+        
         
 
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
@@ -197,23 +272,9 @@ export default function GoalPlannerPage() {
             {/* Left Panel – Inputs */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
             <div className="mb-6">
-  <label className="block text-sm font-medium text-slate-600 mb-2">
-    Currency
-  </label>
+ 
 
-  <select
-    value={currency}
-    onChange={(e) => setCurrency(e.target.value)}
-    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
-  >
-    <option value="$">USD ($)</option>
-    <option value="€">EUR (€)</option>
-    <option value="£">GBP (£)</option>
-    <option value="₹">INR (₹)</option>
-    <option value="¥">JPY (¥)</option>
-    <option value="A$">AUD (A$)</option>
-    <option value="C$">CAD (C$)</option>
-  </select>
+
 </div>
               <h2 className="text-2xl font-semibold text-slate-800 mb-6">Goal Planner Inputs</h2>
 
@@ -352,14 +413,14 @@ export default function GoalPlannerPage() {
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-5 border border-blue-100">
                   <p className="text-sm text-slate-500">Total Corpus Required</p>
                   <p className="text-3xl font-bold text-blue-600">
-                    {currency}{formatCurrency(results.totalCorpusRequired)}
+                    {formatCurrency(results.totalCorpusRequired, currency)}
                   </p>
                 </div>
 
                 <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-5 border border-emerald-100">
                   <p className="text-sm text-slate-500">Net Corpus to be Accumulated</p>
                   <p className={`text-3xl font-bold ${results.netCorpusToAccumulate > 0 ? 'text-emerald-600' : 'text-slate-500'}`}>
-                    {currency}{formatCurrency(results.netCorpusToAccumulate)}
+                    {formatCurrency(results.netCorpusToAccumulate, currency)}
                   </p>
                   {results.netCorpusToAccumulate === 0 && (
                     <p className="text-sm text-emerald-600 mt-1">✓ You're on track!</p>
@@ -379,7 +440,7 @@ export default function GoalPlannerPage() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Monthly Expenses in First Year of Retirement</span>
-                    <span className="font-medium">{currency}{formatCurrency(results.monthlyExpensesFirstRetirement)}</span>
+                    <span className="font-medium">{formatCurrency(results.monthlyExpensesFirstRetirement, currency)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Weighted Average Return</span>
@@ -392,23 +453,30 @@ export default function GoalPlannerPage() {
                   <h3 className="font-semibold text-slate-700">Accumulated Corpus at Retirement</h3>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Current Investments (FV)</span>
-                    <span className="font-medium">{currency}{formatCurrency(results.fvCurrentInvestments)}</span>
+                    <span className="font-medium">{formatCurrency(results.fvCurrentInvestments, currency)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Lump Sum Benefits (FV)</span>
-                    <span className="font-medium">{currency}{formatCurrency(results.fvLumpSumBenefits)}</span>
+                    <span className="font-medium">{formatCurrency(results.fvLumpSumBenefits, currency)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Retirement Contributions (FV)</span>
-                    <span className="font-medium">{currency}{formatCurrency(results.fvEPF)}</span>
+                    <span className="font-medium">{formatCurrency(results.fvEPF, currency)}</span>
                   </div>
                   <div className="border-t border-slate-200 pt-2 flex justify-between font-bold">
                     <span>Total Accumulated</span>
-                    <span>{currency}{formatCurrency(results.totalAccumulated)}</span>
+                    <span>{formatCurrency(results.totalAccumulated, currency)}</span>
                   </div>
                 </div>
               </div>
-
+<div className="mt-8">
+  <button
+    onClick={handleSaveCalculation}
+    className="w-full rounded-2xl bg-emerald-600 px-6 py-4 font-semibold text-white transition hover:bg-emerald-700"
+  >
+    Save Retirement Plan to Workspace
+  </button>
+</div>
               {/* Disclaimer */}
               <div className="mt-6 text-xs text-slate-400 space-y-1 border-t border-slate-200 pt-4">
                 <p>

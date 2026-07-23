@@ -1,6 +1,7 @@
 import JourneyLayout from "@/journeys/shared/layouts/JourneyLayout";
 import JourneyHeader from "@/journeys/shared/components/JourneyHeader";
 
+
 import {
   JourneyProvider,
   useJourney,
@@ -9,52 +10,56 @@ import {
 import homeBuyingJourney from "../data/homeBuyingJourney";
 
 function JourneyContent() {
-  const {
-    currentStep,
-    totalSteps,
-    nextStep,
-    previousStep,
-    journey,
-  } = useJourney();
+ const {
+  currentStep,
+  totalSteps,
+  journey,
+} = useJourney();
 
   const step = journey.steps[currentStep];
-
+  const progress = Math.round(
+  ((currentStep + 1) / totalSteps) * 100
+);
+const StepComponent = step.component;
   return (
     <JourneyLayout>
       <JourneyHeader
-        eyebrow="Journey"
-        title={journey.title}
-        description="The reusable journey engine is now running."
-      />
+  eyebrow={`Step ${currentStep + 1} of ${totalSteps}`}
+  title={journey.title}
+  description={step.title}
+/>
+<div className="mb-8">
 
+  <div className="flex justify-between text-sm text-[var(--text-secondary)]">
+
+    <span>
+      {progress}% Complete
+    </span>
+
+    <span>
+      {step.title}
+    </span>
+
+  </div>
+
+  <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+
+    <div
+      className="h-full rounded-full bg-blue-600 transition-all duration-500"
+      style={{
+        width: `${progress}%`,
+      }}
+    />
+
+  </div>
+
+</div>
       <section className="rounded-xl border border-slate-200 p-6 dark:border-slate-700">
-        <h2 className="text-xl font-semibold">
-          {step.title}
-        </h2>
-
-        <p className="mt-3">
-          Step {currentStep + 1} of {totalSteps}
-        </p>
-
-        <div className="mt-8 flex gap-4">
-          <button
-            onClick={previousStep}
-            disabled={currentStep === 0}
-            className="rounded-lg border px-4 py-2 disabled:opacity-50"
-          >
-            Previous
-          </button>
-
-          <button
-            onClick={nextStep}
-            disabled={currentStep === totalSteps - 1}
-            className="rounded-lg border px-4 py-2 disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
+{StepComponent ? <StepComponent /> : null}
+        
       </section>
     </JourneyLayout>
+    
   );
 }
 

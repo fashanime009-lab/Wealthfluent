@@ -13,7 +13,10 @@ export function getWorkspaceState() {
 
   if (!activeGoal) {
     return {
-      activeGoal: null,
+
+    goals,
+
+    activeGoal: null,
 
       today: {
         title: "Start Your Financial Journey",
@@ -50,9 +53,8 @@ export function getWorkspaceState() {
       },
     };
   }
-
-  const current = Number(activeGoal.current ?? 0);
-  const target = Number(activeGoal.target ?? 0);
+const current = Number(activeGoal.currentAmount ?? 0);
+const target = Number(activeGoal.targetAmount ?? 0);
 
   const percentage =
     target > 0
@@ -60,8 +62,9 @@ export function getWorkspaceState() {
       : 0;
 
   return {
-    activeGoal,
+    goals,
 
+    activeGoal,
     today: {
       title: activeGoal.title,
 

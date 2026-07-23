@@ -2,8 +2,8 @@
 // FINAIW Goal Engine v1
 // ==========================================
 
-const STORAGE_KEY = "finaiw-goals";
 
+const STORAGE_KEY = "finaiw-goals";
 /**
  * Load all goals
  */
@@ -59,16 +59,31 @@ export function addGoal(goal) {
     return updatedGoal;
   }
 
-  const newGoal = {
-    id: crypto.randomUUID(),
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
+ const newGoal = {
+  id: crypto.randomUUID(),
+  createdAt: Date.now(),
+  updatedAt: Date.now(),
 
-    completed: false,
-    progress: 0,
+  completed: false,
 
-    ...goal,
-  };
+  category: goal.category ?? "General",
+
+  progress: goal.progress ?? 0,
+
+  status: goal.status ?? "Ready",
+
+  currentAmount: goal.currentAmount ?? 0,
+
+  targetAmount: goal.targetAmount ?? 0,
+
+  nextMilestone: goal.nextMilestone ?? "Start saving",
+
+  nextAction: goal.nextAction ?? "Review your financial plan",
+
+  icon: goal.icon ?? "target",
+
+  ...goal,
+};
 
   goals.push(newGoal);
 
@@ -114,4 +129,52 @@ export function completeGoal(id) {
     progress: 100,
     completedAt: Date.now(),
   });
+}
+export function getGoalSummary(goals = []) {
+  const completed = goals.filter((g) => g.completed).length;
+
+  const activeGoals = goals.filter((g) => !g.completed);
+
+  if (activeGoals.length === 0) {
+    return {
+      total: goals.length,
+      completed,
+      averageProgress: 100,
+      nextGoal: null,
+    };
+  }
+
+  const goalsWithProgress = activeGoals.map((goal) => {
+    const progress =
+      goal.targetAmount > 0
+        ? Math.min(
+            100,
+            Math.round(
+              (goal.currentAmount / goal.targetAmount) * 100
+            )
+          )
+        : 0;
+
+    return {
+      ...goal,
+      progress,
+    };
+  });
+
+  const averageProgress =
+    goalsWithProgress.reduce(
+      (sum, goal) => sum + goal.progress,
+      0
+    ) / goalsWithProgress.length;
+
+
+
+
+
+  return {
+    total: goals.length,
+    completed,
+    averageProgress: Math.round(averageProgress),
+    nextGoal: null,
+  };
 }

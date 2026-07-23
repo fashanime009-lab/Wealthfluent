@@ -15,17 +15,20 @@ export default function Card({
   };
 
   return (
-    <div
-      className={cn(
-        "rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300",
-        hover &&
-          "hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/60",
-        paddings[padding],
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </div>
-  );
+  <div
+    className={cn(
+      "rounded-3xl border border-slate-200/60 bg-white shadow-sm transition-all duration-300",
+
+      hover &&
+        "hover:-translate-y-1 hover:border-emerald-200 hover:shadow-[0_18px_50px_rgba(16,185,129,0.08)]",
+
+      paddings[padding],
+
+      className
+    )}
+    {...props}
+  >
+    {children}
+  </div>
+);
 }

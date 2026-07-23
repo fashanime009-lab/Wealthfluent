@@ -8,37 +8,25 @@ import {
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [darkMode, setDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
+ const [theme, setTheme] = useState(() => {
+  const [theme, setTheme] = useState("light");
+});
 
-    if (savedTheme) {
-      return savedTheme === "dark";
-    }
+ useEffect(() => {
+ const root = document.documentElement;
 
-    return window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-  });
+root.classList.remove("dark");
 
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-
-    localStorage.setItem(
-      "theme",
-      darkMode ? "dark" : "light"
-    );
-  }, [darkMode]);
+// Force light mode while redesigning FINAIW
+localStorage.setItem("theme", "light");
+}, [theme]);
 
   return (
     <ThemeContext.Provider
       value={{
-        darkMode,
-        setDarkMode,
-      }}
+    theme,
+    setTheme,
+}}
     >
       {children}
     </ThemeContext.Provider>

@@ -1,4 +1,9 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import PropTypes from "prop-types";
 
 const JourneyContext = createContext(null);
@@ -9,6 +14,9 @@ export function JourneyProvider({
   children,
 }) {
   const [currentStep, setCurrentStep] = useState(initialStep);
+
+  // Central store for all journey answers
+  const [answers, setAnswers] = useState({});
 
   const totalSteps = journey.steps.length;
 
@@ -26,7 +34,15 @@ export function JourneyProvider({
 
   function goToStep(stepIndex) {
     if (stepIndex < 0 || stepIndex >= totalSteps) return;
+
     setCurrentStep(stepIndex);
+  }
+
+  function updateAnswer(field, value) {
+    setAnswers((previous) => ({
+      ...previous,
+      [field]: value,
+    }));
   }
 
   const value = useMemo(
@@ -34,11 +50,13 @@ export function JourneyProvider({
       journey,
       currentStep,
       totalSteps,
+      answers,
+      updateAnswer,
       nextStep,
       previousStep,
       goToStep,
     }),
-    [journey, currentStep, totalSteps]
+    [journey, currentStep, totalSteps, answers]
   );
 
   return (

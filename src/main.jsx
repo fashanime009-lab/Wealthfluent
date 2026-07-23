@@ -3,21 +3,24 @@ import ReactDOM from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
 import App from "./App";
 import "./index.css";
-
+import { WorkspaceProvider } from "./context/WorkspaceContext";
 
 import { FinanceProvider } from "./context/FinanceContext";
-import { ThemeProvider } from "./context/ThemeContext";
+
+import { SettingsProvider } from "./context/SettingsContext";
 
 ReactDOM.createRoot(
   document.getElementById("root")
 ).render(
   <React.StrictMode>
-    <HelmetProvider>
-    <ThemeProvider>
-      <FinanceProvider>
+   <HelmetProvider>
+  <FinanceProvider>
+    <SettingsProvider>
+      <WorkspaceProvider>
         <App />
-      </FinanceProvider>
-    </ThemeProvider>
-    </HelmetProvider>
+      </WorkspaceProvider>
+    </SettingsProvider>
+  </FinanceProvider>
+</HelmetProvider>
   </React.StrictMode>
 );

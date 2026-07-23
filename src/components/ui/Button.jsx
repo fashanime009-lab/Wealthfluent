@@ -3,19 +3,19 @@ import { cn } from "../../utils/cn";
 
 const variants = {
   primary:
-    "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5",
+    "bg-emerald-700 text-white shadow-sm hover:bg-emerald-800 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(6,95,70,.18)]",
 
   secondary:
-    "bg-white border border-slate-200 text-slate-800 hover:border-blue-500 hover:text-blue-600 hover:-translate-y-0.5",
+    "bg-white border border-slate-200/60 text-slate-800 hover:border-emerald-300 hover:text-emerald-700 hover:-translate-y-0.5",
 
   outline:
-    "border border-blue-500 text-blue-600 bg-transparent hover:bg-blue-50 hover:-translate-y-0.5",
+    "border border-emerald-700 text-emerald-700 bg-transparent hover:bg-emerald-50 hover:-translate-y-0.5",
 
   ghost:
     "bg-transparent text-slate-700 hover:bg-slate-100",
 
   success:
-    "bg-green-600 text-white hover:bg-green-700",
+    "bg-emerald-600 text-white hover:bg-emerald-700",
 
   danger:
     "bg-red-600 text-white hover:bg-red-700",
@@ -45,7 +45,7 @@ export default function Button({
     <button
       disabled={disabled || loading}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed",
+        "inline-flex items-center justify-center gap-2 rounded-2xl font-semibold transition-all duration-300 ease-out active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed",
         variants[variant],
         sizes[size],
         fullWidth && "w-full",

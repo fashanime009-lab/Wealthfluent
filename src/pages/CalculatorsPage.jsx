@@ -1,11 +1,10 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
-
 export default function CalculatorsPage() {
   const [searchParams] = useSearchParams();
+  const selectedCategory = searchParams.get("category");
 
-const selectedCategory = searchParams.get("category");
   // ─── Only calculators that have been created ──────────────────
   const categories = [
     {
@@ -44,7 +43,7 @@ const selectedCategory = searchParams.get("category");
         },
         {
           title: "Fixed Deposit Calculator",
-desc: "Estimate deposit maturity value and interest earned.",
+          desc: "Estimate deposit maturity value and interest earned.",
           route: "/fd-calculator",
           icon: "💰",
           color: "from-amber-500 to-orange-400",
@@ -127,7 +126,6 @@ desc: "Estimate deposit maturity value and interest earned.",
     },
     {
       id: "wealth",
-      
       name: "Wealth & Goal Planning",
       icon: "💼",
       description: "Track your net worth and plan your financial goals.",
@@ -146,31 +144,30 @@ desc: "Estimate deposit maturity value and interest earned.",
           icon: "🎯",
           color: "from-violet-500 to-purple-400",
         },
+        {
+          title: "Emergency Fund Calculator",
+          desc: "Plan your financial safety net for unexpected expenses.",
+          route: "/emergency-fund-calculator",
+          icon: "🛡️",
+          color: "from-amber-500 to-yellow-400",
+          new: true,
+        },
       ],
     },
   ];
-const filteredCategories =
-  !selectedCategory
-    ? categories
-    : categories.filter((category) => {
-        if (selectedCategory === "loan")
-          return category.id === "loan";
 
-        if (selectedCategory === "investment")
-          return category.id === "investment";
+  const filteredCategories =
+    !selectedCategory
+      ? categories
+      : categories.filter((category) => {
+          if (selectedCategory === "loan") return category.id === "loan";
+          if (selectedCategory === "investment") return category.id === "investment";
+          if (selectedCategory === "retirement") return category.id === "retirement";
+          if (selectedCategory === "wealth") return category.id === "wealth";
+          if (selectedCategory === "goal") return category.id === "wealth";
+          return true;
+        });
 
-        if (selectedCategory === "retirement")
-          return category.id === "retirement";
-
-        if (selectedCategory === "wealth")
-          return category.id === "wealth";
-
-        if (selectedCategory === "goal")
-          return category.id === "wealth";
-
-        return true;
-      });
-  // ─── Total count ──────────────────────────────────────────────
   const totalCalculators = filteredCategories.reduce((sum, cat) => sum + cat.calculators.length, 0);
 
   return (
@@ -194,8 +191,6 @@ const filteredCategories =
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-200/20 rounded-full blur-3xl"></div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-100/10 rounded-full blur-3xl"></div>
         </div>
-
-       
 
         {/* Hero */}
         <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 text-center z-10">
@@ -368,8 +363,6 @@ const filteredCategories =
             </div>
           </div>
         </section>
-
-        
       </div>
     </>
   );

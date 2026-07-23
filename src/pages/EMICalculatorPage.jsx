@@ -1,14 +1,27 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useWorkspace } from "../context/WorkspaceContext";
+import FINAIWOS from "../core/FINAIWOS";
+import { formatCurrency } from "../utils/currency";
+import Button from "../components/ui/Button";
+import { currencies } from "../data/currencies";
+import { useSettings } from "../context/SettingsContext";
 
 
 export default function EMICalculatorPage() {
   const [loanAmount, setLoanAmount] = useState(500000);
   const [interestRate, setInterestRate] = useState(10);
   const [loanYears, setLoanYears] = useState(5);
-  const [currency, setCurrency] = useState("$");
 
+const {
+  saveCalculation,
+  addRecentActivity,
+  updateDashboard,
+} = useWorkspace();
+const { settings } = useSettings();
+
+const currency = settings.currency;
   const monthlyRate = interestRate / 12 / 100;
   const months = loanYears * 12;
 
@@ -21,13 +34,40 @@ export default function EMICalculatorPage() {
 
   const totalPayment = emi * months;
   const totalInterest = totalPayment - loanAmount;
+ 
+  const saveCurrentCalculation = () => {
+  const payload = FINAIWOS.saveCalculation({
+    calculator: "EMI",
 
-  // Format currency
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-US", {
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
+    inputs: {
+      loanAmount,
+      interestRate,
+      loanYears,
+      currency,
+    },
+
+    results: {
+      emi,
+      totalInterest,
+      totalPayment,
+    },
+
+    summary: `${formatCurrency(emi, currency)}/month`,
+  });
+
+  saveCalculation("emi", payload);
+
+  addRecentActivity({
+    type: "calculator",
+    title: "Loan EMI Calculator",
+    value: payload.summary,
+  });
+
+  updateDashboard({
+    monthlyInvestment: emi,
+  });
+};
+
 
   return (
     <>
@@ -66,25 +106,7 @@ export default function EMICalculatorPage() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Panel – Inputs */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
-            <div className="mb-6">
-  <label className="block text-sm font-medium text-slate-600 mb-2">
-    Currency
-  </label>
-
-  <select
-    value={currency}
-    onChange={(e) => setCurrency(e.target.value)}
-    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
-  >
-    <option value="$">USD ($)</option>
-    <option value="€">EUR (€)</option>
-    <option value="£">GBP (£)</option>
-    <option value="₹">INR (₹)</option>
-    <option value="¥">JPY (¥)</option>
-    <option value="A$">AUD (A$)</option>
-    <option value="C$">CAD (C$)</option>
-  </select>
-</div>
+            
               <h2 className="text-2xl font-semibold text-slate-800 mb-6">
                 Loan Details
               </h2>
@@ -97,8 +119,8 @@ export default function EMICalculatorPage() {
                       Loan Amount
                     </label>
                     <span className="text-sm font-semibold text-blue-600">
-                      {currency}{formatCurrency(loanAmount)}
-                    </span>
+  {formatCurrency(loanAmount, currency)}
+</span>
                   </div>
                   <input
                     type="range"
@@ -205,7 +227,7 @@ export default function EMICalculatorPage() {
               <div className="mb-6">
                 <p className="text-sm text-slate-500">Monthly EMI</p>
                 <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mt-1">
-                  {currency}{formatCurrency(emi)}
+                  {formatCurrency(emi, currency)}
                 </h2>
               </div>
 
@@ -215,8 +237,8 @@ export default function EMICalculatorPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-slate-600">Principal Amount</span>
                     <span className="text-lg font-semibold text-slate-800">
-                      {currency}{formatCurrency(loanAmount)}
-                    </span>
+  {formatCurrency(loanAmount, currency)}
+</span>
                   </div>
                   <div className="mt-3 h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
                     <div
@@ -233,7 +255,7 @@ export default function EMICalculatorPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-slate-600">Total Interest</span>
                     <span className="text-lg font-semibold text-emerald-600">
-                      {currency}{formatCurrency(totalInterest)}
+                      {formatCurrency(totalInterest, currency)}
                     </span>
                   </div>
                   <div className="mt-3 h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
@@ -251,7 +273,7 @@ export default function EMICalculatorPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-slate-600">Total Payment</span>
                     <span className="text-lg font-semibold text-slate-800">
-                     {currency}{formatCurrency(totalPayment)}
+                     {formatCurrency(totalPayment, currency)}
                     </span>
                   </div>
                   <div className="mt-3 h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
@@ -277,7 +299,16 @@ export default function EMICalculatorPage() {
                   and borrower eligibility.
                 </p>
               </div>
+              <Button
+  variant="primary"
+  fullWidth
+  onClick={saveCurrentCalculation}
+  className="mt-6"
+>
+  Save to Workspace
+</Button>
             </div>
+            
           </div>
 
           {/* SEO Content */}
