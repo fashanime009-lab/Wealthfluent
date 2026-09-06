@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <meta name="theme-color" content="#022c22" />
+
+    <!--
+      IMPORTANT: title is the only tag kept static here. Every other SEO
+      tag (description, canonical, robots, Open Graph, Twitter Card,
+      JSON-LD) is rendered per-page by the <Seo> component via
+      react-helmet-async. Adding those tags here too — as this file
+      previously did — creates DUPLICATE tags in the DOM once React
+      mounts (Helmet appends its tags rather than replacing pre-existing
+      static ones), and the stale homepage-only values were winning over
+      every page's actual content. Google's crawler executes JavaScript
+      and reads the Helmet-managed versions correctly; this file only
+      needs to cover the instant before JS has loaded.
+    -->
+    <title>FINAIW – Free Financial Calculators, Verdicts & Planning Tools</title>
+
+    <!--
+      AdSense is intentionally NOT loaded here. It sets advertising cookies,
+      so — per GDPR/ePrivacy rules — it should only load after the visitor
+      has actually consented, not by default. See
+      src/components/consent/CookieConsent.jsx, which injects this same
+      script tag once "Accept" is clicked (or immediately, silently, if a
+      prior "accepted" choice is already saved).
+    -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
