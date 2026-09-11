@@ -1,0 +1,29 @@
+Paste lesson drafts below in this exact format. You can put several lessons
+in one file, separated by a line of five equals signs (=====).
+
+Get the content by asking Claude (in any chat, e.g. claude.ai — no API key
+needed) something like:
+  "Write 6 more FINAIW-style personal finance lessons on: [topics]. Use this
+   exact format: [paste this whole template file as the example]."
+
+Then run:  npm run add-lessons
+It reads every lesson below, appends it to src/data/lessons.js in the right
+shape, and clears this file so it's ready for the next batch.
+
+=====
+Title: Example Lesson Title
+Category: Foundations
+ReadTime: 4 min
+Summary: One sentence, under 20 words, in the site's voice.
+ToolLabel: Try the SIP Calculator
+ToolTo: /sip-calculator
+Body:
+First paragraph of the lesson. 3-5 sentences, precise and practical, with at
+least one concrete number or rupee figure.
+###
+Second paragraph, same style.
+###
+Third paragraph, same style.
+###
+Fourth paragraph, same style — often a practical takeaway or checklist.
+=====

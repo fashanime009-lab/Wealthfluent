@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <meta name="theme-color" content="#022c22" />
+
+    <!--
+      IMPORTANT: title is the only tag kept static here. Every other SEO
+      tag (description, canonical, robots, Open Graph, Twitter Card,
+      JSON-LD) is rendered per-page by the <Seo> component via
+      react-helmet-async. Adding those tags here too — as this file
+      previously did — creates DUPLICATE tags in the DOM once React
+      mounts (Helmet appends its tags rather than replacing pre-existing
+      static ones), and the stale homepage-only values were winning over
+      every page's actual content. Google's crawler executes JavaScript
+      and reads the Helmet-managed versions correctly; this file only
+      needs to cover the instant before JS has loaded.
+    -->
+    <title>FINAIW – Free Financial Calculators, Verdicts & Planning Tools</title>
+
+    <!--
+      Google tag (gtag.js) — Consent Mode v2.
+
+      The script itself is always present (required for Google's own
+      verification tools, e.g. Analytics' "Retest" tag-detection check, to
+      find it at all), but everything it's allowed to actually DO is
+      gated by consent signals, not by whether the script loaded:
+
+      - Default state below is fully denied — no analytics/ad cookies,
+        no personalization — until the visitor makes a real choice.
+      - src/components/consent/CookieConsent.jsx calls
+        gtag('consent', 'update', {...}) once they accept/decline (or
+        immediately, silently, on later visits if a prior choice is
+        already saved), which is what actually turns storage on or off.
+
+      This is different from AdSense's own script (adsbygoogle.js, loaded
+      separately in CookieConsent.jsx) — that one genuinely isn't injected
+      at all until consent, since it doesn't have an equivalent
+      "detect the tag first, respect consent signals after" verification
+      flow the way gtag.js's Consent Mode does.
+    -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6NY6L0MKP0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { window.dataLayer.push(arguments); }
+      window.gtag = gtag;
+
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+      });
+
+      gtag('js', new Date());
+      // send_page_view: false — this is a client-side-routed SPA; real
+      // pageviews are fired on every route change from
+      // src/components/ScrollToTop.jsx via trackPageview() instead.
+      gtag('config', 'G-6NY6L0MKP0', { send_page_view: false });
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

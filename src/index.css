@@ -1,0 +1,293 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #ffffff;
+  --bg-secondary: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --text-secondary: #64748b;
+  --border: #e2e8f0;
+  /* Explicitly declare the document's rendering mode instead of leaving it
+     unset. Unset (`normal`) lets the browser fall back to the OS-level
+     preference for native UI (form control chrome, scrollbars, default
+     selection color) independently of this site's own light/dark class —
+     which is exactly the kind of mismatch that can make the in-app
+     Light/Dark/System toggle look like it "does nothing": the class
+     correctly flips the site's own colors, while native browser chrome
+     quietly keeps following the OS instead of the page's explicit choice.
+     Declaring it here ties native rendering to the same source of truth
+     (the .dark class) as everything else. */
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+  /* These CSS vars are kept for any future component that opts in to
+     them explicitly, but body no longer reads them (see note below) — so
+     defining them here no longer cascades a full-page color flip. */
+  --bg: #020617;
+  --bg-secondary: #071120;
+  --card: #0f172a;
+  --text: #ffffff;
+  --text-secondary: #94a3b8;
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Body background/text intentionally hardcoded to light values — this is
+   the safe default that the site-wide dark-mode override block at the
+   bottom of this file builds on top of (see "SITE-WIDE DARK MODE"). */
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background: #ffffff;
+  color: #0f172a;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Layout's <main> and Footer both carry their own explicit (and correctly
+   dark-aware) backgrounds, so body's color is normally never seen. The
+   one place it WOULD show through is the margin gap between flowed
+   elements (e.g. Footer's mt-8) — without this, that gap flashes body's
+   light background as a stray white sliver in an otherwise dark page. */
+.dark body {
+  background: #020617;
+}
+
+html,
+body,
+#root {
+  overflow-x: hidden;
+  min-height: 100%;
+}
+
+/* ─── Custom Theme Values ─── */
+@theme {
+  --height-18: 4.5rem; /* 72px */
+}
+
+@keyframes toast {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
+}
+/* ══════════════════════════════════════════════════════════════════════
+   SITE-WIDE DARK MODE
+   ──────────────────────────────────────────────────────────────────────
+   The app has ~80 page/component files, most written with hardcoded
+   light-mode Tailwind utilities (bg-white, text-slate-900, etc.) and no
+   per-file dark: variants. Rather than hand-edit every file — slow, and
+   easy to miss a spot — this block reinterprets the small set of utility
+   classes that account for the vast majority of surfaces and text across
+   the whole codebase, the moment .dark is active on <html>. Because each
+   selector below repeats the original class name, it has equal-or-higher
+   specificity than Tailwind's own generated rule, so it wins on the
+   cascade without needing !important.
+
+   Deliberately NOT touched: classes already used as permanently-dark
+   surfaces by design (bg-slate-900/950, bg-[#050b16], the Footer, the
+   homepage's dark "verdict" panel, spotlight cards, etc.) — their own
+   light text colors were already tuned for a dark background, so
+   inverting them here would break them, not fix them.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Page & card surfaces */
+.dark .bg-white { background-color: #0f172a; }
+.dark .bg-white\/95 { background-color: rgba(15, 23, 42, .95); }
+.dark .bg-white\/90 { background-color: rgba(15, 23, 42, .9); }
+.dark .bg-white\/85 { background-color: rgba(15, 23, 42, .85); }
+.dark .bg-white\/80 { background-color: rgba(15, 23, 42, .8); }
+.dark .bg-white\/70 { background-color: rgba(15, 23, 42, .7); }
+.dark .bg-white\/60 { background-color: rgba(15, 23, 42, .6); }
+
+.dark .bg-slate-50 { background-color: #0a0f1a; }
+.dark .bg-slate-50\/30 { background-color: rgba(10, 15, 26, .5); }
+.dark .bg-slate-50\/50 { background-color: rgba(10, 15, 26, .7); }
+.dark .bg-slate-50\/60 { background-color: rgba(10, 15, 26, .8); }
+.dark .bg-slate-100 { background-color: #1e293b; }
+.dark .bg-slate-100\/70 { background-color: rgba(30, 41, 59, .7); }
+.dark .bg-slate-200 { background-color: #263449; }
+.dark .bg-gray-100 { background-color: #1e293b; }
+.dark .bg-gray-200 { background-color: #263449; }
+
+.dark .bg-\[\#f3f7fc\] { background-color: #0a0f1a; }
+.dark .bg-\[\#fbfdfc\] { background-color: #020617; }
+.dark .bg-\[\#f8fafc\] { background-color: #020617; }
+.dark .bg-\[\#f7f6ef\] { background-color: #0a0f1a; }
+
+/* Body copy */
+.dark .text-slate-950 { color: #f8fafc; }
+.dark .text-slate-900 { color: #f1f5f9; }
+.dark .text-slate-800 { color: #e2e8f0; }
+.dark .text-slate-700 { color: #cbd5e1; }
+.dark .text-slate-600 { color: #a8b6c9; }
+.dark .text-slate-500 { color: #94a3b8; }
+.dark .text-gray-700 { color: #cbd5e1; }
+
+/* Borders, rings, dividers */
+.dark .border-slate-100 { border-color: rgba(255, 255, 255, .06); }
+.dark .border-slate-200 { border-color: rgba(255, 255, 255, .09); }
+.dark .border-slate-200\/50 { border-color: rgba(255, 255, 255, .08); }
+.dark .border-slate-200\/60 { border-color: rgba(255, 255, 255, .09); }
+.dark .border-slate-200\/70 { border-color: rgba(255, 255, 255, .1); }
+.dark .border-slate-200\/80 { border-color: rgba(255, 255, 255, .11); }
+.dark .border-slate-300 { border-color: rgba(255, 255, 255, .14); }
+.dark .ring-slate-100 { --tw-ring-color: rgba(255, 255, 255, .06); }
+.dark .ring-slate-200 { --tw-ring-color: rgba(255, 255, 255, .09); }
+.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(255, 255, 255, .09); }
+
+/* Brand accent text needs to stay bright enough to read on dark surfaces —
+   emerald-700/800 is tuned for white cards and gets muddy on navy. */
+.dark .text-emerald-600 { color: #34d399; }
+.dark .text-emerald-700 { color: #34d399; }
+.dark .text-emerald-800 { color: #6ee7b7; }
+.dark .text-emerald-900 { color: #a7f3d0; }
+/* text-emerald-950 shows up as the label on solid white "pill" buttons
+   sitting on top of an already-dark colored card (e.g. Learn page's
+   featured-lesson CTA) — bg-white flips dark under it via the rule above,
+   so this needs to flip all the way to near-white to stay legible rather
+   than just "less dark". */
+.dark .text-emerald-950 { color: #f0fdf4; }
+
+/* Native form controls inherit the OS light theme unless told otherwise.
+   color-scheme: dark fixes the native chrome (calendar icon, spinner
+   arrows, dropdown popup) but does NOT set a text color — Tailwind's
+   preflight sets `color: inherit` on form elements, which cascades from
+   body's hardcoded light `color: #0f172a` (body's color, unlike its
+   background, is never flipped for dark mode). Result without the rules
+   below: dark text on a now-dark input background — invisible except
+   when selected. Scoped away from checkbox/radio/range/file so native
+   indicator rendering for those isn't touched. */
+.dark select,
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.dark textarea {
+  color-scheme: dark;
+  color: #f1f5f9;
+}
+
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"])::placeholder,
+.dark textarea::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+
+/* Only fill a background where the component didn't already set one
+   (bg-white etc. above already handle those, and win on specificity) —
+   this just stops raw, unstyled inputs from showing a jarring native
+   default panel through the dark card behind them. */
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([class*="bg-"]),
+.dark select:not([class*="bg-"]),
+.dark textarea:not([class*="bg-"]) {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Colored "badge chip" pattern (bg-X-50/100 + text-X-600/700/800 +
+   ring-X-100) used everywhere for tags, category icons and pills. The
+   light background needs to become a translucent dark tint of the same
+   hue, and the text needs to brighten to match — otherwise the two
+   overrides above would fight each other (bright text on a background
+   that stayed pale = unreadable in the other direction). */
+.dark .bg-emerald-50 { background-color: rgba(16, 185, 129, .12); }
+.dark .bg-emerald-50\/40 { background-color: rgba(16, 185, 129, .12); }
+.dark .bg-emerald-50\/50 { background-color: rgba(16, 185, 129, .13); }
+.dark .bg-emerald-50\/60 { background-color: rgba(16, 185, 129, .14); }
+.dark .bg-emerald-50\/70 { background-color: rgba(16, 185, 129, .14); }
+.dark .bg-emerald-100 { background-color: rgba(16, 185, 129, .16); }
+.dark .ring-emerald-100 { --tw-ring-color: rgba(16, 185, 129, .22); }
+
+.dark .bg-sky-50 { background-color: rgba(14, 165, 233, .12); }
+.dark .bg-sky-100 { background-color: rgba(14, 165, 233, .16); }
+.dark .ring-sky-100 { --tw-ring-color: rgba(14, 165, 233, .22); }
+.dark .text-sky-700 { color: #7dd3fc; }
+
+.dark .bg-blue-50 { background-color: rgba(59, 130, 246, .12); }
+.dark .bg-blue-100 { background-color: rgba(59, 130, 246, .16); }
+.dark .bg-blue-100\/80 { background-color: rgba(59, 130, 246, .18); }
+.dark .bg-blue-100\/40 { background-color: rgba(59, 130, 246, .1); }
+.dark .ring-blue-100 { --tw-ring-color: rgba(59, 130, 246, .22); }
+.dark .text-blue-600 { color: #60a5fa; }
+.dark .text-blue-700 { color: #93c5fd; }
+
+.dark .bg-amber-50 { background-color: rgba(245, 158, 11, .12); }
+.dark .bg-amber-100 { background-color: rgba(245, 158, 11, .16); }
+.dark .ring-amber-100 { --tw-ring-color: rgba(245, 158, 11, .22); }
+.dark .text-amber-600 { color: #fbbf24; }
+.dark .text-amber-700 { color: #fcd34d; }
+
+.dark .bg-rose-50 { background-color: rgba(244, 63, 94, .12); }
+.dark .bg-rose-100 { background-color: rgba(244, 63, 94, .16); }
+.dark .ring-rose-100 { --tw-ring-color: rgba(244, 63, 94, .22); }
+.dark .text-rose-600 { color: #fb7185; }
+.dark .text-rose-700 { color: #fda4af; }
+
+.dark .bg-red-50 { background-color: rgba(239, 68, 68, .12); }
+.dark .bg-red-100 { background-color: rgba(239, 68, 68, .16); }
+.dark .text-red-600 { color: #f87171; }
+.dark .text-red-700 { color: #fca5a5; }
+
+.dark .bg-violet-50 { background-color: rgba(139, 92, 246, .12); }
+.dark .bg-violet-100 { background-color: rgba(139, 92, 246, .16); }
+.dark .ring-violet-100 { --tw-ring-color: rgba(139, 92, 246, .22); }
+.dark .text-violet-600 { color: #a78bfa; }
+.dark .text-violet-700 { color: #c4b5fd; }
+
+.dark .bg-purple-50 { background-color: rgba(168, 85, 247, .12); }
+.dark .ring-purple-100 { --tw-ring-color: rgba(168, 85, 247, .22); }
+.dark .text-purple-600 { color: #c084fc; }
+.dark .text-purple-700 { color: #d8b4fe; }
+
+.dark .bg-orange-50 { background-color: rgba(249, 115, 22, .12); }
+.dark .ring-orange-100 { --tw-ring-color: rgba(249, 115, 22, .22); }
+.dark .text-orange-700 { color: #fdba74; }
+
+.dark .bg-indigo-100 { background-color: rgba(99, 102, 241, .16); }
+.dark .bg-yellow-100 { background-color: rgba(234, 179, 8, .16); }
+.dark .text-yellow-700 { color: #fde047; }
+
+/* A few hero/card sections use a light bg-gradient (from-white via-...
+   to-...) instead of a plain background color. Gradient stops are set via
+   custom properties, not background-color, so the earlier .bg-white
+   override doesn't reach them — left alone, the section stays pale white
+   while the text above it gets brightened by the rules above, producing
+   near-invisible light-on-light text. This neutralizes the gradient and
+   swaps in a solid dark surface instead. */
+.dark .bg-gradient-to-br.from-white {
+  background-image: none;
+  background-color: #0a0f1a;
+}
+
+/* Calculator result cards commonly use a light-to-light gradient
+   (from-emerald-50 to-indigo-50, from-blue-50 to-cyan-50, etc.) instead
+   of a plain background — same underlying issue as above, affecting ~12
+   calculator pages' "your result" cards. */
+.dark .bg-gradient-to-br.from-emerald-50,
+.dark .bg-gradient-to-r.from-emerald-50 {
+  background-image: none;
+  background-color: rgba(16, 185, 129, .1);
+}
+.dark .bg-gradient-to-br.from-blue-50 {
+  background-image: none;
+  background-color: rgba(59, 130, 246, .1);
+}
+.dark .bg-gradient-to-br.from-sky-50 {
+  background-image: none;
+  background-color: rgba(14, 165, 233, .1);
+}
+.dark .bg-gradient-to-br.from-violet-50 {
+  background-image: none;
+  background-color: rgba(139, 92, 246, .1);
+}
+.dark .bg-gradient-to-br.from-orange-50 {
+  background-image: none;
+  background-color: rgba(249, 115, 22, .1);
+}

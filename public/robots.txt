@@ -1,0 +1,18 @@
+# robots.txt for FINAIW
+
+User-agent: *
+Allow: /
+
+# Personal/app-state pages — no SEO value, and indexing them risks thin
+# or duplicate-content signals since their content is user-specific or
+# identical to another canonical URL.
+Disallow: /settings
+Disallow: /financial-profile
+Disallow: /goals
+Disallow: /insights
+
+# Not ready yet — feature is built but untested, intentionally not
+# discoverable through navigation, search, or the sitemap either.
+Disallow: /journeys/home-buying
+
+Sitemap: https://finaiw.com/sitemap.xml
