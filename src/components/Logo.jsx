@@ -19,7 +19,7 @@ export default function Logo({
 
   return (
     <span className="leading-tight">
-      <span className={`block ${wordSize} font-black tracking-[-0.045em]`}>
+      <span className={`font-display block ${wordSize} font-black tracking-[-0.045em]`}>
         <span className={finColor}>FIN</span>
         <span className={aiwColor}>AIW</span>
       </span>

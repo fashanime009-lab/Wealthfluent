@@ -24,7 +24,7 @@ export default function InterestRateStep() {
           <button
             type="button"
             onClick={previousStep}
-            className="rounded-xl border border-slate-300 px-6 py-3 font-semibold"
+            className="border border-[#111814]/15 px-6 py-3 font-semibold text-[#111814] transition hover:bg-[#111814]/5 dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:hover:bg-[#eef1ec]/5"
           >
             Back
           </button>
@@ -35,7 +35,7 @@ export default function InterestRateStep() {
     updateAnswer("interestRate", interestRate);
     nextStep();
   }}
-            className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white"
+            className="bg-[#047857] px-6 py-3 font-semibold text-white transition hover:bg-[#065f46]"
           >
             Continue
           </button>

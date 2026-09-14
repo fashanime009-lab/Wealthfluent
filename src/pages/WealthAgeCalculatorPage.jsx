@@ -4,6 +4,11 @@ import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { formatCurrency } from "../utils/currency";
 import AdSlot from "../components/ads/AdSlot";
 import { useSettings } from "../context/SettingsContext";
+import CalcHeader from "@/components/calculators/CalcHeader";
+import CalcField from "@/components/calculators/CalcField";
+import CalcSection from "@/components/calculators/CalcSection";
+import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
+import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const FIELDS = [
   { name: "age", label: "Current Age", min: 18, max: 70, step: 1, isAge: true },
@@ -14,9 +19,16 @@ const FIELDS = [
   { name: "monthlyExpenses", label: "Monthly Expenses", min: 0, max: 500000, step: 500 },
 ];
 
+const FAQ_ITEMS = [
+  { q: "What's a good wealth age?", a: "Anything below your real age means your current habits are outpacing what your age alone would predict. There's no universal target — the number is most useful tracked over time against your own past results." },
+  { q: "Why did my wealth age go up instead of down?", a: "Usually a savings rate under 20% and/or a negative or low net worth (debt exceeding investments). Increasing monthly savings or paying down high-interest debt are the two most direct levers to bring it back down." },
+  { q: "Is this the same as a real financial planning tool?", a: "No — treat it as a quick gut-check, not a substitute for a full financial plan. For actual retirement projections, use the Retirement or FIRE calculators, which model your specific numbers rather than producing a single comparative score." },
+];
+
 export default function WealthAgeCalculatorPage() {
   const { settings } = useSettings();
   const currency = settings.currency;
+  const fmt = (v) => formatCurrency(v, currency);
 
   const [formData, setFormData] = useState({
     age: 25,
@@ -89,7 +101,7 @@ export default function WealthAgeCalculatorPage() {
         faqSchema([
           {
             "question": "What's a good wealth age?",
-            "answer": "Anything below your real age means your current habits are outpacing what your age alone would predict. There's no universal target \u2014 the number is most useful tracked over time against your own past results."
+            "answer": "Anything below your real age means your current habits are outpacing what your age alone would predict. There's no universal target — the number is most useful tracked over time against your own past results."
           },
           {
             "question": "Why did my wealth age go up instead of down?",
@@ -97,79 +109,42 @@ export default function WealthAgeCalculatorPage() {
           },
           {
             "question": "Is this the same as a real financial planning tool?",
-            "answer": "No \u2014 treat it as a quick gut-check, not a substitute for a full financial plan. For actual retirement projections, use the Retirement or FIRE calculators, which model your specific numbers rather than producing a single comparative score."
+            "answer": "No — treat it as a quick gut-check, not a substitute for a full financial plan. For actual retirement projections, use the Retirement or FIRE calculators, which model your specific numbers rather than producing a single comparative score."
           }
         ]),
       ]}
       />
 
-      <div className="min-h-screen bg-[#f3f7fc] text-slate-800">
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-          {/* Header */}
-          <div className="mb-10">
-            <p className="text-emerald-700 font-semibold text-sm uppercase tracking-wider mb-2">
-              Financial Calculators
-            </p>
-            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
-              Wealth Age Calculator
-            </h1>
-            <p className="text-slate-500 text-lg mt-3 max-w-2xl">
-              Discover your financial age, wealth score, and investment personality
-              using your income, savings, debt, and financial habits.
-            </p>
-          </div>
+      <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
+        <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
+          <CalcHeader
+            category="Wealth & Goals"
+            title="Wealth Age Calculator"
+            description="Discover your financial age, wealth score, and investment personality using your income, savings, debt, and financial habits."
+          />
 
           {/* Calculator Grid */}
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="mt-10 grid gap-8 lg:grid-cols-2">
             {/* Left Panel – Inputs */}
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
-              <h2 className="text-2xl font-semibold text-slate-800 mb-6">
-                Your Financial Data
-              </h2>
-
-              <div className="space-y-8">
-                {FIELDS.map((field) => (
-                  <div key={field.name}>
-                    <div className="flex justify-between items-center mb-2">
-                      <label className="text-sm font-medium text-slate-600">
-                        {field.label}
-                      </label>
-                      <span className="text-sm font-semibold text-emerald-700">
-                        {field.isAge
-                          ? `${formData[field.name]} yrs`
-                          : formatCurrency(formData[field.name], currency)}
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min={field.min}
-                      max={field.max}
-                      step={field.step}
-                      value={formData[field.name]}
-                      onChange={(e) => handleChange(field.name, e.target.value, field.min)}
-                      className="w-full h-2 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-700"
-                    />
-                    <div className="flex justify-between text-xs text-slate-400 mt-1">
-                      <span>{field.isAge ? `${field.min} yrs` : formatCurrency(field.min, currency)}</span>
-                      <span>{field.isAge ? `${field.max} yrs` : formatCurrency(field.max, currency)}</span>
-                    </div>
-                    <input
-                      type="number"
-                      min={field.min}
-                      max={field.max}
-                      step={field.step}
-                      value={formData[field.name]}
-                      onChange={(e) => handleChange(field.name, e.target.value, field.min)}
-                      className="mt-3 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent"
-                    />
-                  </div>
-                ))}
-              </div>
+            <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+              {FIELDS.map((field) => (
+                <CalcField
+                  key={field.name}
+                  label={field.label}
+                  value={formData[field.name]}
+                  onChange={(v) => handleChange(field.name, v, field.min)}
+                  min={field.min}
+                  max={field.max}
+                  step={field.step}
+                  suffix={field.isAge ? " yrs" : undefined}
+                  format={field.isAge ? undefined : fmt}
+                />
+              ))}
 
               {/* Disclaimer */}
-              <div className="mt-6 text-xs text-slate-400 space-y-1 border-t border-slate-100 pt-4">
+              <div className="space-y-1 border-t border-[#111814]/10 pt-6 text-[12px] leading-5 text-[#111814]/45 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/45">
                 <p>
-                  <span className="font-medium text-slate-500">Disclaimer:</span>{" "}
+                  <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
                   This is a motivational comparison tool, not a precise actuarial or
                   financial planning measure.
                 </p>
@@ -184,64 +159,64 @@ export default function WealthAgeCalculatorPage() {
             <div className="flex flex-col gap-6">
               {/* Top stat cards */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-5">
-                  <p className="text-slate-500 text-sm mb-2">Financial Age</p>
-                  <h2 className="text-3xl md:text-4xl font-black text-emerald-700">
+                <div className="border border-[#111814]/12 bg-[#ffffff] p-5 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+                  <p className="text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">Financial Age</p>
+                  <p className="font-mono-tech mt-1 text-[28px] font-bold tabular-nums text-[#047857] dark:text-[#34d399]">
                     {results.wealthAge}
-                  </h2>
+                  </p>
                 </div>
-                <div className="rounded-2xl border border-slate-200/60 bg-white p-5">
-                  <p className="text-slate-500 text-sm mb-2">Wealth Score</p>
-                  <h2 className="text-3xl md:text-4xl font-black text-slate-800">
+                <div className="border border-[#111814]/12 bg-[#ffffff] p-5 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+                  <p className="text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">Wealth Score</p>
+                  <p className="font-mono-tech mt-1 text-[28px] font-bold tabular-nums text-[#111814] dark:text-[#eef1ec]">
                     {results.wealthScore}
-                  </h2>
+                  </p>
                 </div>
-                <div className="rounded-2xl border border-slate-200/60 bg-white p-5">
-                  <p className="text-slate-500 text-sm mb-2">Savings Rate</p>
-                  <h2 className="text-3xl md:text-4xl font-black text-slate-800">
+                <div className="border border-[#111814]/12 bg-[#ffffff] p-5 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+                  <p className="text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">Savings Rate</p>
+                  <p className="font-mono-tech mt-1 text-[28px] font-bold tabular-nums text-[#111814] dark:text-[#eef1ec]">
                     {Math.round(results.savingsRate)}%
-                  </h2>
+                  </p>
                 </div>
-                <div className="rounded-2xl border border-slate-200/60 bg-white p-5">
-                  <p className="text-slate-500 text-sm mb-2">Net Worth</p>
-                  <h2 className="text-xl md:text-2xl font-black text-slate-800 break-words">
-                    {formatCurrency(results.netWorth, currency)}
-                  </h2>
+                <div className="border border-[#111814]/12 bg-[#ffffff] p-5 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+                  <p className="text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">Net Worth</p>
+                  <p className="font-mono-tech mt-1 break-words text-[20px] font-bold tabular-nums text-[#111814] dark:text-[#eef1ec]">
+                    {fmt(results.netWorth)}
+                  </p>
                 </div>
               </div>
 
               {/* Main insight card */}
-              <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
-                <div className="grid sm:grid-cols-[180px_1fr] gap-8 items-center">
+              <div className="border border-[#111814]/12 bg-[#ffffff] p-6 dark:border-[#eef1ec]/12 dark:bg-[#0b1210] md:p-8">
+                <div className="grid grid-cols-1 items-center gap-8 sm:grid-cols-[160px_1fr]">
                   <div className="flex justify-center">
-                    <div className="relative w-[160px] h-[160px] rounded-full border-[10px] border-emerald-600 flex items-center justify-center bg-emerald-50">
+                    <div className="flex h-[150px] w-[150px] items-center justify-center rounded-full border-[8px] border-[#047857] bg-[#eef1ec] dark:border-[#34d399] dark:bg-[#0e1512]">
                       <div className="text-center">
-                        <p className="text-slate-500 text-xs mb-1">Wealth Score</p>
-                        <h2 className="text-4xl font-black text-emerald-700">
+                        <p className="text-[12px] text-[#111814]/55 dark:text-[#eef1ec]/55">Wealth Score</p>
+                        <p className="font-mono-tech mt-1 text-[34px] font-bold tabular-nums text-[#047857] dark:text-[#34d399]">
                           {results.wealthScore}
-                        </h2>
+                        </p>
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-emerald-700 uppercase tracking-[2px] text-xs font-bold mb-3">
+                    <p className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">
                       Financial Analysis
                     </p>
-                    <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-4 leading-tight">
+                    <h2 className="font-display mt-2 text-[24px] font-extrabold leading-tight tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[28px]">
                       {results.personality}
                     </h2>
-                    <p className="text-slate-500 leading-relaxed mb-5">
+                    <p className="mt-3 text-[14px] leading-6 text-[#111814]/65 dark:text-[#eef1ec]/65">
                       Your financial behavior suggests that you are currently{" "}
-                      <span className="text-slate-900 font-bold">{results.status}</span>.
+                      <strong className="text-[#111814] dark:text-[#eef1ec]">{results.status}</strong>.
                       Your savings habits, net worth, and investment growth indicate
                       your long-term wealth-building potential.
                     </p>
-                    <div className="flex flex-wrap gap-3">
-                      <span className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2 text-sm font-semibold text-emerald-700">
+                    <div className="mt-4 flex flex-wrap gap-3">
+                      <span className="border border-[#047857]/25 px-3 py-1.5 font-mono-tech text-[13px] font-semibold tabular-nums text-[#047857] dark:border-[#34d399]/25 dark:text-[#34d399]">
                         Savings Rate: {Math.round(results.savingsRate)}%
                       </span>
-                      <span className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-semibold text-slate-600">
+                      <span className="border border-[#111814]/15 px-3 py-1.5 font-mono-tech text-[13px] font-semibold tabular-nums text-[#111814]/70 dark:border-[#eef1ec]/15 dark:text-[#eef1ec]/70">
                         Net Worth: {formatCurrency(results.netWorth, currency, true)}
                       </span>
                     </div>
@@ -250,48 +225,23 @@ export default function WealthAgeCalculatorPage() {
               </div>
 
               {/* Insight cards */}
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="bg-white rounded-2xl border border-slate-200/60 p-6">
-                  <h3 className="text-emerald-700 font-bold mb-2">Wealth Optimization</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">
-                    Increasing your monthly savings rate can significantly reduce your
-                    financial age and accelerate your path toward financial freedom.
-                  </p>
-                </div>
-                <div className="bg-white rounded-2xl border border-slate-200/60 p-6">
-                  <h3 className="text-emerald-700 font-bold mb-2">Recommendation</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">
-                    Focus on growing investments while reducing high-interest debt to
-                    improve your overall wealth score over time.
-                  </p>
-                </div>
-                <div className="bg-white rounded-2xl border border-slate-200/60 p-6">
-                  <h3 className="text-emerald-700 font-bold mb-2">Financial Discipline</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">
-                    Consistent investing and controlled spending habits are what
-                    currently support your long-term wealth creation journey.
-                  </p>
-                </div>
-                <div className="bg-white rounded-2xl border border-slate-200/60 p-6">
-                  <h3 className="text-emerald-700 font-bold mb-2">Future Potential</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">
-                    Your current financial pattern suggests strong future compounding
-                    opportunities if maintained consistently.
-                  </p>
-                </div>
-              </div>
+              <CalcBenefitGrid
+                items={[
+                  { title: "Wealth Optimization", text: "Increasing your monthly savings rate can significantly reduce your financial age and accelerate your path toward financial freedom." },
+                  { title: "Recommendation", text: "Focus on growing investments while reducing high-interest debt to improve your overall wealth score over time." },
+                  { title: "Financial Discipline", text: "Consistent investing and controlled spending habits are what currently support your long-term wealth creation journey." },
+                  { title: "Future Potential", text: "Your current financial pattern suggests strong future compounding opportunities if maintained consistently." },
+                ]}
+              />
             </div>
           </div>
 
           {/* SEO Content */}
-          <div className="mt-16 space-y-10">
+          <div className="mt-16">
             <AdSlot slotId="wealthage_calc_mid" />
 
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
-              <h2 className="text-2xl font-bold text-slate-800 mb-4">
-                What Is a Wealth Age Calculator?
-              </h2>
-              <p className="text-slate-500 leading-relaxed">
+            <CalcSection title="What Is a Wealth Age Calculator?">
+              <p>
                 A Wealth Age Calculator compares your actual financial age — how
                 old your savings rate and net worth suggest you are, financially
                 — against your real age. It's a quick, single-number gut check on
@@ -299,18 +249,15 @@ export default function WealthAgeCalculatorPage() {
                 on pace with, or behind where your birth-certificate age would
                 suggest, based on your income, savings, investments, and debt.
               </p>
-              <p className="text-slate-500 leading-relaxed mt-4">
+              <p>
                 It isn't a precise actuarial measure — it's a motivational
                 snapshot meant to make savings rate and net worth tangible in a
                 way a raw percentage or rupee figure often doesn't.
               </p>
-            </div>
+            </CalcSection>
 
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
-              <h2 className="text-2xl font-bold text-slate-800 mb-4">
-                How Is Wealth Age Calculated?
-              </h2>
-              <p className="text-slate-500 leading-relaxed">
+            <CalcSection title="How Is Wealth Age Calculated?">
+              <p>
                 Two factors adjust your real age up or down: your savings rate
                 (monthly savings ÷ monthly income) and your net worth (investments
                 minus debt). A savings rate of 40%+ subtracts 8 years; 30-39%
@@ -321,50 +268,11 @@ export default function WealthAgeCalculatorPage() {
                 well below their real age — and the reverse is true for a high
                 real age with a low savings rate and negative net worth.
               </p>
-            </div>
+            </CalcSection>
 
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
-              <h2 className="text-2xl font-bold text-slate-800 mb-6">
-                Frequently Asked Questions
-              </h2>
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-700">
-                    What's a good wealth age?
-                  </h3>
-                  <p className="text-slate-500 leading-relaxed">
-                    Anything below your real age means your current habits are
-                    outpacing what your age alone would predict. There's no
-                    universal target — the number is most useful tracked over
-                    time against your own past results.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-700">
-                    Why did my wealth age go up instead of down?
-                  </h3>
-                  <p className="text-slate-500 leading-relaxed">
-                    Usually a savings rate under 20% and/or a negative or low net
-                    worth (debt exceeding investments). Increasing monthly
-                    savings or paying down high-interest debt are the two most
-                    direct levers to bring it back down.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-700">
-                    Is this the same as a real financial planning tool?
-                  </h3>
-                  <p className="text-slate-500 leading-relaxed">
-                    No — treat it as a quick gut-check, not a substitute for a
-                    full financial plan. For actual retirement projections, use
-                    the Retirement or FIRE calculators, which model your specific
-                    numbers rather than producing a single comparative score.
-                  </p>
-                </div>
-              </div>
-            </div>
+            <VerdictFAQ items={FAQ_ITEMS} className="border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />
           </div>
-        </section>
+        </div>
       </div>
     </>
   );

@@ -3,6 +3,11 @@ import Seo from "@/components/seo/Seo";
 import { calculatorSchema } from "@/components/seo/schema";
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
+import CalcHeader from "@/components/calculators/CalcHeader";
+import CalcField from "@/components/calculators/CalcField";
+import CalcResultPanel from "@/components/calculators/CalcResultPanel";
+import CalcStat from "@/components/calculators/CalcStat";
+import CalcSection from "@/components/calculators/CalcSection";
 
 
 export default function GoalPlannerPage() {
@@ -10,7 +15,7 @@ export default function GoalPlannerPage() {
 
 const currency = settings.currency;
   // ─── State for all input fields ──────────────────────────────────
- 
+
   const [inputs, setInputs] = useState({
     // Expenses
     monthlyExpenses: 25000,
@@ -64,7 +69,7 @@ const currency = settings.currency;
       epfReturnRate,
     } = inputs;
 
- 
+
 
     // Step 3: Total average monthly expenses (annual/12)
     const totalMonthlyExpenses = monthlyExpenses + annualExpenses / 12;
@@ -88,7 +93,7 @@ const currency = settings.currency;
       // PV of growing annuity (inflation-adjusted expenses)
       const monthlyInflationRetirement = inflationDuringRetirement / 100 / 12;
       const growthRate = (1 + monthlyReturnCorpus) / (1 + monthlyInflationRetirement) - 1;
-      
+
       if (Math.abs(growthRate) < 0.0001) {
         totalCorpusRequired = monthlyExpensesFirstRetirement * totalMonthsRetirement;
       } else {
@@ -159,6 +164,9 @@ const currency = settings.currency;
       netCorpusToAccumulate: Math.round(netCorpusToAccumulate),
     };
   }, [inputs]);
+
+  const fmt = (v) => formatCurrency(v, currency);
+
   // ─── Render ──────────────────────────────────────────────────────
   return (
     <>
@@ -173,271 +181,156 @@ const currency = settings.currency;
           path: "/goal-planner",
         })}
       />
-      <div className="min-h-screen bg-[#f3f7fc] text-slate-800">
-        
-        
-
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-          {/* Header */}
-          <div className="mb-10">
-            <p className="text-blue-600 font-semibold text-sm uppercase tracking-wider mb-2">
-              Financial Planning Tool
-            </p>
-            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
-              Financial Goal Planner
-            </h1>
-            <p className="text-slate-500 text-lg mt-3 max-w-2xl">
-              Plan your retirement with variable asset allocation, inflation-adjusted expenses, and retirement contributions.
-            </p>
-          </div>
+      <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
+        <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
+          <CalcHeader
+            category="Wealth & Goals"
+            title="Financial Goal Planner"
+            description="Plan your retirement with variable asset allocation, inflation-adjusted expenses, and retirement contributions."
+          />
 
           {/* Main Grid */}
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="mt-10 grid gap-8 lg:grid-cols-2">
             {/* Left Panel – Inputs */}
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
-            <div className="mb-6">
- 
+            <div className="border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+              <h2 className="font-display text-[18px] font-extrabold text-[#111814] dark:text-[#eef1ec]">Goal Planner Inputs</h2>
 
-
-</div>
-              <h2 className="text-2xl font-semibold text-slate-800 mb-6">Goal Planner Inputs</h2>
-
-              <div className="space-y-6 max-h-[600px] overflow-y-auto pr-2">
+              <div className="mt-6 space-y-8">
                 {/* Section: Expenses */}
-                <div className="border-b border-slate-100 pb-4">
-                  <h3 className="text-sm font-semibold text-blue-600 mb-3">Current Expenses</h3>
-                  <div className="space-y-3">
-                    {[
-                      { key: "monthlyExpenses", label: `Current Monthly Expenses (${currency})` },
-                      { key: "annualExpenses", label: `Annual Expenses (${currency})` },
-                    ].map(({ key, label }) => (
-                      <div key={key} className="flex items-center gap-3">
-                        <label className="text-sm text-slate-600 w-1/2">{label}</label>
-                        <input
-                          type="number"
-                          min="0"
-                          step="1000"
-                          value={inputs[key]}
-                          onChange={(e) => handleChange(key, e.target.value)}
-                          className="w-1/2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                    ))}
+                <div>
+                  <h3 className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Current Expenses</h3>
+                  <div className="mt-4 space-y-6">
+                    <CalcField label={`Current Monthly Expenses (${currency})`} value={inputs.monthlyExpenses} onChange={(v) => handleChange("monthlyExpenses", v)} min={0} max={500000} step={1000} format={fmt} />
+                    <CalcField label={`Annual Expenses (${currency})`} value={inputs.annualExpenses} onChange={(v) => handleChange("annualExpenses", v)} min={0} max={6000000} step={1000} format={fmt} />
                   </div>
                 </div>
 
                 {/* Section: Retirement Details */}
-                <div className="border-b border-slate-100 pb-4">
-                  <h3 className="text-sm font-semibold text-blue-600 mb-3">Retirement Details</h3>
-                  <div className="space-y-3">
-                    {[
-                      { key: "inflationBeforeRetirement", label: "Inflation Before Retirement (%)", step: 0.5 },
-                      { key: "currentAge", label: "Current Age" },
-                      { key: "retirementAge", label: "Age You Wish to Retire" },
-                      { key: "lifeExpectancy", label: "Years You Expect to Live" },
-                      { key: "inflationDuringRetirement", label: "Inflation During Retirement (%)", step: 0.5 },
-                      { key: "postTaxReturnCorpus", label: "Post-Tax Return from Retirement Corpus (%)", step: 0.5 },
-                    ].map(({ key, label, step = 1 }) => (
-                      <div key={key} className="flex items-center gap-3">
-                        <label className="text-sm text-slate-600 w-1/2">{label}</label>
-                        <input
-                          type="number"
-                          min="0"
-                          step={step}
-                          value={inputs[key]}
-                          onChange={(e) => handleChange(key, e.target.value)}
-                          className="w-1/2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                    ))}
+                <div className="border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
+                  <h3 className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Retirement Details</h3>
+                  <div className="mt-4 space-y-6">
+                    <CalcField label="Inflation Before Retirement (%)" value={inputs.inflationBeforeRetirement} onChange={(v) => handleChange("inflationBeforeRetirement", v)} min={0} max={15} step={0.5} suffix="%" />
+                    <CalcField label="Current Age" value={inputs.currentAge} onChange={(v) => handleChange("currentAge", v)} min={18} max={70} step={1} suffix=" yrs" />
+                    <CalcField label="Age You Wish to Retire" value={inputs.retirementAge} onChange={(v) => handleChange("retirementAge", v)} min={40} max={75} step={1} suffix=" yrs" />
+                    <CalcField label="Years You Expect to Live" value={inputs.lifeExpectancy} onChange={(v) => handleChange("lifeExpectancy", v)} min={60} max={100} step={1} suffix=" yrs" />
+                    <CalcField label="Inflation During Retirement (%)" value={inputs.inflationDuringRetirement} onChange={(v) => handleChange("inflationDuringRetirement", v)} min={0} max={15} step={0.5} suffix="%" />
+                    <CalcField label="Post-Tax Return from Retirement Corpus (%)" value={inputs.postTaxReturnCorpus} onChange={(v) => handleChange("postTaxReturnCorpus", v)} min={0} max={15} step={0.5} suffix="%" />
                   </div>
                 </div>
 
                 {/* Section: Asset Allocation Returns */}
-                <div className="border-b border-slate-100 pb-4">
-                  <h3 className="text-sm font-semibold text-blue-600 mb-3">Asset Allocation Returns</h3>
-                  <div className="space-y-3">
-                    {[
-                      { key: "postTaxReturnEquity", label: "Equity Return (%)", step: 0.5 },
-                      { key: "postTaxReturnTaxableFixed", label: "Taxable Fixed Income Return (%)", step: 0.5 },
-                      { key: "postTaxReturnTaxFreeFixed", label: "Tax-Free Fixed Income Return (%)", step: 0.5 },
-                    ].map(({ key, label, step = 0.5 }) => (
-                      <div key={key} className="flex items-center gap-3">
-                        <label className="text-sm text-slate-600 w-1/2">{label}</label>
-                        <input
-                          type="number"
-                          min="0"
-                          step={step}
-                          value={inputs[key]}
-                          onChange={(e) => handleChange(key, e.target.value)}
-                          className="w-1/2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                    ))}
+                <div className="border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
+                  <h3 className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Asset Allocation Returns</h3>
+                  <div className="mt-4 space-y-6">
+                    <CalcField label="Equity Return (%)" value={inputs.postTaxReturnEquity} onChange={(v) => handleChange("postTaxReturnEquity", v)} min={0} max={25} step={0.5} suffix="%" />
+                    <CalcField label="Taxable Fixed Income Return (%)" value={inputs.postTaxReturnTaxableFixed} onChange={(v) => handleChange("postTaxReturnTaxableFixed", v)} min={0} max={15} step={0.5} suffix="%" />
+                    <CalcField label="Tax-Free Fixed Income Return (%)" value={inputs.postTaxReturnTaxFreeFixed} onChange={(v) => handleChange("postTaxReturnTaxFreeFixed", v)} min={0} max={15} step={0.5} suffix="%" />
                   </div>
                 </div>
 
                 {/* Section: Current Investments */}
-                <div className="border-b border-slate-100 pb-4">
-                  <h3 className="text-sm font-semibold text-blue-600 mb-3">Current Investments</h3>
-                  <div className="space-y-3">
-                    {[
-                      { key: "currentEquityInvestments", label:`Equity Investments (${currency})` },
-                      { key: "currentTaxableFixedIncome", label: `Fixed Income Investments (${currency})` },
-                      { key: "currentTaxFreeFixedIncome", label: `Tax-Advantaged Investments (${currency})` },
-                      { key: "lumpSumBenefitsAtRetirement", label: `Retirement Benefits (${currency})` },
-                    ].map(({ key, label }) => (
-                      <div key={key} className="flex items-center gap-3">
-                        <label className="text-sm text-slate-600 w-1/2">{label}</label>
-                        <input
-                          type="number"
-                          min="0"
-                          step="1000"
-                          value={inputs[key]}
-                          onChange={(e) => handleChange(key, e.target.value)}
-                          className="w-1/2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                    ))}
+                <div className="border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
+                  <h3 className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Current Investments</h3>
+                  <div className="mt-4 space-y-6">
+                    <CalcField label={`Equity Investments (${currency})`} value={inputs.currentEquityInvestments} onChange={(v) => handleChange("currentEquityInvestments", v)} min={0} max={10000000} step={5000} format={fmt} />
+                    <CalcField label={`Fixed Income Investments (${currency})`} value={inputs.currentTaxableFixedIncome} onChange={(v) => handleChange("currentTaxableFixedIncome", v)} min={0} max={10000000} step={5000} format={fmt} />
+                    <CalcField label={`Tax-Advantaged Investments (${currency})`} value={inputs.currentTaxFreeFixedIncome} onChange={(v) => handleChange("currentTaxFreeFixedIncome", v)} min={0} max={10000000} step={5000} format={fmt} />
+                    <CalcField label={`Retirement Benefits (${currency})`} value={inputs.lumpSumBenefitsAtRetirement} onChange={(v) => handleChange("lumpSumBenefitsAtRetirement", v)} min={0} max={10000000} step={5000} format={fmt} />
                   </div>
                 </div>
 
                 {/* Section: EPF / NPS */}
-                <div className="pb-2">
-                  <h3 className="text-sm font-semibold text-blue-600 mb-3">Retirement Contributions</h3>
-                  <div className="space-y-3">
-                    {[
-                      { key: "monthlyEPFContribution", label: `Monthly Retirement Contribution (${currency})` },
-                      { key: "annualEPFIncrease", label: "Annual Increase in Contribution (%)", step: 0.5 },
-                      { key: "epfReturnRate", label: "Expected Return on Retirement Contributions (%)", step: 0.5 },
-                    ].map(({ key, label, step = 1 }) => (
-                      <div key={key} className="flex items-center gap-3">
-                        <label className="text-sm text-slate-600 w-1/2">{label}</label>
-                        <input
-                          type="number"
-                          min="0"
-                          step={step}
-                          value={inputs[key]}
-                          onChange={(e) => handleChange(key, e.target.value)}
-                          className="w-1/2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                    ))}
+                <div className="border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
+                  <h3 className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Retirement Contributions</h3>
+                  <div className="mt-4 space-y-6">
+                    <CalcField label={`Monthly Retirement Contribution (${currency})`} value={inputs.monthlyEPFContribution} onChange={(v) => handleChange("monthlyEPFContribution", v)} min={0} max={200000} step={500} format={fmt} />
+                    <CalcField label="Annual Increase in Contribution (%)" value={inputs.annualEPFIncrease} onChange={(v) => handleChange("annualEPFIncrease", v)} min={0} max={15} step={0.5} suffix="%" />
+                    <CalcField label="Expected Return on Retirement Contributions (%)" value={inputs.epfReturnRate} onChange={(v) => handleChange("epfReturnRate", v)} min={0} max={15} step={0.5} suffix="%" />
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Right Panel – Results */}
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
-              <h2 className="text-2xl font-semibold text-slate-800 mb-6">Results</h2>
+            <div>
+              <h2 className="font-display text-[18px] font-extrabold text-[#111814] dark:text-[#eef1ec]">Results</h2>
 
-              <div className="space-y-6">
-                {/* Key Results */}
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-5 border border-blue-100">
-                  <p className="text-sm text-slate-500">Total Corpus Required</p>
-                  <p className="text-3xl font-bold text-blue-600">
-                    {formatCurrency(results.totalCorpusRequired, currency)}
-                  </p>
-                </div>
+              <div className="mt-6 space-y-6">
+                <CalcResultPanel label="Total Corpus Required" value={fmt(results.totalCorpusRequired)} />
 
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-5 border border-emerald-100">
-                  <p className="text-sm text-slate-500">Net Corpus to be Accumulated</p>
-                  <p className={`text-3xl font-bold ${results.netCorpusToAccumulate > 0 ? 'text-emerald-600' : 'text-slate-500'}`}>
-                    {formatCurrency(results.netCorpusToAccumulate, currency)}
+                <div className="border border-[#111814]/12 bg-[#ffffff] p-6 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+                  <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">Net Corpus to be Accumulated</p>
+                  <p className={`font-mono-tech mt-1 text-[28px] font-bold tabular-nums ${results.netCorpusToAccumulate > 0 ? "text-[#047857] dark:text-[#34d399]" : "text-[#111814]/60 dark:text-[#eef1ec]/60"}`}>
+                    {fmt(results.netCorpusToAccumulate)}
                   </p>
                   {results.netCorpusToAccumulate === 0 && (
-                    <p className="text-sm text-emerald-600 mt-1">✓ You're on track!</p>
+                    <p className="mt-1 text-[13px] text-[#047857] dark:text-[#34d399]">✓ You're on track!</p>
                   )}
                 </div>
 
                 {/* Detailed breakdown */}
-                <div className="bg-slate-50 rounded-2xl p-5 space-y-3">
-                  <h3 className="font-semibold text-slate-700">Retirement Summary</h3>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Years to Retirement</span>
-                    <span className="font-medium">{results.yearsToRetirement} years</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Years in Retirement</span>
-                    <span className="font-medium">{results.yearsInRetirement} years</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Monthly Expenses in First Year of Retirement</span>
-                    <span className="font-medium">{formatCurrency(results.monthlyExpensesFirstRetirement, currency)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Weighted Average Return</span>
-                    <span className="font-medium">{results.weightedReturn}%</span>
+                <div>
+                  <h3 className="text-[13px] font-semibold text-[#111814]/70 dark:text-[#eef1ec]/70">Retirement Summary</h3>
+                  <div className="mt-3 divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+                    <CalcStat label="Years to Retirement" value={`${results.yearsToRetirement} years`} />
+                    <CalcStat label="Years in Retirement" value={`${results.yearsInRetirement} years`} />
+                    <CalcStat label="Monthly Expenses in First Year of Retirement" value={fmt(results.monthlyExpensesFirstRetirement)} />
+                    <CalcStat label="Weighted Average Return" value={`${results.weightedReturn}%`} />
                   </div>
                 </div>
 
                 {/* Accumulated Corpus Breakdown */}
-                <div className="bg-slate-50 rounded-2xl p-5 space-y-3">
-                  <h3 className="font-semibold text-slate-700">Accumulated Corpus at Retirement</h3>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Current Investments (FV)</span>
-                    <span className="font-medium">{formatCurrency(results.fvCurrentInvestments, currency)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Lump Sum Benefits (FV)</span>
-                    <span className="font-medium">{formatCurrency(results.fvLumpSumBenefits, currency)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Retirement Contributions (FV)</span>
-                    <span className="font-medium">{formatCurrency(results.fvEPF, currency)}</span>
-                  </div>
-                  <div className="border-t border-slate-200 pt-2 flex justify-between font-bold">
-                    <span>Total Accumulated</span>
-                    <span>{formatCurrency(results.totalAccumulated, currency)}</span>
+                <div>
+                  <h3 className="text-[13px] font-semibold text-[#111814]/70 dark:text-[#eef1ec]/70">Accumulated Corpus at Retirement</h3>
+                  <div className="mt-3 divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+                    <CalcStat label="Current Investments (FV)" value={fmt(results.fvCurrentInvestments)} tone="signal" />
+                    <CalcStat label="Lump Sum Benefits (FV)" value={fmt(results.fvLumpSumBenefits)} />
+                    <CalcStat label="Retirement Contributions (FV)" value={fmt(results.fvEPF)} />
+                    <CalcStat label="Total Accumulated" value={fmt(results.totalAccumulated)} tone="signal" />
                   </div>
                 </div>
               </div>
+
               {/* Disclaimer */}
-              <div className="mt-6 text-xs text-slate-400 space-y-1 border-t border-slate-200 pt-4">
-                <p>
-                  <span className="font-medium text-slate-500">Disclaimer:</span>{" "}
-                  Please note that these calculators are for illustrations only and do not represent actual returns.
-                  Stock Market does not have a fixed rate of return and it is not possible to predict the rate of return.
-                </p>
-              </div>
+              <p className="mt-6 text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+                <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
+                Please note that these calculators are for illustrations only and do not represent actual returns.
+                Stock Market does not have a fixed rate of return and it is not possible to predict the rate of return.
+              </p>
             </div>
           </div>
 
           {/* SEO Content */}
-          <div className="mt-16 space-y-10">
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
-              <h2 className="text-2xl font-bold text-slate-800 mb-4">What Is Financial Goal Planning?</h2>
-              <p className="text-slate-500 leading-relaxed">
+          <div className="mt-16">
+            <CalcSection title="What Is Financial Goal Planning?">
+              <p>
                 Financial goal planning helps you determine how much you need to save and invest to achieve
                 your life goals — like a comfortable retirement. This calculator factors in your current expenses,
                 inflation, expected returns, and existing investments to estimate the corpus required and the
                 additional savings needed.
               </p>
-            </div>
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
-              <h2 className="text-2xl font-bold text-slate-800 mb-4">How to Use This Calculator</h2>
-              <ol className="list-decimal list-inside text-slate-500 space-y-2">
+            </CalcSection>
+
+            <CalcSection title="How to Use This Calculator">
+              <ol className="list-decimal space-y-2 pl-5">
                 <li>Enter your current monthly and annual expenses.</li>
                 <li>Set your retirement age, current age, and life expectancy.</li>
                 <li>Provide expected inflation rates and post-tax returns for different asset classes.</li>
                 <li>Add your current investments and retirement contributions.</li>
                 <li>The calculator will show your required corpus and how much more you need to save.</li>
               </ol>
-            </div>
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
-              <h2 className="text-2xl font-bold text-slate-800 mb-4">Key Assumptions</h2>
-              <ul className="list-disc list-inside text-slate-500 space-y-2">
+            </CalcSection>
+
+            <CalcSection title="Key Assumptions">
+              <ul className="list-disc space-y-2 pl-5">
                 <li>Expenses grow with inflation until retirement.</li>
                 <li>During retirement, expenses grow with retirement inflation.</li>
                 <li>Asset allocation: 50% equity, 30% taxable fixed, 20% tax-free fixed (adjustable).</li>
                 <li>Retirement contributions grow annually at the specified rate.</li>
               </ul>
-            </div>
+            </CalcSection>
           </div>
-        </section>
-
-        
+        </div>
       </div>
     </>
   );

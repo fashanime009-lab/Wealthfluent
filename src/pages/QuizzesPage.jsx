@@ -2,18 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchNews } from "../services/newsService";
 import Seo from "../components/seo/Seo";
 import { breadcrumbSchema } from "../components/seo/schema";
-import {
-  Bot,
-  CheckCircle2,
-  Loader2,
-  RotateCcw,
-  Sparkles,
-  XCircle,
-} from "lucide-react";
-
-
-
-
+import { CheckCircle2, Loader2, RotateCcw, XCircle } from "lucide-react";
+import useTilt from "@/hooks/useTilt";
+import useVisibleInterval from "@/hooks/useVisibleInterval";
 
 const fallbackQuestions = [
   {
@@ -22,7 +13,7 @@ const fallbackQuestions = [
     options: ["Electronic Trading Fund", "Exchange Traded Fund", "Equity Transfer Fund", "External Treasury Fund"],
     answer: "Exchange Traded Fund",
     explanation: "ETF stands for Exchange Traded Fund.",
-    source: "Fallback finance basics",
+    source: "Finance basics",
   },
   {
     id: "fallback-inflation",
@@ -30,7 +21,7 @@ const fallbackQuestions = [
     options: ["Rise in prices", "Fall in taxes", "Company profit", "Export volume"],
     answer: "Rise in prices",
     explanation: "Inflation measures the rate at which prices rise over time.",
-    source: "Fallback finance basics",
+    source: "Finance basics",
   },
 ];
 
@@ -96,6 +87,7 @@ const articles = data.articles;
 }
 
 export default function QuizzesPage() {
+  const { ref: scoreRef, style: scoreStyle, onPointerMove: onScoreMove, onPointerLeave: onScoreLeave } = useTilt();
   const [questions, setQuestions] = useState([]);
   const [selected, setSelected] = useState({});
   const [submitted, setSubmitted] = useState({});
@@ -125,7 +117,7 @@ export default function QuizzesPage() {
     } catch {
       setQuestions(fallbackQuestions);
       setLastUpdated(new Date());
-      setError("Live quiz API unavailable. Showing finance basics until the feed returns.");
+      setError("Couldn't load fresh questions right now — here are some finance basics instead.");
     } finally {
       setLoading(false);
     }
@@ -133,9 +125,9 @@ export default function QuizzesPage() {
 
   useEffect(() => {
     loadQuestions();
-    const interval = window.setInterval(loadQuestions, 120000);
-    return () => window.clearInterval(interval);
   }, []);
+
+  useVisibleInterval(loadQuestions, 120000);
 
   const chooseAnswer = (questionId, answer) => {
     setSelected((current) => ({ ...current, [questionId]: answer }));
@@ -152,7 +144,7 @@ export default function QuizzesPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#fbfdfc]">
+    <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <Seo
         title="Quizzes — Test Your Financial Knowledge"
         description="Questions generated from live finance and business headlines, so the quiz keeps changing without manual updates. Free, no signup."
@@ -163,65 +155,68 @@ export default function QuizzesPage() {
           { name: "Quizzes", path: "/quizzes" },
         ])}
       />
-      <section className="mx-auto max-w-[1200px] px-5 py-14 sm:px-8 lg:px-12">
-        <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+      <div className="mx-auto max-w-[1100px] px-5 py-16 sm:px-8 lg:px-12">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px]">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-[12px] font-black text-emerald-800 ring-1 ring-emerald-100">
-              <Sparkles size={13} /> API Generated
-            </span>
-            <h1 className="mt-5 text-[38px] font-black leading-[1.08] tracking-[-0.035em] text-slate-950 sm:text-[48px]">
+            <span className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Refreshed every 2 minutes</span>
+            <h1 className="font-display mt-2 max-w-lg text-[34px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[42px]">
               View all quizzes
             </h1>
-            <p className="mt-3 max-w-3xl text-[15px] font-medium leading-7 text-slate-500">
+            <p className="mt-4 max-w-[58ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
               Questions are generated from live finance and business headlines, so the quiz keeps
               changing without manual updates.
             </p>
           </div>
 
-          <aside className="rounded-3xl bg-[#061225] p-6 text-white">
-            <div className="flex items-center gap-3">
-              <span className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-2xl bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20">
-                <Bot size={22} />
-              </span>
-              <div>
-                <h2 className="text-[17px] font-black">FinQuiz Score</h2>
-                <p className="text-[12.5px] font-semibold text-slate-400">
-                  {lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}` : "Connecting"}
-                </p>
-              </div>
-            </div>
-            <div className="mt-7 text-[42px] font-black leading-none">{score}/{answeredCount || 0}</div>
-            <p className="mt-3 text-[12.5px] font-semibold text-slate-400">Answer more questions to improve your score.</p>
+          <aside
+            ref={scoreRef}
+            onPointerMove={onScoreMove}
+            onPointerLeave={onScoreLeave}
+            style={scoreStyle}
+            className="rounded-lg bg-[#0e1512] p-6 sm:p-7"
+          >
+            <p className="text-[13px] text-[#eef1ec]/55">FinQuiz score</p>
+            <p className="font-mono-tech mt-1 text-[40px] font-medium leading-none tabular-nums text-[#34d399] sm:text-[46px]">
+              {score}/{answeredCount || 0}
+            </p>
+            <p className="mt-3 text-[12.5px] text-[#eef1ec]/45">
+              {lastUpdated
+                ? `Updated ${lastUpdated.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}`
+                : "Connecting"}
+              {" — answer more questions to improve your score."}
+            </p>
           </aside>
         </div>
 
         {error && (
-          <p className="mt-6 rounded-2xl bg-amber-50 px-4 py-3 text-[13.5px] font-semibold text-amber-700 ring-1 ring-amber-100">
+          <p className="mt-6 border border-[#111814]/12 px-4 py-3 text-[13.5px] font-medium text-amber-700 dark:border-[#eef1ec]/12 dark:text-amber-400">
             {error}
           </p>
         )}
 
         {loading && (
-          <div className="mt-10 flex items-center justify-center gap-3 text-[13.5px] font-semibold text-slate-500">
+          <div className="mt-10 flex items-center justify-center gap-3 text-[13.5px] font-medium text-[#111814]/55 dark:text-[#eef1ec]/55">
             <Loader2 className="animate-spin" size={18} />
             Loading live quiz questions...
           </div>
         )}
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-2">
+        <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
           {questions.map((item, index) => {
             const chosen = selected[item.id];
             const isSubmitted = Boolean(submitted[item.id]);
             const isCorrect = chosen === item.answer;
 
             return (
-              <article key={item.id} className="rounded-3xl border border-slate-200 bg-white p-6">
+              <article key={item.id} className="border border-[#111814]/12 bg-[#ffffff] p-6 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
                 <div className="flex items-center justify-between gap-4">
-                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black text-emerald-700 ring-1 ring-emerald-100">Question {index + 1}</span>
-                  <span className="text-[11.5px] font-semibold text-slate-400">{item.source}</span>
+                  <span className="text-[12px] font-semibold text-[#047857] dark:text-[#34d399]">Question {index + 1}</span>
+                  <span className="text-[11.5px] text-[#111814]/45 dark:text-[#eef1ec]/45">{item.source}</span>
                 </div>
-                <h2 className="mt-5 text-[19px] font-black leading-snug text-slate-950">{item.question}</h2>
-                <div className="mt-6 space-y-2.5">
+                <h2 className="font-display mt-4 text-[18px] font-bold leading-snug text-[#111814] dark:text-[#eef1ec]">
+                  {item.question}
+                </h2>
+                <div className="mt-5 space-y-2">
                   {item.options.map((option) => {
                     const active = chosen === option;
                     const correctStyle = isSubmitted && option === item.answer;
@@ -231,39 +226,39 @@ export default function QuizzesPage() {
                       <button
                         key={option}
                         onClick={() => chooseAnswer(item.id, option)}
-                        className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left text-[13.5px] font-semibold transition ${
+                        className={`flex w-full items-center justify-between border px-4 py-3 text-left text-[13.5px] font-medium transition ${
                           correctStyle
-                            ? "border-emerald-300 bg-emerald-50 text-emerald-700"
+                            ? "border-[#047857]/50 text-[#047857] dark:border-[#34d399]/50 dark:text-[#34d399]"
                             : wrongStyle
-                              ? "border-red-300 bg-red-50 text-red-700"
+                              ? "border-red-400/60 text-red-600 dark:border-red-400/40 dark:text-red-400"
                               : active
-                                ? "border-emerald-300 bg-emerald-50 text-emerald-800"
-                                : "border-slate-200 bg-white text-slate-600 hover:border-emerald-200"
+                                ? "border-[#111814]/60 text-[#111814] dark:border-[#eef1ec]/60 dark:text-[#eef1ec]"
+                                : "border-[#111814]/12 text-[#111814]/70 hover:border-[#111814]/30 dark:border-[#eef1ec]/12 dark:text-[#eef1ec]/70 dark:hover:border-[#eef1ec]/30"
                         }`}
                       >
                         {option}
-                        {correctStyle && <CheckCircle2 size={18} />}
-                        {wrongStyle && <XCircle size={18} />}
+                        {correctStyle && <CheckCircle2 size={16} />}
+                        {wrongStyle && <XCircle size={16} />}
                       </button>
                     );
                   })}
                 </div>
                 {isSubmitted && (
-                  <p className={`mt-5 text-[13.5px] font-semibold ${isCorrect ? "text-emerald-700" : "text-red-600"}`}>
+                  <p className={`mt-5 text-[13.5px] font-medium ${isCorrect ? "text-[#047857] dark:text-[#34d399]" : "text-red-600 dark:text-red-400"}`}>
                     {isCorrect ? "Correct." : "Not quite."} {item.explanation}
                   </p>
                 )}
                 <div className="mt-6 flex items-center justify-between">
                   <button
                     onClick={() => chooseAnswer(item.id, "")}
-                    className="inline-flex items-center gap-2 text-[13px] font-black text-slate-500 transition hover:text-slate-800"
+                    className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#111814]/55 transition hover:text-[#111814] dark:text-[#eef1ec]/55 dark:hover:text-[#eef1ec]"
                   >
-                    <RotateCcw size={15} />
+                    <RotateCcw size={14} />
                     Reset
                   </button>
                   <button
                     onClick={() => submitAnswer(item.id)}
-                    className="rounded-xl bg-emerald-800 px-5 py-2.5 text-[13px] font-black text-white transition hover:bg-emerald-900 disabled:cursor-not-allowed disabled:bg-slate-300"
+                    className="border border-[#111814] px-5 py-2 text-[13px] font-semibold text-[#111814] transition hover:bg-[#111814] hover:text-[#eef1ec] disabled:cursor-not-allowed disabled:border-[#111814]/20 disabled:text-[#111814]/30 disabled:hover:bg-transparent dark:border-[#eef1ec] dark:text-[#eef1ec] dark:hover:bg-[#eef1ec] dark:hover:text-[#0b1210] dark:disabled:border-[#eef1ec]/20 dark:disabled:text-[#eef1ec]/30"
                     disabled={!chosen}
                   >
                     Submit
@@ -273,7 +268,7 @@ export default function QuizzesPage() {
             );
           })}
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
   );
 }

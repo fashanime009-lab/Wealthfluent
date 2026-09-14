@@ -33,18 +33,19 @@ autoComplete="off"
         onChange={(event) => onChange(event.target.value)}
         className="
           w-full
-          rounded-xl
           border
-          border-slate-300
-          bg-[var(--card)]
+          border-[#111814]/15
+          bg-transparent
           px-5
           py-4
+          font-mono-tech
           text-lg
           text-[var(--text)]
           outline-none
           transition
-          focus:border-blue-600
-          dark:border-slate-700
+          focus:border-[#047857]
+          dark:border-[#eef1ec]/15
+          dark:focus:border-[#34d399]
         "
       />
     </div>

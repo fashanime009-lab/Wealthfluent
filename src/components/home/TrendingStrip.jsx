@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, TrendingUp } from "lucide-react";
 import { fetchNews, DEFAULT_NEWS_QUERY } from "../../services/newsService";
 
 // Real live headlines (same service /news already uses) instead of static
@@ -28,20 +27,19 @@ export default function TrendingStrip() {
   if (!loading && items.length === 0) return null;
 
   return (
-    <section className="mx-auto mt-8 max-w-[1660px] px-5 sm:px-8 lg:px-12">
+    <section className="mx-auto max-w-[1240px] px-5 py-10 sm:px-8 lg:px-12">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-[13px] font-black text-slate-900">
-          <TrendingUp size={16} className="text-emerald-700" />
-          Trending in Finance
-        </div>
-        <Link to="/news" className="text-[12px] font-black text-emerald-800">
+        <span className="text-[13px] font-semibold text-[#111814]/50 dark:text-[#eef1ec]/50">Trending in finance</span>
+        <Link to="/news" className="text-[13px] font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25">
           View all news
         </Link>
       </div>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-4 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">
         {loading
-          ? Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-20 animate-pulse rounded-2xl bg-slate-100" />
+          ? Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="h-14 animate-pulse py-4">
+                <div className="h-4 w-2/3 rounded bg-[#111814]/8 dark:bg-[#eef1ec]/8" />
+              </div>
             ))
           : items.map((item) => (
               <a
@@ -49,17 +47,10 @@ export default function TrendingStrip() {
                 href={item.link}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-2xl bg-white p-4 shadow-[0_10px_28px_rgba(15,23,42,.05)] ring-1 ring-slate-100 transition hover:-translate-y-0.5"
+                className="flex items-baseline justify-between gap-4 py-4 transition-opacity hover:opacity-70"
               >
-                <span className="text-[10px] font-black uppercase tracking-wide text-emerald-700">
-                  {item.source}
-                </span>
-                <p className="mt-1.5 line-clamp-2 text-[13px] font-bold leading-5 text-slate-800">
-                  {item.title}
-                </p>
-                <span className="mt-2 inline-flex items-center gap-1 text-[10px] font-black text-slate-400">
-                  Read <ArrowUpRight size={11} />
-                </span>
+                <p className="min-w-0 truncate text-[13.5px] font-medium text-[#111814] dark:text-[#eef1ec]">{item.title}</p>
+                <span className="flex-shrink-0 text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">{item.source}</span>
               </a>
             ))}
       </div>

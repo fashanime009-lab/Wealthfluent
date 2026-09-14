@@ -1,22 +1,12 @@
-export default function SettingsSection({
-  title,
-  description,
-  children,
-}) {
+export default function SettingsSection({ title, description, children }) {
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-slate-900">
-      <div className="border-b border-slate-100 px-8 py-6 dark:border-white/10">
-        <h2 className="text-lg font-black text-slate-900 dark:text-white">
-          {title}
-        </h2>
-
+    <section className="border border-[#111814]/12 bg-[#ffffff] dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+      <div className="border-b border-[#111814]/10 px-6 py-5 dark:border-[#eef1ec]/10 sm:px-8">
+        <h2 className="font-display text-[17px] font-bold text-[#111814] dark:text-[#eef1ec]">{title}</h2>
         {description && (
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            {description}
-          </p>
+          <p className="mt-1 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">{description}</p>
         )}
       </div>
-
       <div>{children}</div>
     </section>
   );

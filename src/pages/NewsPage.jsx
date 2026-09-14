@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  ArrowUpRight,
-  Bot,
-  Clock3,
-  RefreshCw,
-  Search,
-} from "lucide-react";
+import { Search, RefreshCw } from "lucide-react";
 import { DEFAULT_NEWS_QUERY, fetchNews, NEWS_REFRESH_INTERVAL } from "../services/newsService";
+import useVisibleInterval from "../hooks/useVisibleInterval";
 import AdSlot from "../components/ads/AdSlot";
 import Seo from "../components/seo/Seo";
 import { breadcrumbSchema } from "../components/seo/schema";
@@ -98,10 +93,7 @@ export default function NewsPage() {
     return () => window.clearTimeout(initialLoad);
   }, [category]);
 
-  useEffect(() => {
-    const interval = window.setInterval(() => loadArticlesRef.current?.({ reset: true, force: true }), NEWS_REFRESH_INTERVAL);
-    return () => window.clearInterval(interval);
-  }, [category, query]);
+  useVisibleInterval(() => loadArticlesRef.current?.({ reset: true, force: true }), NEWS_REFRESH_INTERVAL);
 
   const searchNews = (event) => {
     event.preventDefault();
@@ -109,10 +101,10 @@ export default function NewsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#fbfdfc]">
+    <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <Seo
         title="News — Live Finance & Market Headlines"
-        description="Fresh finance, market, economy, and business stories from live news APIs — refreshed every minute."
+        description="Fresh finance, market, economy, and business stories — refreshed every minute."
         path="/news"
         keywords="finance news, stock market news, business news, economy news"
         jsonLd={breadcrumbSchema([
@@ -120,50 +112,46 @@ export default function NewsPage() {
           { name: "News", path: "/news" },
         ])}
       />
-      <section className="mx-auto max-w-[1200px] px-5 py-14 sm:px-8 lg:px-12">
+      <div className="mx-auto max-w-[900px] px-5 py-16 sm:px-8 lg:px-12">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-[12px] font-black text-emerald-800 ring-1 ring-emerald-100">
-              <Bot size={13} /> Live News
-            </span>
-            <h1 className="mt-5 text-[38px] font-black leading-[1.08] tracking-[-0.035em] text-slate-950 sm:text-[48px]">
+            <span className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Live news</span>
+            <h1 className="font-display mt-2 max-w-lg text-[34px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[42px]">
               View all news
             </h1>
-            <p className="mt-3 max-w-2xl text-[15px] font-medium leading-7 text-slate-500">
-              Fresh finance, market, economy, and business stories from live news APIs — refreshed
+            <p className="mt-4 max-w-[58ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+              Fresh finance, market, economy, and business stories — refreshed
               every minute.
             </p>
           </div>
 
           <form
             onSubmit={searchNews}
-            className="flex min-w-0 max-w-xl flex-1 items-center overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm focus-within:border-emerald-300"
+            className="flex min-w-0 max-w-md flex-1 items-center border border-[#111814]/15 bg-[#ffffff] focus-within:border-[#047857] dark:border-[#eef1ec]/15 dark:bg-[#0b1210] dark:focus-within:border-[#34d399]"
           >
-            <div className="grid w-12 flex-shrink-0 place-items-center text-slate-400">
-              <Search size={18} />
-            </div>
+            <Search size={16} className="ml-3.5 flex-shrink-0 text-[#111814]/40 dark:text-[#eef1ec]/40" />
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              className="min-w-0 flex-1 py-3.5 pr-2 text-[13.5px] font-medium outline-none"
+              className="min-w-0 flex-1 bg-transparent py-3 pl-2.5 pr-2 text-[13.5px] text-[#111814] outline-none dark:text-[#eef1ec]"
               placeholder="Search finance news..."
             />
-            <button className="flex-shrink-0 bg-emerald-800 px-6 py-3.5 text-[13px] font-black text-white transition hover:bg-emerald-900">
+            <button className="flex-shrink-0 border-l border-[#111814]/15 px-5 py-3 text-[13px] font-semibold text-[#111814] transition hover:opacity-70 dark:border-[#eef1ec]/15 dark:text-[#eef1ec]">
               Search
             </button>
           </form>
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-slate-100/70 p-2 ring-1 ring-slate-200/70">
+        <div className="mt-9 flex flex-wrap items-center justify-between gap-4 border-b border-[#111814]/10 pb-4 dark:border-[#eef1ec]/10">
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
             {categories.map((item) => (
               <button
                 key={item}
                 onClick={() => setCategory(item)}
-                className={`rounded-xl px-4 py-2.5 text-[13px] font-black capitalize transition ${
+                className={`text-[14px] font-semibold capitalize transition ${
                   category === item
-                    ? "bg-white text-emerald-800 shadow-[0_6px_16px_rgba(15,23,42,.08)] ring-1 ring-slate-200/70"
-                    : "text-slate-600 hover:text-slate-950"
+                    ? "text-[#111814] dark:text-[#eef1ec]"
+                    : "text-[#111814]/40 hover:text-[#111814]/70 dark:text-[#eef1ec]/40 dark:hover:text-[#eef1ec]/70"
                 }`}
               >
                 {item}
@@ -172,15 +160,15 @@ export default function NewsPage() {
           </div>
           <button
             onClick={() => loadArticles({ reset: true })}
-            className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-5 py-2.5 text-[13px] font-black text-white transition hover:bg-slate-800"
+            className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#111814]/60 transition hover:text-[#111814] dark:text-[#eef1ec]/60 dark:hover:text-[#eef1ec]"
           >
-            <RefreshCw className={refreshing ? "animate-spin" : ""} size={15} />
+            <RefreshCw className={refreshing ? "animate-spin" : ""} size={14} />
             Refresh
           </button>
         </div>
 
         {error && (
-          <p className="mt-6 rounded-2xl bg-amber-50 px-4 py-3 text-[13.5px] font-semibold text-amber-700 ring-1 ring-amber-100">
+          <p className="mt-6 border border-[#111814]/12 px-4 py-3 text-[13.5px] font-medium text-amber-700 dark:border-[#eef1ec]/12 dark:text-amber-400">
             {error}
           </p>
         )}
@@ -189,11 +177,11 @@ export default function NewsPage() {
           <AdSlot slotId="insights_top" />
         </div>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-4 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">
           {visibleArticles.map((article, index) => (
             <>
               {index === 6 && (
-                <div key="insights-mid-ad" className="md:col-span-2 xl:col-span-3">
+                <div key="insights-mid-ad" className="py-2">
                   <AdSlot slotId="insights_mid" />
                 </div>
               )}
@@ -202,58 +190,44 @@ export default function NewsPage() {
                 href={article.link}
                 target="_blank"
                 rel="noreferrer"
-                className="group overflow-hidden rounded-3xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-[0_24px_60px_rgba(15,23,42,.08)]"
+                className="grid gap-2 py-6 transition-opacity hover:opacity-70"
               >
-                <div className="relative h-48 bg-[#061225]">
-                  {article.image ? (
-                    <img
-                      src={article.image}
-                      alt=""
-                      loading="lazy"
-                      className="h-full w-full object-cover"
-                      onError={(event) => {
-                        event.currentTarget.style.display = "none";
-                        event.currentTarget.nextElementSibling?.classList.remove("hidden");
-                      }}
-                    />
-                  ) : null}
-                  <div className={article.image ? "hidden flex h-full items-center justify-center bg-[radial-gradient(circle_at_30%_20%,#047857,transparent_35%),linear-gradient(135deg,#061225,#0f2d55)] text-2xl font-black text-white" : "flex h-full items-center justify-center bg-[radial-gradient(circle_at_30%_20%,#047857,transparent_35%),linear-gradient(135deg,#061225,#0f2d55)] text-2xl font-black text-white"}>
-                    FinAI News
-                  </div>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between text-[11.5px] font-black text-emerald-700">
-                    <span>{article.source}</span>
-                    <span className="inline-flex items-center gap-1 text-slate-400">
-                      <Clock3 size={13} />
-                      {timeAgo(article.publishedAt)}
-                    </span>
-                  </div>
-                  <h2 className="mt-4 line-clamp-3 text-[18px] font-black leading-tight text-slate-950">{article.title}</h2>
-                  <p className="mt-3 line-clamp-3 text-[13.5px] leading-6 text-slate-500">{article.description}</p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-[13px] font-black text-emerald-700">
-                    Read full story
-                    <ArrowUpRight size={15} />
+                <div className="flex flex-wrap items-baseline gap-x-2.5">
+                  <span className="text-[12.5px] font-semibold text-[#047857] dark:text-[#34d399]">{article.source}</span>
+                  <span className="font-mono-tech text-[11.5px] tabular-nums text-[#111814]/40 dark:text-[#eef1ec]/40">
+                    {timeAgo(article.publishedAt)}
                   </span>
                 </div>
+                <h2 className="font-display text-[17px] font-bold leading-snug text-[#111814] dark:text-[#eef1ec]">
+                  {article.title}
+                </h2>
+                {article.description && (
+                  <p className="max-w-[68ch] text-[13.5px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+                    {article.description}
+                  </p>
+                )}
               </a>
             </>
           ))}
         </div>
 
-        {loading && <p className="mt-8 text-center text-[13.5px] font-semibold text-slate-500">Loading live stories...</p>}
+        {loading && (
+          <p className="mt-8 text-center text-[13px] font-medium text-[#111814]/45 dark:text-[#eef1ec]/45">
+            Loading live stories...
+          </p>
+        )}
 
         {hasMore && (
           <div className="mt-10 text-center">
             <button
               onClick={() => loadArticles()}
-              className="rounded-xl bg-emerald-800 px-8 py-3.5 text-[13px] font-black text-white shadow-[0_14px_30px_rgba(4,120,87,.22)] transition hover:-translate-y-0.5 hover:bg-emerald-900"
+              className="text-[13px] font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
             >
-              Load More News
+              Load more news
             </button>
           </div>
         )}
-      </section>
-    </main>
+      </div>
+    </div>
   );
 }

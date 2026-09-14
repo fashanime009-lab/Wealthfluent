@@ -28,6 +28,8 @@ const NetWorthCalculatorPage = lazy(() => import("./pages/NetWorthCalculatorPage
 const GoalPlannerPage = lazy(() => import("./pages/GoalPlannerPage"));
 const GoalsPage = lazy(() => import("./pages/GoalsPage"));
 const FinancialProfilePage = lazy(() => import("./pages/FinancialProfilePage"));
+const FinancialGoalPlannerPage = lazy(() => import("./pages/FinancialGoalPlannerPage"));
+const InvestmentRiskAnalyzerPage = lazy(() => import("./pages/InvestmentRiskAnalyzerPage"));
 
 const GoalSIPCalculatorPage = lazy(() => import("./pages/GoalSIPCalculatorPage"));
 const AnnualRetirementIncomePage = lazy(() => import("./pages/AnnualRetirementIncomePage"));
@@ -86,6 +88,8 @@ export default function App() {
             <Route path="/goal-planner" element={<GoalPlannerPage />} />
             <Route path="/goals" element={<GoalsPage />} />
             <Route path="/financial-profile" element={<FinancialProfilePage />} />
+            <Route path="/financial-goal-planner" element={<FinancialGoalPlannerPage />} />
+            <Route path="/investment-risk-analyzer" element={<InvestmentRiskAnalyzerPage />} />
             
             <Route path="/goal-sip" element={<GoalSIPCalculatorPage />} />
             <Route path="/annual-retirement-income" element={<AnnualRetirementIncomePage />} />

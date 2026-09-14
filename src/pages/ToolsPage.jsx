@@ -1,102 +1,80 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema } from "@/components/seo/schema";
-import {
-  Target,
-  TrendingUp,
-  LineChart,
-  TrendingDown,
-  Map,
-  BookOpen,
-  Sparkles,
-  Rocket,
-  ArrowRight,
-} from "lucide-react";
-import { toneStyles } from "@/data/calculators";
 
 const tools = [
   {
     title: "Financial Goal Planner",
-    desc: "Plan future savings and investment goals.",
-    icon: Target,
-    tone: "emerald",
+    desc: "Checks every real goal you've set against your real monthly surplus at once — not one goal at a time.",
+    path: "/financial-goal-planner",
   },
   {
     title: "Investment Risk Analyzer",
-    desc: "Understand your investment risk profile.",
-    icon: TrendingUp,
-    tone: "violet",
+    desc: "A real risk-profiling quiz, reconciled against what your actual finances can afford — not just how you feel.",
+    path: "/investment-risk-analyzer",
   },
   {
     title: "Portfolio Management",
     desc: "Track investments and monitor portfolio performance.",
-    icon: LineChart,
-    tone: "sky",
     popular: true,
   },
   {
     title: "Inflation Insights",
     desc: "Estimate purchasing power impact over time.",
-    icon: TrendingDown,
-    tone: "amber",
   },
   {
     title: "Wealth Roadmap",
     desc: "Visualize your long-term financial growth journey.",
-    icon: Map,
-    tone: "rose",
   },
   {
     title: "Finance Glossary",
     desc: "Learn essential finance terminology easily.",
-    icon: BookOpen,
-    tone: "purple",
   },
 ];
 
 const highlights = [
-  { icon: Target, title: "Goal Setting", desc: "Define and track your financial goals with precision.", tone: "emerald" },
-  { icon: TrendingUp, title: "Risk Assessment", desc: "Understand your risk tolerance and investment comfort.", tone: "violet" },
-  { icon: BookOpen, title: "Financial Literacy", desc: "Learn key finance terms and concepts easily.", tone: "sky" },
+  { title: "Goal setting", desc: "Define and track your financial goals with precision." },
+  { title: "Risk assessment", desc: "Understand your risk tolerance and investment comfort." },
+  { title: "Financial literacy", desc: "Learn key finance terms and concepts easily." },
 ];
 
-function ToolCard({ tool }) {
-  const Icon = tool.icon;
-  const t = toneStyles[tool.tone];
-  return (
-    <div className="group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-[0_24px_60px_rgba(15,23,42,.08)]">
-      {tool.popular && (
-        <span className="absolute right-6 top-6 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-black text-emerald-700 ring-1 ring-emerald-100">
-          <Sparkles size={10} /> Popular
-        </span>
-      )}
-      <div className={`grid h-14 w-14 place-items-center rounded-2xl ring-1 transition-transform duration-300 group-hover:scale-105 ${t.bg} ${t.text} ${t.ring}`}>
-        <Icon size={26} strokeWidth={2} />
+function ToolRow({ tool }) {
+  const content = (
+    <>
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-baseline gap-x-2.5">
+          <h3 className="font-display text-[17px] font-bold text-[#111814] dark:text-[#eef1ec]">{tool.title}</h3>
+          {tool.popular && (
+            <span className="text-[12px] font-medium text-[#047857] dark:text-[#34d399]">Popular</span>
+          )}
+        </div>
+        <p className="mt-1 max-w-[46ch] text-[13.5px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+          {tool.desc}
+        </p>
       </div>
-      <h2 className="mt-5 text-[19px] font-black text-slate-900">{tool.title}</h2>
-      <p className="mt-2 flex-1 text-[13.5px] leading-6 text-slate-500">{tool.desc}</p>
-      {tool.path ? (
-        <Link
-          to={tool.path}
-          className="mt-6 flex w-full items-center justify-center gap-1.5 rounded-xl bg-emerald-800 py-3 text-[13px] font-black text-white transition hover:bg-emerald-900"
-        >
-          Open Tool <ArrowRight size={14} />
-        </Link>
-      ) : (
-        <button
-          disabled
-          className="mt-6 w-full cursor-not-allowed rounded-xl border border-dashed border-slate-200 bg-slate-50 py-3 text-[13px] font-black text-slate-400"
-        >
-          Coming Soon
-        </button>
-      )}
-    </div>
+      <div className="min-w-0 sm:text-right">
+        <span className="font-mono-tech text-[12.5px] tabular-nums text-[#111814]/45 dark:text-[#eef1ec]/45">
+          {tool.path ? "Open tool" : "Coming soon"}
+        </span>
+      </div>
+    </>
+  );
+
+  return tool.path ? (
+    <Link
+      to={tool.path}
+      className="group grid grid-cols-1 gap-2 py-6 transition-opacity hover:opacity-70 sm:grid-cols-[1.3fr_1fr] sm:gap-8"
+    >
+      {content}
+    </Link>
+  ) : (
+    <div className="grid grid-cols-1 gap-2 py-6 sm:grid-cols-[1.3fr_1fr] sm:gap-8">{content}</div>
   );
 }
 
 export default function ToolsPage() {
   return (
-    <>
+    <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <Seo
         title="Smart Finance Tools — Planning & Portfolio Utilities"
         description="Explore smart finance planning tools, investment utilities, financial learning resources, and wealth planning systems."
@@ -108,99 +86,78 @@ export default function ToolsPage() {
         ])}
       />
 
-      <div className="min-h-screen bg-[#fbfdfc]">
-        {/* Hero */}
-        <section className="mx-auto max-w-[1200px] px-5 pb-10 pt-14 text-center sm:px-8 lg:px-12 lg:pt-20">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-[12px] font-black text-emerald-800 ring-1 ring-emerald-100">
-            <Sparkles size={13} /> Smart Financial Utilities
-          </span>
-          <h1 className="mx-auto mt-6 max-w-3xl text-[38px] font-black leading-[1.08] tracking-[-0.035em] text-slate-950 sm:text-[52px]">
-            Advanced finance
-            <span className="block text-emerald-700">planning tools.</span>
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-[15px] font-medium leading-7 text-slate-500 sm:text-[16px]">
-            Upcoming financial research tools, portfolio management utilities, investment analysis
-            resources, and educational finance systems — built for the way you actually plan.
-          </p>
-        </section>
+      <div className="mx-auto max-w-[900px] px-5 py-16 sm:px-8 lg:px-12">
+        <span className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Tools</span>
+        <h1 className="font-display mt-2 max-w-lg text-[34px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[42px]">
+          Advanced finance planning tools
+        </h1>
+        <p className="mt-4 max-w-[58ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+          Deeper than a calculator — real financial research tools, portfolio management
+          utilities, and analysis systems built for the way you actually plan, not one formula at
+          a time.
+        </p>
 
-        {/* Tools grid */}
-        <section className="mx-auto max-w-[1200px] px-5 pb-6 sm:px-8 lg:px-12">
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {tools.map((tool) => (
-              <ToolCard key={tool.title} tool={tool} />
+        {/* Tools list — plain rows, not a grid of icon cards */}
+        <div className="mt-10 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">
+          {tools.map((tool) => (
+            <ToolRow key={tool.title} tool={tool} />
+          ))}
+        </div>
+
+        {/* Spec strip */}
+        <div className="mt-10 flex flex-wrap gap-x-10 gap-y-4 border-b border-[#111814]/10 pb-8 dark:border-[#eef1ec]/10">
+          {[
+            { value: tools.filter((t) => t.path).length, label: "live tools" },
+            { value: tools.filter((t) => !t.path).length, label: "in development" },
+            { value: "100%", label: "free to use" },
+          ].map((stat) => (
+            <div key={stat.label}>
+              <span className="font-mono-tech text-[22px] font-medium tabular-nums text-[#047857] dark:text-[#34d399]">
+                {stat.value}
+              </span>
+              <span className="ml-2 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">{stat.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Resources */}
+        <div className="mt-12">
+          <span className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Resources</span>
+          <h2 className="font-display mt-2 text-[26px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">
+            Smart financial planning resources
+          </h2>
+          <p className="mt-4 max-w-[68ch] text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+            Financial planning tools help investors, beginners, and wealth builders make smarter
+            money decisions using data-driven insights and calculators.
+          </p>
+          <p className="mt-4 max-w-[68ch] text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+            FINAIW combines finance education, investment planning systems, and wealth tools to
+            improve long-term financial understanding.
+          </p>
+
+          <div className="mt-8 grid gap-6 sm:grid-cols-3">
+            {highlights.map((card) => (
+              <div key={card.title}>
+                <h3 className="font-display text-[15px] font-bold text-[#111814] dark:text-[#eef1ec]">{card.title}</h3>
+                <p className="mt-1.5 text-[13px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">{card.desc}</p>
+              </div>
             ))}
           </div>
-        </section>
 
-        {/* Stats strip */}
-        <section className="mx-auto max-w-[1200px] px-5 pb-14 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-3 gap-4 rounded-3xl border border-slate-200 bg-white p-8 text-center">
-            <div>
-              <div className="text-[26px] font-black text-emerald-800 sm:text-[30px]">{tools.length}</div>
-              <div className="mt-1 text-[12.5px] font-bold text-slate-500">Upcoming Tools</div>
-            </div>
-            <div>
-              <div className="text-[26px] font-black text-emerald-800 sm:text-[30px]">100%</div>
-              <div className="mt-1 text-[12.5px] font-bold text-slate-500">Free to Use</div>
-            </div>
-            <div>
-              <div className="flex items-center justify-center gap-1.5 text-[26px] font-black text-emerald-800 sm:text-[30px]">
-                <Rocket size={22} />
-              </div>
-              <div className="mt-1 text-[12.5px] font-bold text-slate-500">Launching Soon</div>
-            </div>
-          </div>
-        </section>
-
-        {/* Info section */}
-        <section className="mx-auto max-w-[1200px] px-5 pb-20 sm:px-8 lg:px-12">
-          <div className="rounded-[32px] border border-slate-200 bg-white p-8 sm:p-12">
-            <span className="text-[12px] font-black uppercase tracking-wide text-emerald-700">Resources</span>
-            <h2 className="mt-3 text-[28px] font-black tracking-[-0.02em] text-slate-950 sm:text-[34px]">
-              Smart financial planning resources
-            </h2>
-            <p className="mt-5 max-w-2xl text-[15px] leading-7 text-slate-600">
-              Financial planning tools help investors, beginners, and wealth builders make smarter
-              money decisions using data-driven insights and calculators.
+          <div className="mt-10 flex flex-col items-start justify-between gap-5 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10 sm:flex-row sm:items-center">
+            <p className="max-w-md text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              These tools are for educational and illustrative purposes only. Always consult a
+              certified financial advisor for personalised advice.
             </p>
-            <p className="mt-4 max-w-2xl text-[15px] leading-7 text-slate-600">
-              FINAIW combines finance education, investment planning systems, and wealth tools to
-              improve long-term financial understanding.
-            </p>
-
-            <div className="mt-9 grid gap-5 md:grid-cols-3">
-              {highlights.map((card) => {
-                const Icon = card.icon;
-                const t = toneStyles[card.tone];
-                return (
-                  <div key={card.title} className="rounded-2xl border border-slate-100 bg-slate-50/60 p-6">
-                    <span className={`grid h-11 w-11 place-items-center rounded-xl ring-1 ${t.bg} ${t.text} ${t.ring}`}>
-                      <Icon size={20} />
-                    </span>
-                    <h3 className="mt-4 text-[15px] font-black text-slate-900">{card.title}</h3>
-                    <p className="mt-1.5 text-[13.5px] leading-6 text-slate-500">{card.desc}</p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="mt-9 flex flex-col items-start justify-between gap-4 border-t border-slate-100 pt-6 sm:flex-row sm:items-center">
-              <p className="max-w-xl text-[12px] leading-5 text-slate-400">
-                <span className="font-bold text-slate-500">Disclaimer:</span> These tools are for
-                educational and illustrative purposes only. Always consult a certified financial
-                advisor for personalised advice.
-              </p>
-              <Link
-                to="/calculators"
-                className="inline-flex flex-shrink-0 items-center gap-2 rounded-xl bg-emerald-800 px-5 py-3 text-[13px] font-black text-white shadow-[0_14px_30px_rgba(4,120,87,.22)] transition hover:-translate-y-0.5 hover:bg-emerald-900"
-              >
-                Explore Calculators <ArrowRight size={15} />
-              </Link>
-            </div>
+            <Link
+              to="/calculators"
+              className="flex-shrink-0 text-[13.5px] font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
+            >
+              Explore calculators
+            </Link>
           </div>
-        </section>
+        </div>
       </div>
-    </>
+    </div>
   );
 }

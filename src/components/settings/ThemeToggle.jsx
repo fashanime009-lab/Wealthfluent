@@ -1,44 +1,46 @@
-import { Moon, Sun, MonitorSmartphone } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+
+const OPTIONS = [
+  { value: "auto", label: "Auto" },
+  { value: "light", label: "Light" },
+  { value: "dark", label: "Dark" },
+  { value: "system", label: "System" },
+];
+
+const DESCRIPTIONS = {
+  auto: "Light by day, dark by night — based on your device's own clock, checked every few minutes.",
+  light: "Always light.",
+  dark: "Always dark.",
+  system: "Matches your OS's own light/dark setting.",
+};
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
-  const options = [
-    { value: "light", label: "Light", icon: Sun },
-    { value: "dark", label: "Dark", icon: Moon },
-    { value: "system", label: "System", icon: MonitorSmartphone },
-  ];
-
   return (
-    <div className="flex flex-col gap-4 px-5 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-      <div className="flex items-start gap-4 sm:items-center sm:gap-5">
-        <div className="grid h-12 w-12 flex-shrink-0 place-items-center rounded-2xl bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
-          <Moon size={22} />
-        </div>
-        <div>
-          <h3 className="font-bold text-slate-900 dark:text-white">Theme</h3>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Light, Dark or System.</p>
-        </div>
+    <div className="flex flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+      <div>
+        <h3 className="text-[14px] font-semibold text-[#111814] dark:text-[#eef1ec]">Theme</h3>
+        <p className="mt-1 max-w-xs text-[13px] leading-5 text-[#111814]/55 dark:text-[#eef1ec]/55">
+          {DESCRIPTIONS[theme]}
+        </p>
       </div>
 
-      <div className="flex items-center gap-1 self-start rounded-xl bg-slate-100 p-1 dark:bg-white/5 sm:self-auto">
-        {options.map((opt) => {
-          const Icon = opt.icon;
+      <div className="flex flex-shrink-0 flex-wrap gap-5">
+        {OPTIONS.map((opt) => {
           const active = theme === opt.value;
           return (
             <button
               key={opt.value}
               onClick={() => setTheme(opt.value)}
               aria-pressed={active}
-              className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-[12.5px] font-bold transition ${
+              className={`text-[13.5px] font-semibold transition ${
                 active
-                  ? "bg-white text-emerald-700 shadow-sm dark:bg-slate-800 dark:text-emerald-400"
-                  : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+                  ? "text-[#111814] dark:text-[#eef1ec]"
+                  : "text-[#111814]/40 hover:text-[#111814]/70 dark:text-[#eef1ec]/40 dark:hover:text-[#eef1ec]/70"
               }`}
             >
-              <Icon size={14} />
-              <span className="hidden sm:inline">{opt.label}</span>
+              {opt.label}
             </button>
           );
         })}

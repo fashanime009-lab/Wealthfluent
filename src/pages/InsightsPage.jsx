@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Lightbulb, TrendingUp, Target } from "lucide-react";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema } from "@/components/seo/schema";
 import { INSIGHT_CARDS } from "@/data/insights";
@@ -48,6 +47,36 @@ function buildPersonalInsights(goals, fmt) {
   return insights;
 }
 
+function InsightRow({ card, fmt }) {
+  const resolve = (value) => (typeof value === "function" ? value(fmt) : value);
+
+  return (
+    <div className="grid grid-cols-1 gap-2 py-7 sm:grid-cols-[110px_1fr] sm:gap-8">
+      <div>
+        <span className="font-mono-tech text-[15px] font-medium tabular-nums text-[#047857] dark:text-[#34d399]">
+          {resolve(card.stat)}
+        </span>
+      </div>
+      <div className="min-w-0">
+        <h3 className="font-display text-[17px] font-bold leading-snug text-[#111814] dark:text-[#eef1ec]">
+          {resolve(card.headline)}
+        </h3>
+        <p className="mt-2 max-w-[64ch] text-[13.5px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/60">
+          {resolve(card.detail)}
+        </p>
+        {card.tool && (
+          <Link
+            to={card.tool.to}
+            className="mt-3 inline-block text-[12.5px] font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
+          >
+            {card.tool.label}
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function InsightsPage() {
   const { settings } = useSettings();
   const fmt = (v) => formatCurrency(v, settings.currency, settings.compactNumbers);
@@ -62,77 +91,48 @@ export default function InsightsPage() {
   }, [settings.currency]);
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8 lg:px-12">
-      <Seo
-        title="Financial Insights — Data-Backed, Not Headlines"
-        description="Real, computed financial insights and data-backed observations about how money actually behaves, plus a personal snapshot from your own saved goals."
-        path="/insights"
-        keywords="financial insights, personal finance data, money observations, savings insights"
-        jsonLd={breadcrumbSchema([
-          { name: "Home", path: "/" },
-          { name: "Insights", path: "/insights" },
-        ])}
-      />
+    <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
+      <div className="mx-auto max-w-[900px] px-5 py-16 sm:px-8 lg:px-12">
+        <Seo
+          title="Financial Insights — Data-Backed, Not Headlines"
+          description="Real, computed financial insights and data-backed observations about how money actually behaves, plus a personal snapshot from your own saved goals."
+          path="/insights"
+          keywords="financial insights, personal finance data, money observations, savings insights"
+          jsonLd={breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Insights", path: "/insights" },
+          ])}
+        />
 
-      <span className="text-[12px] font-black uppercase tracking-wide text-emerald-700">Insights</span>
-      <h1 className="mt-3 text-4xl font-black text-slate-950 sm:text-5xl">Insights, not headlines</h1>
-      <p className="mt-3 max-w-xl text-slate-500">
-        Not a news feed — real, computed observations about how money actually behaves, plus a live snapshot of
-        your own numbers where you've got some saved.
-      </p>
+        <span className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Insights</span>
+        <h1 className="font-display mt-2 max-w-lg text-[34px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[42px]">
+          Insights, not headlines
+        </h1>
+        <p className="mt-4 max-w-[58ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+          Not a news feed — real, computed observations about how money actually behaves, plus a
+          live snapshot of your own numbers where you've got some saved.
+        </p>
 
-      {personal.length > 0 && (
-        <div className="mt-10">
-          <div className="flex items-center gap-2">
-            <Target size={16} className="text-emerald-700" />
-            <h2 className="text-[13px] font-black uppercase tracking-wide text-emerald-700">Based on your goals</h2>
+        {personal.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-[13px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">Based on your goals</h2>
+            <div className="mt-2 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">
+              {personal.map((card) => (
+                <InsightRow key={card.id} card={card} fmt={fmt} />
+              ))}
+            </div>
           </div>
-          <div className="mt-4 grid gap-5 sm:grid-cols-2">
-            {personal.map((card) => (
-              <InsightCard key={card.id} card={card} tone="personal" fmt={fmt} />
+        )}
+
+        <div className="mt-12">
+          <h2 className="text-[13px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">General insights</h2>
+          <div className="mt-2 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">
+            {INSIGHT_CARDS.map((card) => (
+              <InsightRow key={card.id} card={card} fmt={fmt} />
             ))}
           </div>
         </div>
-      )}
-
-      <div className="mt-12">
-        <div className="flex items-center gap-2">
-          <Lightbulb size={16} className="text-slate-400" />
-          <h2 className="text-[13px] font-black uppercase tracking-wide text-slate-400">General insights</h2>
-        </div>
-        <div className="mt-4 grid gap-5 sm:grid-cols-2">
-          {INSIGHT_CARDS.map((card) => (
-            <InsightCard key={card.id} card={card} tone="general" fmt={fmt} />
-          ))}
-        </div>
       </div>
-    </div>
-  );
-}
-
-function InsightCard({ card, tone, fmt }) {
-  const resolve = (value) => (typeof value === "function" ? value(fmt) : value);
-
-  return (
-    <div
-      className={`rounded-3xl p-6 ring-1 ${
-        tone === "personal" ? "bg-emerald-50/70 ring-emerald-100" : "bg-white ring-slate-200/70 shadow-sm"
-      }`}
-    >
-      <div className="flex items-center gap-2">
-        <TrendingUp size={15} className="text-emerald-700" />
-        <span className="font-mono text-[13px] font-black tabular-nums text-emerald-700">{resolve(card.stat)}</span>
-      </div>
-      <h3 className="mt-3 text-[17px] font-black leading-snug text-slate-950">{resolve(card.headline)}</h3>
-      <p className="mt-2 text-[13px] leading-6 text-slate-600">{resolve(card.detail)}</p>
-      {card.tool && (
-        <Link
-          to={card.tool.to}
-          className="mt-4 inline-flex items-center gap-1.5 text-[12px] font-black text-emerald-700 hover:underline"
-        >
-          {card.tool.label} <ArrowRight size={13} />
-        </Link>
-      )}
     </div>
   );
 }
