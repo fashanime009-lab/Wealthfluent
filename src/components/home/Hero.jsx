@@ -72,7 +72,7 @@ export default function Hero() {
 
           <div className="mt-8 border-t border-[#eef1ec]/10 pt-6">
             <p className="text-[13px] text-[#eef1ec]/55">At {RATE}% expected return, that grows to</p>
-            <p className="font-mono-tech mt-1 text-[52px] font-medium leading-none tabular-nums text-[#34d399] sm:text-[64px]">
+            <p className="font-mono-tech mt-1 text-[28px] font-medium leading-none tabular-nums text-[#34d399] sm:text-[64px]">
               {fmt(Math.round(animatedValue))}
             </p>
           </div>

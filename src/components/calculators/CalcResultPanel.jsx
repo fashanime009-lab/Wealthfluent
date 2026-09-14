@@ -17,7 +17,7 @@ export default function CalcResultPanel({ label, value, note }) {
       className="rounded-lg bg-[#0e1512] p-6 sm:p-7"
     >
       <p className="text-[13px] text-[#eef1ec]/55">{label}</p>
-      <p className="font-mono-tech mt-1 text-[40px] font-medium leading-none tabular-nums text-[#34d399] sm:text-[46px]">
+      <p className="font-mono-tech mt-1 text-[30px] font-medium leading-none tabular-nums text-[#34d399] sm:text-[46px]">
         {value}
       </p>
       {note && <p className="mt-3 text-[12.5px] text-[#eef1ec]/45">{note}</p>}
