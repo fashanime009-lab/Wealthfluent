@@ -50,6 +50,7 @@ const InsuranceNeedPage = lazy(() => import("./pages/verdict/InsuranceNeedPage")
 const SettingsPage = lazy(() => import("./pages/SettingsPage"));
 const HomeBuyingJourney = lazy(() => import("@/journeys/home-buying/pages/HomeBuyingJourney"));
 const EmergencyFundCalculatorPage = lazy(() => import("./pages/EmergencyFundCalculatorPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 export default function App() {
   return (
@@ -109,6 +110,7 @@ export default function App() {
             <Route path="/verdict/insurance-need" element={<InsuranceNeedPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/emergency-fund-calculator" element={<EmergencyFundCalculatorPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
           <Route path="/journeys/home-buying" element={<HomeBuyingJourney />} />
         </Routes>

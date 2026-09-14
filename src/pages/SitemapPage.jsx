@@ -76,7 +76,18 @@ const sitemapSections = [
 
 const totalPages = sitemapSections.reduce((sum, section) => sum + section.pages.length, 0);
 
-const sectionAnchor = (title) => title.toLowerCase().replace(/\s+/g, "-");
+// A real slugify, not just a whitespace swap — "Tools & Resources" and
+// "Home & About" both contain "&", which produced ids like
+// "tools-&-resources". That's a valid HTML id, but not a valid unescaped
+// CSS selector, and document.querySelector() in ScrollToTop.jsx throws a
+// SyntaxError on it — an uncaught error there crashes the whole React
+// tree, so clicking either of these quick-links blanked the entire page.
+const sectionAnchor = (title) =>
+  title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
 
 export default function SitemapPage() {
   return (
