@@ -36,7 +36,7 @@ export default function AdSlot({ slotId, format = "auto", className = "", maxHei
         ref={insRef}
         className="adsbygoogle"
         style={{ display: "block", width: "100%" }}
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+        data-ad-client="ca-pub-1366197478696723"
         data-ad-slot={slotId}
         data-ad-format={format}
         data-full-width-responsive="true"

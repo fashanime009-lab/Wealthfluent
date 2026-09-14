@@ -28,32 +28,17 @@ function Toggle({ checked, onChange, label }) {
 
 const STORAGE_KEY = "finaiw-cookie-consent";
 
-// Loads (or removes) the AdSense script based on consent. This is one of
-// two things on the whole site that actually set a cookie (the other is
-// Google Analytics, gated via Consent Mode — see src/lib/analytics.js) —
-// everything else FINAIW remembers about you (financial profile, goals,
-// streak, theme, currency) is localStorage: first-party, device-only,
-// never sent to us or anyone else, and not something cookie-consent rules
-// apply to. Keeping that distinction accurate is the whole point of this
-// component.
-function setAdsenseEnabled(enabled) {
-  const existing = document.getElementById("adsbygoogle-script");
-  if (enabled && !existing) {
-    const script = document.createElement("script");
-    script.id = "adsbygoogle-script";
-    script.async = true;
-    script.crossOrigin = "anonymous";
-    script.src =
-      "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX";
-    document.head.appendChild(script);
-  }
-  // Note: once Google's script has loaded, it may have already set its own
-  // cookies for that session. There's no supported client-side API to force
-  // those out immediately on decline; the reliable guarantee is exactly
-  // what this file already does — never inject the script unless
-  // `enabled` is true, so a decline means the cookies are never set at all
-  // on any later visit.
-}
+// Advertising (Google AdSense) and analytics (Google Analytics) are the
+// two things on the whole site that actually set a cookie — everything
+// else FINAIW remembers about you (financial profile, goals, streak,
+// theme, currency) is localStorage: first-party, device-only, never sent
+// to us or anyone else, and not something cookie-consent rules apply to.
+// Both Google scripts always load (see index.html) so Google's own
+// verification crawlers can find them without clicking this banner; what
+// this component actually controls is the Consent Mode signals
+// (updateAdConsent / updateAnalyticsConsent) that tell those scripts
+// whether they're allowed to set a cookie or personalize anything — not
+// whether the script is present at all.
 
 // Reads whatever's in localStorage and normalizes it to the current shape.
 // Handles three generations of stored value: the original plain
@@ -90,7 +75,6 @@ export default function CookieConsent() {
 
   useEffect(() => {
     if (consent) {
-      setAdsenseEnabled(consent.advertising === true);
       updateAdConsent(consent.advertising === true);
       updateAnalyticsConsent(consent.analytics === true);
       return undefined;
@@ -105,7 +89,6 @@ export default function CookieConsent() {
     const value = { advertising, analytics, decidedAt: new Date().toISOString() };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
     setConsent(value);
-    setAdsenseEnabled(advertising);
     updateAdConsent(advertising);
     updateAnalyticsConsent(analytics);
     setVisible(false);
