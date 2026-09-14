@@ -34,26 +34,55 @@
  * automatically every time `npm run build` runs — no separate step to
  * remember.
  *
- * ONE-TIME SETUP
- *   npm install --save-dev puppeteer
- * Then just run `npm run build` as usual.
+ * RUNNING IN VERCEL'S BUILD CONTAINER
+ * Vercel's build image is missing system shared libraries (libnss3.so
+ * and others) a normal downloaded Chrome binary needs — the full
+ * `puppeteer` package (which bundles that binary) fails there with
+ * "error while loading shared libraries: libnss3.so". Fixed by using
+ * `puppeteer-core` (no bundled browser) together with
+ * `@sparticuz/chromium`, a Chromium build compiled specifically to run
+ * standalone in serverless/CI build containers like Vercel's — see
+ * launchBrowser() below. Locally (or anywhere not running on Vercel),
+ * it instead launches your own installed Chrome via puppeteer-core's
+ * `channel: "chrome"`, so no second Chrome download is needed for
+ * everyday local builds.
  *
- * NOTE ON DEPLOYING
- * Puppeteer downloads a real Chromium binary, which makes this step
- * slow (and sometimes flaky) to run inside Vercel's own build
- * container. It's more reliable to run `npm run build` locally (or in
- * a GitHub Actions job) and deploy the resulting prebuilt `dist/`
- * folder, e.g. with `vercel deploy --prebuilt`, rather than letting
- * Vercel run the build itself. If you'd rather have Vercel do the
- * build, you'll likely need to add `--no-sandbox` to the launch args
- * below and confirm the build container has enough memory.
+ * ONE-TIME SETUP
+ *   npm install --save-dev puppeteer-core @sparticuz/chromium
+ * Then just run `npm run build` as usual — locally or on Vercel.
  */
 
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+
+// Vercel sets VERCEL=1 during both build and runtime — that's the signal
+// to use the serverless-compatible Chromium instead of a local install.
+// @sparticuz/chromium is only imported in that branch so a local build
+// never needs it downloaded/loaded at all.
+async function launchBrowser() {
+  if (process.env.VERCEL) {
+    const { default: chromium } = await import("@sparticuz/chromium");
+    // Matches @sparticuz/chromium's own documented usage exactly: args
+    // must go through puppeteer's defaultArgs() (merges chromium's flags
+    // with puppeteer-core's own required ones) rather than being passed
+    // raw, and "shell" is the specific headless mode this Chromium build
+    // supports — plain `true` is not.
+    return puppeteer.launch({
+      headless: "shell",
+      args: await puppeteer.defaultArgs({ args: chromium.args, headless: "shell" }),
+      executablePath: await chromium.executablePath(),
+    });
+  }
+
+  return puppeteer.launch({
+    headless: true,
+    channel: "chrome",
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -191,10 +220,7 @@ async function main() {
   try {
     await waitForServer(BASE_URL);
 
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+    const browser = await launchBrowser();
     const page = await browser.newPage();
 
     for (const route of routes) {
