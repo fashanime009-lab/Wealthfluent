@@ -60,13 +60,47 @@ const ROOT = path.resolve(__dirname, "..");
 const DIST = path.join(ROOT, "dist");
 const PORT = 4173;
 const BASE_URL = `http://localhost:${PORT}`;
-// The real domain crawlers hit in production. Falls back to the same
-// default src/components/seo/Seo.jsx uses so the two never drift apart.
-// Snapshots are captured against BASE_URL (localhost), so every
-// absolute URL baked into canonical/og:url/og:image/twitter:image gets
-// rewritten to this before writing — otherwise every prerendered file
-// would ship pointing crawlers at localhost.
-const SITE_URL = (process.env.VITE_SITE_URL || "https://finaiw.com").replace(/\/+$/, "");
+// The real domain crawlers hit in production — www.finaiw.com is the
+// domain Vercel actually serves from (finaiw.com redirects to it), so
+// that's the correct fallback, not the apex domain. Snapshots are
+// captured against BASE_URL (localhost), so every absolute URL baked
+// into canonical/og:url/og:image/twitter:image gets rewritten to this
+// before writing — otherwise every prerendered file would ship pointing
+// crawlers at localhost. See rewriteSiteUrls() for why this replacement
+// is scoped to only those tags, never applied to the whole document.
+const SITE_URL = (process.env.VITE_SITE_URL || "https://www.finaiw.com").replace(/\/+$/, "");
+
+// Rewrites BASE_URL -> SITE_URL only inside the specific tags meant to
+// carry the real production URL: the canonical link, OG/Twitter meta
+// content, and inline JSON-LD. Deliberately never touches <script src>
+// — a previous version of this function did a blanket find-and-replace
+// across the ENTIRE captured HTML, which also rewrote the app's own JS
+// bundle <script src> tags to a hardcoded absolute origin. That origin
+// didn't match the domain the page actually loads from, so every
+// script became cross-origin relative to the page's real 'self' — and
+// CSP correctly refused to run any of them, breaking the live site.
+//
+// <link rel="modulepreload"> hints for lazy-loaded route chunks are a
+// separate case: React Router/Vite insert these into the DOM at
+// runtime with an ABSOLUTE href (`new URL(path, import.meta.url).href`),
+// unlike the static template's script tags, which stay root-relative.
+// Rewriting those to SITE_URL would reintroduce the exact same
+// domain-mismatch risk, so they're stripped back to root-relative
+// instead — matching every other asset reference, and immune to
+// www-vs-apex mismatches entirely since there's no domain baked in.
+function rewriteSiteUrls(html) {
+  const escapedBase = BASE_URL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const baseUrlPattern = new RegExp(escapedBase, "g");
+  const swap = (match, prefix, url, suffix) => prefix + url.replace(baseUrlPattern, SITE_URL) + suffix;
+
+  return html
+    .replace(/(<link rel="canonical"[^>]*href=")([^"]*)(")/g, swap)
+    .replace(/(<meta (?:property|name)="(?:og|twitter):[a-z:]+"[^>]*content=")([^"]*)(")/g, swap)
+    .replace(/(<script type="application\/ld\+json">)([\s\S]*?)(<\/script>)/g, swap)
+    .replace(/<link rel="modulepreload"[^>]*href="([^"]*)"[^>]*>/g, (match, url) =>
+      match.replace(url, url.replace(baseUrlPattern, ""))
+    );
+}
 
 // Reads the canonical route list straight from the files you already
 // maintain, so this script never drifts out of sync with them.
@@ -207,9 +241,7 @@ async function main() {
           .waitForSelector('meta[property="og:title"]', { timeout: 5000 })
           .catch(() => {});
 
-        const html = dedupeHeadTags(
-          (await page.content()).split(BASE_URL).join(SITE_URL)
-        );
+        const html = dedupeHeadTags(rewriteSiteUrls(await page.content()));
         const outPath =
           route === "/"
             ? path.join(DIST, "index.html")

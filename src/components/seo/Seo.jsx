@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 export const SITE_NAME = "FINAIW";
 export const SITE_URL = (
   import.meta.env.VITE_SITE_URL ||
-  (typeof window !== "undefined" ? window.location.origin : "https://finaiw.com")
+  (typeof window !== "undefined" ? window.location.origin : "https://www.finaiw.com")
 ).replace(/\/+$/, ""); // strip any trailing slash so `${SITE_URL}${path}` never double-slashes
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 
