@@ -62,8 +62,16 @@ import puppeteer from "puppeteer-core";
 // to use the serverless-compatible Chromium instead of a local install.
 // @sparticuz/chromium is only imported in that branch so a local build
 // never needs it downloaded/loaded at all.
+//
+// `vercel build` run locally (e.g. via the CLI, to test a prod build
+// before deploying) ALSO sets VERCEL=1 to replicate Vercel's env vars,
+// but the build still executes on the local machine, not inside Vercel's
+// actual Linux container — @sparticuz/chromium's binary is Linux-only,
+// so launching it locally on macOS/Windows fails with ENOEXEC. Requiring
+// linux as well as the env var distinguishes a real remote Vercel build
+// from a local `vercel build` emulating one.
 async function launchBrowser() {
-  if (process.env.VERCEL) {
+  if (process.env.VERCEL && process.platform === "linux") {
     const { default: chromium } = await import("@sparticuz/chromium");
     // Matches @sparticuz/chromium's own documented usage exactly: args
     // must go through puppeteer's defaultArgs() (merges chromium's flags
@@ -211,6 +219,37 @@ function dedupeByCapturedKey(html, pattern) {
   });
 }
 
+// Runs INSIDE the page (via page.evaluate) right before content() is
+// captured. adsbygoogle.js loads unconditionally (needed for AdSense's
+// own non-JS verification crawler — see index.html), so during the
+// prerender crawl it genuinely fires: our own AdSlot push(), AND —
+// independently of any component we render — Google's Auto Ads feature,
+// which scans the page and injects its own ad units directly into the
+// DOM whenever it's enabled on the AdSense account, with no <ins> tag of
+// ours involved at all. Either source bakes a live ad iframe (real
+// doubleclick request URLs, this build server's own localhost origin in
+// a query param, sometimes a reCAPTCHA-style verification frame) into
+// the static HTML shipped to every visitor. Removing every ad element
+// right before capture — regardless of which mechanism created it —
+// is the only place that reliably catches both. Real visitors are
+// unaffected: this only ever runs against the throwaway prerender
+// snapshot, and ads load fresh in their own browser once the client
+// bundle takes over.
+function stripAdContent() {
+  document
+    .querySelectorAll(
+      [
+        "ins.adsbygoogle",
+        'iframe[id^="google_ads_iframe"]',
+        'iframe[id="google_esf"]',
+        'iframe[src*="doubleclick.net"]',
+        'iframe[src*="googlesyndication.com"]',
+        'iframe[src*="google.com/recaptcha"]',
+      ].join(",")
+    )
+    .forEach((el) => el.remove());
+}
+
 function waitForServer(url, timeoutMs = 20000) {
   const start = Date.now();
   return new Promise((resolve, reject) => {
@@ -266,6 +305,7 @@ async function main() {
         await page
           .waitForSelector('meta[property="og:title"]', { timeout: 5000 })
           .catch(() => {});
+        await page.evaluate(stripAdContent);
 
         const html = dedupeHeadTags(rewriteSiteUrls(await page.content()));
         const outPath =
