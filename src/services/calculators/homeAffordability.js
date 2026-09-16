@@ -68,8 +68,8 @@ export function calculateHomeAffordability({
         ) * 100
       : 0;
 
-  let affordabilityScore = 0;
-  let recommendation = "";
+  let affordabilityScore;
+  let recommendation;
 
   if (emiRatio <= 30) {
     affordabilityScore = 90;

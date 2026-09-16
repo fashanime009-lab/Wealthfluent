@@ -42,6 +42,7 @@ const routes = [
   { path: "/bond-yield-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/networth-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/emergency-fund-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
+  { path: "/home-affordability-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/wealth-age-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/retirement-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/annual-retirement-income", lastmod: today, changefreq: "weekly", priority: "0.8" },

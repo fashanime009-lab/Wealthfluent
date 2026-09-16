@@ -26,6 +26,7 @@ export const searchIndex = [
   { title: "Future Value Calculator", description: "Project compound interest growth", path: "/future-value-calculator", category: "Calculator" },
   { title: "Rate of Return Calculator", description: "Calculate annualized returns", path: "/rate-of-return-calculator", category: "Calculator" },
   { title: "Bond Yield Calculator", description: "Calculate current yield and YTM", path: "/bond-yield-calculator", category: "Calculator" },
+  { title: "Home Affordability Calculator", description: "Check whether a property fits your income", path: "/home-affordability-calculator", category: "Calculator" },
   { title: "Net Worth Calculator", description: "Track your assets and liabilities", path: "/networth-calculator", category: "Calculator" },
   { title: "Emergency Fund Calculator", description: "Plan your financial safety net", path: "/emergency-fund-calculator", category: "Calculator" },
   { title: "Wealth Age Calculator", description: "Compare your financial age to your real age", path: "/wealth-age-calculator", category: "Calculator" },

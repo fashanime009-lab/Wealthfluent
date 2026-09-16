@@ -13,6 +13,7 @@ const CATEGORY_DATA = {
       { title: "Bond Yield Calculator", desc: "Current yield and yield to maturity on a bond.", route: "/bond-yield-calculator", example: "₹1,000 face, 8% coupon, ₹950 price → 8.4%" },
       { title: "Fixed Deposit Calculator", desc: "Maturity value and interest earned on an FD.", route: "/fd-calculator", example: "₹2L at 7% for 5 yrs → ₹2.83L" },
       { title: "GST Calculator", desc: "GST on a purchase or invoice, India.", route: "/gst-calculator", example: "₹10,000 at 18% → ₹1,800 GST" },
+      { title: "Home Affordability Calculator", desc: "Check whether a property actually fits your income.", route: "/home-affordability-calculator", example: "₹50L home, ₹1L/mo income → Good fit", note: "New" },
     ],
   },
   investment: {

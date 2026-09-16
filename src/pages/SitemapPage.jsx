@@ -29,6 +29,7 @@ const sitemapSections = [
       { name: "Bond Yield Calculator", path: "/bond-yield-calculator", description: "Calculate bond yields" },
       { name: "Net Worth Calculator", path: "/networth-calculator", description: "Track assets and liabilities" },
       { name: "Emergency Fund Calculator", path: "/emergency-fund-calculator", description: "Plan your safety net" },
+      { name: "Home Affordability Calculator", path: "/home-affordability-calculator", description: "Check whether a property fits your income" },
       { name: "Wealth Age Calculator", path: "/wealth-age-calculator", description: "Compare your financial age to your real age" },
       { name: "Retirement Calculator", path: "/retirement-calculator", description: "Plan retirement wealth" },
       { name: "Annual Retirement Income", path: "/annual-retirement-income", description: "Calculate retirement income" },
