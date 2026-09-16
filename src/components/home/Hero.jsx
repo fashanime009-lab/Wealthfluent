@@ -88,7 +88,7 @@ export default function Hero() {
             This is what your money actually does.
           </h1>
           <p className="mt-5 max-w-[46ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
-            18 free calculators and 4 real decisions, decided — rent vs buy, debt vs invest, and more.
+            19 free calculators and 5 real decisions, decided — rent vs buy, debt vs invest, and more.
             No account, no paywall, and your numbers never leave your device.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-6">

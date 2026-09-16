@@ -55,6 +55,7 @@ const routes = [
   { path: "/verdict/debt-vs-invest", lastmod: today, changefreq: "weekly", priority: "0.7" },
   { path: "/verdict/lease-vs-buy-car", lastmod: today, changefreq: "weekly", priority: "0.7" },
   { path: "/verdict/insurance-need", lastmod: today, changefreq: "weekly", priority: "0.7" },
+  { path: "/verdict/term-vs-endowment", lastmod: today, changefreq: "weekly", priority: "0.7" },
 
   { path: "/tools", lastmod: today, changefreq: "weekly", priority: "0.7" },
   // /journeys/home-buying intentionally excluded — feature isn't ready/

@@ -47,6 +47,16 @@ const decisions = [
     b: { label: "What you have", value: 2000000 },
     example: "A mid-income earner with an outstanding home loan",
   },
+  {
+    slug: "term-vs-endowment",
+    category: "Insurance",
+    title: "Term Insurance vs Endowment/ULIP",
+    description: "Same premium, two paths — a cheap term plan plus investing, or one bundled policy.",
+    tone: "go",
+    a: { label: "Term + invest", value: 2017000 },
+    b: { label: "Endowment / ULIP", value: 1395000 },
+    example: "A ₹40,000/yr premium budget over 20 years",
+  },
 ];
 
 export default function VerdictIndex() {
@@ -58,9 +68,9 @@ export default function VerdictIndex() {
     <div className="mx-auto max-w-[860px] px-5 py-16 sm:px-8 lg:px-12">
       <Seo
         title="Verdict — Financial Decisions, Decided"
-        description="Real answers to the money decisions you're actually stuck on — rent vs buy, debt vs invest, lease vs buy a car, and how much insurance you need — with the math shown. Free, no signup."
+        description="Real answers to the money decisions you're actually stuck on — rent vs buy, debt vs invest, lease vs buy a car, how much insurance you need, and term vs endowment — with the math shown. Free, no signup."
         path="/verdict"
-        keywords="rent vs buy calculator, pay off debt vs invest, lease vs buy car, term insurance calculator, financial decision tool"
+        keywords="rent vs buy calculator, pay off debt vs invest, lease vs buy car, term insurance calculator, term vs endowment, financial decision tool"
         jsonLd={breadcrumbSchema([
           { name: "Home", path: "/" },
           { name: "Verdict", path: "/verdict" },
@@ -72,7 +82,7 @@ export default function VerdictIndex() {
       </h1>
       <p className="mt-4 max-w-[58ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
         Rent or buy. Pay off debt or invest. Most calculators hand you a number and leave you to
-        figure out what it means. These four run the real simulation and tell you which side wins —
+        figure out what it means. These five run the real simulation and tell you which side wins —
         free, no signup.
       </p>
 

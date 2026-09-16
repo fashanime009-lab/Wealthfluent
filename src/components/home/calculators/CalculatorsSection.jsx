@@ -50,13 +50,13 @@ export default function CalculatorsSection() {
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8 lg:px-12">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <h2 className="font-display text-[20px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[22px]">
-          18 calculators. Every one shows real math.
+          19 calculators. Every one shows real math.
         </h2>
         <Link
           to="/calculators"
           className="flex-shrink-0 text-[13.5px] font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
         >
-          See all 18
+          See all 19
         </Link>
       </div>
 

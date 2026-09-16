@@ -47,6 +47,7 @@ const RentVsBuyPage = lazy(() => import("./pages/verdict/RentVsBuyPage"));
 const DebtVsInvestPage = lazy(() => import("./pages/verdict/DebtVsInvestPage"));
 const LeaseVsBuyPage = lazy(() => import("./pages/verdict/LeaseVsBuyPage"));
 const InsuranceNeedPage = lazy(() => import("./pages/verdict/InsuranceNeedPage"));
+const TermVsEndowmentPage = lazy(() => import("./pages/verdict/TermVsEndowmentPage"));
 const SettingsPage = lazy(() => import("./pages/SettingsPage"));
 const HomeBuyingJourney = lazy(() => import("@/journeys/home-buying/pages/HomeBuyingJourney"));
 const EmergencyFundCalculatorPage = lazy(() => import("./pages/EmergencyFundCalculatorPage"));
@@ -109,6 +110,7 @@ export default function App() {
             <Route path="/verdict/debt-vs-invest" element={<DebtVsInvestPage />} />
             <Route path="/verdict/lease-vs-buy-car" element={<LeaseVsBuyPage />} />
             <Route path="/verdict/insurance-need" element={<InsuranceNeedPage />} />
+            <Route path="/verdict/term-vs-endowment" element={<TermVsEndowmentPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/emergency-fund-calculator" element={<EmergencyFundCalculatorPage />} />
             <Route path="/home-affordability-calculator" element={<HomeAffordabilityCalculatorPage />} />

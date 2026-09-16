@@ -46,6 +46,7 @@ const sitemapSections = [
       { name: "Debt vs Invest", path: "/verdict/debt-vs-invest", description: "Pay off debt or invest first" },
       { name: "Lease vs Buy a Car", path: "/verdict/lease-vs-buy-car", description: "Compare leasing vs buying a car" },
       { name: "Do You Need Insurance", path: "/verdict/insurance-need", description: "Check if you need life insurance" },
+      { name: "Term Insurance vs Endowment/ULIP", path: "/verdict/term-vs-endowment", description: "Compare a term plan plus investing against a bundled policy" },
     ],
   },
   {
