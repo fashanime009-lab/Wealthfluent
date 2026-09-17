@@ -1,4 +1,5 @@
 import Hero from "../components/home/Hero";
+import GlobalRankBanner from "../components/home/GlobalRankBanner";
 import FinancialStatusWidget from "../components/home/FinancialStatusWidget";
 import StatsStrip from "../components/home/StatsStrip";
 import CalculatorsSection from "../components/home/calculators/CalculatorsSection";
@@ -18,7 +19,7 @@ export default function WealthFluentHomepage() {
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <Seo
         title="FINAIW – Free Financial Calculators, Verdicts & Planning Tools"
-        description="18+ free finance calculators (SIP, EMI, FD, CAGR, retirement, FIRE), real rent-vs-buy and debt-vs-invest verdicts, and goal tracking — no account, no paywall."
+        description="20+ free finance calculators (SIP, EMI, FD, CAGR, retirement, FIRE), real rent-vs-buy and debt-vs-invest verdicts, and goal tracking — no account, no paywall."
         path="/"
         keywords="financial calculators, SIP calculator, EMI calculator, retirement calculator, FIRE calculator, personal finance, investment planning"
         jsonLd={[
@@ -29,6 +30,9 @@ export default function WealthFluentHomepage() {
       />
 
       <Hero />
+      <div className="mt-10">
+        <GlobalRankBanner />
+      </div>
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8 lg:px-12">
         <FinancialStatusWidget />
       </div>

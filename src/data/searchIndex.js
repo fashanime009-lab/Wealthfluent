@@ -30,6 +30,7 @@ export const searchIndex = [
   { title: "Net Worth Calculator", description: "Track your assets and liabilities", path: "/networth-calculator", category: "Calculator" },
   { title: "Emergency Fund Calculator", description: "Plan your financial safety net", path: "/emergency-fund-calculator", category: "Calculator" },
   { title: "Wealth Age Calculator", description: "Compare your financial age to your real age", path: "/wealth-age-calculator", category: "Calculator" },
+  { title: "Global Net Worth Percentile", description: "How your net worth compares to the whole world", path: "/net-worth-percentile", category: "Calculator" },
   { title: "Retirement Calculator", description: "Plan your retirement corpus", path: "/retirement-calculator", category: "Calculator" },
   { title: "Annual Retirement Income", description: "Estimate sustainable retirement income", path: "/annual-retirement-income", category: "Calculator" },
   { title: "Retirement Investment Tracker", description: "Track investments toward retirement", path: "/retirement-investment-tracker", category: "Calculator" },

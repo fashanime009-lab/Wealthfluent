@@ -44,7 +44,7 @@ export const calculatorCategories = [
     description: "Track your net worth and plan your financial goals.",
     icon: Wallet,
     tone: "violet",
-    count: 4,
+    count: 5,
   },
 ];
 

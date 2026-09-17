@@ -31,6 +31,7 @@ const sitemapSections = [
       { name: "Emergency Fund Calculator", path: "/emergency-fund-calculator", description: "Plan your safety net" },
       { name: "Home Affordability Calculator", path: "/home-affordability-calculator", description: "Check whether a property fits your income" },
       { name: "Wealth Age Calculator", path: "/wealth-age-calculator", description: "Compare your financial age to your real age" },
+      { name: "Global Net Worth Percentile", path: "/net-worth-percentile", description: "How your net worth compares to the whole world" },
       { name: "Retirement Calculator", path: "/retirement-calculator", description: "Plan retirement wealth" },
       { name: "Annual Retirement Income", path: "/annual-retirement-income", description: "Calculate retirement income" },
       { name: "Retirement Investment Tracker", path: "/retirement-investment-tracker", description: "Track retirement investments" },

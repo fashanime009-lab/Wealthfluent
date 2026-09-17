@@ -11,7 +11,7 @@ const SECTIONS = [
     n: "01",
     title: "Calculators",
     to: "/calculators",
-    desc: "18+ free tools — SIP, EMI, FD, retirement, FIRE and more. Enter your numbers, get an instant answer.",
+    desc: "20+ free tools — SIP, EMI, FD, retirement, FIRE and more. Enter your numbers, get an instant answer.",
   },
   {
     n: "02",

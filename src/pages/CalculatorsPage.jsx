@@ -38,6 +38,7 @@ const CATEGORY_DATA = {
       { title: "Goal Planner", desc: "A savings plan for a target amount with variable allocation.", route: "/goal-planner", example: "₹55L goal in 12 yrs at 11% → ₹18,400/mo" },
       { title: "Emergency Fund Calculator", desc: "The safety net you need for unexpected expenses.", route: "/emergency-fund-calculator", example: "₹40,000/mo expenses × 6 mo → ₹2.4L", note: "New" },
       { title: "Wealth Age Calculator", desc: "How your net worth and savings rate compare to your age.", route: "/wealth-age-calculator", example: "Compares real age to financial age", note: "New" },
+      { title: "Global Net Worth Percentile", desc: "How your net worth compares to the whole world's adults.", route: "/net-worth-percentile", example: "$117,000 → top 10% globally", note: "New" },
     ],
   },
 };
@@ -96,7 +97,7 @@ export default function CalculatorsPage() {
     <>
       <Seo
         title="Financial Calculators – SIP, EMI, Retirement, FIRE & More"
-        description="Explore 18+ free financial calculators for investments, loans, retirement planning, bond yields, net worth, inflation, and more. Make smarter financial decisions with FINAIW."
+        description="Explore 20+ free financial calculators for investments, loans, retirement planning, bond yields, net worth, inflation, and more. Make smarter financial decisions with FINAIW."
         path="/calculators"
         keywords="financial calculators, investment calculator, loan calculator, retirement calculator, bond yield calculator, net worth calculator, inflation calculator"
         jsonLd={breadcrumbSchema([

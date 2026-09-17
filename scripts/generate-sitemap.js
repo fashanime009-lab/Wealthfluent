@@ -44,6 +44,7 @@ const routes = [
   { path: "/emergency-fund-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/home-affordability-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/wealth-age-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
+  { path: "/net-worth-percentile", lastmod: today, changefreq: "weekly", priority: "0.9" },
   { path: "/retirement-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/annual-retirement-income", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/retirement-investment-tracker", lastmod: today, changefreq: "weekly", priority: "0.8" },

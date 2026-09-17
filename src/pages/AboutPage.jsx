@@ -25,7 +25,7 @@ const whyPoints = [
 ];
 
 const stats = [
-  { value: "18+", label: "tools to explore" },
+  { value: "20+", label: "tools to explore" },
   { value: "100%", label: "free, always" },
   { value: "0", label: "data leaves your device" },
 ];
