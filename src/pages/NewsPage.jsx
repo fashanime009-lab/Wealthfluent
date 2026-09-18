@@ -1,12 +1,32 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { Search, RefreshCw } from "lucide-react";
 import { DEFAULT_NEWS_QUERY, fetchNews, NEWS_REFRESH_INTERVAL } from "../services/newsService";
+import { LESSONS } from "../data/lessons";
 import useVisibleInterval from "../hooks/useVisibleInterval";
 import AdSlot from "../components/ads/AdSlot";
 import Seo from "../components/seo/Seo";
 import { breadcrumbSchema } from "../components/seo/schema";
 
 const categories = ["business", "technology", "top"];
+
+// Live news depends on a network fetch that can fail — during static
+// prerendering it always does, since the local build server has no real
+// API behind it (see scripts/prerender.mjs), and real visitors hit the
+// same empty state on any network hiccup. Without this, that state was
+// "Live news is unavailable right now" and nothing else: a page with
+// almost no content, and an ad slot rendered right next to it — exactly
+// what got this flagged in an AdSense content review. A small set of the
+// site's own evergreen lessons keeps the page substantial either way.
+const FALLBACK_LESSON_SLUGS = [
+  "compound-interest",
+  "investment-basics",
+  "understanding-inflation",
+  "emergency-funds",
+  "behavioral-investing-mistakes",
+  "time-value-of-money",
+];
+const fallbackLessons = LESSONS.filter((lesson) => FALLBACK_LESSON_SLUGS.includes(lesson.slug));
 
 function timeAgo(date) {
   const publishedAt = new Date(date).getTime();
@@ -173,43 +193,79 @@ export default function NewsPage() {
           </p>
         )}
 
-        <div className="mt-8">
-          <AdSlot slotId="insights_top" />
-        </div>
+        {visibleArticles.length > 0 ? (
+          <>
+            {/* Ad only ever renders alongside real article content, never
+                next to the empty/fallback state below. */}
+            <div className="mt-8">
+              <AdSlot slotId="insights_top" />
+            </div>
 
-        <div className="mt-4 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">
-          {visibleArticles.map((article, index) => (
-            <>
-              {index === 6 && (
-                <div key="insights-mid-ad" className="py-2">
-                  <AdSlot slotId="insights_mid" />
-                </div>
-              )}
-              <a
-                key={article.id}
-                href={article.link}
-                target="_blank"
-                rel="noreferrer"
-                className="grid gap-2 py-6 transition-opacity hover:opacity-70"
-              >
-                <div className="flex flex-wrap items-baseline gap-x-2.5">
-                  <span className="text-[12.5px] font-semibold text-[#047857] dark:text-[#34d399]">{article.source}</span>
-                  <span className="font-mono-tech text-[11.5px] tabular-nums text-[#111814]/40 dark:text-[#eef1ec]/40">
-                    {timeAgo(article.publishedAt)}
-                  </span>
-                </div>
-                <h2 className="font-display text-[17px] font-bold leading-snug text-[#111814] dark:text-[#eef1ec]">
-                  {article.title}
-                </h2>
-                {article.description && (
-                  <p className="max-w-[68ch] text-[13.5px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
-                    {article.description}
-                  </p>
-                )}
-              </a>
-            </>
-          ))}
-        </div>
+            <div className="mt-4 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">
+              {visibleArticles.map((article, index) => (
+                <>
+                  {index === 6 && (
+                    <div key="insights-mid-ad" className="py-2">
+                      <AdSlot slotId="insights_mid" />
+                    </div>
+                  )}
+                  <a
+                    key={article.id}
+                    href={article.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="grid gap-2 py-6 transition-opacity hover:opacity-70"
+                  >
+                    <div className="flex flex-wrap items-baseline gap-x-2.5">
+                      <span className="text-[12.5px] font-semibold text-[#047857] dark:text-[#34d399]">{article.source}</span>
+                      <span className="font-mono-tech text-[11.5px] tabular-nums text-[#111814]/40 dark:text-[#eef1ec]/40">
+                        {timeAgo(article.publishedAt)}
+                      </span>
+                    </div>
+                    <h2 className="font-display text-[17px] font-bold leading-snug text-[#111814] dark:text-[#eef1ec]">
+                      {article.title}
+                    </h2>
+                    {article.description && (
+                      <p className="max-w-[68ch] text-[13.5px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+                        {article.description}
+                      </p>
+                    )}
+                  </a>
+                </>
+              ))}
+            </div>
+          </>
+        ) : (
+          !loading && (
+            <div className="mt-8">
+              <p className="text-[13px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/60">
+                While live news catches up, here's what's worth reading
+              </p>
+              <div className="mt-4 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">
+                {fallbackLessons.map((lesson) => (
+                  <Link
+                    key={lesson.slug}
+                    to={`/learn/${lesson.slug}`}
+                    className="grid gap-2 py-6 transition-opacity hover:opacity-70"
+                  >
+                    <div className="flex flex-wrap items-baseline gap-x-2.5">
+                      <span className="text-[12.5px] font-semibold text-[#047857] dark:text-[#34d399]">{lesson.category}</span>
+                      <span className="font-mono-tech text-[11.5px] tabular-nums text-[#111814]/40 dark:text-[#eef1ec]/40">
+                        {lesson.readTime}
+                      </span>
+                    </div>
+                    <h2 className="font-display text-[17px] font-bold leading-snug text-[#111814] dark:text-[#eef1ec]">
+                      {lesson.title}
+                    </h2>
+                    <p className="max-w-[68ch] text-[13.5px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+                      {lesson.summary}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )
+        )}
 
         {loading && (
           <p className="mt-8 text-center text-[13px] font-medium text-[#111814]/45 dark:text-[#eef1ec]/45">

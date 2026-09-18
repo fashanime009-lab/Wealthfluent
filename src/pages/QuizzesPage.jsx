@@ -6,6 +6,13 @@ import { CheckCircle2, Loader2, RotateCcw, XCircle } from "lucide-react";
 import useTilt from "@/hooks/useTilt";
 import useVisibleInterval from "@/hooks/useVisibleInterval";
 
+// Falls back to these when the live-headlines quiz can't fetch fresh
+// articles — either a real network hiccup, or (always, unavoidably)
+// during static prerendering, since the local build server has no real
+// API behind it (see scripts/prerender.mjs). A 2-question fallback read
+// as thin content in an AdSense review; ten genuine finance-basics
+// questions keeps the page substantial either way, and doubles as an
+// always-available quiz for anyone who'd rather not wait on live data.
 const fallbackQuestions = [
   {
     id: "fallback-etf",
@@ -21,6 +28,70 @@ const fallbackQuestions = [
     options: ["Rise in prices", "Fall in taxes", "Company profit", "Export volume"],
     answer: "Rise in prices",
     explanation: "Inflation measures the rate at which prices rise over time.",
+    source: "Finance basics",
+  },
+  {
+    id: "fallback-sip",
+    question: "What does SIP stand for in mutual fund investing?",
+    options: ["Systematic Investment Plan", "Stock Investment Program", "Secured Income Plan", "Standard Interest Payment"],
+    answer: "Systematic Investment Plan",
+    explanation: "SIP stands for Systematic Investment Plan — investing a fixed amount at regular intervals.",
+    source: "Finance basics",
+  },
+  {
+    id: "fallback-compound",
+    question: "Compound interest is calculated on which amount?",
+    options: ["Principal plus accumulated interest", "Principal only", "Interest only", "A fixed government rate"],
+    answer: "Principal plus accumulated interest",
+    explanation: "Compound interest is earned on the principal plus any interest already added to it — that's what makes it grow faster than simple interest.",
+    source: "Finance basics",
+  },
+  {
+    id: "fallback-diversification",
+    question: "Spreading investments across different assets to reduce risk is called...",
+    options: ["Diversification", "Consolidation", "Leveraging", "Arbitrage"],
+    answer: "Diversification",
+    explanation: "Diversification spreads risk across different investments so one bad outcome doesn't sink the whole portfolio.",
+    source: "Finance basics",
+  },
+  {
+    id: "fallback-credit-score",
+    question: "A higher credit score generally leads to...",
+    options: ["Lower interest rates on loans", "Higher interest rates on loans", "No effect on loans", "Automatic loan approval"],
+    answer: "Lower interest rates on loans",
+    explanation: "Lenders reward a strong repayment history with better interest rates, since a higher score signals lower risk.",
+    source: "Finance basics",
+  },
+  {
+    id: "fallback-emergency-fund",
+    question: "An emergency fund is best kept in...",
+    options: ["A liquid, easily accessible account", "Long-term equity", "Real estate", "Cryptocurrency"],
+    answer: "A liquid, easily accessible account",
+    explanation: "An emergency fund needs to be accessible within a day or two without penalty or market risk — not tied up in something volatile or illiquid.",
+    source: "Finance basics",
+  },
+  {
+    id: "fallback-emi",
+    question: "EMI, as in a loan EMI, stands for...",
+    options: ["Equated Monthly Installment", "Extra Monthly Income", "Equity Market Index", "Estimated Monthly Interest"],
+    answer: "Equated Monthly Installment",
+    explanation: "EMI stands for Equated Monthly Installment — a fixed monthly payment that covers both principal and interest.",
+    source: "Finance basics",
+  },
+  {
+    id: "fallback-net-worth",
+    question: "Net worth is calculated as...",
+    options: ["Assets minus liabilities", "Income minus expenses", "Savings plus debt", "Revenue minus profit"],
+    answer: "Assets minus liabilities",
+    explanation: "Net worth is everything you own minus everything you owe — a snapshot of real financial position, not just income.",
+    source: "Finance basics",
+  },
+  {
+    id: "fallback-bear-market",
+    question: "A \"bear market\" refers to a period when...",
+    options: ["Prices are generally falling", "Prices are generally rising", "Prices are stable", "Trading is suspended"],
+    answer: "Prices are generally falling",
+    explanation: "A bear market describes a sustained period of falling prices — the opposite of a \"bull market,\" where prices are rising.",
     source: "Finance basics",
   },
 ];

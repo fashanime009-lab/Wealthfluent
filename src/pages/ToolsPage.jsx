@@ -2,11 +2,17 @@ import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema } from "@/components/seo/schema";
 
+// Every tool listed here is live — nothing under construction. A "coming
+// soon" placeholder is exactly the kind of thing an AdSense content
+// review flags as an unfinished/under-construction page, and this page
+// is publicly indexed (see public/sitemap.xml), so it's worth keeping
+// this list honest rather than aspirational.
 const tools = [
   {
     title: "Financial Goal Planner",
     desc: "Checks every real goal you've set against your real monthly surplus at once — not one goal at a time.",
     path: "/financial-goal-planner",
+    popular: true,
   },
   {
     title: "Investment Risk Analyzer",
@@ -14,21 +20,14 @@ const tools = [
     path: "/investment-risk-analyzer",
   },
   {
-    title: "Portfolio Management",
-    desc: "Track investments and monitor portfolio performance.",
-    popular: true,
+    title: "Home Affordability Calculator",
+    desc: "Checks a property price against your real monthly cash flow — EMI-to-income and debt-to-income ratios, not just what a lender would approve.",
+    path: "/home-affordability-calculator",
   },
   {
-    title: "Inflation Insights",
-    desc: "Estimate purchasing power impact over time.",
-  },
-  {
-    title: "Wealth Roadmap",
-    desc: "Visualize your long-term financial growth journey.",
-  },
-  {
-    title: "Finance Glossary",
-    desc: "Learn essential finance terminology easily.",
+    title: "Global Net Worth Percentile",
+    desc: "See how your net worth compares to every adult on Earth, not just your own country.",
+    path: "/net-worth-percentile",
   },
 ];
 
@@ -107,9 +106,9 @@ export default function ToolsPage() {
         {/* Spec strip */}
         <div className="mt-10 flex flex-wrap gap-x-10 gap-y-4 border-b border-[#111814]/10 pb-8 dark:border-[#eef1ec]/10">
           {[
-            { value: tools.filter((t) => t.path).length, label: "live tools" },
-            { value: tools.filter((t) => !t.path).length, label: "in development" },
+            { value: tools.length, label: "live tools" },
             { value: "100%", label: "free to use" },
+            { value: "0", label: "signups required" },
           ].map((stat) => (
             <div key={stat.label}>
               <span className="font-mono-tech text-[22px] font-medium tabular-nums text-[#047857] dark:text-[#34d399]">
