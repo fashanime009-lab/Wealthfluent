@@ -20,21 +20,22 @@ const tools = [
     path: "/investment-risk-analyzer",
   },
   {
-    title: "Home Affordability Calculator",
-    desc: "Checks a property price against your real monthly cash flow — EMI-to-income and debt-to-income ratios, not just what a lender would approve.",
-    path: "/home-affordability-calculator",
+    title: "Financial Health Checkup",
+    desc: "Five real numbers, reduced to one score out of 100 — and exactly which of four factors is actually holding it back.",
+    path: "/financial-health-checkup",
   },
   {
-    title: "Global Net Worth Percentile",
-    desc: "See how your net worth compares to every adult on Earth, not just your own country.",
-    path: "/net-worth-percentile",
+    title: "Debt Payoff Strategy Planner",
+    desc: "Every debt you're carrying, simulated month by month under snowball vs avalanche — real numbers, not a rule of thumb.",
+    path: "/debt-payoff-planner",
   },
 ];
 
 const highlights = [
   { title: "Goal setting", desc: "Define and track your financial goals with precision." },
   { title: "Risk assessment", desc: "Understand your risk tolerance and investment comfort." },
-  { title: "Financial literacy", desc: "Learn key finance terms and concepts easily." },
+  { title: "Health scoring", desc: "One composite score, with exactly what's dragging it down." },
+  { title: "Debt strategy", desc: "Compare real payoff strategies for everything you owe." },
 ];
 
 function ToolRow({ tool }) {
@@ -134,7 +135,7 @@ export default function ToolsPage() {
             improve long-term financial understanding.
           </p>
 
-          <div className="mt-8 grid gap-6 sm:grid-cols-3">
+          <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
             {highlights.map((card) => (
               <div key={card.title}>
                 <h3 className="font-display text-[15px] font-bold text-[#111814] dark:text-[#eef1ec]">{card.title}</h3>

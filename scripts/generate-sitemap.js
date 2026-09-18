@@ -59,6 +59,13 @@ const routes = [
   { path: "/verdict/term-vs-endowment", lastmod: today, changefreq: "weekly", priority: "0.7" },
 
   { path: "/tools", lastmod: today, changefreq: "weekly", priority: "0.7" },
+  // These 4 are the site's "advanced tools" tier, distinct from the
+  // calculators above — financial-goal-planner and investment-risk-
+  // analyzer were live pages that had never been added here at all.
+  { path: "/financial-goal-planner", lastmod: today, changefreq: "weekly", priority: "0.7" },
+  { path: "/investment-risk-analyzer", lastmod: today, changefreq: "weekly", priority: "0.7" },
+  { path: "/financial-health-checkup", lastmod: today, changefreq: "weekly", priority: "0.7" },
+  { path: "/debt-payoff-planner", lastmod: today, changefreq: "weekly", priority: "0.7" },
   // /journeys/home-buying intentionally excluded — feature isn't ready/
   // tested yet, so it's not something we want Google to discover or index.
   // Also excluded from robots.txt (see public/robots.txt) and left out of

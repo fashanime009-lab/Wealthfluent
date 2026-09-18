@@ -20,4 +20,16 @@ export const TOOL_TONES = {
     bright: "#fb7185", // rose-400
     panel: "#1f0a10", // dark rose-black
   },
+  healthCheckup: {
+    name: "Financial Health Checkup",
+    light: "#1d4ed8", // cobalt-700
+    bright: "#60a5fa", // cobalt-400
+    panel: "#0a1530", // dark cobalt-black
+  },
+  debtStrategy: {
+    name: "Debt Payoff Strategy Planner",
+    light: "#c2410c", // rust-700
+    bright: "#fb923c", // rust-400
+    panel: "#241006", // dark rust-black
+  },
 };

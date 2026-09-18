@@ -203,6 +203,30 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://finaiw.com/financial-goal-planner</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://finaiw.com/investment-risk-analyzer</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://finaiw.com/financial-health-checkup</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://finaiw.com/debt-payoff-planner</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://finaiw.com/learn</loc>
     <lastmod>2026-09-06</lastmod>
     <changefreq>daily</changefreq>

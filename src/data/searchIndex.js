@@ -49,6 +49,8 @@ export const searchIndex = [
   { title: "All Tools", description: "Browse all tools", path: "/tools", category: "Tool" },
   { title: "Financial Goal Planner", description: "Check every real goal against your real monthly surplus at once", path: "/financial-goal-planner", category: "Tool" },
   { title: "Investment Risk Analyzer", description: "A real risk-profiling quiz reconciled against your real finances", path: "/investment-risk-analyzer", category: "Tool" },
+  { title: "Financial Health Checkup", description: "A composite financial health score out of 100", path: "/financial-health-checkup", category: "Tool" },
+  { title: "Debt Payoff Strategy Planner", description: "Snowball vs avalanche debt payoff, simulated month by month", path: "/debt-payoff-planner", category: "Tool" },
   { title: "Goals", description: "Track your savings goals", path: "/goals", category: "Tool" },
   { title: "Financial Profile", description: "Update your financial profile", path: "/financial-profile", category: "Tool" },
   { title: "Insights", description: "Personalized financial insights", path: "/insights", category: "Tool" },

@@ -54,6 +54,10 @@ const sitemapSections = [
     title: "Tools & Resources",
     pages: [
       { name: "All Tools", path: "/tools", description: "Browse all tools" },
+      { name: "Financial Goal Planner", path: "/financial-goal-planner", description: "Optimizes your budget across every goal at once" },
+      { name: "Investment Risk Analyzer", path: "/investment-risk-analyzer", description: "Risk profile reconciled against your real finances" },
+      { name: "Financial Health Checkup", path: "/financial-health-checkup", description: "A composite financial health score out of 100" },
+      { name: "Debt Payoff Strategy Planner", path: "/debt-payoff-planner", description: "Snowball vs avalanche, simulated month by month" },
       { name: "Goals", path: "/goals", description: "Track your savings goals" },
       { name: "Financial Profile", path: "/financial-profile", description: "Update your financial profile" },
       { name: "Insights", path: "/insights", description: "Personalized financial insights" },
