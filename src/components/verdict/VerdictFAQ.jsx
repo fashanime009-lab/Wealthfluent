@@ -23,9 +23,22 @@ export default function VerdictFAQ({ items, className = "" }) {
                 className={`shrink-0 text-[#111814]/40 transition-transform dark:text-[#eef1ec]/40 ${open === i ? "rotate-180" : ""}`}
               />
             </button>
-            {open === i && (
-              <p className="pb-5 text-[13px] leading-6 text-[#111814]/65 dark:text-[#eef1ec]/65">{item.a}</p>
-            )}
+            {/* Always rendered, never conditionally mounted — every page
+                that uses this component also ships FAQPage JSON-LD (see
+                faqSchema in seo/schema.js) built from these same items.
+                Conditionally mounting only the open answer meant every
+                answer except the first was completely absent from the
+                page's HTML — present in the structured data but nowhere
+                in the actual content, which is exactly the kind of
+                schema/content mismatch that gets FAQ rich results
+                rejected. Hiding via CSS instead keeps every answer in the
+                DOM (and in the prerendered snapshot) while the closed
+                ones stay visually collapsed for real visitors. */}
+            <p
+              className={`pb-5 text-[13px] leading-6 text-[#111814]/65 dark:text-[#eef1ec]/65 ${open === i ? "" : "hidden"}`}
+            >
+              {item.a}
+            </p>
           </div>
         ))}
       </div>
