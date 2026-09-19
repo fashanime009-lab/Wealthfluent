@@ -27,11 +27,13 @@ export default function CAGRCalculatorPage() {
   const { settings } = useSettings();
   const currency = (currencies.find((c) => c.code === settings.currency) || currencies[0]).symbol;
 
+  // CAGR is undefined for a starting value of 0 or a 0-year period — both
+  // are one keystroke away in the number fields and used to print
+  // "Infinity%". Show a dash instead of a number that isn't one.
   const cagr =
-    (
-      (Math.pow(finalValue / initialValue, 1 / years) - 1) *
-      100
-    ).toFixed(2);
+    initialValue > 0 && years > 0
+      ? ((Math.pow(finalValue / initialValue, 1 / years) - 1) * 100).toFixed(2)
+      : null;
 
   // Format currency
   const formatCurrency = (value) => {
@@ -77,14 +79,14 @@ export default function CAGRCalculatorPage() {
 
             {/* Right Panel – Results */}
             <div className="space-y-6">
-              <CalcResultPanel label="Compound Annual Growth Rate" value={`${cagr}%`} />
+              <CalcResultPanel label="Compound Annual Growth Rate" value={cagr === null ? "—" : `${cagr}%`} />
 
               <div className="divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                <CalcStat label="Initial Value" value={`₹${formatCurrency(initialValue)}`} />
+                <CalcStat label="Initial Value" value={fmt(initialValue)} />
                 <CalcStat
                   label="Final Value"
-                  value={`₹${formatCurrency(finalValue)}`}
-                  share={Math.min(((finalValue - initialValue) / initialValue) * 100, 100)}
+                  value={fmt(finalValue)}
+                  share={initialValue > 0 ? Math.min(((finalValue - initialValue) / initialValue) * 100, 100) : 0}
                   tone="signal"
                 />
               </div>

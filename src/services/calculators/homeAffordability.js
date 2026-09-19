@@ -12,8 +12,10 @@ export function calculateHomeAffordability({
   monthlyIncome = Number(monthlyIncome) || 0;
   monthlyExpenses = Number(monthlyExpenses) || 0;
   existingEMI = Number(existingEMI) || 0;
-  loanTenure = Number(loanTenure) || 20;
-  interestRate = Number(interestRate) || 8.5;
+  // `|| default` treats a legitimate 0 as "missing": a 0% rate silently
+  // became 8.5%. Only fall back when the value isn't a usable number.
+  loanTenure = Number(loanTenure) > 0 ? Number(loanTenure) : 20;
+  interestRate = Number.isFinite(Number(interestRate)) && Number(interestRate) >= 0 ? Number(interestRate) : 8.5;
 
   const loanAmount = Math.max(
     propertyPrice - downPayment,
@@ -33,7 +35,9 @@ export function calculateHomeAffordability({
 
   let estimatedEMI = 0;
 
-  if (loanAmount > 0) {
+  if (loanAmount > 0 && monthlyInterest === 0) {
+    estimatedEMI = loanAmount / totalMonths;
+  } else if (loanAmount > 0) {
     estimatedEMI =
       (
         loanAmount *

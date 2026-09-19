@@ -1,5 +1,6 @@
 import { useSettings } from "../context/SettingsContext";
 import { currencies } from "../data/currencies";
+import { sipFutureValue } from "@/utils/projections";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -27,14 +28,11 @@ export default function RetirementCalculatorPage() {
   const { settings } = useSettings();
   const currency = (currencies.find((c) => c.code === settings.currency) || currencies[0]).symbol;
 
-  const monthlyRate = annualReturn / 12 / 100;
   const months = years * 12;
 
-  const futureValue = Math.round(
-    monthlyInvestment *
-      (((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) *
-        (1 + monthlyRate))
-  );
+  // Shared helper — handles a 0% return (the annuity formula divides by the
+  // rate, so the inline version returned NaN whenever the slider hit 0%).
+  const futureValue = Math.round(sipFutureValue(monthlyInvestment, years, annualReturn));
 
   const investedAmount = monthlyInvestment * months;
   const estimatedReturns = futureValue - investedAmount;

@@ -32,13 +32,19 @@ export default function EMICalculatorPage() {
   const monthlyRate = interestRate / 12 / 100;
   const months = loanYears * 12;
 
+  // A 0% loan (an interest-free EMI offer) makes the standard formula 0/0.
+  // The limit as the rate reaches zero is simply principal / months.
   const emi = Math.round(
-    (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, months)) /
-      (Math.pow(1 + monthlyRate, months) - 1)
+    monthlyRate === 0
+      ? loanAmount / months
+      : (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, months)) /
+          (Math.pow(1 + monthlyRate, months) - 1)
   );
 
   const totalPayment = emi * months;
   const totalInterest = totalPayment - loanAmount;
+  const principalShare = totalPayment > 0 ? (loanAmount / totalPayment) * 100 : 0;
+  const interestShare = totalPayment > 0 ? (totalInterest / totalPayment) * 100 : 0;
 
   return (
     <>
@@ -75,8 +81,8 @@ export default function EMICalculatorPage() {
             <div className="space-y-6">
               <CalcResultPanel label="Monthly EMI" value={fmt(emi)} />
               <div className="divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                <CalcStat label="Principal amount" value={fmt(loanAmount)} share={(loanAmount / totalPayment) * 100} tone="signal" />
-                <CalcStat label="Total interest" value={fmt(totalInterest)} share={(totalInterest / totalPayment) * 100} />
+                <CalcStat label="Principal amount" value={fmt(loanAmount)} share={principalShare} tone="signal" />
+                <CalcStat label="Total interest" value={fmt(totalInterest)} share={interestShare} />
                 <CalcStat label="Total payment" value={fmt(totalPayment)} share={100} />
               </div>
               <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">

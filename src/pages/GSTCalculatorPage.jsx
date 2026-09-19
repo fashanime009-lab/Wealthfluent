@@ -21,9 +21,16 @@ const FAQ_ITEMS = [
 export default function GSTCalculatorPage() {
   const [amount, setAmount] = useState(1000);
   const [gstRate, setGstRate] = useState(18);
+  // "add": the amount is the pre-tax base. "remove": the amount is a GST-
+  // inclusive total and the base is worked back out of it. The page title,
+  // meta description, search-index entry and sitemap all promise "Add or
+  // Remove GST", but only adding was ever implemented.
+  const [mode, setMode] = useState("add");
 
-  const gstAmount = (amount * gstRate) / 100;
-  const totalAmount = amount + gstAmount;
+  const rateFactor = 1 + gstRate / 100;
+  const baseAmount = mode === "add" ? amount : amount / rateFactor;
+  const totalAmount = mode === "add" ? amount * rateFactor : amount;
+  const gstAmount = totalAmount - baseAmount;
 
   // Format currency
   const formatCurrency = (value) => {
@@ -81,15 +88,46 @@ export default function GSTCalculatorPage() {
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-              <CalcField label="Base amount" value={amount} onChange={setAmount} min={100} max={100000} step={100} format={fmt} />
+              <div>
+                <p className="text-[13px] font-medium text-[#111814]/70 dark:text-[#eef1ec]/70">What do you want to do?</p>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  {[
+                    { key: "add", label: "Add GST" },
+                    { key: "remove", label: "Remove GST" },
+                  ].map((opt) => (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      aria-pressed={mode === opt.key}
+                      onClick={() => setMode(opt.key)}
+                      className={`border px-3 py-2 text-[13px] font-semibold transition ${
+                        mode === opt.key
+                          ? "border-[#047857] bg-[#047857]/[0.08] text-[#047857] dark:border-[#34d399] dark:bg-[#34d399]/10 dark:text-[#34d399]"
+                          : "border-[#111814]/15 text-[#111814]/60 hover:border-[#111814]/40 dark:border-[#eef1ec]/15 dark:text-[#eef1ec]/60 dark:hover:border-[#eef1ec]/40"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <CalcField
+                label={mode === "add" ? "Base amount (before GST)" : "Total amount (GST included)"}
+                value={amount}
+                onChange={setAmount}
+                min={100}
+                max={100000}
+                step={100}
+                format={fmt}
+              />
               <CalcField label="GST rate (%)" value={gstRate} onChange={setGstRate} min={1} max={28} step={1} suffix="%" />
             </div>
 
             <div className="space-y-6">
               <CalcResultPanel label="GST amount" value={fmt(gstAmount)} />
               <div className="divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                <CalcStat label="Base amount" value={fmt(amount)} share={(amount / totalAmount) * 100} />
-                <CalcStat label={`GST @ ${gstRate}%`} value={`+ ${fmt(gstAmount)}`} share={(gstAmount / totalAmount) * 100} tone="signal" />
+                <CalcStat label="Base amount (before GST)" value={fmt(baseAmount)} share={totalAmount > 0 ? (baseAmount / totalAmount) * 100 : 0} />
+                <CalcStat label={`GST @ ${gstRate}%`} value={`+ ${fmt(gstAmount)}`} share={totalAmount > 0 ? (gstAmount / totalAmount) * 100 : 0} tone="signal" />
                 <CalcStat label="Total amount (including GST)" value={fmt(totalAmount)} share={100} />
               </div>
               <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">

@@ -49,22 +49,28 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
   };
 
   // ─── Recalculate Targets when Annual Increase changes ──────────
-  const recalculateTargets = () => {
-    const increaseFactor = 1 + annualIncrease / 100;
-    let newRows = [...rows];
-    for (let i = 1; i < newRows.length; i++) {
-      const prevTarget = newRows[i - 1].target;
-      newRows[i].target = Math.round(prevTarget * increaseFactor);
-    }
-    setRows(newRows);
+  // Takes the percentage explicitly. It used to read `annualIncrease` from
+  // state and get called from a setTimeout right after setAnnualIncrease —
+  // but that closure still held the PREVIOUS render's value, so dragging
+  // the slider to 20% recalculated every target at the old percentage and
+  // the targets were always one step behind what the slider showed. Rows
+  // are also copied rather than mutated in place now.
+  const recalculateTargets = (increasePct) => {
+    const increaseFactor = 1 + increasePct / 100;
+    setRows((current) => {
+      const next = current.map((row) => ({ ...row }));
+      for (let i = 1; i < next.length; i++) {
+        next[i].target = Math.round(next[i - 1].target * increaseFactor);
+      }
+      return next;
+    });
   };
 
   // ─── Handle Annual Increase Change ──────────────────────────────
   const handleAnnualIncreaseChange = (e) => {
     const value = Number(e.target.value) || 0;
     setAnnualIncrease(value);
-    // Recalculate targets after a short delay
-    setTimeout(recalculateTargets, 100);
+    recalculateTargets(value);
   };
 
   // ─── Computed Totals ─────────────────────────────────────────────
@@ -146,7 +152,7 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
                   </span>
                 </div>
                 <button
-                  onClick={recalculateTargets}
+                  onClick={() => recalculateTargets(annualIncrease)}
                   className="text-[13px] font-semibold text-[#047857] hover:underline dark:text-[#34d399]"
                 >
                   Recalculate targets

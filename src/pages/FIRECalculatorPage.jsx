@@ -1,5 +1,6 @@
 import { useSettings } from "../context/SettingsContext";
 import { currencies } from "../data/currencies";
+import { sipFutureValue } from "@/utils/projections";
 import { useState, useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -41,13 +42,10 @@ export default function FIRECalculatorPage() {
 
   const results = useMemo(() => {
     const years = formData.retirementAge - formData.currentAge;
-    const monthlyRate = formData.expectedReturn / 100 / 12;
-    const totalMonths = years * 12;
 
-    const futureInvestments =
-      formData.monthlyInvestment *
-      ((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate) *
-      (1 + monthlyRate);
+    // Shared helper — handles a 0% return, which the inline annuity formula
+    // turned into NaN (the slider's minimum is 0).
+    const futureInvestments = sipFutureValue(formData.monthlyInvestment, years, formData.expectedReturn);
 
     const futureSavings =
       formData.currentSavings *
@@ -61,17 +59,18 @@ export default function FIRECalculatorPage() {
 
     const fireNumber = futureExpenses * 12 * 25;
 
-    const freedomScore = Math.min(
-      100,
-      Math.round((totalWealth / fireNumber) * 100)
-    );
+    const freedomScore =
+      fireNumber > 0 ? Math.min(100, Math.round((totalWealth / fireNumber) * 100)) : 100;
 
     const chartData = [];
+    // Same maths as totalWealth above, evaluated year by year, so the final
+    // point of the chart equals the headline figure. The old version grew
+    // every rupee ever contributed from day one — at the defaults that put
+    // the last point at ₹6.08 crore against a headline result of ₹2.79 crore.
     for (let i = 0; i <= years; i++) {
-      const yearlyInvestment =
-        formData.currentSavings + formData.monthlyInvestment * 12 * i;
       const growth =
-        yearlyInvestment * Math.pow(1 + formData.expectedReturn / 100, i);
+        sipFutureValue(formData.monthlyInvestment, i, formData.expectedReturn) +
+        formData.currentSavings * Math.pow(1 + formData.expectedReturn / 100, i);
       chartData.push({
         age: formData.currentAge + i,
         wealth: Math.round(growth),

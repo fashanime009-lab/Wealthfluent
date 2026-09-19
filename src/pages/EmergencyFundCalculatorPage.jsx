@@ -44,7 +44,7 @@ export default function EmergencyFundCalculatorPage() {
     const target = monthlyExpenses * recommendedMonths;
     const netSavings = currentSavings + additionalIncome;
     const shortfall = Math.max(0, target - netSavings);
-    const monthsCovered = netSavings > 0 ? netSavings / monthlyExpenses : 0;
+    const monthsCovered = netSavings > 0 && monthlyExpenses > 0 ? netSavings / monthlyExpenses : 0;
 
     return {
       target: Math.round(target),

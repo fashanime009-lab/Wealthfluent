@@ -12,7 +12,8 @@ export function sipFutureValue(monthly, years, annualRate = 12) {
 export function emiBreakdown(principal, annualRate, years) {
   const r = annualRate / 12 / 100;
   const n = years * 12;
-  const emi = (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  // 0% rate: the formula is 0/0, and the limit is principal / months.
+  const emi = r === 0 ? principal / n : (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
   const totalPayment = emi * n;
   const totalInterest = totalPayment - principal;
   return { emi, totalPayment, totalInterest };

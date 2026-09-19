@@ -34,18 +34,25 @@ export default function GoalSIPCalculatorPage() {
     let monthlySIP = 0;
     let totalInvestment = 0;
 
-    if (monthlyRate > 0 && months > 0) {
+    if (months > 0) {
       // Formula: P = FV * r / [((1 + r)^n - 1) * (1 + r)]
       // where P = monthly SIP, FV = goal amount, r = monthly rate, n = number of months
+      // At a 0% return there's no growth to lean on, so the SIP is just the
+      // goal spread over the months — this used to fall through and report
+      // a ₹0 monthly SIP for a ₹5 lakh goal.
       monthlySIP =
-        (goalAmount * monthlyRate) /
-        ((Math.pow(1 + monthlyRate, months) - 1) * (1 + monthlyRate));
+        monthlyRate > 0
+          ? (goalAmount * monthlyRate) /
+            ((Math.pow(1 + monthlyRate, months) - 1) * (1 + monthlyRate))
+          : goalAmount / months;
       totalInvestment = monthlySIP * months;
     }
 
     return {
       monthlySIP: Math.round(monthlySIP * 100) / 100,
       totalInvestment: Math.round(totalInvestment * 100) / 100,
+      // A goal of 0 made this 0/0 = NaN in the share bar and its caption.
+      goalShare: goalAmount > 0 ? (totalInvestment / goalAmount) * 100 : 0,
     };
   }, [goalAmount, investmentDuration, expectedReturn]);
 
@@ -100,11 +107,11 @@ export default function GoalSIPCalculatorPage() {
                 <CalcStat
                   label="Your Total Investment"
                   value={fmt(results.totalInvestment)}
-                  share={(results.totalInvestment / goalAmount) * 100}
+                  share={results.goalShare}
                   tone="signal"
                 />
                 <p className="mt-1 text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">
-                  {((results.totalInvestment / goalAmount) * 100).toFixed(1)}% of your goal amount
+                  {results.goalShare.toFixed(1)}% of your goal amount
                 </p>
               </div>
 
