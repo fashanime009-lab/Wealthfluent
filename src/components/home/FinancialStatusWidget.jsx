@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Pencil, PiggyBank, Scale, ShieldCheck, Sparkles, Wallet } from "lucide-react";
 import { getFinancialProfile, computeFinancialHealth } from "@/engine/financialProfile";
 import { useSettings } from "@/context/SettingsContext";
 import { formatCurrency } from "@/utils/currency";
@@ -8,9 +7,9 @@ import ProgressRing from "@/components/ui/ProgressRing";
 import useAnimatedNumber from "@/hooks/useAnimatedNumber";
 
 function scoreTone(score) {
-  if (score >= 70) return { color: "#047857", label: "Strong", bg: "bg-emerald-50", text: "text-emerald-700" };
-  if (score >= 40) return { color: "#d97706", label: "Fair", bg: "bg-amber-50", text: "text-amber-700" };
-  return { color: "#e11d48", label: "Needs attention", bg: "bg-rose-50", text: "text-rose-600" };
+  if (score >= 70) return { color: "#047857", label: "Strong" };
+  if (score >= 40) return { color: "#9a3412", label: "Fair" };
+  return { color: "#9a3412", label: "Needs attention" };
 }
 
 export default function FinancialStatusWidget() {
@@ -36,58 +35,52 @@ export default function FinancialStatusWidget() {
   const tone = scoreTone(health.score);
 
   const metrics = [
-    { icon: Wallet, label: "Net Worth", value: fmt(animatedNetWorth) },
-    { icon: PiggyBank, label: "Savings Rate", value: `${health.savingsRate.toFixed(0)}%` },
-    { icon: Scale, label: "Debt-to-Income", value: `${health.debtToIncome.toFixed(0)}%` },
-    { icon: ShieldCheck, label: "Emergency Fund", value: `${health.emergencyMonths.toFixed(1)} mo` },
+    { label: "Net worth", value: fmt(animatedNetWorth) },
+    { label: "Savings rate", value: `${health.savingsRate.toFixed(0)}%` },
+    { label: "Debt-to-income", value: `${health.debtToIncome.toFixed(0)}%` },
+    { label: "Emergency fund", value: `${health.emergencyMonths.toFixed(1)} mo` },
   ];
 
   return (
-    <div className="relative overflow-hidden rounded-[28px] border border-white bg-white/95 p-6 shadow-[0_30px_90px_rgba(15,23,42,.14)] backdrop-blur-xl sm:p-7">
+    <div className="rounded-lg border border-[#111814]/12 bg-[#ffffff] p-6 dark:border-[#eef1ec]/12 dark:bg-[#0b1210] sm:p-7">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
-          Your Financial Status
-        </span>
-        <Link to="/financial-profile" className="flex items-center gap-1 text-[10px] font-black text-slate-400 hover:text-emerald-700">
-          <Pencil size={11} /> Update
+        <span className="text-[13px] font-medium text-[#111814]/55 dark:text-[#eef1ec]/55">Your financial status</span>
+        <Link to="/financial-profile" className="text-[12px] font-semibold text-[#111814]/55 hover:text-[#047857] dark:text-[#eef1ec]/55 dark:hover:text-[#34d399]">
+          Update
         </Link>
       </div>
 
       <div className="mt-5 flex items-center gap-6">
-        <ProgressRing value={animatedScore} size={104} strokeWidth={9} color={tone.color}>
+        <ProgressRing value={animatedScore} size={92} strokeWidth={7} color={tone.color}>
           <div className="text-center">
-            <span className="font-mono text-[26px] font-black tabular-nums leading-none text-slate-950">
+            <span className="font-mono-tech text-[22px] font-medium tabular-nums leading-none text-[#111814] dark:text-[#eef1ec]">
               {Math.round(animatedScore)}
             </span>
-            <p className="text-[9px] font-bold text-slate-400">/ 100</p>
+            <p className="text-[9px] text-[#111814]/45 dark:text-[#eef1ec]/45">/ 100</p>
           </div>
         </ProgressRing>
         <div>
-          <span className={`inline-block rounded-full px-3 py-1 text-[10px] font-black ${tone.bg} ${tone.text}`}>
-            {tone.label}
-          </span>
-          <p className="mt-2 text-[13px] leading-6 text-slate-500">
-            Your overall financial health score, computed from your real income, expenses, assets and debt.
+          <span className="text-[13px] font-semibold" style={{ color: tone.color }}>{tone.label}</span>
+          <p className="mt-1.5 text-[13px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+            Computed from your real income, expenses, assets and debt.
           </p>
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3">
+      <div className="mt-6 grid grid-cols-2 gap-y-4 border-t border-[#111814]/10 pt-5 dark:border-[#eef1ec]/10">
         {metrics.map((m) => (
-          <div key={m.label} className="rounded-2xl bg-slate-50 p-4">
-            <m.icon size={15} className="text-emerald-700" />
-            <p className="mt-2 font-mono text-[16px] font-black tabular-nums text-slate-950">{m.value}</p>
-            <p className="text-[11px] font-bold text-slate-400">{m.label}</p>
+          <div key={m.label}>
+            <p className="font-mono-tech text-[15px] tabular-nums text-[#111814] dark:text-[#eef1ec]">{m.value}</p>
+            <p className="text-[11.5px] text-[#111814]/45 dark:text-[#eef1ec]/45">{m.label}</p>
           </div>
         ))}
       </div>
 
       <Link
         to="/goals"
-        className="mt-5 flex h-13 items-center justify-between rounded-2xl bg-emerald-800 px-5 py-4 text-[13px] font-black text-white shadow-[0_16px_35px_rgba(4,120,87,.22)] transition hover:-translate-y-0.5 hover:bg-emerald-900"
+        className="mt-6 inline-flex h-11 items-center bg-[#047857] px-5 text-[13px] font-semibold text-white transition hover:bg-[#065f46]"
       >
-        <span>View your goals</span>
-        <ArrowRight size={16} />
+        View your goals
       </Link>
     </div>
   );
@@ -96,39 +89,31 @@ export default function FinancialStatusWidget() {
 // Honest empty state — no fake score, no fake numbers, just a real path in.
 function EmptyStatus() {
   return (
-    <div className="relative overflow-hidden rounded-[28px] border border-white bg-white/95 p-6 shadow-[0_30px_90px_rgba(15,23,42,.14)] backdrop-blur-xl sm:p-7">
+    <div className="rounded-lg border border-[#111814]/12 bg-[#ffffff] p-6 dark:border-[#eef1ec]/12 dark:bg-[#0b1210] sm:p-7">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
-          Your Financial Status
-        </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-[10px] font-black text-slate-500">
-          Not set up
-        </span>
+        <span className="text-[13px] font-medium text-[#111814]/55 dark:text-[#eef1ec]/55">Your financial status</span>
+        <span className="text-[12px] text-[#111814]/40 dark:text-[#eef1ec]/40">Not set up</span>
       </div>
 
-      <div className="mt-8 flex flex-col items-center py-4 text-center">
-        <div className="grid h-14 w-14 place-items-center rounded-2xl bg-emerald-50">
-          <Wallet className="text-emerald-700" size={26} />
-        </div>
-        <h3 className="mt-5 text-[19px] font-black text-slate-950">See your real financial status</h3>
-        <p className="mt-2 max-w-xs text-[13px] leading-6 text-slate-500">
-          Five numbers — income, expenses, assets, debt, emergency fund — and you get a genuine overall health
-          score, not a guess.
+      <div className="mt-7 py-2">
+        <h3 className="font-display text-[18px] font-bold text-[#111814] dark:text-[#eef1ec]">See your real financial status</h3>
+        <p className="mt-2 max-w-xs text-[13px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+          Five numbers — income, expenses, assets, debt, emergency fund — for a genuine health score, not a guess.
         </p>
       </div>
 
-      <div className="mt-2 grid gap-3 sm:grid-cols-2">
+      <div className="mt-2 flex flex-wrap gap-x-6 gap-y-3">
         <Link
           to="/financial-profile"
-          className="flex items-center justify-between rounded-xl bg-emerald-800 px-4 py-3.5 text-[13px] font-black text-white transition hover:bg-emerald-900"
+          className="inline-flex h-11 items-center bg-[#047857] px-5 text-[13px] font-semibold text-white transition hover:bg-[#065f46]"
         >
-          Set It Up <Sparkles size={15} />
+          Set it up
         </Link>
         <Link
           to="/goals"
-          className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3.5 text-[13px] font-black text-slate-800 ring-1 ring-slate-200 transition hover:bg-slate-100"
+          className="inline-flex h-11 items-center text-[13px] font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
         >
-          My Goals <ArrowRight size={15} />
+          My goals
         </Link>
       </div>
     </div>

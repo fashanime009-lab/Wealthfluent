@@ -99,7 +99,12 @@ const requestKey = JSON.stringify({
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok || data.success === false) {
-        throw new Error(data.message || "Live news is unavailable right now.");
+        // api/news.js only ever sends safe, user-facing message strings —
+        // flagged so the outer catch below can tell this apart from a raw
+        // browser/network error and let it through unchanged.
+        const safeError = new Error(data.message || "Live news is unavailable right now.");
+        safeError.isSafeMessage = true;
+        throw safeError;
       }
 
       const articles = dedupeArticles((data.results || []).map(normalizeArticle));
@@ -116,6 +121,13 @@ const requestKey = JSON.stringify({
       });
 
       return payload;
+    })
+    .catch((err) => {
+      // Anything not explicitly flagged safe is a raw JS/network error
+      // (offline, CORS, a blocked request) — never show that text
+      // verbatim, since NewsPage renders this message directly on the page.
+      if (err.isSafeMessage) throw err;
+      throw new Error("Live news is unavailable right now. Please try again shortly.");
     })
     .finally(() => {
       inFlightRequests.delete(requestKey);

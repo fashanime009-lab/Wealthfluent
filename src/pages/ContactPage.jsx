@@ -1,7 +1,11 @@
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema } from "@/components/seo/schema";
-import { Mail, MapPin, MessageCircle, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
+
+const fieldClass =
+  "mt-2 w-full border border-[#111814]/15 bg-transparent px-3.5 py-2.5 text-[13.5px] text-[#111814] outline-none transition focus:border-[#047857] dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:focus:border-[#34d399]";
+const labelClass = "text-[13px] font-medium text-[#111814]/70 dark:text-[#eef1ec]/70";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -68,122 +72,105 @@ export default function ContactPage() {
         ])}
       />
 
-      <div className="min-h-screen bg-[#fbfdfc]">
-        <section className="mx-auto max-w-4xl px-5 py-14 sm:px-8 lg:px-12">
-          <div className="rounded-[32px] border border-slate-200 bg-white p-8 sm:p-12">
-            {/* Header */}
-            <div className="mb-10 text-center">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-[12px] font-black text-emerald-800 ring-1 ring-emerald-100">
-                <MessageCircle size={13} /> Get in Touch
-              </span>
-              <h1 className="mx-auto mt-5 max-w-xl text-[34px] font-black leading-[1.1] tracking-[-0.03em] text-slate-950 sm:text-[42px]">
-                We're here to help
-              </h1>
-              <p className="mx-auto mt-4 max-w-xl text-[15px] font-medium leading-7 text-slate-500">
-                Have a question or feedback? Reach out to us — we'd love to hear from you.
-              </p>
+      <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
+        <div className="mx-auto max-w-[640px] px-5 py-16 sm:px-8 lg:px-12">
+          <h1 className="font-display text-[34px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[42px]">
+            We're here to help
+          </h1>
+          <p className="mt-4 max-w-[52ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+            Have a question or feedback? Reach out to us — we'd love to hear from you.
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-10 space-y-6">
+            <div>
+              <label htmlFor="name" className={labelClass}>
+                Your name <span className="text-[#b91c1c] dark:text-[#f87171]">*</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                autoComplete="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                className={fieldClass}
+                placeholder="Enter your name"
+                maxLength={100}
+              />
             </div>
 
-            {/* Contact Form */}
-            <form onSubmit={handleSubmit} className="mx-auto max-w-xl space-y-5">
-              <div>
-                <label htmlFor="name" className="mb-1.5 block text-[13px] font-bold text-slate-700">
-                  Your Name <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  autoComplete="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[13.5px] outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100"
-                  placeholder="Enter your name"
-                  maxLength={100}
-                />
-              </div>
+            <div>
+              <label htmlFor="email" className={labelClass}>
+                Email address <span className="text-[#b91c1c] dark:text-[#f87171]">*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                autoComplete="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+                className={fieldClass}
+                placeholder="you@example.com"
+                maxLength={100}
+              />
+            </div>
 
-              <div>
-                <label htmlFor="email" className="mb-1.5 block text-[13px] font-bold text-slate-700">
-                  Email Address <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  autoComplete="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[13.5px] outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100"
-                  placeholder="you@example.com"
-                  maxLength={100}
-                />
-              </div>
+            <div>
+              <label htmlFor="message" className={labelClass}>
+                Message <span className="text-[#b91c1c] dark:text-[#f87171]">*</span>
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                value={formData.message}
+                onChange={handleInputChange}
+                required
+                className={`${fieldClass} resize-y`}
+                placeholder="What would you like to tell us?"
+                maxLength={2000}
+              />
+            </div>
 
-              <div>
-                <label htmlFor="message" className="mb-1.5 block text-[13px] font-bold text-slate-700">
-                  Message <span className="text-rose-500">*</span>
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows="5"
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[13.5px] outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100"
-                  placeholder="What would you like to tell us?"
-                  maxLength={2000}
-                />
-              </div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full border border-[#111814] bg-[#111814] py-3 text-[14px] font-semibold text-[#eef1ec] transition hover:bg-[#111814]/85 disabled:cursor-not-allowed disabled:opacity-60 dark:border-[#eef1ec] dark:bg-[#eef1ec] dark:text-[#111814] dark:hover:bg-[#eef1ec]/85"
+            >
+              {isSubmitting ? "Sending…" : "Send message"}
+            </button>
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full rounded-xl bg-emerald-800 py-3.5 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(4,120,87,.22)] transition hover:-translate-y-0.5 hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-70"
+            {formSubmitted && (
+              <div className="flex items-center gap-2 border border-[#047857]/25 bg-[#047857]/5 px-4 py-3 text-[13px] font-medium text-[#047857] dark:border-[#34d399]/25 dark:bg-[#34d399]/5 dark:text-[#34d399]">
+                <CheckCircle2 size={16} className="flex-shrink-0" />
+                Thank you! We've received your message and will respond within 24 hours.
+              </div>
+            )}
+          </form>
+
+          <div className="mt-12 flex flex-col gap-6 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10 sm:flex-row sm:justify-between">
+            <div>
+              <p className="text-[13px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">Email us</p>
+              <a
+                href="mailto:finaiw.organisation@gmail.com"
+                className="text-[14.5px] font-semibold text-[#047857] hover:underline dark:text-[#34d399]"
               >
-                {isSubmitting ? "Sending..." : "Send Message"}
-              </button>
-
-              {formSubmitted && (
-                <div className="flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-[13px] font-semibold text-emerald-700">
-                  <CheckCircle2 size={16} className="flex-shrink-0" />
-                  Thank you! We've received your message and will respond within 24 hours.
-                </div>
-              )}
-            </form>
-
-            {/* Simple contact info */}
-            <div className="mt-12 flex flex-col items-center justify-center gap-8 border-t border-slate-100 pt-8 text-center sm:flex-row">
-              <div>
-                <div className="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100">
-                  <Mail size={17} />
-                </div>
-                <p className="mt-2.5 text-[11px] font-black uppercase tracking-wide text-slate-400">Email Us</p>
-                <a
-                  href="mailto:finaiw.organisation@gmail.com"
-                  className="text-[15px] font-bold text-emerald-700 hover:underline"
-                >
-                  finaiw.organisation@gmail.com
-                </a>
-              </div>
-              <div className="hidden h-12 w-px bg-slate-200 sm:block" />
-              <div>
-                <div className="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100">
-                  <MapPin size={17} />
-                </div>
-                <p className="mt-2.5 text-[11px] font-black uppercase tracking-wide text-slate-400">Location</p>
-                <p className="text-[15px] font-bold text-slate-800">Mumbai, India</p>
-              </div>
+                finaiw.organisation@gmail.com
+              </a>
             </div>
-
-            <p className="mt-6 text-center text-[12.5px] text-slate-400">
-              We'll reply to you personally. We're here to help.
-            </p>
+            <div>
+              <p className="text-[13px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">Location</p>
+              <p className="text-[14.5px] font-semibold text-[#111814] dark:text-[#eef1ec]">Mumbai, India</p>
+            </div>
           </div>
-        </section>
+
+          <p className="mt-6 text-[12.5px] text-[#111814]/45 dark:text-[#eef1ec]/45">
+            We'll reply to you personally. We're here to help.
+          </p>
+        </div>
       </div>
     </>
   );

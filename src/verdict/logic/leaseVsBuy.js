@@ -26,9 +26,14 @@ export function calculateLeaseVsBuy({
   const totalMonths = years * 12;
   const monthlyInvestReturn = investReturnPct / 12 / 100;
 
-  // Lessee invests whatever upfront cash they didn't have to spend
-  let portfolio = Math.max(0, downPayment - dueAtSigning);
-  let buyerUpfrontExtra = Math.max(0, dueAtSigning - downPayment);
+  // Both start with the same capital, so whichever option needs less cash
+  // upfront keeps the difference and invests it. If the lease's
+  // due-at-signing is bigger than the buyer's down payment, it's the BUYER
+  // who keeps the spare cash (an earlier version subtracted that gap from
+  // the buyer instead, so a costlier lease made buying look worse).
+  const upfrontGap = downPayment - dueAtSigning;
+  let portfolio = Math.max(0, upfrontGap);
+  const buyerSpareCash = Math.max(0, -upfrontGap);
 
   for (let month = 1; month <= totalMonths; month++) {
     const emiThisMonth = month <= loanMonths ? emi : 0;
@@ -47,7 +52,8 @@ export function calculateLeaseVsBuy({
       : loanAmount * Math.pow(1 + monthlyRate, monthsElapsed) -
         emi * ((Math.pow(1 + monthlyRate, monthsElapsed) - 1) / monthlyRate);
 
-  const buyerNetWorth = carResaleValue - Math.max(0, remainingBalance) - buyerUpfrontExtra;
+  const buyerSpareCashGrown = buyerSpareCash * Math.pow(1 + monthlyInvestReturn, totalMonths);
+  const buyerNetWorth = carResaleValue - Math.max(0, remainingBalance) + buyerSpareCashGrown;
   const lesseeNetWorth = portfolio;
   const gap = buyerNetWorth - lesseeNetWorth;
   const gapPct = (Math.abs(gap) / Math.max(Math.abs(buyerNetWorth), Math.abs(lesseeNetWorth), 1)) * 100;

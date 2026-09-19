@@ -1,44 +1,33 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema } from "@/components/seo/schema";
-import {
-  ArrowRight,
-  CheckCircle2,
-  Wrench,
-  MessageCircleHeart,
-  BookOpenText,
-} from "lucide-react";
 
 const offerings = [
   {
-    icon: Wrench,
-    title: "Practical Tools",
+    title: "Practical tools",
     desc: "Calculators for loans, investments, taxes, retirement, and more — designed to give you real answers, not more questions.",
   },
   {
-    icon: MessageCircleHeart,
-    title: "A Guided Walkthrough",
+    title: "A guided walkthrough",
     desc: "A clickable, structured tour of the site — not a chatbot — that points you straight to the right calculator, verdict, or goal tool for what you're trying to figure out.",
   },
   {
-    icon: BookOpenText,
-    title: "Real-World Wisdom",
+    title: "Real-world wisdom",
     desc: "Articles, quizzes, and tips written for everyday people — because financial education should feel like a conversation, not a lecture.",
   },
 ];
 
 const whyPoints = [
-  { title: "Always Free", desc: "No strings attached. No hidden fees. No subscriptions." },
-  { title: "Made for Humans", desc: "Clear language, intuitive design, and genuine care for your journey." },
-  { title: "Your Data Stays With You", desc: "Your financial profile, goals, and calculations are stored only in your browser, never on our servers." },
-  { title: "Built with Empathy", desc: "We understand that money can be stressful — we are here to make it easier." },
+  { title: "Always free", desc: "No strings attached. No hidden fees. No subscriptions." },
+  { title: "Made for humans", desc: "Clear language, intuitive design, and genuine care for your journey." },
+  { title: "Your data stays with you", desc: "Your financial profile, goals, and calculations are stored only in your browser, never on our servers." },
+  { title: "Built with empathy", desc: "We understand that money can be stressful — we are here to make it easier." },
 ];
 
 const stats = [
-  { value: "18+", label: "Tools to explore" },
-  { value: "100%", label: "Free, always" },
-  { value: "Human", label: "Centric design" },
-  { value: "Global", label: "For everyone" },
+  { value: "20+", label: "tools to explore" },
+  { value: "100%", label: "free, always" },
+  { value: "0", label: "data leaves your device" },
 ];
 
 export default function AboutPage() {
@@ -55,54 +44,50 @@ export default function AboutPage() {
         ])}
       />
 
-      <div className="min-h-screen bg-[#fbfdfc]">
-        <section className="mx-auto max-w-[1000px] px-5 py-14 sm:px-8 lg:px-12">
-          {/* Hero */}
-          <div className="rounded-[32px] border border-slate-200 bg-white p-8 text-center sm:p-12">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-[12px] font-black text-emerald-800 ring-1 ring-emerald-100">
-              About FINAIW
-            </span>
-            <h1 className="mx-auto mt-6 max-w-2xl text-[34px] font-black leading-[1.12] tracking-[-0.03em] text-slate-950 sm:text-[46px]">
-              Helping you make
-              <span className="block text-emerald-700">smarter financial choices.</span>
-            </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-[15px] font-medium leading-7 text-slate-500">
-              We believe that everyone deserves to feel confident about their money. FINAIW is your
-              friendly companion on the journey to financial well-being — simple, free, and made for
-              real people, everywhere.
-            </p>
-          </div>
+      <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
+        <div className="mx-auto max-w-[860px] px-5 py-16 sm:px-8 lg:px-12">
+          <h1 className="font-display max-w-lg text-[34px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[42px]">
+            Helping you make smarter financial choices.
+          </h1>
+          <p className="mt-4 max-w-[58ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+            We believe that everyone deserves to feel confident about their money. FINAIW is your
+            friendly companion on the journey to financial well-being — simple, free, and made for
+            real people, everywhere.
+          </p>
 
           {/* Our Story */}
-          <div className="mt-6 rounded-[32px] border border-slate-200 bg-white p-8 sm:p-12">
-            <span className="text-[12px] font-black uppercase tracking-wide text-emerald-700">Our Story</span>
-            <h2 className="mt-3 text-[26px] font-black tracking-[-0.02em] text-slate-950">Where it started</h2>
-            <p className="mt-5 text-[15px] leading-7 text-slate-600">
-              FINAIW was born from a simple realisation: financial jargon and hidden fees make it
-              hard for ordinary people to take control of their money. We saw friends, family, and
-              colleagues struggling to understand loans, investments, and retirement planning — not
-              because they weren't smart, but because the system felt designed to confuse.
-            </p>
-            <p className="mt-4 text-[15px] leading-7 text-slate-600">
-              So we decided to build something different. FINAIW is a space where complex financial
-              concepts become clear, where tools are genuinely helpful, and where everyone —
-              regardless of background or location — can find a path to financial confidence.
-            </p>
+          <div className="mt-14 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10">
+            <h2 className="font-display text-[22px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">
+              Where it started
+            </h2>
+            <div className="mt-3 max-w-[68ch] space-y-4 text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+              <p>
+                FINAIW was born from a simple realisation: financial jargon and hidden fees make it
+                hard for ordinary people to take control of their money. We saw friends, family, and
+                colleagues struggling to understand loans, investments, and retirement planning — not
+                because they weren't smart, but because the system felt designed to confuse.
+              </p>
+              <p>
+                So we decided to build something different. FINAIW is a space where complex financial
+                concepts become clear, where tools are genuinely helpful, and where everyone —
+                regardless of background or location — can find a path to financial confidence.
+              </p>
+            </div>
           </div>
 
           {/* Mission & Vision */}
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
-            <div className="rounded-[28px] border border-slate-200 bg-white p-8">
-              <h3 className="text-[19px] font-black text-slate-950">Our Mission</h3>
-              <p className="mt-3 text-[14px] leading-6 text-slate-600">
+          <div className="mt-10 grid gap-8 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10 sm:grid-cols-2">
+            <div>
+              <h3 className="font-display text-[17px] font-bold text-[#111814] dark:text-[#eef1ec]">Our mission</h3>
+              <p className="mt-2 text-[14px] leading-6 text-[#111814]/65 dark:text-[#eef1ec]/65">
                 To make financial confidence a reality for everyone — by offering clear, accessible,
                 and completely free tools that help people understand their money, plan their goals,
                 and live with less financial stress.
               </p>
             </div>
-            <div className="rounded-[28px] border border-slate-200 bg-white p-8">
-              <h3 className="text-[19px] font-black text-slate-950">Our Vision</h3>
-              <p className="mt-3 text-[14px] leading-6 text-slate-600">
+            <div>
+              <h3 className="font-display text-[17px] font-bold text-[#111814] dark:text-[#eef1ec]">Our vision</h3>
+              <p className="mt-2 text-[14px] leading-6 text-[#111814]/65 dark:text-[#eef1ec]/65">
                 A world where financial literacy is not a privilege — it is a right. We envision a
                 future where technology and empathy work together to help people everywhere build
                 secure and fulfilling financial lives.
@@ -110,78 +95,74 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* What We Offer */}
-          <div className="mt-6 rounded-[32px] border border-slate-200 bg-white p-8 sm:p-12">
-            <h2 className="text-center text-[26px] font-black tracking-[-0.02em] text-slate-950">
+          {/* What you'll find here */}
+          <div className="mt-10 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10">
+            <h2 className="font-display text-[22px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">
               What you will find here
             </h2>
-            <div className="mt-9 grid gap-6 md:grid-cols-3">
-              {offerings.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div key={item.title} className="text-center">
-                    <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100">
-                      <Icon size={22} />
-                    </div>
-                    <h4 className="mt-4 text-[16px] font-black text-slate-900">{item.title}</h4>
-                    <p className="mt-2 text-[13.5px] leading-6 text-slate-500">{item.desc}</p>
-                  </div>
-                );
-              })}
+            <div className="mt-4 divide-y divide-[#111814]/8 dark:divide-[#eef1ec]/8">
+              {offerings.map((item) => (
+                <div key={item.title} className="py-5">
+                  <h4 className="font-display text-[15px] font-bold text-[#111814] dark:text-[#eef1ec]">{item.title}</h4>
+                  <p className="mt-1.5 max-w-[60ch] text-[13.5px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/60">
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Why FINAIW */}
-          <div className="mt-6 rounded-[32px] border border-emerald-100 bg-emerald-50/40 p-8 sm:p-12">
-            <h2 className="text-center text-[26px] font-black tracking-[-0.02em] text-slate-950">Why FINAIW</h2>
-            <div className="mt-8 grid gap-6 md:grid-cols-2">
+          <div className="mt-10 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10">
+            <h2 className="font-display text-[22px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">
+              Why FINAIW
+            </h2>
+            <div className="mt-6 grid gap-x-8 gap-y-6 sm:grid-cols-2">
               {whyPoints.map((point) => (
-                <div key={point.title} className="flex items-start gap-3.5">
-                  <span className="mt-0.5 grid h-7 w-7 flex-shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700">
-                    <CheckCircle2 size={16} />
-                  </span>
-                  <div>
-                    <h4 className="text-[14.5px] font-black text-slate-900">{point.title}</h4>
-                    <p className="mt-1 text-[13px] leading-5 text-slate-500">{point.desc}</p>
-                  </div>
+                <div key={point.title}>
+                  <h4 className="text-[14.5px] font-semibold text-[#111814] dark:text-[#eef1ec]">{point.title}</h4>
+                  <p className="mt-1 text-[13px] leading-5 text-[#111814]/55 dark:text-[#eef1ec]/55">{point.desc}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Stats */}
-          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="mt-10 flex flex-wrap gap-x-10 gap-y-4 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
             {stats.map((stat) => (
-              <div key={stat.label} className="rounded-2xl border border-slate-200 bg-white p-6 text-center">
-                <div className="text-[26px] font-black text-emerald-800">{stat.value}</div>
-                <div className="mt-1 text-[12px] font-bold text-slate-500">{stat.label}</div>
+              <div key={stat.label}>
+                <span className="font-mono-tech text-[22px] font-medium tabular-nums text-[#047857] dark:text-[#34d399]">
+                  {stat.value}
+                </span>
+                <span className="ml-2 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">{stat.label}</span>
               </div>
             ))}
           </div>
 
           {/* CTA */}
-          <div className="mt-6 rounded-[32px] bg-emerald-900 p-8 text-center text-white sm:p-12">
-            <h2 className="text-[26px] font-black tracking-[-0.02em] sm:text-[30px]">
-              Ready to take the first step?
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-[15px] leading-7 text-emerald-100">
-              Explore our calculators, ask a question, or just browse around — you are always
-              welcome here.
-            </p>
+          <div className="mt-14 flex flex-col items-start justify-between gap-5 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10 sm:flex-row sm:items-center">
+            <div>
+              <h2 className="font-display text-[20px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">
+                Ready to take the first step?
+              </h2>
+              <p className="mt-2 max-w-md text-[13.5px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/60">
+                Explore our calculators, ask a question, or just browse around — you are always
+                welcome here.
+              </p>
+            </div>
             <Link
               to="/calculators"
-              className="mt-7 inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-[14px] font-black text-emerald-900 shadow-lg transition hover:-translate-y-0.5"
+              className="flex-shrink-0 text-[13.5px] font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
             >
-              Explore Calculators <ArrowRight size={16} />
+              Explore calculators
             </Link>
           </div>
 
-          {/* Disclaimer */}
-          <p className="mt-8 text-center text-[12px] leading-5 text-slate-400">
+          <p className="mt-10 text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
             FINAIW is an educational platform. All tools and content are for illustrative purposes
             only. Please consult a qualified financial advisor for personalised advice.
           </p>
-        </section>
+        </div>
       </div>
     </>
   );

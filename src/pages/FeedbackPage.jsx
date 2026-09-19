@@ -2,15 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema } from "@/components/seo/schema";
-import {
-  MessageSquareHeart,
-  CheckCircle2,
-  Star,
-  Lightbulb,
-  Bug,
-  Sparkles,
-  FileText,
-} from "lucide-react";
+import { CheckCircle2, Lightbulb, Bug, Sparkles, FileText } from "lucide-react";
 
 const voicePoints = [
   "Share your experience using FINAIW",
@@ -33,6 +25,10 @@ const ratingLabels = {
   "4": "Satisfied",
   "5": "Very satisfied",
 };
+
+const fieldClass =
+  "w-full border border-[#111814]/15 bg-transparent px-4 py-3 text-[13.5px] text-[#111814] outline-none transition focus:border-[#047857] dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:focus:border-[#34d399]";
+const labelClass = "mb-1.5 block text-[13px] font-medium text-[#111814]/70 dark:text-[#eef1ec]/70";
 
 export default function FeedbackPage() {
   const [formData, setFormData] = useState({
@@ -65,10 +61,15 @@ export default function FeedbackPage() {
         body: JSON.stringify(formData),
       });
 
+      // The backend (api/feedback.js) always replies with a clean, safe
+      // `message` — this is the one error text meant for display. Anything
+      // that throws before we get here (no network, a non-JSON response)
+      // is a raw browser/JS error, not something to show verbatim.
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message);
+        alert(data.message || "Unable to send feedback.");
+        return;
       }
 
       setFormSubmitted(true);
@@ -84,8 +85,8 @@ export default function FeedbackPage() {
       setTimeout(() => {
         setFormSubmitted(false);
       }, 4000);
-    } catch (err) {
-      alert(err.message || "Unable to send feedback.");
+    } catch {
+      alert("Something went wrong. Please try again.");
     }
   };
 
@@ -102,205 +103,197 @@ export default function FeedbackPage() {
         ])}
       />
 
-      <div className="min-h-screen bg-[#fbfdfc]">
-        <section className="mx-auto max-w-3xl px-5 py-14 sm:px-8 lg:px-12">
-          <div className="rounded-[32px] border border-slate-200 bg-white p-8 sm:p-12">
-            {/* Header */}
-            <div className="mb-10 text-center">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-[12px] font-black text-emerald-800 ring-1 ring-emerald-100">
-                <MessageSquareHeart size={13} /> FINAIW Feedback
-              </span>
-              <h1 className="mx-auto mt-5 max-w-lg text-[32px] font-black leading-[1.12] tracking-[-0.03em] text-slate-950 sm:text-[40px]">
-                We'd love to hear from you
-              </h1>
-              <p className="mx-auto mt-4 max-w-xl text-[15px] font-medium leading-7 text-slate-500">
-                Your feedback helps us improve FINAIW — making it more useful, intuitive, and
-                valuable for everyone.
+      <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
+        <div className="mx-auto max-w-[640px] px-5 py-16 sm:px-8 lg:px-12">
+          <span className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Feedback</span>
+          <h1 className="font-display mt-2 text-[34px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[42px]">
+            We'd love to hear from you
+          </h1>
+          <p className="mt-4 max-w-[52ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+            Your feedback helps us improve FINAIW — making it more useful, intuitive, and valuable
+            for everyone.
+          </p>
+
+          {/* Why Feedback Matters */}
+          <div className="mt-10 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
+            <h2 className="font-display text-[18px] font-bold text-[#111814] dark:text-[#eef1ec]">Why your voice matters</h2>
+            <p className="mt-3 text-[13.5px] leading-6 text-[#111814]/65 dark:text-[#eef1ec]/65">
+              Every piece of feedback — big or small — helps us understand what's working, what's
+              confusing, and what we can do better. Whether you love a feature, found a bug, or have
+              an idea for improvement, we want to hear it all.
+            </p>
+            <ul className="mt-4 space-y-2">
+              {voicePoints.map((point) => (
+                <li key={point} className="flex items-center gap-2.5 text-[13.5px] text-[#111814]/65 dark:text-[#eef1ec]/65">
+                  <CheckCircle2 size={15} className="flex-shrink-0 text-[#047857] dark:text-[#34d399]" />
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Feedback Form */}
+          <form onSubmit={handleSubmit} className="mt-10 space-y-6 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
+            <div>
+              <label htmlFor="name" className={labelClass}>
+                Your Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                className={fieldClass}
+                placeholder="Enter your name"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="email" className={labelClass}>
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className={fieldClass}
+                placeholder="you@example.com"
+              />
+              <p className="mt-1.5 text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">
+                Optional — we'll only use this to respond to your feedback.
               </p>
             </div>
 
-            {/* Why Feedback Matters */}
-            <div className="mb-10 rounded-[24px] border border-emerald-100 bg-emerald-50/50 p-7">
-              <h2 className="text-[18px] font-black text-slate-950">Why your voice matters</h2>
-              <p className="mt-3 text-[13.5px] leading-6 text-slate-600">
-                Every piece of feedback — big or small — helps us understand what's working, what's
-                confusing, and what we can do better. Whether you love a feature, found a bug, or
-                have an idea for improvement, we want to hear it all.
-              </p>
-              <ul className="mt-4 space-y-2">
-                {voicePoints.map((point) => (
-                  <li key={point} className="flex items-center gap-2.5 text-[13.5px] text-slate-600">
-                    <CheckCircle2 size={15} className="flex-shrink-0 text-emerald-600" />
-                    {point}
-                  </li>
+            {/* Rating */}
+            <div>
+              <label className="mb-2 block text-[13px] font-medium text-[#111814]/70 dark:text-[#eef1ec]/70">
+                How would you rate your experience?
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {["1", "2", "3", "4", "5"].map((value) => (
+                  <label
+                    key={value}
+                    className={`flex cursor-pointer items-center gap-1.5 border px-4 py-2.5 text-[13px] font-semibold transition ${
+                      formData.rating === value
+                        ? "border-[#111814] bg-[#111814] text-[#eef1ec] dark:border-[#eef1ec] dark:bg-[#eef1ec] dark:text-[#111814]"
+                        : "border-[#111814]/15 text-[#111814]/65 hover:border-[#111814]/30 dark:border-[#eef1ec]/15 dark:text-[#eef1ec]/65 dark:hover:border-[#eef1ec]/30"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="rating"
+                      value={value}
+                      checked={formData.rating === value}
+                      onChange={handleInputChange}
+                      className="sr-only"
+                    />
+                    {value}★
+                  </label>
                 ))}
-              </ul>
+              </div>
+              <p className="mt-1.5 text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">{ratingLabels[formData.rating]}</p>
             </div>
 
-            {/* Feedback Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="mb-1.5 block text-[13px] font-bold text-slate-700">
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[13.5px] outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100"
-                  placeholder="Enter your name"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="mb-1.5 block text-[13px] font-bold text-slate-700">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[13.5px] outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100"
-                  placeholder="you@example.com"
-                />
-                <p className="mt-1.5 text-[12px] text-slate-400">
-                  Optional — we'll only use this to respond to your feedback.
-                </p>
-              </div>
-
-              {/* Rating */}
-              <div>
-                <label className="mb-2 block text-[13px] font-bold text-slate-700">
-                  How would you rate your experience?
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {["1", "2", "3", "4", "5"].map((value) => (
+            {/* Feedback Type */}
+            <div>
+              <label className="mb-2 block text-[13px] font-medium text-[#111814]/70 dark:text-[#eef1ec]/70">
+                What type of feedback is this?
+              </label>
+              <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
+                {feedbackTypes.map((type) => {
+                  const Icon = type.icon;
+                  const active = formData.feedbackType === type.value;
+                  return (
                     <label
-                      key={value}
-                      className={`flex cursor-pointer items-center gap-1.5 rounded-xl px-4 py-2.5 text-[13px] font-bold transition ${
-                        formData.rating === value
-                          ? "bg-emerald-800 text-white"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      key={type.value}
+                      className={`flex cursor-pointer items-center justify-center gap-1.5 border px-3 py-2.5 text-[12.5px] font-semibold transition ${
+                        active
+                          ? "border-[#111814] bg-[#111814] text-[#eef1ec] dark:border-[#eef1ec] dark:bg-[#eef1ec] dark:text-[#111814]"
+                          : "border-[#111814]/15 text-[#111814]/65 hover:border-[#111814]/30 dark:border-[#eef1ec]/15 dark:text-[#eef1ec]/65 dark:hover:border-[#eef1ec]/30"
                       }`}
                     >
                       <input
                         type="radio"
-                        name="rating"
-                        value={value}
-                        checked={formData.rating === value}
+                        name="feedbackType"
+                        value={type.value}
+                        checked={active}
                         onChange={handleInputChange}
                         className="sr-only"
                       />
-                      {value}
-                      <Star size={13} className={formData.rating === value ? "fill-white" : "fill-slate-400 text-slate-400"} />
+                      <Icon size={14} />
+                      {type.label}
                     </label>
-                  ))}
-                </div>
-                <p className="mt-1.5 text-[12px] text-slate-400">{ratingLabels[formData.rating]}</p>
+                  );
+                })}
               </div>
-
-              {/* Feedback Type */}
-              <div>
-                <label className="mb-2 block text-[13px] font-bold text-slate-700">
-                  What type of feedback is this?
-                </label>
-                <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
-                  {feedbackTypes.map((type) => {
-                    const Icon = type.icon;
-                    const active = formData.feedbackType === type.value;
-                    return (
-                      <label
-                        key={type.value}
-                        className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-[12.5px] font-bold transition ${
-                          active ? "bg-emerald-800 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="feedbackType"
-                          value={type.value}
-                          checked={active}
-                          onChange={handleInputChange}
-                          className="sr-only"
-                        />
-                        <Icon size={14} />
-                        {type.label}
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="message" className="mb-1.5 block text-[13px] font-bold text-slate-700">
-                  Your Feedback
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows="6"
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[13.5px] outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100"
-                  placeholder="Tell us what's on your mind... What do you like? What could be better? Do you have any ideas for new features?"
-                />
-              </div>
-
-              <label htmlFor="subscribe" className="flex cursor-pointer items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="subscribe"
-                  name="subscribe"
-                  checked={formData.subscribe}
-                  onChange={handleInputChange}
-                  className="h-4 w-4 rounded border-slate-300 text-emerald-700 focus:ring-emerald-500"
-                />
-                <span className="text-[13.5px] text-slate-600">
-                  I'd like to receive updates about FINAIW (occasional, no spam)
-                </span>
-              </label>
-
-              <button
-                type="submit"
-                className="w-full rounded-xl bg-emerald-800 py-3.5 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(4,120,87,.22)] transition hover:-translate-y-0.5 hover:bg-emerald-900"
-              >
-                Share Your Feedback
-              </button>
-
-              {formSubmitted && (
-                <div className="flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 py-3 text-[13px] font-semibold text-emerald-700">
-                  <CheckCircle2 size={16} />
-                  Thank you for your feedback! We truly appreciate it.
-                </div>
-              )}
-            </form>
-
-            {/* Thank You Note */}
-            <div className="mt-10 border-t border-slate-100 pt-8 text-center">
-              <p className="text-[13.5px] leading-6 text-slate-500">
-                Every piece of feedback is read by our team. We're grateful you're helping us build
-                a better FINAIW.
-              </p>
             </div>
 
-            {/* Disclaimer */}
-            <p className="mt-6 border-t border-slate-100 pt-4 text-[12px] leading-5 text-slate-400">
-              <span className="font-bold text-slate-500">Privacy Note:</span> Your feedback is
-              confidential and will only be used to improve our services. We do not share or sell
-              your information. See our{" "}
-              <Link to="/privacy-policy" className="font-semibold text-emerald-700 hover:underline">
-                Privacy Policy
-              </Link>{" "}
-              for more details.
-            </p>
-          </div>
-        </section>
+            <div>
+              <label htmlFor="message" className={labelClass}>
+                Your Feedback
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                rows="6"
+                value={formData.message}
+                onChange={handleInputChange}
+                required
+                className={`${fieldClass} resize-y`}
+                placeholder="Tell us what's on your mind... What do you like? What could be better? Do you have any ideas for new features?"
+              />
+            </div>
+
+            <label htmlFor="subscribe" className="flex cursor-pointer items-center gap-3">
+              <input
+                type="checkbox"
+                id="subscribe"
+                name="subscribe"
+                checked={formData.subscribe}
+                onChange={handleInputChange}
+                className="h-4 w-4 border-[#111814]/25 text-[#047857] focus:ring-[#047857] dark:border-[#eef1ec]/25"
+              />
+              <span className="text-[13.5px] text-[#111814]/65 dark:text-[#eef1ec]/65">
+                I'd like to receive updates about FINAIW (occasional, no spam)
+              </span>
+            </label>
+
+            <button
+              type="submit"
+              className="w-full bg-[#047857] py-3.5 text-[14px] font-semibold text-white transition hover:bg-[#065f46]"
+            >
+              Share Your Feedback
+            </button>
+
+            {formSubmitted && (
+              <div className="flex items-center justify-center gap-2 border border-[#047857]/25 bg-[#047857]/10 py-3 text-[13px] font-medium text-[#047857] dark:border-[#34d399]/25 dark:bg-[#34d399]/10 dark:text-[#34d399]">
+                <CheckCircle2 size={16} />
+                Thank you for your feedback! We truly appreciate it.
+              </div>
+            )}
+          </form>
+
+          {/* Thank You Note */}
+          <p className="mt-10 border-t border-[#111814]/10 pt-8 text-[13.5px] leading-6 text-[#111814]/65 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/65">
+            Every piece of feedback is read by our team. We're grateful you're helping us build a
+            better FINAIW.
+          </p>
+
+          {/* Disclaimer */}
+          <p className="mt-6 border-t border-[#111814]/10 pt-4 text-[12px] leading-5 text-[#111814]/45 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/45">
+            <span className="font-semibold text-[#111814]/70 dark:text-[#eef1ec]/70">Privacy Note:</span> Your feedback is
+            confidential and will only be used to improve our services. We do not share or sell your
+            information. See our{" "}
+            <Link to="/privacy-policy" className="font-semibold text-[#047857] hover:underline dark:text-[#34d399]">
+              Privacy Policy
+            </Link>{" "}
+            for more details.
+          </p>
+        </div>
       </div>
     </>
   );

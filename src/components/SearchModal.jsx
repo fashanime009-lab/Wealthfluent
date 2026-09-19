@@ -1,16 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, X, ArrowRight } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { searchIndex } from "../data/searchIndex";
-
-const CATEGORY_STYLES = {
-  Calculator: "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
-  Verdict: "bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-400",
-  Tool: "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
-  Learn: "bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-400",
-  Lesson: "bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-400",
-  Page: "bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300",
-};
 
 export default function SearchModal({ open, onClose }) {
   const [query, setQuery] = useState("");
@@ -35,18 +26,13 @@ export default function SearchModal({ open, onClose }) {
       .slice(0, 20);
   }, [query]);
 
+  // Navbar only mounts this while it's open, so the query and highlighted
+  // row start fresh every time without resetting them from an effect.
   useEffect(() => {
-    setActiveIndex(0);
-  }, [query]);
-
-  useEffect(() => {
-    if (open) {
-      // Autofocus once the modal has actually mounted.
-      const t = setTimeout(() => inputRef.current?.focus(), 30);
-      return () => clearTimeout(t);
-    }
-    setQuery("");
-  }, [open]);
+    // Autofocus once the modal has actually mounted.
+    const t = setTimeout(() => inputRef.current?.focus(), 30);
+    return () => clearTimeout(t);
+  }, []);
 
   const goTo = (path) => {
     navigate(path);
@@ -72,72 +58,68 @@ export default function SearchModal({ open, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-start justify-center bg-slate-950/50 px-4 pt-[12vh] backdrop-blur-sm"
+      className="fixed inset-0 z-[200] flex items-start justify-center bg-[#111814]/50 px-4 pt-[12vh]"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-white/10 dark:bg-slate-900"
+        className="w-full max-w-xl border border-[#111814]/12 bg-[#eef1ec] dark:border-[#eef1ec]/12 dark:bg-[#0b1210]"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
-        <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 dark:border-white/10">
-          <Search size={18} className="flex-shrink-0 text-slate-400" />
+        <div className="flex items-center gap-3 border-b border-[#111814]/10 px-5 py-4 dark:border-[#eef1ec]/10">
+          <Search size={18} className="flex-shrink-0 text-[#111814]/40 dark:text-[#eef1ec]/40" />
           <input
             ref={inputRef}
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setActiveIndex(0);
+            }}
             placeholder="Search calculators, verdicts, lessons..."
-            className="w-full bg-transparent text-[15px] font-medium text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
+            className="w-full bg-transparent text-[14.5px] text-[#111814] outline-none placeholder:text-[#111814]/40 dark:text-[#eef1ec] dark:placeholder:text-[#eef1ec]/40"
           />
           <button
             type="button"
             onClick={onClose}
             aria-label="Close search"
-            className="flex-shrink-0 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/10 dark:hover:text-white"
+            className="flex-shrink-0 text-[#111814]/40 transition hover:text-[#111814] dark:text-[#eef1ec]/40 dark:hover:text-[#eef1ec]"
           >
             <X size={16} />
           </button>
         </div>
 
-        <div className="max-h-[60vh] overflow-y-auto p-2">
+        <div className="max-h-[60vh] overflow-y-auto">
           {results.length === 0 ? (
-            <p className="px-4 py-8 text-center text-[13.5px] text-slate-400">
+            <p className="px-5 py-8 text-center text-[13.5px] text-[#111814]/45 dark:text-[#eef1ec]/45">
               No pages match "{query}".
             </p>
           ) : (
-            results.map((item, i) => (
-              <button
-                key={item.path}
-                type="button"
-                onClick={() => goTo(item.path)}
-                onMouseEnter={() => setActiveIndex(i)}
-                className={`flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-left transition ${
-                  i === activeIndex
-                    ? "bg-emerald-50 dark:bg-white/5"
-                    : "hover:bg-slate-50 dark:hover:bg-white/5"
-                }`}
-              >
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="truncate text-[14px] font-bold text-slate-900 dark:text-white">
+            <div className="divide-y divide-[#111814]/10 dark:divide-[#eef1ec]/10">
+              {results.map((item, i) => (
+                <button
+                  key={item.path}
+                  type="button"
+                  onClick={() => goTo(item.path)}
+                  onMouseEnter={() => setActiveIndex(i)}
+                  className={`block w-full px-5 py-3.5 text-left transition ${
+                    i === activeIndex ? "bg-[#047857]/8 dark:bg-[#34d399]/8" : ""
+                  }`}
+                >
+                  <div className="flex min-w-0 items-baseline gap-2">
+                    <span className="font-display truncate text-[14px] font-bold text-[#111814] dark:text-[#eef1ec]">
                       {item.title}
                     </span>
-                    <span
-                      className={`flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide ${
-                        CATEGORY_STYLES[item.category] || CATEGORY_STYLES.Page
-                      }`}
-                    >
+                    <span className="flex-shrink-0 text-[11.5px] text-[#111814]/40 dark:text-[#eef1ec]/40">
                       {item.category}
                     </span>
                   </div>
-                  <p className="mt-0.5 truncate text-[12.5px] text-slate-500 dark:text-slate-400">
+                  <p className="mt-0.5 truncate text-[12.5px] text-[#111814]/55 dark:text-[#eef1ec]/55">
                     {item.description}
                   </p>
-                </div>
-                <ArrowRight size={15} className="flex-shrink-0 text-slate-300 dark:text-slate-600" />
-              </button>
-            ))
+                </button>
+              ))}
+            </div>
           )}
         </div>
       </div>

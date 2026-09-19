@@ -15,4 +15,4 @@ Disallow: /insights
 # discoverable through navigation, search, or the sitemap either.
 Disallow: /journeys/home-buying
 
-Sitemap: https://finaiw.com/sitemap.xml
+Sitemap: https://www.finaiw.com/sitemap.xml

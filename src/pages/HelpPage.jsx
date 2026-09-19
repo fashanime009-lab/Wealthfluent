@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
-import { HelpCircle, Rocket, Calculator, Compass, BookOpen, ChevronDown } from "lucide-react";
+import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const faqs = [
   {
@@ -46,18 +45,12 @@ const faqs = [
 ];
 
 const quickStart = [
-  { icon: Calculator, title: "Explore the Calculators", desc: "Visit our Calculators page to find tools for loans, investments, retirement, taxes, and more." },
-  { icon: Compass, title: "Not sure where to start?", desc: "Tap the compass icon in the corner for a quick guide to every section of the site." },
-  { icon: BookOpen, title: "Learn at Your Own Pace", desc: "Check out our Quizzes and News sections to deepen your financial knowledge." },
+  { title: "Explore the calculators", desc: "Visit our Calculators page to find tools for loans, investments, retirement, taxes, and more." },
+  { title: "Not sure where to start?", desc: "Tap the compass icon in the corner for a quick guide to every section of the site." },
+  { title: "Learn at your own pace", desc: "Check out our Quizzes and News sections to deepen your financial knowledge." },
 ];
 
 export default function HelpPage() {
-  const [activeFaq, setActiveFaq] = useState(null);
-
-  const toggleFaq = (index) => {
-    setActiveFaq(activeFaq === index ? null : index);
-  };
-
   return (
     <>
       <Seo
@@ -74,106 +67,63 @@ export default function HelpPage() {
         ]}
       />
 
-      <div className="min-h-screen bg-[#fbfdfc]">
-        <section className="mx-auto max-w-4xl px-5 py-14 sm:px-8 lg:px-12">
-          <div className="rounded-[32px] border border-slate-200 bg-white p-8 sm:p-12">
-            {/* Header */}
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-[12px] font-black text-emerald-800 ring-1 ring-emerald-100">
-              <HelpCircle size={13} /> FINAIW Help Center
-            </span>
-            <h1 className="mt-5 text-[34px] font-black leading-[1.1] tracking-[-0.03em] text-slate-950 sm:text-[42px]">
-              How can we help you?
-            </h1>
-            <p className="mt-4 max-w-xl text-[15px] font-medium leading-7 text-slate-500">
-              Find answers to common questions, learn how to use our tools, and get the support you
-              need — all in one place.
+      <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
+        <div className="mx-auto max-w-[760px] px-5 py-16 sm:px-8 lg:px-12">
+          <h1 className="font-display text-[34px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[42px]">
+            How can we help you?
+          </h1>
+          <p className="mt-4 max-w-[58ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+            Find answers to common questions, learn how to use our tools, and get the support you
+            need — all in one place.
+          </p>
+
+          {/* Getting Started */}
+          <div className="mt-12 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10">
+            <h2 className="font-display text-[22px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">
+              Getting started
+            </h2>
+            <p className="mt-3 max-w-[60ch] text-[14px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/60">
+              New to FINAIW? Here's how to make the most of our platform:
             </p>
-
-            {/* Quick Start */}
-            <div className="mt-10 rounded-[28px] border border-emerald-100 bg-emerald-50/50 p-7 sm:p-8">
-              <div className="flex items-center gap-2.5">
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
-                  <Rocket size={17} />
-                </span>
-                <h2 className="text-[20px] font-black text-slate-950">Getting Started</h2>
-              </div>
-              <p className="mt-4 text-[14px] leading-6 text-slate-600">
-                New to FINAIW? Here's how to make the most of our platform:
-              </p>
-              <ul className="mt-5 space-y-4">
-                {quickStart.map((step, i) => {
-                  const Icon = step.icon;
-                  return (
-                    <li key={step.title} className="flex items-start gap-3.5">
-                      <span className="grid h-8 w-8 flex-shrink-0 place-items-center rounded-xl bg-white text-emerald-700 ring-1 ring-emerald-100">
-                        <Icon size={15} />
-                      </span>
-                      <span className="text-[14px] leading-6 text-slate-600">
-                        <span className="font-black text-slate-800">{i + 1}. {step.title}</span> — {step.desc}
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
+            <div className="mt-5 divide-y divide-[#111814]/8 dark:divide-[#eef1ec]/8">
+              {quickStart.map((step, i) => (
+                <div key={step.title} className="py-4">
+                  <p className="text-[14px] leading-6 text-[#111814]/65 dark:text-[#eef1ec]/65">
+                    <span className="font-semibold text-[#111814] dark:text-[#eef1ec]">{i + 1}. {step.title}</span> — {step.desc}
+                  </p>
+                </div>
+              ))}
             </div>
-
-            {/* FAQs */}
-            <div className="mt-12">
-              <h2 className="text-[22px] font-black tracking-[-0.02em] text-slate-950">
-                Frequently Asked Questions
-              </h2>
-              <div className="mt-5 space-y-2.5">
-                {faqs.map((faq, index) => (
-                  <div key={faq.question} className="overflow-hidden rounded-2xl border border-slate-200">
-                    <button
-                      onClick={() => toggleFaq(index)}
-                      className="flex w-full items-center justify-between px-5 py-4 text-left transition hover:bg-slate-50"
-                    >
-                      <span className="text-[14px] font-bold text-slate-800">{faq.question}</span>
-                      <ChevronDown
-                        size={17}
-                        className={`flex-shrink-0 text-emerald-700 transition-transform duration-200 ${
-                          activeFaq === index ? "rotate-180" : ""
-                        }`}
-                      />
-                    </button>
-                    <div
-                      className={`overflow-hidden px-5 transition-all duration-300 ${
-                        activeFaq === index ? "max-h-96 py-4" : "max-h-0 py-0"
-                      }`}
-                    >
-                      <p className="border-t border-slate-100 pt-4 text-[13.5px] leading-6 text-slate-500">
-                        {faq.answer}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Still need help? */}
-            <div className="mt-12 border-t border-slate-100 pt-10">
-              <h2 className="text-[22px] font-black tracking-[-0.02em] text-slate-950">Still need help?</h2>
-              <p className="mt-3 max-w-lg text-[14px] leading-6 text-slate-500">
-                If you couldn't find the answer you were looking for, reach out to us directly and
-                we'll get back to you as soon as possible.
-              </p>
-              <Link
-                to="/contact"
-                className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-800 px-6 py-3.5 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(4,120,87,.22)] transition hover:-translate-y-0.5 hover:bg-emerald-900"
-              >
-                Contact Us
-              </Link>
-            </div>
-
-            {/* Disclaimer */}
-            <p className="mt-8 border-t border-slate-100 pt-4 text-[12px] leading-5 text-slate-400">
-              <span className="font-bold text-slate-500">Disclaimer:</span> All responses are for
-              educational purposes only. For personalised advice, please consult a qualified
-              financial professional.
-            </p>
           </div>
-        </section>
+
+          {/* FAQs */}
+          <div className="mt-12 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10">
+            <VerdictFAQ items={faqs.map((f) => ({ q: f.question, a: f.answer }))} />
+          </div>
+
+          {/* Still need help? */}
+          <div className="mt-12 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10">
+            <h2 className="font-display text-[22px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">
+              Still need help?
+            </h2>
+            <p className="mt-3 max-w-lg text-[14px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/60">
+              If you couldn't find the answer you were looking for, reach out to us directly and
+              we'll get back to you as soon as possible.
+            </p>
+            <Link
+              to="/contact"
+              className="mt-6 inline-block border border-[#111814] bg-[#111814] px-6 py-3 text-[14px] font-semibold text-[#eef1ec] transition hover:bg-[#111814]/85 dark:border-[#eef1ec] dark:bg-[#eef1ec] dark:text-[#111814] dark:hover:bg-[#eef1ec]/85"
+            >
+              Contact us
+            </Link>
+          </div>
+
+          <p className="mt-10 border-t border-[#111814]/10 pt-6 text-[12px] leading-5 text-[#111814]/45 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/45">
+            <span className="font-semibold text-[#111814]/65 dark:text-[#eef1ec]/65">Disclaimer:</span> All responses are for
+            educational purposes only. For personalised advice, please consult a qualified
+            financial professional.
+          </p>
+        </div>
       </div>
     </>
   );

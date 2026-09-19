@@ -20,7 +20,7 @@ export const calculatorCategories = [
     description: "Loan payments, future values, investment returns & bond yields.",
     icon: Landmark,
     tone: "sky",
-    count: 6,
+    count: 7,
   },
   {
     id: "investment",
@@ -44,7 +44,7 @@ export const calculatorCategories = [
     description: "Track your net worth and plan your financial goals.",
     icon: Wallet,
     tone: "violet",
-    count: 4,
+    count: 5,
   },
 ];
 

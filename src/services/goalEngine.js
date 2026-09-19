@@ -1,3 +1,4 @@
+import { readJSON } from "../utils/safeStorage";
 // ==========================================
 // FINAIW Goal Engine v1
 // ==========================================
@@ -8,9 +9,9 @@ const STORAGE_KEY = "finaiw-goals";
  * Load all goals
  */
 export function getGoals() {
-  const data = localStorage.getItem(STORAGE_KEY);
+  const goals = readJSON(STORAGE_KEY, []);
 
-  return data ? JSON.parse(data) : [];
+  return Array.isArray(goals) ? goals : [];
 }
 
 /**

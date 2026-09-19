@@ -43,10 +43,10 @@ const StepComponent = step.component;
 
   </div>
 
-  <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+  <div className="mt-3 h-1 bg-[#111814]/10 dark:bg-[#eef1ec]/10">
 
     <div
-      className="h-full rounded-full bg-blue-600 transition-all duration-500"
+      className="h-full bg-[#047857] transition-all duration-500 dark:bg-[#34d399]"
       style={{
         width: `${progress}%`,
       }}
@@ -55,7 +55,7 @@ const StepComponent = step.component;
   </div>
 
 </div>
-      <section className="rounded-xl border border-slate-200 p-6 dark:border-slate-700">
+      <section className="border border-[#111814]/12 p-6 dark:border-[#eef1ec]/12">
 {StepComponent ? <StepComponent /> : null}
         
       </section>

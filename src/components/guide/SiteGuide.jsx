@@ -1,157 +1,138 @@
 import { Link } from "react-router-dom";
-import {
-  Calculator,
-  BriefcaseBusiness,
-  ShieldCheck,
-  BookOpen,
-  Sparkles,
-  Settings as SettingsIcon,
-  ArrowRight,
-  HelpCircle,
-  MessageCircle,
-} from "lucide-react";
+import { X } from "lucide-react";
 
 // A real, structured walkthrough of the site — not a chatbot. Every
 // section here is a clickable answer to "what is this and where do I go",
-// not a text box waiting for a question it might not understand.
+// not a text box waiting for a question it might not understand. No icon
+// badges, per the brand constraint — each row is identified by a plain
+// mono-tech index, the same convention as the homepage's "How it works".
 const SECTIONS = [
   {
-    icon: Calculator,
+    n: "01",
     title: "Calculators",
     to: "/calculators",
-    tone: "bg-emerald-50 text-emerald-700 ring-emerald-100",
-    desc: "18+ free tools — SIP, EMI, FD, retirement, FIRE and more. Enter your numbers, get an instant answer.",
-    cta: "Browse calculators",
+    desc: "20+ free tools — SIP, EMI, FD, retirement, FIRE and more. Enter your numbers, get an instant answer.",
   },
   {
-    icon: BriefcaseBusiness,
+    n: "02",
     title: "Verdict",
     to: "/verdict",
-    tone: "bg-sky-50 text-sky-700 ring-sky-100",
     desc: "Stuck on a big decision — rent vs buy, pay off debt vs invest? This runs the real math and tells you which one wins.",
-    cta: "Get a verdict",
   },
   {
-    icon: ShieldCheck,
+    n: "03",
     title: "Goals",
     to: "/goals",
-    tone: "bg-violet-50 text-violet-700 ring-violet-100",
     desc: "Set a real savings goal — a trip, an emergency fund, a down payment — and log what you save toward it over time.",
-    cta: "Set a goal",
   },
   {
-    icon: BookOpen,
+    n: "04",
     title: "Learn",
     to: "/learn",
-    tone: "bg-amber-50 text-amber-700 ring-amber-100",
     desc: "Short, plain-English lessons on money basics — compound interest, investing, debt — one a day if you want a streak.",
-    cta: "Start learning",
   },
   {
-    icon: Sparkles,
+    n: "05",
     title: "Insights",
     to: "/insights",
-    tone: "bg-rose-50 text-rose-700 ring-rose-100",
     desc: "Real, computed observations about how money behaves — not news headlines.",
-    cta: "See insights",
   },
   {
-    icon: SettingsIcon,
+    n: "06",
     title: "Settings",
     to: "/settings",
-    tone: "bg-slate-100 text-slate-700 ring-slate-200",
     desc: "Set your currency once — every calculator and result across the whole site will use it automatically.",
-    cta: "Open settings",
   },
 ];
 
 const STEPS = [
-  { n: "1", text: "Pick a calculator, or go to Verdict for a specific decision." },
-  { n: "2", text: "Type in your own numbers — results update instantly as you go." },
-  { n: "3", text: "Nothing is saved or sent anywhere unless you choose to save a goal." },
+  "Pick a calculator, or go to Verdict for a specific decision.",
+  "Type in your own numbers — results update instantly as you go.",
+  "Nothing is saved or sent anywhere unless you choose to save a goal.",
 ];
 
-export default function SiteGuide({ onNavigate }) {
+export default function SiteGuide({ onNavigate, onClose }) {
   return (
-    <div className="max-h-[80vh] overflow-y-auto rounded-3xl bg-white shadow-[0_24px_60px_rgba(15,23,42,.18)] ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-white/10">
+    <div className="flex max-h-[80vh] flex-col border border-[#111814]/12 bg-[#eef1ec] dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
       {/* Header */}
-      <div className="border-b border-slate-100 bg-gradient-to-br from-emerald-50 to-white px-6 py-5 dark:border-white/10 dark:from-emerald-500/10 dark:to-transparent">
-        <div className="flex items-center gap-3">
-          <span className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-2xl bg-emerald-800 text-white">
-            <HelpCircle size={22} />
-          </span>
-          <div>
-            <h2 className="text-[17px] font-black text-slate-950 dark:text-white">How FINAIW works</h2>
-            <p className="text-[12.5px] font-semibold text-slate-500 dark:text-slate-400">
-              A free personal finance toolkit — here's what's here and where to go.
-            </p>
-          </div>
+      <div className="flex flex-shrink-0 items-start justify-between gap-3 border-b border-[#111814]/10 bg-[#0e1512] px-5 py-4 dark:border-[#eef1ec]/10">
+        <div>
+          <h2 className="font-display text-[16px] font-bold text-[#eef1ec]">How FINAIW works</h2>
+          <p className="mt-0.5 text-[12.5px] text-[#eef1ec]/55">
+            A free personal finance toolkit — here's what's here and where to go.
+          </p>
         </div>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close guide"
+            className="flex-shrink-0 text-[#eef1ec]/50 transition hover:text-[#eef1ec]"
+          >
+            <X size={16} />
+          </button>
+        )}
       </div>
 
-      {/* Quick start steps */}
-      <div className="border-b border-slate-100 px-6 py-5 dark:border-white/10">
-        <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">Quick start</p>
-        <div className="mt-3 space-y-2.5">
-          {STEPS.map((step) => (
-            <div key={step.n} className="flex items-start gap-3">
-              <span className="grid h-6 w-6 flex-shrink-0 place-items-center rounded-full bg-emerald-800 text-[11px] font-black text-white">
-                {step.n}
-              </span>
-              <p className="text-[13px] leading-5 text-slate-600 dark:text-slate-300">{step.text}</p>
-            </div>
-          ))}
+      <div className="overflow-y-auto">
+        {/* Quick start steps */}
+        <div className="border-b border-[#111814]/10 px-5 py-4 dark:border-[#eef1ec]/10">
+          <p className="text-[11px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">Quick start</p>
+          <ol className="mt-2.5 space-y-2">
+            {STEPS.map((text, i) => (
+              <li key={text} className="flex items-baseline gap-2.5">
+                <span className="font-mono-tech flex-shrink-0 text-[12px] text-[#047857] dark:text-[#34d399]">
+                  {i + 1}.
+                </span>
+                <p className="text-[13px] leading-5 text-[#111814]/70 dark:text-[#eef1ec]/70">{text}</p>
+              </li>
+            ))}
+          </ol>
         </div>
-      </div>
 
-      {/* Section directory */}
-      <div className="px-6 py-5">
-        <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">Where to go</p>
-        <div className="mt-3 space-y-2.5">
-          {SECTIONS.map((s) => {
-            const Icon = s.icon;
-            return (
+        {/* Section directory */}
+        <div className="px-5 py-4">
+          <p className="text-[11px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">Where to go</p>
+          <div className="mt-2 divide-y divide-[#111814]/10 dark:divide-[#eef1ec]/10">
+            {SECTIONS.map((s) => (
               <Link
                 key={s.title}
                 to={s.to}
                 onClick={onNavigate}
-                className="group flex items-start gap-3 rounded-2xl border border-slate-200 p-3.5 transition hover:border-emerald-300 hover:shadow-[0_10px_28px_rgba(15,23,42,.06)] dark:border-white/10"
+                className="group flex items-start gap-3 py-3 transition-opacity hover:opacity-70"
               >
-                <span className={`grid h-10 w-10 flex-shrink-0 place-items-center rounded-xl ring-1 ${s.tone}`}>
-                  <Icon size={18} />
+                <span className="font-mono-tech mt-0.5 flex-shrink-0 text-[12px] text-[#111814]/35 dark:text-[#eef1ec]/35">
+                  {s.n}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[13.5px] font-black text-slate-900 dark:text-white">{s.title}</span>
-                    <span className="inline-flex flex-shrink-0 items-center gap-1 text-[11.5px] font-bold text-emerald-700 opacity-0 transition group-hover:opacity-100 dark:text-emerald-400">
-                      {s.cta} <ArrowRight size={11} />
-                    </span>
-                  </div>
-                  <p className="mt-0.5 text-[12.5px] leading-5 text-slate-500 dark:text-slate-400">{s.desc}</p>
+                  <span className="font-display text-[13.5px] font-bold text-[#111814] dark:text-[#eef1ec]">
+                    {s.title}
+                  </span>
+                  <p className="mt-0.5 text-[12.5px] leading-5 text-[#111814]/55 dark:text-[#eef1ec]/55">{s.desc}</p>
                 </div>
               </Link>
-            );
-          })}
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Still stuck footer */}
-      <div className="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/60 px-6 py-4 dark:border-white/10 dark:bg-white/5">
-        <p className="text-[12px] font-semibold text-slate-500 dark:text-slate-400">Still not sure where to start?</p>
-        <div className="flex flex-shrink-0 gap-2">
+      <div className="flex flex-shrink-0 items-center justify-between gap-3 border-t border-[#111814]/10 px-5 py-3.5 dark:border-[#eef1ec]/10">
+        <p className="text-[12px] text-[#111814]/55 dark:text-[#eef1ec]/55">Still not sure where to start?</p>
+        <div className="flex flex-shrink-0 gap-4">
           <Link
             to="/help"
             onClick={onNavigate}
-            className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-2 text-[12px] font-bold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:ring-white/10"
+            className="text-[12px] font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
           >
-            <HelpCircle size={13} /> Help
+            Help
           </Link>
           <Link
             to="/contact"
             onClick={onNavigate}
-            className="inline-flex items-center gap-1.5 rounded-full bg-emerald-800 px-3.5 py-2 text-[12px] font-bold text-white transition hover:bg-emerald-900"
+            className="text-[12px] font-semibold text-[#047857] underline decoration-[#047857]/30 underline-offset-4 dark:text-[#34d399] dark:decoration-[#34d399]/30"
           >
-            <MessageCircle size={13} /> Contact
+            Contact
           </Link>
         </div>
       </div>
