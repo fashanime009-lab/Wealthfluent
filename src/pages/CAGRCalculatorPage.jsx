@@ -1,5 +1,5 @@
 import { useSettings } from "../context/SettingsContext";
-import { currencies } from "../data/currencies";
+import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -25,7 +25,6 @@ export default function CAGRCalculatorPage() {
   const [finalValue, setFinalValue] = useState(50000);
   const [years, setYears] = useState(5);
   const { settings } = useSettings();
-  const currency = (currencies.find((c) => c.code === settings.currency) || currencies[0]).symbol;
 
   // CAGR is undefined for a starting value of 0 or a 0-year period — both
   // are one keystroke away in the number fields and used to print
@@ -35,14 +34,10 @@ export default function CAGRCalculatorPage() {
       ? ((Math.pow(finalValue / initialValue, 1 / years) - 1) * 100).toFixed(2)
       : null;
 
-  // Format currency
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-US", {
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
-  const fmt = (v) => `${currency}${formatCurrency(v)}`;
+  // Shared, currency-aware formatter (lakh/crore grouping for INR, each
+  // currency's own convention otherwise) — this page used to hardcode
+  // en-US grouping with just the symbol, unlike the rest of the site.
+  const fmt = (v) => formatCurrency(v, settings.currency);
 
   return (
     <>

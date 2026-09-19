@@ -1,5 +1,5 @@
 import { useSettings } from "../context/SettingsContext";
-import { currencies } from "../data/currencies";
+import { formatCurrency } from "../utils/currency";
 import { sipFutureValue } from "@/utils/projections";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
@@ -26,7 +26,6 @@ export default function RetirementCalculatorPage() {
   const [annualReturn, setAnnualReturn] = useState(12);
   const [years, setYears] = useState(25);
   const { settings } = useSettings();
-  const currency = (currencies.find((c) => c.code === settings.currency) || currencies[0]).symbol;
 
   const months = years * 12;
 
@@ -37,13 +36,8 @@ export default function RetirementCalculatorPage() {
   const investedAmount = monthlyInvestment * months;
   const estimatedReturns = futureValue - investedAmount;
 
-  // Format currency
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-US", {
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-  const fmt = (v) => `${currency}${formatCurrency(v)}`;
+  // Shared, currency-aware formatter (lakh/crore grouping for INR).
+  const fmt = (v) => formatCurrency(v, settings.currency);
 
   return (
     <>
@@ -80,10 +74,10 @@ export default function RetirementCalculatorPage() {
             <div className="space-y-6">
               <CalcResultPanel label="Estimated retirement corpus" value={fmt(futureValue)} />
               <div className="divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                <CalcStat label="Total investment" value={fmt(investedAmount)} share={(investedAmount / futureValue) * 100} tone="signal" />
+                <CalcStat label="Total investment" value={fmt(investedAmount)} share={futureValue > 0 ? (investedAmount / futureValue) * 100 : 0} tone="signal" />
                 <CalcStat
                   label="Estimated returns"
-                  value={`${estimatedReturns >= 0 ? "+" : "-"}${currency}${formatCurrency(Math.abs(estimatedReturns))}`}
+                  value={`${estimatedReturns >= 0 ? "+" : "-"}${fmt(Math.abs(estimatedReturns))}`}
                   share={Math.min(100, Math.abs((estimatedReturns / investedAmount) * 100))}
                 />
               </div>

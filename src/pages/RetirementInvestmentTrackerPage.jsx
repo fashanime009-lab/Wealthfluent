@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { useSettings } from "../context/SettingsContext";
+import { formatCurrency } from "../utils/currency";
 import { currencies } from "../data/currencies";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcSection from "@/components/calculators/CalcSection";
@@ -18,6 +19,7 @@ export default function RetirementInvestmentTrackerPage() {
   // ─── State ──────────────────────────────────────────────────────
 const [annualIncrease, setAnnualIncrease] = useState(10);
 const { settings } = useSettings();
+// Symbol only, for the column headers; amounts go through the shared formatter.
 const currency = (currencies.find((c) => c.code === settings.currency) || currencies[0]).symbol;
   const [rows, setRows] = useState([
     { id: 1, year: new Date().getFullYear(), target: 0, actual: 0 },
@@ -97,12 +99,8 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
   }, [rows]);
 
   // ─── Format currency ──────────────────────────────────────────
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
+  // Shared, currency-aware formatter (lakh/crore grouping for INR).
+  const fmt = (v) => formatCurrency(v, settings.currency);
 
   return (
     <>
@@ -243,10 +241,10 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
                       Total
                     </td>
                     <td className="px-3 py-3 text-right font-mono-tech text-[13.5px] font-bold tabular-nums text-[#111814] dark:text-[#eef1ec]">
-                      {currency}{formatCurrency(totals.totalTarget)}
+                      {fmt(totals.totalTarget)}
                     </td>
                     <td className="px-3 py-3 text-right font-mono-tech text-[13.5px] font-bold tabular-nums text-[#111814] dark:text-[#eef1ec]">
-                      {currency}{formatCurrency(totals.totalActual)}
+                      {fmt(totals.totalActual)}
                     </td>
                     <td></td>
                   </tr>
@@ -272,13 +270,13 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
               <div>
                 <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">Total target</p>
                 <p className="font-mono-tech mt-1 text-[19px] font-medium tabular-nums text-[#111814] dark:text-[#eef1ec]">
-                  {currency}{formatCurrency(totals.totalTarget)}
+                  {fmt(totals.totalTarget)}
                 </p>
               </div>
               <div>
                 <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">Total actual</p>
                 <p className="font-mono-tech mt-1 text-[19px] font-medium tabular-nums text-[#047857] dark:text-[#34d399]">
-                  {currency}{formatCurrency(totals.totalActual)}
+                  {fmt(totals.totalActual)}
                 </p>
               </div>
               <div>
@@ -297,8 +295,7 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
                 <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">Variance</p>
                 <p className={`font-mono-tech mt-1 text-[19px] font-medium tabular-nums ${totals.variance >= 0 ? "text-[#047857] dark:text-[#34d399]" : "text-red-500"}`}>
                   {totals.variance >= 0 ? "+" : ""}
-{currency}
-{formatCurrency(totals.variance)}
+                  {fmt(totals.variance)}
                 </p>
               </div>
             </div>

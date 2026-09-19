@@ -1,5 +1,5 @@
 import { useSettings } from "../context/SettingsContext";
-import { currencies } from "../data/currencies";
+import { formatCurrency } from "../utils/currency";
 import { useState, useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -25,7 +25,6 @@ export default function RateOfReturnCalculatorPage() {
   const [futureValue, setFutureValue] = useState(50000);
   const [yearsToGrow, setYearsToGrow] = useState(5);
   const { settings } = useSettings();
-  const currency = (currencies.find((c) => c.code === settings.currency) || currencies[0]).symbol;
 
   // ─── Calculations ──────────────────────────────────────────────
   const rateOfReturn = useMemo(() => {
@@ -34,14 +33,10 @@ export default function RateOfReturnCalculatorPage() {
     return rate;
   }, [presentValue, futureValue, yearsToGrow]);
 
-  // ─── Format currency ──────────────────────────────────────────
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-  const fmt = (value) => `${currency}${formatCurrency(value)}`;
+  // Shared, currency-aware formatter (lakh/crore grouping for INR, each
+  // currency's own convention otherwise) — this page used to hardcode
+  // en-US grouping with just the symbol, unlike the rest of the site.
+  const fmt = (v) => formatCurrency(v, settings.currency);
 
   // ─── Format percentage ──────────────────────────────────────────
   const formatPercentage = (value) => {

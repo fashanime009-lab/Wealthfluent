@@ -1,5 +1,5 @@
 import { useSettings } from "../context/SettingsContext";
-import { currencies } from "../data/currencies";
+import { formatCurrency } from "../utils/currency";
 import { sipFutureValue } from "@/utils/projections";
 import { useState, useMemo } from "react";
 import Seo from "@/components/seo/Seo";
@@ -29,7 +29,6 @@ const FAQ_ITEMS = [
 
 export default function FIRECalculatorPage() {
   const { settings } = useSettings();
-  const currency = (currencies.find((c) => c.code === settings.currency) || currencies[0]).symbol;
   const [formData, setFormData] = useState({
     currentAge: 25,
     retirementAge: 45,
@@ -87,19 +86,16 @@ export default function FIRECalculatorPage() {
     };
   }, [formData]);
 
-  // Format currency
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-US", {
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
+  // Shared, currency-aware formatting (lakh/crore for INR) instead of the
+  // hardcoded en-US grouping this page used to apply after a bare symbol.
+  const fmt = (v) => formatCurrency(v, settings.currency);
 
   const FIELDS = [
     { label: "Current age", name: "currentAge", min: 18, max: 80, step: 1, suffix: "" },
     { label: "Retirement age", name: "retirementAge", min: 20, max: 80, step: 1, suffix: "" },
-    { label: "Monthly expenses", name: "monthlyExpenses", min: 1000, max: 500000, step: 1000, format: (v) => `${currency}${formatCurrency(v)}` },
-    { label: "Current savings", name: "currentSavings", min: 0, max: 10000000, step: 1000, format: (v) => `${currency}${formatCurrency(v)}` },
-    { label: "Monthly investment", name: "monthlyInvestment", min: 0, max: 500000, step: 1000, format: (v) => `${currency}${formatCurrency(v)}` },
+    { label: "Monthly expenses", name: "monthlyExpenses", min: 1000, max: 500000, step: 1000, format: fmt },
+    { label: "Current savings", name: "currentSavings", min: 0, max: 10000000, step: 1000, format: fmt },
+    { label: "Monthly investment", name: "monthlyInvestment", min: 0, max: 500000, step: 1000, format: fmt },
     { label: "Expected return (p.a.)", name: "expectedReturn", min: 0, max: 30, step: 0.5, suffix: "%" },
     { label: "Inflation rate (p.a.)", name: "inflationRate", min: 0, max: 15, step: 0.5, suffix: "%" },
   ];
@@ -152,13 +148,13 @@ export default function FIRECalculatorPage() {
                 <div className="p-5">
                   <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">Estimated wealth</p>
                   <p className="font-mono-tech mt-1 text-[19px] font-medium tabular-nums text-[#111814] dark:text-[#eef1ec]">
-                    {currency}{formatCurrency(results.totalWealth)}
+                    {fmt(results.totalWealth)}
                   </p>
                 </div>
                 <div className="p-5">
                   <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">FIRE number</p>
                   <p className="font-mono-tech mt-1 text-[19px] font-medium tabular-nums text-[#111814] dark:text-[#eef1ec]">
-                    {currency}{formatCurrency(results.fireNumber)}
+                    {fmt(results.fireNumber)}
                   </p>
                 </div>
               </div>
@@ -187,10 +183,10 @@ export default function FIRECalculatorPage() {
                     stroke="currentColor"
                     className="text-[#111814]/45 dark:text-[#eef1ec]/45"
                     tick={{ fontSize: 12 }}
-                    tickFormatter={(value) => `${currency}${(value / 1000000).toFixed(1)}M`}
+                    tickFormatter={(value) => formatCurrency(value, settings.currency, true)}
                   />
                   <Tooltip
-                    formatter={(value) => `${currency}${new Intl.NumberFormat("en-US").format(value)}`}
+                    formatter={(value) => fmt(value)}
                     labelFormatter={(label) => `Age: ${label}`}
                   />
                   <Line type="monotone" dataKey="wealth" stroke="#047857" strokeWidth={2} dot={false} />
@@ -206,7 +202,7 @@ export default function FIRECalculatorPage() {
               <CalcBenefitGrid
                 items={[
                   { title: "Retirement timeline", text: `Based on your current strategy, you could potentially achieve financial freedom in ${results.years} years.` },
-                  { title: "Inflation impact", text: `Future monthly expenses after inflation may be approximately ${currency}${formatCurrency(results.futureExpenses)}.` },
+                  { title: "Inflation impact", text: `Future monthly expenses after inflation may be approximately ${fmt(results.futureExpenses)}.` },
                   { title: "Wealth optimization", text: "Increasing your monthly investments by even 10–15% can significantly accelerate your path to independence." },
                   { title: "FIRE readiness", text: `Your current trajectory gives a ${results.freedomScore}% freedom score, indicating the progress toward your FIRE goal.` },
                 ]}

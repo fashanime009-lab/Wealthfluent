@@ -1,5 +1,5 @@
 import { useSettings } from "../context/SettingsContext";
-import { currencies } from "../data/currencies";
+import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -39,20 +39,16 @@ export default function FDCalculatorPage() {
   const [years, setYears] = useState(5);
   const [compounding, setCompounding] = useState(4);
   const { settings } = useSettings();
-  const currency = (currencies.find((c) => c.code === settings.currency) || currencies[0]).symbol;
 
   const maturityAmount = Math.round(
     principal * Math.pow(1 + rate / 100 / compounding, compounding * years)
   );
   const interestEarned = maturityAmount - principal;
 
-  // Format currency
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-US", {
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-  const fmt = (value) => `${currency}${formatCurrency(value)}`;
+  // Shared, currency-aware formatter (lakh/crore grouping for INR, each
+  // currency's own convention otherwise) — this page used to hardcode
+  // en-US grouping with just the symbol, unlike the rest of the site.
+  const fmt = (v) => formatCurrency(v, settings.currency);
 
   return (
     <>
