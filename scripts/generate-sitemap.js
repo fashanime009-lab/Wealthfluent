@@ -12,7 +12,11 @@ const __dirname = path.dirname(__filename);
 // PascalCase URLs unlike every other route on the site, which suggests
 // they're leftover internal/dev routes rather than intentional public
 // pages; worth a look to confirm before ever adding them here.
-const today = "2026-09-06";
+// The date this file was regenerated, not a hardcoded one. A fixed date
+// here meant every URL kept claiming "last modified Sep 6" no matter what
+// changed since, and search engines stop trusting lastmod once they've
+// seen it be wrong. Regenerate (npm run sitemap) whenever pages change.
+const today = new Date().toISOString().slice(0, 10);
 
 const routes = [
   { path: "/", lastmod: today, changefreq: "daily", priority: "1.0" },
@@ -93,7 +97,7 @@ const routes = [
 ];
 
 // ─── Base URL ──────────────────────────────────────────────────────
-const baseUrl = "https://finaiw.com";
+const baseUrl = "https://www.finaiw.com";
 
 // ─── Generate sitemap ─────────────────────────────────────────────
 const generateSitemap = () => {

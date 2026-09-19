@@ -109,7 +109,7 @@ export default function SitemapPage() {
           "@type": "WebPage",
           name: "Sitemap - FINAIW",
           description: "Complete sitemap of FINAIW showing all available pages.",
-          url: "https://finaiw.com/sitemap",
+          url: "https://www.finaiw.com/sitemap",
         }}
       />
 
