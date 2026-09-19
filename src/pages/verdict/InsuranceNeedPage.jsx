@@ -3,8 +3,9 @@ import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
-import VerdictFAQ from "@/components/verdict/VerdictFAQ";
+import VerdictContent from "@/components/verdict/VerdictContent";
 import AdSlot from "@/components/ads/AdSlot";
+import { INSURANCE_NEED } from "@/data/verdictContent";
 import { calculateInsuranceNeed } from "@/verdict/logic/insuranceNeed";
 import { formatCurrency } from "@/utils/currency";
 import { useSettings } from "@/context/SettingsContext";
@@ -44,16 +45,7 @@ export default function InsuranceNeedPage() {
           { name: "Verdict", path: "/verdict" },
           { name: "How Much Term Life Insurance Do You Need?", path: "/verdict/insurance-need" },
         ]),
-        faqSchema([
-          {
-            "question": "Why not just use '10-15x annual income'?",
-            "answer": "That rule ignores your actual debts, goals, and existing savings — it can leave you under- or over-insured. The needs-based method here accounts for your specific numbers instead."
-          },
-          {
-            "question": "Should I include my spouse's income?",
-            "answer": "This calculates cover for one person's income being lost. If both partners work, run it separately for each."
-          }
-        ]),
+        faqSchema(INSURANCE_NEED.faqs.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
@@ -86,14 +78,7 @@ export default function InsuranceNeedPage() {
           <AdSlot slotId="verdict_insurance_need_result" />
         </div>
       </div>
-
-      <VerdictFAQ
-        className="mt-16 max-w-2xl"
-        items={[
-          { q: "Why not just use '10-15x annual income'?", a: "That rule ignores your actual debts, goals, and existing savings — it can leave you under- or over-insured. The needs-based method here accounts for your specific numbers instead." },
-          { q: "Should I include my spouse's income?", a: "This calculates cover for one person's income being lost. If both partners work, run it separately for each." },
-        ]}
-      />
+      <VerdictContent content={INSURANCE_NEED} />
     </div>
     </div>
   );

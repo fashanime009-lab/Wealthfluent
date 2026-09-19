@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
-import { breadcrumbSchema } from "@/components/seo/schema";
+import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "@/components/ads/AdSlot";
 import VerdictScale from "@/components/verdict/VerdictScale";
+import VerdictContent from "@/components/verdict/VerdictContent";
+import { VERDICT_INDEX } from "@/data/verdictContent";
 import { useSettings } from "@/context/SettingsContext";
 import { formatCurrency } from "@/utils/currency";
 
@@ -71,10 +73,13 @@ export default function VerdictIndex() {
         description="Real answers to the money decisions you're actually stuck on — rent vs buy, debt vs invest, lease vs buy a car, how much insurance you need, and term vs endowment — with the math shown. Free, no signup."
         path="/verdict"
         keywords="rent vs buy calculator, pay off debt vs invest, lease vs buy car, term insurance calculator, term vs endowment, financial decision tool"
-        jsonLd={breadcrumbSchema([
-          { name: "Home", path: "/" },
-          { name: "Verdict", path: "/verdict" },
-        ])}
+        jsonLd={[
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Verdict", path: "/verdict" },
+          ]),
+          faqSchema(VERDICT_INDEX.faqs.map((f) => ({ question: f.q, answer: f.a }))),
+        ]}
       />
 
       <h1 className="font-display max-w-lg text-[34px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[42px]">
@@ -115,6 +120,8 @@ export default function VerdictIndex() {
       </div>
 
       <AdSlot slotId="verdict_index_mid" className="mt-14" />
+
+      <VerdictContent content={VERDICT_INDEX} className="mt-16 space-y-12" />
     </div>
     </div>
   );

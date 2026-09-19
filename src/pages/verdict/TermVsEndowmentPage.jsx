@@ -4,8 +4,9 @@ import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
 import VerdictChart from "@/components/verdict/VerdictChart";
-import VerdictFAQ from "@/components/verdict/VerdictFAQ";
+import VerdictContent from "@/components/verdict/VerdictContent";
 import AdSlot from "@/components/ads/AdSlot";
+import { TERM_VS_ENDOWMENT } from "@/data/verdictContent";
 import { calculateTermVsEndowment } from "@/verdict/logic/termVsEndowment";
 import { formatCurrency } from "@/utils/currency";
 import { useSettings } from "@/context/SettingsContext";
@@ -31,9 +32,9 @@ export default function TermVsEndowmentPage() {
     : `The endowment/ULIP wins by ${fmt(Math.abs(result.gap))}`;
 
   const reasoning = result.tone === "caution"
-    ? "The two paths land close enough that either is reasonable here — but that's unusual for this comparison, so double-check your assumed returns."
+    ? "On maturity value alone the two paths land close together — so the deciding factor is how much cover each gives your family, and whether your assumed returns match a real policy illustration."
     : result.winner === "termInvest"
-    ? `Investing the premium difference at ${investReturnPct}% outgrows the endowment/ULIP's ${endowmentReturnPct}% by enough to more than make up for term insurance's lower payout at death — while also leaving you with real cover.`
+    ? `Investing the premium difference at ${investReturnPct}% outgrows the endowment/ULIP's ${endowmentReturnPct}% by enough to overcome the endowment putting more money in each year — and a term plan typically gives your family far more cover per rupee of premium.`
     : `Your assumed endowment/ULIP return (${endowmentReturnPct}%) is close enough to your market return assumption (${investReturnPct}%) that the bundled policy edges ahead here — worth double-checking those numbers against a real illustration.`;
 
   return (
@@ -49,20 +50,7 @@ export default function TermVsEndowmentPage() {
           { name: "Verdict", path: "/verdict" },
           { name: "Term Insurance vs Endowment/ULIP", path: "/verdict/term-vs-endowment" },
         ]),
-        faqSchema([
-          {
-            "question": "Isn't an endowment or ULIP better because it combines insurance and investment?",
-            "answer": "Bundling is exactly the problem, not the benefit. The insurance portion inside these plans is far more expensive per rupee of cover than a term plan, and the investment portion typically returns less than investing the same money directly — you end up with a mediocre version of both instead of a good version of either."
-          },
-          {
-            "question": "What if I've already bought an endowment or ULIP policy?",
-            "answer": "Surrendering early usually comes with a real cost, so it's worth checking the surrender value and any remaining lock-in before deciding — this tool is best used before buying, to compare the two paths up front."
-          },
-          {
-            "question": "Does this account for the tax treatment of maturity proceeds?",
-            "answer": "No — this only compares raw maturity value from the premium and assumed returns. Tax treatment on both sides can matter and depends on current rules and your specific policy, so it's worth checking separately."
-          }
-        ]),
+        faqSchema(TERM_VS_ENDOWMENT.faqs.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
@@ -101,25 +89,7 @@ export default function TermVsEndowmentPage() {
           <AdSlot slotId="verdict_term_vs_endowment_result" />
         </div>
       </div>
-
-      <div className="mt-16 max-w-2xl border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10">
-        <h2 className="font-display text-[22px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">How this verdict is calculated</h2>
-        <p className="mt-3 text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
-          Both paths spend the same total premium every year. Term + invest spends a small slice on a term
-          premium for real cover, then invests everything left over from the budget in the market. Endowment /
-          ULIP puts the entire budget into the policy, growing at your assumed net-of-charges return instead. We
-          compare the maturity value of both after the full horizon.
-        </p>
-      </div>
-
-      <VerdictFAQ
-        className="mt-12 max-w-2xl"
-        items={[
-          { q: "Isn't an endowment or ULIP better because it combines insurance and investment?", a: "Bundling is exactly the problem, not the benefit. The insurance portion inside these plans is far more expensive per rupee of cover than a term plan, and the investment portion typically returns less than investing the same money directly — you end up with a mediocre version of both instead of a good version of either." },
-          { q: "What if I've already bought an endowment or ULIP policy?", a: "Surrendering early usually comes with a real cost, so it's worth checking the surrender value and any remaining lock-in before deciding — this tool is best used before buying, to compare the two paths up front." },
-          { q: "Does this account for the tax treatment of maturity proceeds?", a: "No — this only compares raw maturity value from the premium and assumed returns. Tax treatment on both sides can matter and depends on current rules and your specific policy, so it's worth checking separately." },
-        ]}
-      />
+      <VerdictContent content={TERM_VS_ENDOWMENT} />
     </div>
     </div>
   );

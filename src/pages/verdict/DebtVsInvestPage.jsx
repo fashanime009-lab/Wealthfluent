@@ -4,8 +4,9 @@ import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
 import VerdictChart from "@/components/verdict/VerdictChart";
-import VerdictFAQ from "@/components/verdict/VerdictFAQ";
+import VerdictContent from "@/components/verdict/VerdictContent";
 import AdSlot from "@/components/ads/AdSlot";
+import { DEBT_VS_INVEST } from "@/data/verdictContent";
 import { calculateDebtVsInvest } from "@/verdict/logic/debtVsInvest";
 import { formatCurrency } from "@/utils/currency";
 import { useSettings } from "@/context/SettingsContext";
@@ -50,20 +51,7 @@ export default function DebtVsInvestPage() {
           { name: "Verdict", path: "/verdict" },
           { name: "Pay Off Debt vs Invest Calculator", path: "/verdict/debt-vs-invest" },
         ]),
-        faqSchema([
-          {
-            "question": "Isn't paying off debt always the 'safe' choice?",
-            "answer": "Paying off debt is a guaranteed return equal to the interest rate. Investing can lose money. If your debt rate is high, that guarantee is hard to beat; if it's low, investing often wins but carries real risk."
-          },
-          {
-            "question": "What about high-interest credit card debt specifically?",
-            "answer": "Credit card rates (often 30-40%+) are almost always higher than realistic investment returns — the debt-first path will virtually always win."
-          },
-          {
-            "question": "Does this account for the psychological value of being debt-free?",
-            "answer": "No — this only compares net worth. Being debt-free has real value beyond the math that this tool doesn't try to quantify."
-          }
-        ]),
+        faqSchema(DEBT_VS_INVEST.faqs.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
@@ -103,25 +91,7 @@ export default function DebtVsInvestPage() {
           <AdSlot slotId="verdict_debt_vs_invest_result" />
         </div>
       </div>
-
-      <div className="mt-16 max-w-2xl border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10">
-        <h2 className="font-display text-[22px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">How this verdict is calculated</h2>
-        <p className="mt-3 text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
-          Both paths spend the exact same cash every month. Debt-first puts the minimum plus the extra toward the
-          debt until it's gone, then invests everything for the rest of the horizon. Invest-first pays only the
-          minimum and invests the extra from month one. We compare net worth — investments minus any remaining
-          debt — at the end.
-        </p>
-      </div>
-
-      <VerdictFAQ
-        className="mt-12 max-w-2xl"
-        items={[
-          { q: "Isn't paying off debt always the 'safe' choice?", a: "Paying off debt is a guaranteed return equal to the interest rate. Investing can lose money. If your debt rate is high, that guarantee is hard to beat; if it's low, investing often wins but carries real risk." },
-          { q: "What about high-interest credit card debt specifically?", a: "Credit card rates (often 30-40%+) are almost always higher than realistic investment returns — the debt-first path will virtually always win." },
-          { q: "Does this account for the psychological value of being debt-free?", a: "No — this only compares net worth. Being debt-free has real value beyond the math that this tool doesn't try to quantify." },
-        ]}
-      />
+      <VerdictContent content={DEBT_VS_INVEST} />
     </div>
     </div>
   );

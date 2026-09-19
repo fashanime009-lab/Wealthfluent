@@ -3,8 +3,9 @@ import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
-import VerdictFAQ from "@/components/verdict/VerdictFAQ";
+import VerdictContent from "@/components/verdict/VerdictContent";
 import AdSlot from "@/components/ads/AdSlot";
+import { LEASE_VS_BUY } from "@/data/verdictContent";
 import { calculateLeaseVsBuy } from "@/verdict/logic/leaseVsBuy";
 import { formatCurrency } from "@/utils/currency";
 import { useSettings } from "@/context/SettingsContext";
@@ -52,16 +53,7 @@ export default function LeaseVsBuyPage() {
           { name: "Verdict", path: "/verdict" },
           { name: "Lease vs Buy a Car Calculator", path: "/verdict/lease-vs-buy-car" },
         ]),
-        faqSchema([
-          {
-            "question": "Doesn't leasing always cost more in the end?",
-            "answer": "Not always — it depends on the specific car's depreciation rate and your investment return. Fast-depreciating cars make leasing more attractive."
-          },
-          {
-            "question": "What about mileage limits and wear-and-tear charges?",
-            "answer": "This tool doesn't model those — if you drive well above typical limits, factor in likely lease-end penalties by adding them to your monthly lease cost."
-          }
-        ]),
+        faqSchema(LEASE_VS_BUY.faqs.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
@@ -97,14 +89,7 @@ export default function LeaseVsBuyPage() {
           <AdSlot slotId="verdict_lease_vs_buy_result" />
         </div>
       </div>
-
-      <VerdictFAQ
-        className="mt-16 max-w-2xl"
-        items={[
-          { q: "Doesn't leasing always cost more in the end?", a: "Not always — it depends on the specific car's depreciation rate and your investment return. Fast-depreciating cars make leasing more attractive." },
-          { q: "What about mileage limits and wear-and-tear charges?", a: "This tool doesn't model those — if you drive well above typical limits, factor in likely lease-end penalties by adding them to your monthly lease cost." },
-        ]}
-      />
+      <VerdictContent content={LEASE_VS_BUY} />
     </div>
     </div>
   );

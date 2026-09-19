@@ -4,8 +4,9 @@ import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
 import VerdictChart from "@/components/verdict/VerdictChart";
-import VerdictFAQ from "@/components/verdict/VerdictFAQ";
+import VerdictContent from "@/components/verdict/VerdictContent";
 import AdSlot from "@/components/ads/AdSlot";
+import { RENT_VS_BUY } from "@/data/verdictContent";
 import { calculateRentVsBuy } from "@/verdict/logic/rentVsBuy";
 import { formatCurrency } from "@/utils/currency";
 import { useSettings } from "@/context/SettingsContext";
@@ -57,20 +58,7 @@ export default function RentVsBuyPage() {
           { name: "Verdict", path: "/verdict" },
           { name: "Rent vs Buy Calculator", path: "/verdict/rent-vs-buy" },
         ]),
-        faqSchema([
-          {
-            "question": "Does this include stamp duty, registration, or brokerage?",
-            "answer": "Not by default — those are one-time costs that vary a lot by city. If you know yours, mentally add them to the down payment slider."
-          },
-          {
-            "question": "Why does renting sometimes win even though rent 'feels like throwing money away'?",
-            "answer": "Because the alternative isn't spending nothing — it's investing the gap. When rent is well below the true cost of owning, that monthly gap compounding in the market can outgrow the home's appreciation."
-          },
-          {
-            "question": "What if I plan to sell before the loan is paid off?",
-            "answer": "The tool already accounts for this — it uses the actual remaining loan balance at your chosen time horizon, not the full loan term."
-          }
-        ]),
+        faqSchema(RENT_VS_BUY.faqs.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
@@ -114,24 +102,7 @@ export default function RentVsBuyPage() {
         </div>
       </div>
 
-      <div className="mt-16 max-w-2xl border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10">
-        <h2 className="font-display text-[22px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">How this verdict is calculated</h2>
-        <p className="mt-3 text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
-          We assume both paths start with the same capital — the down payment — and the same monthly budget. The
-          buyer puts that capital into the home and pays EMI plus maintenance. The renter invests that same
-          capital in the market instead, pays rent, and invests whatever's left over each month. We simulate this
-          month by month, then compare net worth at the end of your time horizon.
-        </p>
-      </div>
-
-      <VerdictFAQ
-        className="mt-12 max-w-2xl"
-        items={[
-          { q: "Does this include stamp duty, registration, or brokerage?", a: "Not by default — those are one-time costs that vary a lot by city. If you know yours, mentally add them to the down payment slider." },
-          { q: "Why does renting sometimes win even though rent 'feels like throwing money away'?", a: "Because the alternative isn't spending nothing — it's investing the gap. When rent is well below the true cost of owning, that monthly gap compounding in the market can outgrow the home's appreciation." },
-          { q: "What if I plan to sell before the loan is paid off?", a: "The tool already accounts for this — it uses the actual remaining loan balance at your chosen time horizon, not the full loan term." },
-        ]}
-      />
+      <VerdictContent content={RENT_VS_BUY} />
     </div>
     </div>
   );
