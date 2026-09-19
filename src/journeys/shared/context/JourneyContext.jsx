@@ -1,5 +1,6 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useMemo,
   useState,
@@ -20,23 +21,25 @@ export function JourneyProvider({
 
   const totalSteps = journey.steps.length;
 
-  function nextStep() {
-    setCurrentStep((previous) =>
-      Math.min(previous + 1, totalSteps - 1)
-    );
-  }
+  // Stable identities (only totalSteps can change them) so the memoised
+  // context value below can list them as real dependencies instead of
+  // silently holding stale copies.
+  const nextStep = useCallback(() => {
+    setCurrentStep((previous) => Math.min(previous + 1, totalSteps - 1));
+  }, [totalSteps]);
 
-  function previousStep() {
-    setCurrentStep((previous) =>
-      Math.max(previous - 1, 0)
-    );
-  }
+  const previousStep = useCallback(() => {
+    setCurrentStep((previous) => Math.max(previous - 1, 0));
+  }, []);
 
-  function goToStep(stepIndex) {
-    if (stepIndex < 0 || stepIndex >= totalSteps) return;
+  const goToStep = useCallback(
+    (stepIndex) => {
+      if (stepIndex < 0 || stepIndex >= totalSteps) return;
 
-    setCurrentStep(stepIndex);
-  }
+      setCurrentStep(stepIndex);
+    },
+    [totalSteps]
+  );
 
   function updateAnswer(field, value) {
     setAnswers((previous) => ({
@@ -56,7 +59,7 @@ export function JourneyProvider({
       previousStep,
       goToStep,
     }),
-    [journey, currentStep, totalSteps, answers]
+    [journey, currentStep, totalSteps, answers, nextStep, previousStep, goToStep]
   );
 
   return (

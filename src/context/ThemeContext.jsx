@@ -5,6 +5,7 @@ import {
   useState,
 } from "react";
 import { isDaytime } from "@/utils/autoDetect";
+import { getItem, setItem } from "@/utils/safeStorage";
 
 const ThemeContext = createContext();
 
@@ -32,12 +33,12 @@ export function ThemeProvider({ children }) {
   // utils/autoDetect.js). Distinct from "system", which instead follows
   // the OS's own light/dark setting, whatever that happens to be.
   const [theme, setThemeState] = useState(() => {
-    return localStorage.getItem(STORAGE_KEY) || "auto";
+    return getItem(STORAGE_KEY) || "auto";
   });
 
   const setTheme = (value) => {
     setThemeState(value);
-    localStorage.setItem(STORAGE_KEY, value);
+    setItem(STORAGE_KEY, value);
   };
 
   useEffect(() => {

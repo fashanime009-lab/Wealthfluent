@@ -113,9 +113,6 @@ const currency = settings.currency;
       (postTaxReturnTaxFreeFixed * 0.2);
 
     // Future value of current investments
-    const monthlyReturnInvest = weightedReturn / 100 / 12;
-    const totalMonthsInvest = yearsToRetirement * 12;
-
     const fvCurrentEquity =
       currentEquityInvestments * Math.pow(1 + postTaxReturnEquity / 100, yearsToRetirement);
     const fvCurrentTaxableFixed =

@@ -5,6 +5,7 @@ import {
   useState,
 } from "react";
 import { detectCurrency } from "@/utils/autoDetect";
+import { readObject, setItem } from "@/utils/safeStorage";
 
 const SettingsContext = createContext();
 
@@ -21,8 +22,7 @@ const DEFAULT_SETTINGS = {
 
 export function SettingsProvider({ children }) {
   const [settings, setSettings] = useState(() => {
-    const saved = localStorage.getItem("finaiw-settings");
-    const parsed = saved ? JSON.parse(saved) : {};
+    const parsed = readObject("finaiw-settings", {});
 
     // Merge with defaults so anyone with an old saved settings blob (from
     // before compactNumbers existed, or with a stale `language` key from
@@ -41,10 +41,7 @@ export function SettingsProvider({ children }) {
   });
 
   useEffect(() => {
-    localStorage.setItem(
-      "finaiw-settings",
-      JSON.stringify(settings)
-    );
+    setItem("finaiw-settings", JSON.stringify(settings));
   }, [settings]);
 
   const updateSetting = (key, value) => {

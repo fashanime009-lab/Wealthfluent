@@ -3,14 +3,8 @@
 // Generates smart financial reminders
 // ==========================================
 import { getGoals } from "../services/goalEngine";
-import { buildFinancialCore } from "./financialCoreEngine";
-export function buildReminders(workspace) {
+export function buildReminders() {
   const reminders = [];
-
-  const financialCore = buildFinancialCore();
-
-// Goal summary (use later as more reminder types are added)
-const goalSummary = financialCore.goals;
 
 // Detailed goal list
 const goals = getGoals();

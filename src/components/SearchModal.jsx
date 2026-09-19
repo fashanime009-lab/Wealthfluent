@@ -26,18 +26,13 @@ export default function SearchModal({ open, onClose }) {
       .slice(0, 20);
   }, [query]);
 
+  // Navbar only mounts this while it's open, so the query and highlighted
+  // row start fresh every time without resetting them from an effect.
   useEffect(() => {
-    setActiveIndex(0);
-  }, [query]);
-
-  useEffect(() => {
-    if (open) {
-      // Autofocus once the modal has actually mounted.
-      const t = setTimeout(() => inputRef.current?.focus(), 30);
-      return () => clearTimeout(t);
-    }
-    setQuery("");
-  }, [open]);
+    // Autofocus once the modal has actually mounted.
+    const t = setTimeout(() => inputRef.current?.focus(), 30);
+    return () => clearTimeout(t);
+  }, []);
 
   const goTo = (path) => {
     navigate(path);
@@ -77,7 +72,10 @@ export default function SearchModal({ open, onClose }) {
             ref={inputRef}
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setActiveIndex(0);
+            }}
             placeholder="Search calculators, verdicts, lessons..."
             className="w-full bg-transparent text-[14.5px] text-[#111814] outline-none placeholder:text-[#111814]/40 dark:text-[#eef1ec] dark:placeholder:text-[#eef1ec]/40"
           />

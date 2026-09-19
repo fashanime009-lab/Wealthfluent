@@ -72,7 +72,7 @@ export default function WealthAgeCalculatorPage() {
       Math.min(100, Math.round(savingsRate + netWorth / 100000))
     );
 
-    let personality = "Balanced Builder";
+    let personality;
     if (wealthScore >= 80) personality = "Wealth Accelerator";
     else if (wealthScore >= 60) personality = "Growth Builder";
     else if (wealthScore >= 40) personality = "Smart Saver";

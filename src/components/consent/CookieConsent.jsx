@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
+import { getItem, setItem } from "../../utils/safeStorage";
 import { updateAnalyticsConsent, updateAdConsent } from "../../lib/analytics";
 
 function Toggle({ checked, onChange, label }) {
@@ -50,7 +51,7 @@ const STORAGE_KEY = "finaiw-cookie-consent";
 // bundled decision it was at the time.
 function readStoredConsent() {
   if (typeof window === "undefined") return null;
-  const raw = localStorage.getItem(STORAGE_KEY);
+  const raw = getItem(STORAGE_KEY);
   if (!raw) return null;
   if (raw === "accepted") return { advertising: true, analytics: true };
   if (raw === "declined") return { advertising: false, analytics: false };
@@ -87,7 +88,7 @@ export default function CookieConsent() {
 
   const save = (advertising, analytics) => {
     const value = { advertising, analytics, decidedAt: new Date().toISOString() };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+    setItem(STORAGE_KEY, JSON.stringify(value));
     setConsent(value);
     updateAdConsent(advertising);
     updateAnalyticsConsent(analytics);

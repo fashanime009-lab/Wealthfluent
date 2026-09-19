@@ -102,7 +102,7 @@ export default function NewsPage() {
       }
       activeRequestRef.current = "";
     }
-  }, [category, pageToken, query]);
+  }, [category, pageToken, query, articles.length]);
 
   useEffect(() => {
     loadArticlesRef.current = loadArticles;

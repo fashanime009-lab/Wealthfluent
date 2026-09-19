@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { readObject, setItem } from "@/utils/safeStorage";
 
 const WorkspaceContext = createContext();
 
@@ -60,7 +61,20 @@ const defaultWorkspace = {
 };
 
 export function WorkspaceProvider({ children }) {
-  const [workspace, setWorkspace] = useState(defaultWorkspace);
+  // Loaded lazily and defensively: a corrupt saved value used to throw inside
+  // an effect and blank the entire app (this provider wraps everything).
+  const [workspace, setWorkspace] = useState(() => {
+    const saved = readObject(STORAGE_KEY, null);
+    if (!saved) return defaultWorkspace;
+    return {
+      ...defaultWorkspace,
+      ...saved,
+      history: {
+        ...defaultWorkspace.history,
+        ...(saved.history || {}),
+      },
+    };
+  });
   const saveCalculation = (type, data) => {
   setWorkspace((prev) => ({
     ...prev,
@@ -221,24 +235,7 @@ const removeGoal = (id) => {
 };
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-
-    if (saved) {
-      const parsed = JSON.parse(saved);
-
-setWorkspace({
-  ...defaultWorkspace,
-  ...parsed,
-  history: {
-    ...defaultWorkspace.history,
-    ...(parsed.history || {}),
-  },
-});
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(workspace));
+    setItem(STORAGE_KEY, JSON.stringify(workspace));
   }, [workspace]);
 
   return (

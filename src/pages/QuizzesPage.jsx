@@ -175,9 +175,10 @@ export default function QuizzesPage() {
 
   const answeredCount = Object.keys(submitted).length;
 
-  const loadQuestions = async () => {
-    setLoading(true);
-
+  // `loading` already starts true, so the first load doesn't need to set it —
+  // only later refreshes do. Keeping the initial call free of a synchronous
+  // setState is what stops it cascading an extra render on mount.
+  const applyQuestions = async () => {
     try {
       const nextQuestions = await fetchQuizQuestions();
       setQuestions(nextQuestions);
@@ -194,8 +195,16 @@ export default function QuizzesPage() {
     }
   };
 
+  const loadQuestions = () => {
+    setLoading(true);
+    return applyQuestions();
+  };
+
+  // Started on the next tick rather than synchronously in the effect body —
+  // the same approach NewsPage uses for its initial load.
   useEffect(() => {
-    loadQuestions();
+    const initialLoad = window.setTimeout(applyQuestions, 0);
+    return () => window.clearTimeout(initialLoad);
   }, []);
 
   useVisibleInterval(loadQuestions, 120000);

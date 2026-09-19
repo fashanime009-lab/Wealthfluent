@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Compass, X } from "lucide-react";
 import SiteGuide from "./SiteGuide";
+import { getItem, setItem } from "@/utils/safeStorage";
 
 const HINT_SEEN_KEY = "finaiw-guide-hint-seen";
 const COOKIE_CONSENT_KEY = "finaiw-cookie-consent";
@@ -13,12 +14,12 @@ export default function SiteGuideLauncher() {
   // would overlap it, so this button lifts itself up while that banner is
   // still showing.
   const [cookieBannerVisible, setCookieBannerVisible] = useState(
-    () => typeof window !== "undefined" && !localStorage.getItem(COOKIE_CONSENT_KEY)
+    () => typeof window !== "undefined" && !getItem(COOKIE_CONSENT_KEY)
   );
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
-    if (localStorage.getItem(HINT_SEEN_KEY)) return undefined;
+    if (getItem(HINT_SEEN_KEY)) return undefined;
     const t = setTimeout(() => setShowHint(true), 2200);
     return () => clearTimeout(t);
   }, []);
@@ -29,7 +30,7 @@ export default function SiteGuideLauncher() {
     // with no custom event, so poll briefly rather than over-engineer a
     // cross-component event bus for a one-time UI adjustment.
     const interval = setInterval(() => {
-      if (localStorage.getItem(COOKIE_CONSENT_KEY)) {
+      if (getItem(COOKIE_CONSENT_KEY)) {
         setCookieBannerVisible(false);
       }
     }, 400);
@@ -38,7 +39,7 @@ export default function SiteGuideLauncher() {
 
   const dismissHint = () => {
     setShowHint(false);
-    localStorage.setItem(HINT_SEEN_KEY, "1");
+    setItem(HINT_SEEN_KEY, "1");
   };
 
   const toggleGuide = () => {
