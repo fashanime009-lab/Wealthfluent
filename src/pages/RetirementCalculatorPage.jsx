@@ -10,6 +10,7 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
@@ -43,13 +44,13 @@ export default function RetirementCalculatorPage() {
     <>
       <Seo
         title="Retirement Calculator – Retirement Planning Tool"
-        description="Work backward from your target retirement age to see how large a corpus you'll need and whether your current savings rate is on track to get there."
+        description="Project the corpus a monthly investment builds by retirement — enter the amount, expected return and years invested to see contributions vs returns."
         path="/retirement-calculator"
         keywords="retirement calculator, retirement planning, retirement corpus, pension planning"
         jsonLd={[
         calculatorSchema({
           name: "Retirement Calculator",
-          description: "Work backward from your target retirement age to see how large a corpus you'll need and whether your current savings rate is on track to get there.",
+          description: "Project the corpus a monthly investment builds by retirement — enter the amount, expected return and years invested to see contributions vs returns.",
           path: "/retirement-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
@@ -133,6 +134,8 @@ export default function RetirementCalculatorPage() {
                 ]}
               />
             </CalcSection>
+
+            <RelatedLinks />
 
             <VerdictFAQ items={FAQ_ITEMS} className="border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />
           </div>

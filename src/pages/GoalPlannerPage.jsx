@@ -8,6 +8,7 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import RelatedLinks from "@/components/calculators/RelatedLinks";
 
 
 export default function GoalPlannerPage() {
@@ -326,6 +327,8 @@ const currency = settings.currency;
                 <li>Retirement contributions grow annually at the specified rate.</li>
               </ul>
             </CalcSection>
+
+            <RelatedLinks />
           </div>
         </div>
       </div>

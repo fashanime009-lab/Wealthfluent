@@ -8,6 +8,7 @@ import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcSection from "@/components/calculators/CalcSection";
+import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
@@ -184,6 +185,8 @@ export default function InflationCalculatorPage() {
                 ]}
               />
             </CalcSection>
+
+            <RelatedLinks />
 
             <VerdictFAQ items={FAQ_ITEMS} className="border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />
           </div>

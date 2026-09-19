@@ -73,6 +73,7 @@ export const RENT_VS_BUY = {
     { label: "Home Loan Basics", to: "/learn/home-loan-basics", note: "how tenure, rate and prepayment change the true cost of a loan" },
     { label: "EMI Calculator", to: "/emi-calculator", note: "work out the monthly payment for any loan amount, rate and tenure" },
     { label: "Home Affordability Calculator", to: "/home-affordability-calculator", note: "check whether a specific price fits your income before comparing it to renting" },
+    { label: "SIP Calculator", to: "/sip-calculator", note: "the rent-and-invest side — see what a monthly amount grows to at the return you assume" },
   ],
   faqs: [
     { q: "Does this include stamp duty, registration, or brokerage?", a: "Not by default — those are one-time costs that vary a lot by city. If you know yours, mentally add them to the down payment slider." },
@@ -151,6 +152,7 @@ export const LEASE_VS_BUY = {
     { label: "Compound Interest", to: "/learn/compound-interest", note: "the mechanic behind the invested savings on the leasing side" },
     { label: "EMI Calculator", to: "/emi-calculator", note: "the loan payment for any price, rate and tenure" },
     { label: "Rent vs Buy a home", to: "/verdict/rent-vs-buy", note: "the same rent-and-invest logic applied to housing" },
+    { label: "SIP Calculator", to: "/sip-calculator", note: "the lease-and-invest side — see what the monthly saving grows to at the return you assume" },
   ],
   faqs: [
     { q: "Doesn't leasing always cost more in the end?", a: "Not always — it depends on the specific car's depreciation rate and your investment return. Fast-depreciating cars make leasing more attractive." },
@@ -314,6 +316,8 @@ export const DEBT_VS_INVEST = {
     { label: "Debt Management", to: "/learn/debt-management", note: "how to think about which debt to attack first" },
     { label: "Emergency Funds", to: "/learn/emergency-funds", note: "why a cash buffer comes before paying down or investing" },
     { label: "Compound Interest", to: "/learn/compound-interest", note: "why debt and investments both grow faster than they look" },
+    { label: "SIP Calculator", to: "/sip-calculator", note: "the invest side — see what a monthly amount grows to at the return you assume" },
+    { label: "Emergency Fund Calculator", to: "/emergency-fund-calculator", note: "work out how many months of cash to hold before you commit to either path" },
   ],
   faqs: [
     { q: "Isn't paying off debt always the 'safe' choice?", a: "Paying off debt is a guaranteed return equal to the interest rate. Investing can lose money. If your debt rate is high, that guarantee is hard to beat; if it's low, investing often wins but carries real risk." },

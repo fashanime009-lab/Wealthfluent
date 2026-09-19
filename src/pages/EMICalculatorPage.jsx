@@ -9,6 +9,7 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
@@ -50,13 +51,13 @@ export default function EMICalculatorPage() {
     <>
       <Seo
         title="Loan EMI Calculator – Calculate Monthly Loan Payments"
-        description="See your monthly EMI, total interest, and full repayment schedule for home, personal, car, or education loans — just enter the loan amount, rate, and tenure."
+        description="See your monthly EMI, total interest, and total repayment for home, personal, car, or education loans — just enter the loan amount, rate, and tenure."
         path="/emi-calculator"
         keywords="EMI calculator, loan EMI calculator, home loan EMI, personal loan EMI, car loan EMI"
         jsonLd={[
           calculatorSchema({
             name: "Loan EMI Calculator",
-            description: "See your monthly EMI, total interest, and full repayment schedule for home, personal, car, or education loans — just enter the loan amount, rate, and tenure.",
+            description: "See your monthly EMI, total interest, and total repayment for home, personal, car, or education loans — just enter the loan amount, rate, and tenure.",
             path: "/emi-calculator",
           }),
           faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
@@ -136,6 +137,8 @@ export default function EMICalculatorPage() {
                 ]}
               />
             </CalcSection>
+
+            <RelatedLinks />
 
             <VerdictFAQ items={FAQ_ITEMS} className="border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />
           </div>

@@ -9,6 +9,7 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
@@ -187,6 +188,8 @@ export default function GoalSIPCalculatorPage() {
                 ]}
               />
             </CalcSection>
+
+            <RelatedLinks />
 
             <VerdictFAQ items={FAQ_ITEMS} className="border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />
           </div>
