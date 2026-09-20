@@ -5,8 +5,6 @@ import { breadcrumbSchema } from "@/components/seo/schema";
 import { LESSONS, getTodaysLesson } from "@/data/lessons";
 import { getCompletedSlugs, getStreak, getLessonsCompletedCount } from "@/services/learningEngine";
 
-const LESSONS_PER_PAGE = 9;
-
 function LessonRow({ lesson, done }) {
   return (
     <Link
@@ -38,11 +36,10 @@ export default function LearnPage() {
   const [completed, setCompleted] = useState([]);
   const [streak, setStreak] = useState(0);
   const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
   const [activeCategory, setActiveCategory] = useState("All");
   const todaysLesson = getTodaysLesson();
   const libraryRef = useRef(null);
-  const isFirstRender = useRef(true);
+  const previousCategory = useRef(activeCategory);
 
   useEffect(() => {
     const refresh = () => {
@@ -62,26 +59,16 @@ export default function LearnPage() {
     return LESSONS.filter((l) => l.category === activeCategory);
   }, [activeCategory]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredLessons.length / LESSONS_PER_PAGE));
-  const currentPage = Math.min(page, totalPages);
-  const pagedLessons = useMemo(() => {
-    const start = (currentPage - 1) * LESSONS_PER_PAGE;
-    return filteredLessons.slice(start, start + LESSONS_PER_PAGE);
-  }, [currentPage, filteredLessons]);
-
+  // Every lesson in the chosen category is rendered — no paging — so all 30
+  // links are in the prerendered HTML for crawlers, not just the first page.
   useEffect(() => {
-    // Don't scroll on first mount, only on page changes made by the user.
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
+    // Only scroll when the user actually changes category, not on first
+    // mount. Comparing against the previous value (rather than a
+    // "first render" flag) also holds up under StrictMode's double effect run.
+    if (previousCategory.current === activeCategory) return;
+    previousCategory.current = activeCategory;
     libraryRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [currentPage]);
-
-  const handleCategorySelect = (category) => {
-    setActiveCategory(category);
-    setPage(1); // a new filter is a fresh list — start from page 1
-  };
+  }, [activeCategory]);
 
   return (
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
@@ -155,18 +142,16 @@ export default function LearnPage() {
             <h2 className="font-display text-[22px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">
               All lessons
             </h2>
-            {totalPages > 1 && (
-              <span className="font-mono-tech text-[12px] tabular-nums text-[#111814]/45 dark:text-[#eef1ec]/45">
-                Page {currentPage} of {totalPages} — {filteredLessons.length} lesson{filteredLessons.length === 1 ? "" : "s"}
-              </span>
-            )}
+            <span className="font-mono-tech text-[12px] tabular-nums text-[#111814]/45 dark:text-[#eef1ec]/45">
+              {filteredLessons.length} lesson{filteredLessons.length === 1 ? "" : "s"}
+            </span>
           </div>
 
           {/* Category filter — plain text tabs, not pills */}
           <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 border-b border-[#111814]/10 pb-4 dark:border-[#eef1ec]/10">
             <button
               type="button"
-              onClick={() => handleCategorySelect("All")}
+              onClick={() => setActiveCategory("All")}
               className={`text-[14px] font-semibold transition ${
                 activeCategory === "All"
                   ? "text-[#111814] dark:text-[#eef1ec]"
@@ -182,7 +167,7 @@ export default function LearnPage() {
                 <button
                   key={category}
                   type="button"
-                  onClick={() => handleCategorySelect(category)}
+                  onClick={() => setActiveCategory(category)}
                   className={`text-[14px] font-semibold transition ${
                     active
                       ? "text-[#111814] dark:text-[#eef1ec]"
@@ -195,57 +180,15 @@ export default function LearnPage() {
             })}
           </div>
 
-          {pagedLessons.length === 0 ? (
+          {filteredLessons.length === 0 ? (
             <p className="mt-8 border border-[#111814]/10 p-6 text-center text-[13px] font-medium text-[#111814]/45 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/45">
               No lessons in this category yet.
             </p>
           ) : (
             <div className="divide-y divide-[#111814]/10 dark:divide-[#eef1ec]/10">
-              {pagedLessons.map((lesson) => (
+              {filteredLessons.map((lesson) => (
                 <LessonRow key={lesson.slug} lesson={lesson} done={completed.includes(lesson.slug)} />
               ))}
-            </div>
-          )}
-
-          {totalPages > 1 && (
-            <div className="mt-10 flex items-center justify-center gap-6">
-              <button
-                type="button"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="text-[13px] font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 disabled:cursor-not-allowed disabled:text-[#111814]/30 disabled:no-underline dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25 dark:disabled:text-[#eef1ec]/30"
-                aria-label="Previous page"
-              >
-                Prev
-              </button>
-
-              <div className="flex items-center gap-3">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
-                  <button
-                    key={num}
-                    type="button"
-                    onClick={() => setPage(num)}
-                    aria-current={num === currentPage ? "page" : undefined}
-                    className={`font-mono-tech text-[13px] tabular-nums transition ${
-                      num === currentPage
-                        ? "font-semibold text-[#047857] dark:text-[#34d399]"
-                        : "text-[#111814]/40 hover:text-[#111814]/70 dark:text-[#eef1ec]/40 dark:hover:text-[#eef1ec]/70"
-                    }`}
-                  >
-                    {num}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-                className="text-[13px] font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 disabled:cursor-not-allowed disabled:text-[#111814]/30 disabled:no-underline dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25 dark:disabled:text-[#eef1ec]/30"
-                aria-label="Next page"
-              >
-                Next
-              </button>
             </div>
           )}
         </div>
