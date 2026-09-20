@@ -26,7 +26,12 @@ export const websiteSchema = {
   },
 };
 
-/** For a free calculator page — eligible for SoftwareApplication rich results. */
+/**
+ * For a free calculator page. Valid SoftwareApplication markup that helps
+ * search engines classify the page, but note it is NOT rich-result eligible on
+ * its own: Google's SoftwareApplication result also requires an aggregateRating
+ * or review, which we deliberately don't invent.
+ */
 export function calculatorSchema({ name, description, path }) {
   return {
     "@context": "https://schema.org",

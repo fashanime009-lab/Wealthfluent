@@ -6,13 +6,7 @@
    calculators and verdicts as a fixed-width instrument readout instead of
    prose — the two fonts split along the same line the product itself
    does: words vs. numbers. See design.md for the rest of the system. */
-@import "@fontsource/archivo/500.css";
-@import "@fontsource/archivo/700.css";
-@import "@fontsource/archivo/800.css";
-@import "@fontsource/archivo/900.css";
-@import "@fontsource/ibm-plex-mono/400.css";
-@import "@fontsource/ibm-plex-mono/500.css";
-@import "@fontsource/ibm-plex-mono/600.css";
+@import "./fonts.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

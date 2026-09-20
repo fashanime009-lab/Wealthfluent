@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Compass, X } from "lucide-react";
-import SiteGuide from "./SiteGuide";
+
+// The guide panel only exists once opened, so it loads then (warmed on hover/focus).
+const loadSiteGuide = () => import("./SiteGuide");
+const SiteGuide = lazy(loadSiteGuide);
 import { getItem, setItem } from "@/utils/safeStorage";
 
 const HINT_SEEN_KEY = "finaiw-guide-hint-seen";
@@ -51,7 +54,9 @@ export default function SiteGuideLauncher() {
     <div className={`fixed right-5 z-[110] transition-[bottom] duration-300 ${cookieBannerVisible ? "bottom-28 sm:bottom-24" : "bottom-5"}`}>
       {open && (
         <div className="mb-3 w-[92vw] max-w-[380px]">
-          <SiteGuide onNavigate={() => setOpen(false)} onClose={() => setOpen(false)} />
+          <Suspense fallback={null}>
+            <SiteGuide onNavigate={() => setOpen(false)} onClose={() => setOpen(false)} />
+          </Suspense>
         </div>
       )}
 
@@ -73,6 +78,8 @@ export default function SiteGuideLauncher() {
       <button
         type="button"
         onClick={toggleGuide}
+        onPointerEnter={loadSiteGuide}
+        onFocus={loadSiteGuide}
         aria-label={open ? "Close site guide" : "Open site guide"}
         className="flex h-13 w-13 items-center justify-center rounded-full bg-[#047857] text-white transition hover:bg-[#065f46] dark:bg-[#34d399] dark:text-[#052e22] dark:hover:bg-[#6ee7b7]"
         style={{ height: 52, width: 52 }}

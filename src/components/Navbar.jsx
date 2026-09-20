@@ -1,8 +1,13 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Menu, X, Search, Settings as SettingsIcon } from "lucide-react";
 import Logo from "./Logo";
-import SearchModal from "./SearchModal";
+
+// Search — and the lesson index it drags in — loads on first use rather than
+// with every page. It's warmed up as soon as a visitor shows intent (hover,
+// focus, ⌘K) so opening it rarely waits on the network.
+const loadSearchModal = () => import("./SearchModal");
+const SearchModal = lazy(loadSearchModal);
 
 const navItems = [
   { label: "Calculators", to: "/calculators" },
@@ -39,6 +44,7 @@ export default function Navbar() {
     const onKeyDown = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
+        loadSearchModal();
         setSearchOpen(true);
       }
     };
@@ -84,6 +90,8 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setSearchOpen(true)}
+                onPointerEnter={loadSearchModal}
+                onFocus={loadSearchModal}
                 aria-label="Search"
                 className="hidden h-9 w-9 place-items-center text-[#111814]/55 transition hover:bg-[#111814]/6 hover:text-[#111814] dark:text-[#eef1ec]/55 dark:hover:bg-[#eef1ec]/10 dark:hover:text-[#eef1ec] lg:grid"
               >
@@ -168,7 +176,13 @@ export default function Navbar() {
           </div>
         </div>
       </header>
-      {searchOpen && <SearchModal open onClose={() => setSearchOpen(false)} />}
+      {searchOpen && (
+        // Own boundary: without it the modal's load would fall through to
+        // App's route-level Suspense and blank the whole page behind it.
+        <Suspense fallback={null}>
+          <SearchModal open onClose={() => setSearchOpen(false)} />
+        </Suspense>
+      )}
     </>
   );
 }

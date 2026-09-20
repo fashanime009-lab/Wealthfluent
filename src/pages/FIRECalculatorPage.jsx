@@ -5,20 +5,12 @@ import { useState, useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcSection from "@/components/calculators/CalcSection";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
+import GrowthChart from "@/components/calculators/GrowthChart";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
@@ -176,23 +168,15 @@ export default function FIRECalculatorPage() {
               Projected wealth growth over time based on your inputs.
             </p>
             <div className="mt-6 h-[300px] w-full border border-[#111814]/12 bg-[#ffffff] p-4 dark:border-[#eef1ec]/12 dark:bg-[#0b1210] md:h-[380px] md:p-6">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={results.chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-[#111814]/10 dark:text-[#eef1ec]/10" />
-                  <XAxis dataKey="age" stroke="currentColor" className="text-[#111814]/45 dark:text-[#eef1ec]/45" tick={{ fontSize: 12 }} />
-                  <YAxis
-                    stroke="currentColor"
-                    className="text-[#111814]/45 dark:text-[#eef1ec]/45"
-                    tick={{ fontSize: 12 }}
-                    tickFormatter={(value) => formatCurrency(value, settings.currency, true)}
-                  />
-                  <Tooltip
-                    formatter={(value) => fmt(value)}
-                    labelFormatter={(label) => `Age: ${label}`}
-                  />
-                  <Line type="monotone" dataKey="wealth" stroke="#047857" strokeWidth={2} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
+              <GrowthChart
+                data={results.chartData}
+                xKey="age"
+                yKey="wealth"
+                formatAxis={(value) => formatCurrency(value, settings.currency, true)}
+                formatValue={fmt}
+                formatLabel={(age) => `Age: ${age}`}
+                ariaLabel={`Projected wealth by age: ${fmt(results.chartData[0]?.wealth ?? 0)} at age ${results.chartData[0]?.age} rising to ${fmt(results.totalWealth)} at age ${formData.retirementAge}`}
+              />
             </div>
           </div>
 
