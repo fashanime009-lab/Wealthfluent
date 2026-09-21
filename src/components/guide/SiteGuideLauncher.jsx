@@ -5,6 +5,7 @@ import { Compass, X } from "lucide-react";
 const loadSiteGuide = () => import("./SiteGuide");
 const SiteGuide = lazy(loadSiteGuide);
 import { getItem, setItem } from "@/utils/safeStorage";
+import { isPrerendering } from "@/utils/prerender";
 
 const HINT_SEEN_KEY = "finaiw-guide-hint-seen";
 const COOKIE_CONSENT_KEY = "finaiw-cookie-consent";
@@ -23,6 +24,8 @@ export default function SiteGuideLauncher() {
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
     if (getItem(HINT_SEEN_KEY)) return undefined;
+    // Same reason as the cookie banner: a timed hint must not race the snapshot.
+    if (isPrerendering()) return undefined;
     const t = setTimeout(() => setShowHint(true), 2200);
     return () => clearTimeout(t);
   }, []);
@@ -61,7 +64,7 @@ export default function SiteGuideLauncher() {
       )}
 
       {!open && showHint && (
-        <div className="absolute bottom-full right-0 mb-3 w-[220px] border border-[#eef1ec]/15 bg-[#0e1512] p-3.5">
+        <div data-runtime-only="site-guide-hint" className="absolute bottom-full right-0 mb-3 w-[220px] border border-[#eef1ec]/15 bg-[#0e1512] p-3.5">
           <button
             onClick={dismissHint}
             aria-label="Dismiss"

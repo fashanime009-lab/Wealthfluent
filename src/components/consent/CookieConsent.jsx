@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { getItem, setItem } from "../../utils/safeStorage";
 import { updateAnalyticsConsent, updateAdConsent } from "../../lib/analytics";
+import { isPrerendering } from "../../utils/prerender";
 
 function Toggle({ checked, onChange, label }) {
   return (
@@ -80,6 +81,10 @@ export default function CookieConsent() {
       updateAnalyticsConsent(consent.analytics === true);
       return undefined;
     }
+    // Never show in the prerender snapshot: the timer below races the capture,
+    // and a dialog frozen into static HTML is dead markup that flashes at
+    // every returning visitor. Real visitors never set this flag.
+    if (isPrerendering()) return undefined;
     // Small delay so it doesn't compete with the initial page paint.
     const t = setTimeout(() => setVisible(true), 600);
     return () => clearTimeout(t);
@@ -99,16 +104,13 @@ export default function CookieConsent() {
   if (consent || !visible) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[100] flex justify-center p-4 sm:p-5">
+    <div data-runtime-only="cookie-consent" className="fixed inset-x-0 bottom-0 z-[100] flex justify-center p-4 sm:p-5">
       <div className="flex max-h-[90vh] w-full max-w-2xl flex-col border border-[#111814]/12 bg-[#eef1ec] dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
         <div className="flex flex-shrink-0 flex-col gap-4 border-b border-[#111814]/10 p-5 dark:border-[#eef1ec]/10 sm:flex-row sm:items-center">
           <div className="flex-1">
             <p className="text-[13px] leading-6 text-[#111814]/65 dark:text-[#eef1ec]/65">
-              FINAIW itself doesn't set tracking cookies. Your financial profile, goals and
-              preferences are saved only in your browser's local storage and never sent anywhere —
-              see below for exactly what that means. The two things that <em>do</em> use real
-              cookies are analytics (so we can see which tools people actually use) and
-              advertising (which is what keeps the site free).{" "}
+              FINAIW itself doesn't set tracking cookies. Analytics and advertising <em>do</em> use
+              real cookies, and it's your call whether to allow them.{" "}
               <Link
                 to="/privacy-policy"
                 className="font-semibold text-[#047857] underline decoration-[#047857]/30 underline-offset-2 dark:text-[#34d399] dark:decoration-[#34d399]/30"

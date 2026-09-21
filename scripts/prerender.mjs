@@ -29,6 +29,23 @@
  * React takes over, which is a harmless side benefit (faster first
  * paint), not a regression.
  *
+ * RUNTIME-ONLY CONTENT
+ * The snapshot must contain only what a crawler needs, never things that
+ * belong to a live visitor's session. Three layers keep it that way:
+ *   1. window.__PRERENDER__ is set before any page script runs, so
+ *      timed UI (cookie banner, first-visit hint) and live ad requests
+ *      skip themselves instead of racing the capture — see
+ *      src/utils/prerender.js.
+ *   2. stripInjectedContent() removes what third-party code injects
+ *      regardless (ad slots/iframes, ad-network scripts and their side
+ *      effects).
+ *   3. findRuntimeOnlyContent() (scripts/lib/runtimeOnlyContent.mjs)
+ *      inspects every snapshot before it is written and fails the route
+ *      — and so the build — if anything of that kind slipped through.
+ * Layer 2 matters for speed, not just tidiness: AdSense's loader injects a
+ * <script src=".../show_ads_impl.js"> into <head>, and a snapshot that keeps
+ * it ships that as a synchronous, parser-blocking script on every page.
+ *
  * HOW IT RUNS
  * Wired up as the "postbuild" script in package.json, so it fires
  * automatically every time `npm run build` runs — no separate step to
@@ -57,6 +74,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import puppeteer from "puppeteer-core";
+import { findRuntimeOnlyContent, readAllowedScriptSrcs } from "./lib/runtimeOnlyContent.mjs";
 
 // Vercel sets VERCEL=1 during both build and runtime — that's the signal
 // to use the serverless-compatible Chromium instead of a local install.
@@ -235,7 +253,38 @@ function dedupeByCapturedKey(html, pattern) {
 // unaffected: this only ever runs against the throwaway prerender
 // snapshot, and ads load fresh in their own browser once the client
 // bundle takes over.
-function stripAdContent() {
+//
+// It also drops any external <script src> the source template doesn't
+// declare. The AdSense loader injects its own show_ads_impl.js tag into
+// <head> — with no async/defer and fetchpriority="high", so kept in a
+// snapshot it becomes a synchronous, render-blocking script on every page
+// (multiple seconds on a slow connection), pinned to whatever Google build
+// was current at build time. adsbygoogle.js, which the template does keep,
+// loads its own copy at runtime anyway. The template's scripts (gtag,
+// adsbygoogle.js) are passed in and kept.
+//
+// And it undoes the layout side effect of responsive ads: AdSense sets
+// `height: auto !important` inline on <main> and the page wrappers around
+// an ad slot. The app never writes an inline !important style itself, so
+// any that exist in the snapshot are the ad script's.
+//
+// Google's ad scripts also add five <meta http-equiv="origin-trial"> tokens
+// to <head>. The site uses no origin trials, so they are pure ad-network
+// residue.
+function stripInjectedContent(allowedScriptSrcs) {
+  document.querySelectorAll('meta[http-equiv="origin-trial"]').forEach((el) => el.remove());
+  document.querySelectorAll("script[src]").forEach((el) => {
+    const src = el.getAttribute("src");
+    if (/^https?:\/\//.test(src) && !src.startsWith(location.origin) && !allowedScriptSrcs.includes(src)) {
+      el.remove();
+    }
+  });
+  document.querySelectorAll("[style]").forEach((el) => {
+    if (el.style.getPropertyValue("height") === "auto" && el.style.getPropertyPriority("height") === "important") {
+      el.style.removeProperty("height");
+      if (!el.getAttribute("style").trim()) el.removeAttribute("style");
+    }
+  });
   document
     .querySelectorAll(
       [
@@ -293,8 +342,14 @@ async function main() {
   try {
     await waitForServer(BASE_URL);
 
+    const allowedScriptSrcs = readAllowedScriptSrcs(readFileSync(path.join(ROOT, "index.html"), "utf-8"));
     const browser = await launchBrowser();
     const page = await browser.newPage();
+    // See src/utils/prerender.js — lets timed, visitor-only UI and ad
+    // requests skip themselves.
+    await page.evaluateOnNewDocument(() => {
+      window.__PRERENDER__ = true;
+    });
 
     for (const route of routes) {
       try {
@@ -305,9 +360,16 @@ async function main() {
         await page
           .waitForSelector('meta[property="og:title"]', { timeout: 5000 })
           .catch(() => {});
-        await page.evaluate(stripAdContent);
+        await page.evaluate(stripInjectedContent, allowedScriptSrcs);
 
         const html = dedupeHeadTags(rewriteSiteUrls(await page.content()));
+
+        // Fail the route (and the build) rather than ship a snapshot with
+        // visitor-only content in it. Nothing is written for this route.
+        const problems = findRuntimeOnlyContent(html, { allowedScriptSrcs });
+        if (problems.length > 0) {
+          throw new Error(`runtime-only content in snapshot:\n      - ${problems.join("\n      - ")}`);
+        }
         const outPath =
           route === "/"
             ? path.join(DIST, "index.html")
