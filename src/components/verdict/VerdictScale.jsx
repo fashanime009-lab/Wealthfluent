@@ -20,7 +20,7 @@ export default function VerdictScale({ a, b, fmt, tone = "caution", onDark = fal
     ? { "--tone-l": color.dark, "--tone-d": color.dark }
     : { "--tone-l": color.light, "--tone-d": color.dark };
 
-  const mutedClass = onDark ? "text-[#eef1ec]/50" : "text-[#111814]/50 dark:text-[#eef1ec]/45";
+  const mutedClass = onDark ? "text-[#eef1ec]/50" : "text-[#111814]/60 dark:text-[#eef1ec]/50";
   const trackClass = onDark ? "bg-[#eef1ec]/15" : "bg-[#111814]/10 dark:bg-[#eef1ec]/15";
   const dividerClass = onDark ? "bg-[#eef1ec]/20" : "bg-[#111814]/15 dark:bg-[#eef1ec]/20";
   const ringClass = onDark ? "ring-[#052e22]" : "ring-[#eef1ec] dark:ring-[#0b1210]";

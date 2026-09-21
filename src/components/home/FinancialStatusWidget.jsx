@@ -44,8 +44,8 @@ export default function FinancialStatusWidget() {
   return (
     <div className="rounded-lg border border-[#111814]/12 bg-[#ffffff] p-6 dark:border-[#eef1ec]/12 dark:bg-[#0b1210] sm:p-7">
       <div className="flex items-center justify-between">
-        <span className="text-[13px] font-medium text-[#111814]/55 dark:text-[#eef1ec]/55">Your financial status</span>
-        <Link to="/financial-profile" className="text-[12px] font-semibold text-[#111814]/55 hover:text-[#047857] dark:text-[#eef1ec]/55 dark:hover:text-[#34d399]">
+        <span className="text-[13px] font-medium text-[#111814]/60 dark:text-[#eef1ec]/55">Your financial status</span>
+        <Link to="/financial-profile" className="text-[12px] font-semibold text-[#111814]/60 hover:text-[#047857] dark:text-[#eef1ec]/55 dark:hover:text-[#34d399]">
           Update
         </Link>
       </div>
@@ -56,12 +56,12 @@ export default function FinancialStatusWidget() {
             <span className="font-mono-tech text-[22px] font-medium tabular-nums leading-none text-[#111814] dark:text-[#eef1ec]">
               {Math.round(animatedScore)}
             </span>
-            <p className="text-[9px] text-[#111814]/45 dark:text-[#eef1ec]/45">/ 100</p>
+            <p className="text-[9px] text-[#111814]/60 dark:text-[#eef1ec]/50">/ 100</p>
           </div>
         </ProgressRing>
         <div>
           <span className="text-[13px] font-semibold" style={{ color: tone.color }}>{tone.label}</span>
-          <p className="mt-1.5 text-[13px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+          <p className="mt-1.5 text-[13px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
             Computed from your real income, expenses, assets and debt.
           </p>
         </div>
@@ -71,7 +71,7 @@ export default function FinancialStatusWidget() {
         {metrics.map((m) => (
           <div key={m.label}>
             <p className="font-mono-tech text-[15px] tabular-nums text-[#111814] dark:text-[#eef1ec]">{m.value}</p>
-            <p className="text-[11.5px] text-[#111814]/45 dark:text-[#eef1ec]/45">{m.label}</p>
+            <p className="text-[11.5px] text-[#111814]/60 dark:text-[#eef1ec]/50">{m.label}</p>
           </div>
         ))}
       </div>
@@ -91,13 +91,13 @@ function EmptyStatus() {
   return (
     <div className="rounded-lg border border-[#111814]/12 bg-[#ffffff] p-6 dark:border-[#eef1ec]/12 dark:bg-[#0b1210] sm:p-7">
       <div className="flex items-center justify-between">
-        <span className="text-[13px] font-medium text-[#111814]/55 dark:text-[#eef1ec]/55">Your financial status</span>
-        <span className="text-[12px] text-[#111814]/40 dark:text-[#eef1ec]/40">Not set up</span>
+        <span className="text-[13px] font-medium text-[#111814]/60 dark:text-[#eef1ec]/55">Your financial status</span>
+        <span className="text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">Not set up</span>
       </div>
 
       <div className="mt-7 py-2">
         <h3 className="font-display text-[18px] font-bold text-[#111814] dark:text-[#eef1ec]">See your real financial status</h3>
-        <p className="mt-2 max-w-xs text-[13px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+        <p className="mt-2 max-w-xs text-[13px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
           Five numbers — income, expenses, assets, debt, emergency fund — for a genuine health score, not a guess.
         </p>
       </div>

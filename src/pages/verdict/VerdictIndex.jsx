@@ -112,7 +112,7 @@ export default function VerdictIndex() {
             </div>
 
             <div className="min-w-0">
-              <p className="mb-3 text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">{d.example}</p>
+              <p className="mb-3 text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">{d.example}</p>
               <VerdictScale a={d.a} b={d.b} fmt={fmt} tone={d.tone} />
             </div>
           </Link>

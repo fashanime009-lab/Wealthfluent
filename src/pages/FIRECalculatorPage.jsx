@@ -151,7 +151,7 @@ export default function FIRECalculatorPage() {
                   </p>
                 </div>
               </div>
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 These projections are for illustrative purposes only and do not guarantee actual returns. Market
                 returns are subject to volatility and past performance does not indicate future results. Please
                 consult a certified financial advisor for personalised advice. The FIRE number assumes the 4%

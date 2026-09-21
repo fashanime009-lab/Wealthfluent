@@ -141,7 +141,7 @@ export default function AnnualRetirementIncomePage() {
                 <CalcStat label="Post-retirement growth rate" value={`${postRetGrowthRate}%`} />
                 <CalcStat label="Payout period" value={`${yearsToPayOut} yrs`} />
               </div>
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Please note that these calculators are for illustrations only and do not represent actual returns.
                 Investment returns are not guaranteed. Actual retirement income depends on investment performance,
                 inflation, taxes, fees, and future market conditions.

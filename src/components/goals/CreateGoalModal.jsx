@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import Modal from "@/components/ui/Modal";
 import { createPersonalGoal, GOAL_CATEGORIES } from "@/services/personalGoals";
 
 const inputClass =
   "mt-1.5 w-full border border-[#111814]/15 bg-transparent px-4 py-3 text-[14px] text-[#111814] outline-none focus:border-[#047857] dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:focus:border-[#34d399]";
-const labelClass = "text-[12px] font-semibold text-[#111814]/55 dark:text-[#eef1ec]/55";
+const labelClass = "text-[12px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/55";
 
 export default function CreateGoalModal({ open, onClose, onCreated }) {
+  const id = useId();
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState(GOAL_CATEGORIES[0].id);
   const [targetAmount, setTargetAmount] = useState("");
@@ -42,8 +43,9 @@ export default function CreateGoalModal({ open, onClose, onCreated }) {
     <Modal open={open} onClose={onClose} title="Create a goal">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className={labelClass}>What are you saving for?</label>
+          <label htmlFor={`${id}-title`} className={labelClass}>What are you saving for?</label>
           <input
+            id={`${id}-title`}
             type="text"
             required
             value={title}
@@ -54,8 +56,8 @@ export default function CreateGoalModal({ open, onClose, onCreated }) {
         </div>
 
         <div>
-          <label className={labelClass}>Category</label>
-          <select value={category} onChange={(e) => setCategory(e.target.value)} className={inputClass}>
+          <label htmlFor={`${id}-category`} className={labelClass}>Category</label>
+          <select id={`${id}-category`} value={category} onChange={(e) => setCategory(e.target.value)} className={inputClass}>
             {GOAL_CATEGORIES.map((c) => (
               <option key={c.id} value={c.id}>{c.label}</option>
             ))}
@@ -64,8 +66,9 @@ export default function CreateGoalModal({ open, onClose, onCreated }) {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className={labelClass}>Target amount</label>
+            <label htmlFor={`${id}-target`} className={labelClass}>Target amount</label>
             <input
+              id={`${id}-target`}
               type="number"
               required
               min="1"
@@ -76,8 +79,9 @@ export default function CreateGoalModal({ open, onClose, onCreated }) {
             />
           </div>
           <div>
-            <label className={labelClass}>Already saved (optional)</label>
+            <label htmlFor={`${id}-saved`} className={labelClass}>Already saved (optional)</label>
             <input
+              id={`${id}-saved`}
               type="number"
               min="0"
               value={startingAmount}
@@ -89,8 +93,9 @@ export default function CreateGoalModal({ open, onClose, onCreated }) {
         </div>
 
         <div>
-          <label className={labelClass}>Target date (optional)</label>
+          <label htmlFor={`${id}-date`} className={labelClass}>Target date (optional)</label>
           <input
+            id={`${id}-date`}
             type="date"
             value={targetDate}
             onChange={(e) => setTargetDate(e.target.value)}

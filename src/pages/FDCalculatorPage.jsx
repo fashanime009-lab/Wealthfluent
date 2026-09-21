@@ -130,7 +130,7 @@ export default function FDCalculatorPage() {
                 <CalcStat label="Interest earned" value={fmt(interestEarned)} share={maturityAmount > 0 ? (interestEarned / maturityAmount) * 100 : 0} tone="signal" />
                 <CalcStat label="Initial deposit" value={fmt(principal)} share={maturityAmount > 0 ? (principal / maturityAmount) * 100 : 0} />
               </div>
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Please note that these calculators are for illustrations only and do not represent actual returns.
                 Interest rates may vary across banks and financial institutions, and actual returns depend on
                 applicable rates and compounding frequency.

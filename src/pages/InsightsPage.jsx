@@ -115,7 +115,7 @@ export default function InsightsPage() {
 
         {personal.length > 0 && (
           <div className="mt-12">
-            <h2 className="text-[13px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">Based on your goals</h2>
+            <h2 className="text-[13px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">Based on your goals</h2>
             <div className="mt-2 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">
               {personal.map((card) => (
                 <InsightRow key={card.id} card={card} fmt={fmt} />
@@ -125,7 +125,7 @@ export default function InsightsPage() {
         )}
 
         <div className="mt-12">
-          <h2 className="text-[13px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">General insights</h2>
+          <h2 className="text-[13px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">General insights</h2>
           <div className="mt-2 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">
             {INSIGHT_CARDS.map((card) => (
               <InsightRow key={card.id} card={card} fmt={fmt} />

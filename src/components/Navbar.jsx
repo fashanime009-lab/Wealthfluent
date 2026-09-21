@@ -77,7 +77,7 @@ export default function Navbar() {
                     `text-[13.5px] font-semibold transition ${
                       isActive
                         ? "text-[#111814] dark:text-[#eef1ec]"
-                        : "text-[#111814]/50 hover:text-[#111814] dark:text-[#eef1ec]/50 dark:hover:text-[#eef1ec]"
+                        : "text-[#111814]/60 hover:text-[#111814] dark:text-[#eef1ec]/50 dark:hover:text-[#eef1ec]"
                     }`
                   }
                 >
@@ -93,7 +93,7 @@ export default function Navbar() {
                 onPointerEnter={loadSearchModal}
                 onFocus={loadSearchModal}
                 aria-label="Search"
-                className="hidden h-9 w-9 place-items-center text-[#111814]/55 transition hover:bg-[#111814]/6 hover:text-[#111814] dark:text-[#eef1ec]/55 dark:hover:bg-[#eef1ec]/10 dark:hover:text-[#eef1ec] lg:grid"
+                className="hidden h-9 w-9 place-items-center text-[#111814]/60 transition hover:bg-[#111814]/6 hover:text-[#111814] dark:text-[#eef1ec]/55 dark:hover:bg-[#eef1ec]/10 dark:hover:text-[#eef1ec] lg:grid"
               >
                 <Search size={17} />
               </button>
@@ -101,7 +101,7 @@ export default function Navbar() {
               <Link
                 to="/settings"
                 aria-label="Settings"
-                className="hidden h-9 w-9 place-items-center text-[#111814]/55 transition hover:bg-[#111814]/6 hover:text-[#111814] dark:text-[#eef1ec]/55 dark:hover:bg-[#eef1ec]/10 dark:hover:text-[#eef1ec] lg:grid"
+                className="hidden h-9 w-9 place-items-center text-[#111814]/60 transition hover:bg-[#111814]/6 hover:text-[#111814] dark:text-[#eef1ec]/55 dark:hover:bg-[#eef1ec]/10 dark:hover:text-[#eef1ec] lg:grid"
               >
                 <SettingsIcon size={17} />
               </Link>

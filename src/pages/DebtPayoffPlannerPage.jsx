@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import { compareDebtStrategies } from "@/services/tools/debtPayoffStrategy";
@@ -87,7 +87,7 @@ export default function DebtPayoffPlannerPage() {
       />
 
       <div className="mx-auto max-w-[920px] px-5 py-16 sm:px-8 lg:px-12">
-        <span className="text-[13px] font-semibold" style={{ color: tone.light }}>
+        <span className="text-[13px] font-semibold text-[color:var(--tone-light)] dark:text-[color:var(--tone-bright)]" style={{ "--tone-light": tone.light, "--tone-bright": tone.bright }}>
           Tool, not a calculator
         </span>
         <h1 className="font-display mt-2 text-[32px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[40px]">
@@ -122,14 +122,16 @@ export default function DebtPayoffPlannerPage() {
 }
 
 function ExtraPaymentInput({ extraMonthly, setExtraMonthly, symbol }) {
+  const id = useId();
   return (
     <div className="mt-10 border-l-4 p-6" style={{ borderColor: tone.bright, backgroundColor: tone.panel }}>
-      <label className="text-[12px] font-semibold" style={{ color: tone.bright }}>
+      <label htmlFor={`${id}-number`} className="text-[12px] font-semibold" style={{ color: tone.bright }}>
         Extra monthly amount available, beyond everyone's minimum
       </label>
       <div className="mt-2 flex items-baseline gap-3">
         <span className="font-mono-tech text-[22px] font-medium text-[#eef1ec]">{symbol}</span>
         <input
+          id={`${id}-number`}
           type="number"
           value={extraMonthly}
           onChange={(e) => setExtraMonthly(Math.max(0, Number(e.target.value) || 0))}
@@ -138,6 +140,7 @@ function ExtraPaymentInput({ extraMonthly, setExtraMonthly, symbol }) {
       </div>
       <input
         type="range"
+        aria-label="Extra monthly amount, slider"
         min={0}
         max={100000}
         step={500}
@@ -159,15 +162,15 @@ function DebtBuilder({ debts, editingId, setEditingId, onAdd, onUpdate, onRemove
         <button
           type="button"
           onClick={onAdd}
-          className="text-[13px] font-semibold"
-          style={{ color: tone.light }}
+          className="text-[13px] font-semibold text-[color:var(--tone-light)] dark:text-[color:var(--tone-bright)]"
+          style={{ "--tone-light": tone.light, "--tone-bright": tone.bright }}
         >
           + Add a debt
         </button>
       </div>
 
       {debts.length === 0 && (
-        <p className="mt-4 border border-[#111814]/12 p-6 text-center text-[13px] text-[#111814]/45 dark:border-[#eef1ec]/12 dark:text-[#eef1ec]/45">
+        <p className="mt-4 border border-[#111814]/12 p-6 text-center text-[13px] text-[#111814]/60 dark:border-[#eef1ec]/12 dark:text-[#eef1ec]/50">
           Add every loan, credit card, or line of credit you're paying off.
         </p>
       )}
@@ -188,7 +191,7 @@ function DebtBuilder({ debts, editingId, setEditingId, onAdd, onUpdate, onRemove
                 <p className="truncate text-[14px] font-semibold text-[#111814] dark:text-[#eef1ec]">
                   {d.name || "Untitled debt"}
                 </p>
-                <p className="text-[12px] text-[#111814]/50 dark:text-[#eef1ec]/50">
+                <p className="text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">
                   {d.rate}% APR · min {fmt(d.minPayment)}/mo
                 </p>
               </div>
@@ -207,6 +210,7 @@ function DebtEditor({ debt, onUpdate, onDone, onRemove }) {
   return (
     <div className="border p-5" style={{ borderColor: tone.light }}>
       <input
+        aria-label="Debt name"
         value={debt.name}
         onChange={(e) => onUpdate(debt.id, { name: e.target.value })}
         placeholder="e.g. Credit Card, Car Loan, Personal Loan"
@@ -241,10 +245,12 @@ function DebtEditor({ debt, onUpdate, onDone, onRemove }) {
 }
 
 function NumberField({ label, value, onChange, min, max, step }) {
+  const id = useId();
   return (
     <div>
-      <label className="text-[12px] font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">{label}</label>
+      <label htmlFor={id} className="text-[12px] font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">{label}</label>
       <input
+        id={id}
         type="number"
         value={value}
         min={min}
@@ -331,25 +337,25 @@ function StrategyCard({ title, sub, strategy, nameById, fmt, highlight }) {
           </span>
         )}
       </div>
-      <p className={`mt-1 text-[12.5px] ${highlight ? "text-[#eef1ec]/55" : "text-[#111814]/50 dark:text-[#eef1ec]/50"}`}>{sub}</p>
+      <p className={`mt-1 text-[12.5px] ${highlight ? "text-[#eef1ec]/55" : "text-[#111814]/60 dark:text-[#eef1ec]/50"}`}>{sub}</p>
 
       <div className="mt-5 grid grid-cols-2 gap-4">
         <div>
           <p className={`font-mono-tech text-[20px] font-medium tabular-nums ${highlight ? "text-[#eef1ec]" : "text-[#111814] dark:text-[#eef1ec]"}`}>
             {strategy.months ?? "50+ yrs"}
           </p>
-          <p className={`text-[11.5px] ${highlight ? "text-[#eef1ec]/50" : "text-[#111814]/45 dark:text-[#eef1ec]/45"}`}>months to debt-free</p>
+          <p className={`text-[11.5px] ${highlight ? "text-[#eef1ec]/50" : "text-[#111814]/60 dark:text-[#eef1ec]/50"}`}>months to debt-free</p>
         </div>
         <div>
           <p className={`font-mono-tech text-[20px] font-medium tabular-nums ${highlight ? "text-[#eef1ec]" : "text-[#111814] dark:text-[#eef1ec]"}`}>
             {fmt(strategy.totalInterest)}
           </p>
-          <p className={`text-[11.5px] ${highlight ? "text-[#eef1ec]/50" : "text-[#111814]/45 dark:text-[#eef1ec]/45"}`}>total interest paid</p>
+          <p className={`text-[11.5px] ${highlight ? "text-[#eef1ec]/50" : "text-[#111814]/60 dark:text-[#eef1ec]/50"}`}>total interest paid</p>
         </div>
       </div>
 
       <div className="mt-5 border-t pt-4" style={{ borderColor: highlight ? "rgba(238,241,236,0.12)" : "rgba(17,24,20,0.1)" }}>
-        <p className={`text-[11px] font-semibold uppercase tracking-wide ${highlight ? "text-[#eef1ec]/45" : "text-[#111814]/40 dark:text-[#eef1ec]/40"}`}>
+        <p className={`text-[11px] font-semibold uppercase tracking-wide ${highlight ? "text-[#eef1ec]/50" : "text-[#111814]/60 dark:text-[#eef1ec]/50"}`}>
           Payoff order
         </p>
         <ol className="mt-2 space-y-1">
@@ -369,7 +375,7 @@ function Methodology() {
   return (
     <div className="mt-14 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
       <h2 className="font-display text-[15px] font-bold text-[#111814] dark:text-[#eef1ec]">How this is computed</h2>
-      <p className="mt-2 max-w-[62ch] text-[13px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+      <p className="mt-2 max-w-[62ch] text-[13px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
         Both strategies simulate month by month: interest accrues on every balance, minimum payments go out to
         every debt, and your extra amount goes entirely to the highest-priority debt still standing — smallest
         balance for snowball, highest rate for avalanche. Once a debt is paid off, its minimum payment doesn't

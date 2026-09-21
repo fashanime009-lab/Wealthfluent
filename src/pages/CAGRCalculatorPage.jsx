@@ -88,7 +88,7 @@ export default function CAGRCalculatorPage() {
               </div>
 
               {/* Disclaimer */}
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
                 CAGR calculations are based on the inputs provided and are for
                 illustrative purposes only. Past performance does not guarantee

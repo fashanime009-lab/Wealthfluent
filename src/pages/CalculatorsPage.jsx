@@ -63,7 +63,7 @@ function CalcRow({ calc }) {
             <span className="text-[12px] font-medium text-[#047857] dark:text-[#34d399]">{calc.note}</span>
           )}
         </div>
-        <p className="mt-1 max-w-[46ch] text-[13.5px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+        <p className="mt-1 max-w-[46ch] text-[13.5px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
           {calc.desc}
         </p>
       </div>
@@ -123,7 +123,7 @@ export default function CalculatorsPage() {
               className={`text-[14px] font-semibold transition ${
                 !activeCategory
                   ? "text-[#111814] dark:text-[#eef1ec]"
-                  : "text-[#111814]/40 hover:text-[#111814]/70 dark:text-[#eef1ec]/40 dark:hover:text-[#eef1ec]/70"
+                  : "text-[#111814]/60 hover:text-[#111814]/70 dark:text-[#eef1ec]/50 dark:hover:text-[#eef1ec]/70"
               }`}
             >
               All ({totalCalculators})
@@ -137,7 +137,7 @@ export default function CalculatorsPage() {
                   className={`text-[14px] font-semibold transition ${
                     active
                       ? "text-[#111814] dark:text-[#eef1ec]"
-                      : "text-[#111814]/40 hover:text-[#111814]/70 dark:text-[#eef1ec]/40 dark:hover:text-[#eef1ec]/70"
+                      : "text-[#111814]/60 hover:text-[#111814]/70 dark:text-[#eef1ec]/50 dark:hover:text-[#eef1ec]/70"
                   }`}
                 >
                   {cat.name} ({cat.count})
@@ -150,7 +150,7 @@ export default function CalculatorsPage() {
           <div className="mt-4">
             {filtered.map((category) => (
               <div key={category.id} className="border-b border-[#111814]/10 last:border-b-0 dark:border-[#eef1ec]/10">
-                <h2 className="pt-8 text-[13px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">
+                <h2 className="pt-8 text-[13px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">
                   {category.name}
                 </h2>
                 <div className="divide-y divide-[#111814]/8 dark:divide-[#eef1ec]/8">
@@ -174,13 +174,13 @@ export default function CalculatorsPage() {
                 <span className="font-mono-tech text-[22px] font-medium tabular-nums text-[#047857] dark:text-[#34d399]">
                   {stat.value}
                 </span>
-                <span className="ml-2 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">{stat.label}</span>
+                <span className="ml-2 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">{stat.label}</span>
               </div>
             ))}
           </div>
 
           <div className="mt-10 flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
-            <p className="max-w-md text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+            <p className="max-w-md text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
               These tools are for illustrative purposes and don't constitute financial advice. Consult
               a certified financial advisor for personalised guidance.
             </p>

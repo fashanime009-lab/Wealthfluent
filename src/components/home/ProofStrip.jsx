@@ -8,7 +8,7 @@ export default function ProofStrip() {
   return (
     <div className="mt-10 flex flex-wrap gap-x-8 gap-y-2">
       {POINTS.map((point) => (
-        <span key={point} className="text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">
+        <span key={point} className="text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">
           {point}
         </span>
       ))}

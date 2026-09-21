@@ -77,7 +77,7 @@ export default function SiteGuide({ onNavigate, onClose }) {
       <div className="overflow-y-auto">
         {/* Quick start steps */}
         <div className="border-b border-[#111814]/10 px-5 py-4 dark:border-[#eef1ec]/10">
-          <p className="text-[11px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">Quick start</p>
+          <p className="text-[11px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">Quick start</p>
           <ol className="mt-2.5 space-y-2">
             {STEPS.map((text, i) => (
               <li key={text} className="flex items-baseline gap-2.5">
@@ -92,7 +92,7 @@ export default function SiteGuide({ onNavigate, onClose }) {
 
         {/* Section directory */}
         <div className="px-5 py-4">
-          <p className="text-[11px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">Where to go</p>
+          <p className="text-[11px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">Where to go</p>
           <div className="mt-2 divide-y divide-[#111814]/10 dark:divide-[#eef1ec]/10">
             {SECTIONS.map((s) => (
               <Link
@@ -108,7 +108,7 @@ export default function SiteGuide({ onNavigate, onClose }) {
                   <span className="font-display text-[13.5px] font-bold text-[#111814] dark:text-[#eef1ec]">
                     {s.title}
                   </span>
-                  <p className="mt-0.5 text-[12.5px] leading-5 text-[#111814]/55 dark:text-[#eef1ec]/55">{s.desc}</p>
+                  <p className="mt-0.5 text-[12.5px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">{s.desc}</p>
                 </div>
               </Link>
             ))}
@@ -118,7 +118,7 @@ export default function SiteGuide({ onNavigate, onClose }) {
 
       {/* Still stuck footer */}
       <div className="flex flex-shrink-0 items-center justify-between gap-3 border-t border-[#111814]/10 px-5 py-3.5 dark:border-[#eef1ec]/10">
-        <p className="text-[12px] text-[#111814]/55 dark:text-[#eef1ec]/55">Still not sure where to start?</p>
+        <p className="text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/55">Still not sure where to start?</p>
         <div className="flex flex-shrink-0 gap-4">
           <Link
             to="/help"

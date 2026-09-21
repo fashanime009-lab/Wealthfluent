@@ -43,17 +43,17 @@ function ToolRow({ tool }) {
     <>
       <div className="min-w-0">
         <div className="flex flex-wrap items-baseline gap-x-2.5">
-          <h3 className="font-display text-[17px] font-bold text-[#111814] dark:text-[#eef1ec]">{tool.title}</h3>
+          <h2 className="font-display text-[17px] font-bold text-[#111814] dark:text-[#eef1ec]">{tool.title}</h2>
           {tool.popular && (
             <span className="text-[12px] font-medium text-[#047857] dark:text-[#34d399]">Popular</span>
           )}
         </div>
-        <p className="mt-1 max-w-[46ch] text-[13.5px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+        <p className="mt-1 max-w-[46ch] text-[13.5px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
           {tool.desc}
         </p>
       </div>
       <div className="min-w-0 sm:text-right">
-        <span className="font-mono-tech text-[12.5px] tabular-nums text-[#111814]/45 dark:text-[#eef1ec]/45">
+        <span className="font-mono-tech text-[12.5px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
           {tool.path ? "Open tool" : "Coming soon"}
         </span>
       </div>
@@ -115,7 +115,7 @@ export default function ToolsPage() {
               <span className="font-mono-tech text-[22px] font-medium tabular-nums text-[#047857] dark:text-[#34d399]">
                 {stat.value}
               </span>
-              <span className="ml-2 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">{stat.label}</span>
+              <span className="ml-2 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">{stat.label}</span>
             </div>
           ))}
         </div>
@@ -139,13 +139,13 @@ export default function ToolsPage() {
             {highlights.map((card) => (
               <div key={card.title}>
                 <h3 className="font-display text-[15px] font-bold text-[#111814] dark:text-[#eef1ec]">{card.title}</h3>
-                <p className="mt-1.5 text-[13px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">{card.desc}</p>
+                <p className="mt-1.5 text-[13px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">{card.desc}</p>
               </div>
             ))}
           </div>
 
           <div className="mt-10 flex flex-col items-start justify-between gap-5 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10 sm:flex-row sm:items-center">
-            <p className="max-w-md text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+            <p className="max-w-md text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
               These tools are for educational and illustrative purposes only. Always consult a
               certified financial advisor for personalised advice.
             </p>

@@ -90,7 +90,7 @@ export default function RetirementCalculatorPage() {
               >
                 Plan Your Retirement
               </button>
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Please note that these calculators are for illustrations only and do not represent actual returns.
                 Stock market returns are not fixed and cannot be predicted with certainty.
               </p>

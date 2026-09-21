@@ -122,7 +122,7 @@ export default function SitemapPage() {
           Explore all pages on FINAIW — from calculators and tools to learning resources and legal
           information.
         </p>
-        <p className="font-mono-tech mt-2 text-[12.5px] tabular-nums text-[#111814]/45 dark:text-[#eef1ec]/45">
+        <p className="font-mono-tech mt-2 text-[12.5px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
           {totalPages} pages across {sitemapSections.length} categories
         </p>
 
@@ -132,7 +132,7 @@ export default function SitemapPage() {
             <a
               key={section.title}
               href={`#${sectionAnchor(section.title)}`}
-              className="text-[14px] font-semibold text-[#111814]/40 transition hover:text-[#111814]/70 dark:text-[#eef1ec]/40 dark:hover:text-[#eef1ec]/70"
+              className="text-[14px] font-semibold text-[#111814]/60 transition hover:text-[#111814]/70 dark:text-[#eef1ec]/50 dark:hover:text-[#eef1ec]/70"
             >
               {section.title}
             </a>
@@ -147,7 +147,7 @@ export default function SitemapPage() {
               id={sectionAnchor(section.title)}
               className="scroll-mt-24 border-b border-[#111814]/10 last:border-b-0 dark:border-[#eef1ec]/10"
             >
-              <h2 className="pt-8 text-[13px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <h2 className="pt-8 text-[13px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">
                 {section.title} ({section.pages.length})
               </h2>
               <div className="divide-y divide-[#111814]/8 dark:divide-[#eef1ec]/8">
@@ -160,7 +160,7 @@ export default function SitemapPage() {
                     <span className="min-w-0 flex-shrink-0 text-[14px] font-semibold text-[#111814] dark:text-[#eef1ec]">
                       {page.name}
                     </span>
-                    <span className="min-w-0 truncate text-right text-[12.5px] text-[#111814]/50 dark:text-[#eef1ec]/50">
+                    <span className="min-w-0 truncate text-right text-[12.5px] text-[#111814]/60 dark:text-[#eef1ec]/50">
                       {page.description}
                     </span>
                   </Link>
@@ -171,7 +171,7 @@ export default function SitemapPage() {
         </div>
 
         {/* Help note */}
-        <p className="mt-10 max-w-[68ch] text-[13.5px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+        <p className="mt-10 max-w-[68ch] text-[13.5px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
           If you can't find what you need, please visit our{" "}
           <Link
             to="/help"
@@ -189,7 +189,7 @@ export default function SitemapPage() {
           .
         </p>
 
-        <p className="mt-4 max-w-[68ch] text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+        <p className="mt-4 max-w-[68ch] text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
           This sitemap is also available in machine-readable format for search engines and crawlers
           at <code className="text-[#111814]/60 dark:text-[#eef1ec]/60">/sitemap.xml</code>.
         </p>

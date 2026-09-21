@@ -153,7 +153,7 @@ export default function ContactPage() {
 
           <div className="mt-12 flex flex-col gap-6 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10 sm:flex-row sm:justify-between">
             <div>
-              <p className="text-[13px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">Email us</p>
+              <p className="text-[13px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">Email us</p>
               <a
                 href="mailto:finaiw.organisation@gmail.com"
                 className="text-[14.5px] font-semibold text-[#047857] hover:underline dark:text-[#34d399]"
@@ -162,12 +162,12 @@ export default function ContactPage() {
               </a>
             </div>
             <div>
-              <p className="text-[13px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">Location</p>
+              <p className="text-[13px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">Location</p>
               <p className="text-[14.5px] font-semibold text-[#111814] dark:text-[#eef1ec]">Mumbai, India</p>
             </div>
           </div>
 
-          <p className="mt-6 text-[12.5px] text-[#111814]/45 dark:text-[#eef1ec]/45">
+          <p className="mt-6 text-[12.5px] text-[#111814]/60 dark:text-[#eef1ec]/50">
             We'll reply to you personally. We're here to help.
           </p>
         </div>

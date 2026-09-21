@@ -98,7 +98,7 @@ export default function NetWorthPercentilePage() {
                 step={Math.max(1, scale(1000))}
                 format={fmt}
               />
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Everything you own (savings, investments, property, vehicles at resale value) minus everything you
                 owe (loans, credit card balances, mortgages). Not sure? The{" "}
                 <Link to="/networth-calculator" className="font-semibold underline decoration-[#111814]/25 underline-offset-4 dark:decoration-[#eef1ec]/25">
@@ -133,7 +133,7 @@ export default function NetWorthPercentilePage() {
               ) : (
                 <div className="border border-amber-500/25 bg-amber-500/[0.06] p-6 dark:border-amber-400/20 dark:bg-[#0e1512]">
                   <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">Where you stand</p>
-                  <p className="mt-1 text-[22px] font-bold text-amber-600 dark:text-amber-400">Debts exceed assets</p>
+                  <p className="mt-1 text-[22px] font-bold text-amber-800 dark:text-amber-400">Debts exceed assets</p>
                   <p className="mt-1 text-[13.5px] text-[#111814]/65 dark:text-[#eef1ec]/65">
                     Extremely common early in life or career — this says more about life stage than trajectory. See
                     the FAQ below.
@@ -143,7 +143,7 @@ export default function NetWorthPercentilePage() {
 
               {/* Reference thresholds */}
               <div className="divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                <p className="py-3.5 text-[12px] font-semibold uppercase tracking-wide text-[#111814]/45 dark:text-[#eef1ec]/45">
+                <p className="py-3.5 text-[12px] font-semibold uppercase tracking-wide text-[#111814]/60 dark:text-[#eef1ec]/50">
                   What it takes, worldwide
                 </p>
                 {thresholds.map((t) => (
@@ -151,7 +151,7 @@ export default function NetWorthPercentilePage() {
                 ))}
               </div>
 
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
                 This is a statistical estimate calibrated to widely-cited global wealth research, not a precise
                 per-person ranking or live dataset. See "How this is calculated" below.

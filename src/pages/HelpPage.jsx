@@ -118,7 +118,7 @@ export default function HelpPage() {
             </Link>
           </div>
 
-          <p className="mt-10 border-t border-[#111814]/10 pt-6 text-[12px] leading-5 text-[#111814]/45 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/45">
+          <p className="mt-10 border-t border-[#111814]/10 pt-6 text-[12px] leading-5 text-[#111814]/60 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/50">
             <span className="font-semibold text-[#111814]/65 dark:text-[#eef1ec]/65">Disclaimer:</span> All responses are for
             educational purposes only. For personalised advice, please consult a qualified
             financial professional.

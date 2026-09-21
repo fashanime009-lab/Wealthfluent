@@ -149,7 +149,7 @@ export default function NewsPage() {
             onSubmit={searchNews}
             className="flex min-w-0 max-w-md flex-1 items-center border border-[#111814]/15 bg-[#ffffff] focus-within:border-[#047857] dark:border-[#eef1ec]/15 dark:bg-[#0b1210] dark:focus-within:border-[#34d399]"
           >
-            <Search size={16} className="ml-3.5 flex-shrink-0 text-[#111814]/40 dark:text-[#eef1ec]/40" />
+            <Search size={16} className="ml-3.5 flex-shrink-0 text-[#111814]/60 dark:text-[#eef1ec]/50" />
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
@@ -171,7 +171,7 @@ export default function NewsPage() {
                 className={`text-[14px] font-semibold capitalize transition ${
                   category === item
                     ? "text-[#111814] dark:text-[#eef1ec]"
-                    : "text-[#111814]/40 hover:text-[#111814]/70 dark:text-[#eef1ec]/40 dark:hover:text-[#eef1ec]/70"
+                    : "text-[#111814]/60 hover:text-[#111814]/70 dark:text-[#eef1ec]/50 dark:hover:text-[#eef1ec]/70"
                 }`}
               >
                 {item}
@@ -218,7 +218,7 @@ export default function NewsPage() {
                   >
                     <div className="flex flex-wrap items-baseline gap-x-2.5">
                       <span className="text-[12.5px] font-semibold text-[#047857] dark:text-[#34d399]">{article.source}</span>
-                      <span className="font-mono-tech text-[11.5px] tabular-nums text-[#111814]/40 dark:text-[#eef1ec]/40">
+                      <span className="font-mono-tech text-[11.5px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
                         {timeAgo(article.publishedAt)}
                       </span>
                     </div>
@@ -226,7 +226,7 @@ export default function NewsPage() {
                       {article.title}
                     </h2>
                     {article.description && (
-                      <p className="max-w-[68ch] text-[13.5px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+                      <p className="max-w-[68ch] text-[13.5px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
                         {article.description}
                       </p>
                     )}
@@ -250,14 +250,14 @@ export default function NewsPage() {
                   >
                     <div className="flex flex-wrap items-baseline gap-x-2.5">
                       <span className="text-[12.5px] font-semibold text-[#047857] dark:text-[#34d399]">{lesson.category}</span>
-                      <span className="font-mono-tech text-[11.5px] tabular-nums text-[#111814]/40 dark:text-[#eef1ec]/40">
+                      <span className="font-mono-tech text-[11.5px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
                         {lesson.readTime}
                       </span>
                     </div>
                     <h2 className="font-display text-[17px] font-bold leading-snug text-[#111814] dark:text-[#eef1ec]">
                       {lesson.title}
                     </h2>
-                    <p className="max-w-[68ch] text-[13.5px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+                    <p className="max-w-[68ch] text-[13.5px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
                       {lesson.summary}
                     </p>
                   </Link>
@@ -268,7 +268,7 @@ export default function NewsPage() {
         )}
 
         {loading && (
-          <p className="mt-8 text-center text-[13px] font-medium text-[#111814]/45 dark:text-[#eef1ec]/45">
+          <p className="mt-8 text-center text-[13px] font-medium text-[#111814]/60 dark:text-[#eef1ec]/50">
             Loading live stories...
           </p>
         )}

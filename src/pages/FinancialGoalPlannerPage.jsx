@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema } from "@/components/seo/schema";
 import { monthsUntil, monthsToReach, compareStrategies } from "@/engine/goalOptimizerEngine";
@@ -92,7 +92,7 @@ export default function FinancialGoalPlannerPage() {
       />
 
       <div className="mx-auto max-w-[920px] px-5 py-16 sm:px-8 lg:px-12">
-        <span className="text-[13px] font-semibold" style={{ color: tone.light }}>
+        <span className="text-[13px] font-semibold text-[color:var(--tone-light)] dark:text-[color:var(--tone-bright)]" style={{ "--tone-light": tone.light, "--tone-bright": tone.bright }}>
           Tool, not a calculator
         </span>
         <h1 className="font-display mt-2 text-[32px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[40px]">
@@ -132,14 +132,16 @@ export default function FinancialGoalPlannerPage() {
 }
 
 function BudgetInput({ budget, setBudget, symbol }) {
+  const id = useId();
   return (
     <div className="mt-10 border-l-4 p-6" style={{ borderColor: tone.bright, backgroundColor: tone.panel }}>
-      <label className="text-[12px] font-semibold" style={{ color: tone.bright }}>
+      <label htmlFor={id} className="text-[12px] font-semibold" style={{ color: tone.bright }}>
         Monthly budget available for goals
       </label>
       <div className="mt-2 flex items-baseline gap-3">
-        <span className="font-mono-tech text-[22px] text-[#eef1ec]/45">{symbol}</span>
+        <span className="font-mono-tech text-[22px] text-[#eef1ec]/50">{symbol}</span>
         <input
+          id={id}
           type="number"
           min={0}
           step={500}
@@ -148,7 +150,7 @@ function BudgetInput({ budget, setBudget, symbol }) {
           className="font-mono-tech w-full max-w-[220px] border-b border-[#eef1ec]/25 bg-transparent pb-1 text-[28px] font-medium tabular-nums text-[#eef1ec] outline-none focus:border-[#eef1ec]/60"
         />
       </div>
-      <p className="mt-2 text-[12.5px] text-[#eef1ec]/45">
+      <p className="mt-2 text-[12.5px] text-[#eef1ec]/50">
         Enter this directly — a fixed number you know you can commit every month, not pulled from
         anywhere else.
       </p>
@@ -172,7 +174,7 @@ function GoalBuilder({ goals, editingId, setEditingId, onAdd, onUpdate, onRemove
       </div>
 
       {goals.length === 0 ? (
-        <p className="mt-5 border border-dashed border-[#111814]/20 px-5 py-8 text-center text-[13.5px] text-[#111814]/55 dark:border-[#eef1ec]/20 dark:text-[#eef1ec]/55">
+        <p className="mt-5 border border-dashed border-[#111814]/20 px-5 py-8 text-center text-[13.5px] text-[#111814]/60 dark:border-[#eef1ec]/20 dark:text-[#eef1ec]/55">
           No goals yet — add one to see how the optimizer would split your budget.
         </p>
       ) : (
@@ -210,7 +212,7 @@ function GoalSummaryRow({ goal, fmt, onEdit }) {
         <p className="font-display text-[14.5px] font-bold text-[#111814] dark:text-[#eef1ec]">
           {goal.name || "Untitled goal"}
         </p>
-        <p className="mt-0.5 text-[12.5px] text-[#111814]/55 dark:text-[#eef1ec]/55">
+        <p className="mt-0.5 text-[12.5px] text-[#111814]/60 dark:text-[#eef1ec]/55">
           {fmt(goal.currentAmount)} of {fmt(goal.targetAmount)} · {goal.months} mo · {RISK_LABELS[goal.riskProfile]}
         </p>
       </div>
@@ -220,6 +222,7 @@ function GoalSummaryRow({ goal, fmt, onEdit }) {
 }
 
 function GoalEditor({ goal, onChange, onDone, onRemove }) {
+  const id = useId();
   const inputClass =
     "mt-1.5 w-full border border-[#111814]/15 bg-transparent px-3 py-2.5 font-mono-tech text-[13.5px] tabular-nums text-[#111814] outline-none focus:border-[#047857] dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:focus:border-[#34d399]";
   const labelClass = "text-[12px] font-medium text-[#111814]/60 dark:text-[#eef1ec]/60";
@@ -227,8 +230,9 @@ function GoalEditor({ goal, onChange, onDone, onRemove }) {
   return (
     <div className="border p-5" style={{ borderColor: tone.light }}>
       <div>
-        <label className={labelClass}>Goal name</label>
+        <label htmlFor={`${id}-name`} className={labelClass}>Goal name</label>
         <input
+          id={`${id}-name`}
           type="text"
           value={goal.name}
           onChange={(e) => onChange({ name: e.target.value })}
@@ -239,8 +243,9 @@ function GoalEditor({ goal, onChange, onDone, onRemove }) {
 
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label className={labelClass}>Target amount</label>
+          <label htmlFor={`${id}-target`} className={labelClass}>Target amount</label>
           <input
+            id={`${id}-target`}
             type="number"
             min={0}
             value={goal.targetAmount}
@@ -249,8 +254,9 @@ function GoalEditor({ goal, onChange, onDone, onRemove }) {
           />
         </div>
         <div>
-          <label className={labelClass}>Already saved</label>
+          <label htmlFor={`${id}-saved`} className={labelClass}>Already saved</label>
           <input
+            id={`${id}-saved`}
             type="number"
             min={0}
             value={goal.currentAmount}
@@ -259,8 +265,9 @@ function GoalEditor({ goal, onChange, onDone, onRemove }) {
           />
         </div>
         <div>
-          <label className={labelClass}>Target date</label>
+          <label htmlFor={`${id}-date`} className={labelClass}>Target date</label>
           <input
+            id={`${id}-date`}
             type="date"
             value={goal.targetDate}
             onChange={(e) => onChange({ targetDate: e.target.value })}
@@ -268,8 +275,9 @@ function GoalEditor({ goal, onChange, onDone, onRemove }) {
           />
         </div>
         <div>
-          <label className={labelClass}>Assumed growth</label>
+          <label htmlFor={`${id}-growth`} className={labelClass}>Assumed growth</label>
           <select
+            id={`${id}-growth`}
             value={goal.riskProfile}
             onChange={(e) => onChange({ riskProfile: e.target.value })}
             className={inputClass}
@@ -341,7 +349,7 @@ function StrategyComparison({ comparison }) {
       <h2 className="font-display text-[18px] font-bold text-[#111814] dark:text-[#eef1ec]">
         Three ways to split your budget
       </h2>
-      <p className="mt-1.5 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">
+      <p className="mt-1.5 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">
         Same goals, same money — scored by how much of what you said matters actually gets funded.
       </p>
 
@@ -374,8 +382,8 @@ function StrategyComparison({ comparison }) {
                   style={{ width: `${strat.score}%`, backgroundColor: isBest ? tone.light : "#111814" }}
                 />
               </div>
-              <p className="mt-3 text-[12.5px] leading-5 text-[#111814]/55 dark:text-[#eef1ec]/55">{meta.note}</p>
-              <p className="mt-2 text-[12px] font-medium text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="mt-3 text-[12.5px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">{meta.note}</p>
+              <p className="mt-2 text-[12px] font-medium text-[#111814]/60 dark:text-[#eef1ec]/50">
                 {fundedCount} of {strat.allocations.length} goals fully funded
               </p>
             </div>
@@ -414,13 +422,13 @@ function GoalPlanRow({ goal, fmt }) {
         <h3 className="font-display text-[15px] font-bold text-[#111814] dark:text-[#eef1ec]">
           {goal.name || "Untitled goal"}
         </h3>
-        <p className="mt-1 text-[12.5px] leading-5 text-[#111814]/55 dark:text-[#eef1ec]/55">
+        <p className="mt-1 text-[12.5px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">
           {fmt(goal.currentAmount)} of {fmt(goal.targetAmount)} · needs {fmt(goal.requiredMonthly)}/mo to hit its {goal.months}-mo target
         </p>
       </div>
       <div className="min-w-0 sm:text-right">
         <p className="font-mono-tech text-[15px] tabular-nums text-[#111814] dark:text-[#eef1ec]">
-          {fmt(goal.allocated)}<span className="text-[#111814]/45 dark:text-[#eef1ec]/45">/mo allocated</span>
+          {fmt(goal.allocated)}<span className="text-[#111814]/60 dark:text-[#eef1ec]/50">/mo allocated</span>
         </p>
         <p className="tone-text mt-1 text-[12.5px] font-semibold" style={{ "--tone-l": statusTone.light, "--tone-d": statusTone.dark }}>
           {reachLabel}
@@ -434,7 +442,7 @@ function Methodology() {
   return (
     <div className="mt-14 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
       <h2 className="font-display text-[15px] font-bold text-[#111814] dark:text-[#eef1ec]">How this is computed</h2>
-      <p className="mt-2 max-w-[64ch] text-[13px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+      <p className="mt-2 max-w-[64ch] text-[13px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
         Each goal's required monthly contribution is solved from its remaining amount, time left,
         and assumed growth rate (5% conservative, 9% moderate, 13% aggressive). The optimized
         strategy is a fractional-knapsack allocation: goals are ranked by "density" — importance x

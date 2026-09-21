@@ -46,7 +46,7 @@ export default function InvestmentRiskAnalyzerPage() {
       />
 
       <div className="mx-auto max-w-[720px] px-5 py-16 sm:px-8 lg:px-12">
-        <span className="text-[13px] font-semibold" style={{ color: tone.light }}>
+        <span className="text-[13px] font-semibold text-[color:var(--tone-light)] dark:text-[color:var(--tone-bright)]" style={{ "--tone-light": tone.light, "--tone-bright": tone.bright }}>
           Tool, not a calculator
         </span>
         <h1 className="font-display mt-2 text-[32px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[40px]">
@@ -72,14 +72,14 @@ function QuestionStep({ question, step, total, onAnswer, onBack }) {
   return (
     <div className="mt-10">
       <div className="flex items-center justify-between">
-        <span className="font-mono-tech text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">
+        <span className="font-mono-tech text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">
           Question {step + 1} of {total}
         </span>
         {step > 0 && (
           <button
             type="button"
             onClick={onBack}
-            className="text-[12px] font-semibold text-[#111814]/55 hover:text-[#111814] dark:text-[#eef1ec]/55 dark:hover:text-[#eef1ec]"
+            className="text-[12px] font-semibold text-[#111814]/60 hover:text-[#111814] dark:text-[#eef1ec]/55 dark:hover:text-[#eef1ec]"
           >
             Back
           </button>
@@ -139,10 +139,10 @@ function ResultView({ result, hasProfile, onRestart }) {
           <ScoreBlock label="Capacity" sub="what your finances can absorb" score={capacity} category={capacityCategory} />
         ) : (
           <div className="border border-[#111814]/15 p-5 dark:border-[#eef1ec]/15">
-            <p className="text-[13px] font-semibold text-[#111814]/55 dark:text-[#eef1ec]/55">Capacity — not available</p>
-            <p className="mt-2 text-[12.5px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+            <p className="text-[13px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/55">Capacity — not available</p>
+            <p className="mt-2 text-[12.5px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
               Set up your{" "}
-              <Link to="/financial-profile" className="font-semibold underline decoration-current/30 underline-offset-2" style={{ color: tone.light }}>
+              <Link to="/financial-profile" className="font-semibold underline decoration-current/30 underline-offset-2 text-[color:var(--tone-light)] dark:text-[color:var(--tone-bright)]" style={{ "--tone-light": tone.light, "--tone-bright": tone.bright }}>
                 financial profile
               </Link>{" "}
               to see how much risk you can actually afford, not just how you feel about it.
@@ -155,7 +155,7 @@ function ResultView({ result, hasProfile, onRestart }) {
         <h3 className="font-display text-[17px] font-bold text-[#111814] dark:text-[#eef1ec]">
           Model allocation for {finalCategory.label}
         </h3>
-        <p className="mt-1.5 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">
+        <p className="mt-1.5 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">
           Illustrative expected return: {allocation.expectedReturn} per year. A model, not personalized advice.
         </p>
 
@@ -176,7 +176,7 @@ function ResultView({ result, hasProfile, onRestart }) {
               <span className="font-mono-tech text-[17px] font-medium tabular-nums text-[#111814] dark:text-[#eef1ec]">
                 {allocation[key]}%
               </span>
-              <p className="mt-0.5 text-[12px] text-[#111814]/55 dark:text-[#eef1ec]/55">{ASSET_LABELS[key]}</p>
+              <p className="mt-0.5 text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/55">{ASSET_LABELS[key]}</p>
             </div>
           ))}
         </div>
@@ -209,13 +209,13 @@ function ScoreBlock({ label, sub, score, category }) {
     <div className="border border-[#111814]/15 p-5 dark:border-[#eef1ec]/15">
       <div className="flex items-baseline justify-between">
         <p className="text-[13px] font-semibold text-[#111814] dark:text-[#eef1ec]">{label}</p>
-        <span className="font-mono-tech text-[13px] tabular-nums text-[#111814]/55 dark:text-[#eef1ec]/55">{score}/100</span>
+        <span className="font-mono-tech text-[13px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/55">{score}/100</span>
       </div>
-      <p className="mt-1 text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">{sub}</p>
+      <p className="mt-1 text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">{sub}</p>
       <div className="mt-3 h-1.5 w-full bg-[#111814]/10 dark:bg-[#eef1ec]/10">
         <div className="h-full" style={{ width: `${score}%`, backgroundColor: tone.light }} />
       </div>
-      <p className="mt-2 text-[12.5px] font-semibold" style={{ color: tone.light }}>
+      <p className="mt-2 text-[12.5px] font-semibold text-[color:var(--tone-light)] dark:text-[color:var(--tone-bright)]" style={{ "--tone-light": tone.light, "--tone-bright": tone.bright }}>
         {category.label}
       </p>
     </div>
@@ -226,7 +226,7 @@ function Methodology() {
   return (
     <div className="mt-14 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
       <h2 className="font-display text-[15px] font-bold text-[#111814] dark:text-[#eef1ec]">How this is computed</h2>
-      <p className="mt-2 max-w-[62ch] text-[13px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+      <p className="mt-2 max-w-[62ch] text-[13px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
         Willingness is a weighted score across 8 questions — how you'd react to a real 20% drop
         counts for more than, say, your liquidity needs. Capacity reuses the same rubric behind
         your financial health score: savings rate, emergency fund coverage, debt-to-income, and net

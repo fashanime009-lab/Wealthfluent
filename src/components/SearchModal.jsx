@@ -67,7 +67,7 @@ export default function SearchModal({ open, onClose }) {
         onKeyDown={handleKeyDown}
       >
         <div className="flex items-center gap-3 border-b border-[#111814]/10 px-5 py-4 dark:border-[#eef1ec]/10">
-          <Search size={18} className="flex-shrink-0 text-[#111814]/40 dark:text-[#eef1ec]/40" />
+          <Search size={18} className="flex-shrink-0 text-[#111814]/60 dark:text-[#eef1ec]/50" />
           <input
             ref={inputRef}
             type="text"
@@ -83,7 +83,7 @@ export default function SearchModal({ open, onClose }) {
             type="button"
             onClick={onClose}
             aria-label="Close search"
-            className="flex-shrink-0 text-[#111814]/40 transition hover:text-[#111814] dark:text-[#eef1ec]/40 dark:hover:text-[#eef1ec]"
+            className="flex-shrink-0 text-[#111814]/60 transition hover:text-[#111814] dark:text-[#eef1ec]/50 dark:hover:text-[#eef1ec]"
           >
             <X size={16} />
           </button>
@@ -91,7 +91,7 @@ export default function SearchModal({ open, onClose }) {
 
         <div className="max-h-[60vh] overflow-y-auto">
           {results.length === 0 ? (
-            <p className="px-5 py-8 text-center text-[13.5px] text-[#111814]/45 dark:text-[#eef1ec]/45">
+            <p className="px-5 py-8 text-center text-[13.5px] text-[#111814]/60 dark:text-[#eef1ec]/50">
               No pages match "{query}".
             </p>
           ) : (
@@ -110,11 +110,11 @@ export default function SearchModal({ open, onClose }) {
                     <span className="font-display truncate text-[14px] font-bold text-[#111814] dark:text-[#eef1ec]">
                       {item.title}
                     </span>
-                    <span className="flex-shrink-0 text-[11.5px] text-[#111814]/40 dark:text-[#eef1ec]/40">
+                    <span className="flex-shrink-0 text-[11.5px] text-[#111814]/60 dark:text-[#eef1ec]/50">
                       {item.category}
                     </span>
                   </div>
-                  <p className="mt-0.5 truncate text-[12.5px] text-[#111814]/55 dark:text-[#eef1ec]/55">
+                  <p className="mt-0.5 truncate text-[12.5px] text-[#111814]/60 dark:text-[#eef1ec]/55">
                     {item.description}
                   </p>
                 </button>

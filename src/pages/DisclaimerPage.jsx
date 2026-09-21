@@ -33,13 +33,13 @@ export default function DisclaimerPage() {
 
       <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
         <div className="mx-auto max-w-[760px] px-5 py-16 sm:px-8 lg:px-12">
-          <p className="text-[13px] font-semibold text-[#111814]/45 dark:text-[#eef1ec]/45">
+          <p className="text-[13px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">
             FINAIW — Financial Intelligence, AI for Wealth
           </p>
           <h1 className="font-display mt-2 text-[34px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[42px]">
             Disclaimer
           </h1>
-          <p className="mt-3 font-mono-tech text-[13px] tabular-nums text-[#111814]/45 dark:text-[#eef1ec]/45">
+          <p className="mt-3 font-mono-tech text-[13px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
             Last updated: June 21, 2026
           </p>
 
@@ -226,13 +226,13 @@ export default function DisclaimerPage() {
                   finaiw.organisation@gmail.com
                 </a>
               </p>
-              <p className="text-[12.5px] text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12.5px] text-[#111814]/60 dark:text-[#eef1ec]/50">
                 (This email is for informational purposes and does not constitute financial advice.)
               </p>
             </Section>
           </div>
 
-          <div className="mt-10 border-t border-[#111814]/10 pt-6 text-[12px] leading-5 text-[#111814]/45 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/45">
+          <div className="mt-10 border-t border-[#111814]/10 pt-6 text-[12px] leading-5 text-[#111814]/60 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/50">
             <p>
               <span className="font-semibold text-[#111814]/65 dark:text-[#eef1ec]/65">Important:</span> Nothing on this website
               should be construed as an offer, solicitation, or recommendation to buy or sell

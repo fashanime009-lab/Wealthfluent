@@ -158,7 +158,7 @@ export default function CalculatorsSection() {
                   </span>
                 )}
                 <h3 className="font-display mt-0.5 text-[16px] font-bold text-[#111814] dark:text-[#eef1ec]">{calc.title}</h3>
-                <p className="mt-1 max-w-[42ch] text-[13px] leading-5 text-[#111814]/55 dark:text-[#eef1ec]/55">{calc.desc}</p>
+                <p className="mt-1 max-w-[42ch] text-[13px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">{calc.desc}</p>
               </div>
               <div className="min-w-0 sm:text-right">
                 <p className="font-mono-tech text-[13px] tabular-nums text-[#111814]/70 dark:text-[#eef1ec]/70">{calc.example}</p>

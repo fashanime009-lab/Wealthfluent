@@ -49,7 +49,7 @@ export default function SettingsPage() {
                     <h3 className="font-semibold text-[#111814] dark:text-[#eef1ec]">
                       Preferred Currency
                     </h3>
-                    <p className="mt-1 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">
+                    <p className="mt-1 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">
                       Used across every calculator and dashboard.{" "}
                       {settings.region === "auto"
                         ? "Auto-detected from your device's timezone — pick one below to lock it in."
@@ -68,6 +68,7 @@ export default function SettingsPage() {
                 </div>
 
                 <select
+                  aria-label="Preferred currency"
                   value={settings.currency}
                   onChange={(e) => setCurrencyManually(e.target.value)}
                   className="w-full border border-[#111814]/15 bg-transparent px-4 py-2.5 text-[13.5px] font-medium text-[#111814] outline-none transition focus:border-[#047857] dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:focus:border-[#34d399] sm:w-auto"

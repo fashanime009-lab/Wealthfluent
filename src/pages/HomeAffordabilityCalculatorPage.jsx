@@ -132,7 +132,7 @@ export default function HomeAffordabilityCalculatorPage() {
                   step={1000}
                   format={fmt}
                 />
-                <p className="mt-2 text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+                <p className="mt-2 text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                   Living expenses only — rent, food, utilities. Don't include an existing EMI here; that's the next field.
                 </p>
               </div>
@@ -189,7 +189,7 @@ export default function HomeAffordabilityCalculatorPage() {
                     tone === "signal"
                       ? "text-[#047857] dark:text-[#34d399]"
                       : tone === "amber"
-                        ? "text-amber-600 dark:text-amber-400"
+                        ? "text-amber-800 dark:text-amber-400"
                         : "text-red-600 dark:text-red-400"
                   }`}
                 >
@@ -213,7 +213,7 @@ export default function HomeAffordabilityCalculatorPage() {
               </div>
 
               {/* Disclaimer */}
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
                 This calculator gives an illustrative estimate only. Actual loan eligibility depends on the lender's own
                 income, credit score, and policy checks.

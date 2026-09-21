@@ -118,7 +118,7 @@ export default function EmergencyFundCalculatorPage() {
                   step={1}
                   suffix=" months"
                 />
-                <p className="mt-2 text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+                <p className="mt-2 text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                   Financial experts recommend 3–6 months of expenses for most people, or up to 12 months for higher-risk situations.
                 </p>
               </div>
@@ -143,7 +143,7 @@ export default function EmergencyFundCalculatorPage() {
                   step={1000}
                   format={fmt}
                 />
-                <p className="mt-2 text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+                <p className="mt-2 text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                   Optional: Include rental income, freelance earnings, or any additional monthly income.
                 </p>
               </div>
@@ -169,12 +169,12 @@ export default function EmergencyFundCalculatorPage() {
                   </>
                 ) : (
                   <>
-                    <p className="mt-1 text-[22px] font-bold text-amber-600 dark:text-amber-400">Need to Save More</p>
+                    <p className="mt-1 text-[22px] font-bold text-amber-800 dark:text-amber-400">Need to Save More</p>
                     <p className="mt-1 text-[13.5px] text-[#111814]/65 dark:text-[#eef1ec]/65">
                       Your savings cover <strong className="text-[#111814] dark:text-[#eef1ec]">{results.monthsCovered} months</strong> of expenses.
                     </p>
                     <p className="text-[13.5px] text-[#111814]/65 dark:text-[#eef1ec]/65">
-                      Shortfall: <span className="font-mono-tech font-bold tabular-nums text-amber-600 dark:text-amber-400">{fmt(results.shortfall)}</span>
+                      Shortfall: <span className="font-mono-tech font-bold tabular-nums text-amber-800 dark:text-amber-400">{fmt(results.shortfall)}</span>
                     </p>
                   </>
                 )}
@@ -190,7 +190,7 @@ export default function EmergencyFundCalculatorPage() {
               </div>
 
               {/* Disclaimer */}
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
                 This calculator is for illustrative purposes only. Your actual emergency fund needs may vary based on your personal situation.
               </p>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import { getFinancialProfile, saveFinancialProfile, computeFinancialHealth } from "@/engine/financialProfile";
@@ -88,7 +88,7 @@ export default function FinancialHealthCheckupPage() {
       />
 
       <div className="mx-auto max-w-[920px] px-5 py-16 sm:px-8 lg:px-12">
-        <span className="text-[13px] font-semibold" style={{ color: tone.light }}>
+        <span className="text-[13px] font-semibold text-[color:var(--tone-light)] dark:text-[color:var(--tone-bright)]" style={{ "--tone-light": tone.light, "--tone-bright": tone.bright }}>
           Tool, not a calculator
         </span>
         <h1 className="font-display mt-2 text-[32px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[40px]">
@@ -110,8 +110,8 @@ export default function FinancialHealthCheckupPage() {
             <button
               type="button"
               onClick={handleSave}
-              className="w-full text-center text-[12.5px] font-semibold"
-              style={{ color: tone.light }}
+              className="w-full text-center text-[12.5px] font-semibold text-[color:var(--tone-light)] dark:text-[color:var(--tone-bright)]"
+              style={{ "--tone-light": tone.light, "--tone-bright": tone.bright }}
             >
               {saved ? "Saved to your Financial Profile ✓" : "Save to my Financial Profile"}
             </button>
@@ -122,7 +122,7 @@ export default function FinancialHealthCheckupPage() {
               <p className="text-[13px] text-[#eef1ec]/55">Your score</p>
               <p className="font-mono-tech mt-1 text-[46px] font-medium leading-none tabular-nums" style={{ color: tone.bright }}>
                 {health.score}
-                <span className="text-[20px] text-[#eef1ec]/40">/100</span>
+                <span className="text-[20px] text-[#eef1ec]/50">/100</span>
               </p>
               <p className="mt-3 text-[15px] font-semibold text-[#eef1ec]">{level.label}</p>
             </div>
@@ -133,7 +133,7 @@ export default function FinancialHealthCheckupPage() {
               ))}
             </div>
 
-            <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+            <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
               <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
               This score is an illustrative model based on common financial-planning benchmarks, not personalized
               financial advice.
@@ -150,16 +150,19 @@ export default function FinancialHealthCheckupPage() {
 }
 
 function Field({ label, value, onChange, fmt }) {
+  const id = useId();
   return (
     <div>
       <div className="flex items-baseline justify-between gap-3">
-        <label className="text-[13px] font-medium text-[#111814]/70 dark:text-[#eef1ec]/70">{label}</label>
+        <label htmlFor={`${id}-range`} className="text-[13px] font-medium text-[#111814]/70 dark:text-[#eef1ec]/70">{label}</label>
         <span className="font-mono-tech text-[14px] font-medium tabular-nums text-[#111814] dark:text-[#eef1ec]">
           {fmt(value)}
         </span>
       </div>
       <input
+        id={`${id}-range`}
         type="range"
+        aria-valuetext={fmt(value)}
         min={0}
         max={label.includes("assets") ? 20000000 : label.includes("liabilities") ? 10000000 : 500000}
         step={1000}
@@ -169,6 +172,7 @@ function Field({ label, value, onChange, fmt }) {
       />
       <input
         type="number"
+        aria-label={`${label}, exact value`}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="mt-3 w-full border border-[#111814]/15 bg-transparent px-3 py-2 font-mono-tech text-[13.5px] tabular-nums text-[#111814] outline-none focus:border-[var(--tone)] dark:border-[#eef1ec]/15 dark:text-[#eef1ec]"
@@ -184,7 +188,7 @@ function BreakdownRow({ row, netWorth }) {
     <div className="py-3.5">
       <div className="flex items-baseline justify-between gap-4">
         <span className="text-[13.5px] text-[#111814]/65 dark:text-[#eef1ec]/65">{row.label}</span>
-        <span className="font-mono-tech text-[13px] tabular-nums text-[#111814]/50 dark:text-[#eef1ec]/50">
+        <span className="font-mono-tech text-[13px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
           {netWorth ?? row.value}
         </span>
       </div>
@@ -192,7 +196,7 @@ function BreakdownRow({ row, netWorth }) {
         <div className="h-[3px] flex-1 rounded-full bg-[#111814]/10 dark:bg-[#eef1ec]/12">
           <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: tone.light }} />
         </div>
-        <span className="font-mono-tech text-[11px] tabular-nums text-[#111814]/40 dark:text-[#eef1ec]/40">
+        <span className="font-mono-tech text-[11px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
           {row.score}/{row.max}
         </span>
       </div>
@@ -204,7 +208,7 @@ function Methodology() {
   return (
     <div className="mt-14 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
       <h2 className="font-display text-[15px] font-bold text-[#111814] dark:text-[#eef1ec]">How this is computed</h2>
-      <p className="mt-2 max-w-[62ch] text-[13px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+      <p className="mt-2 max-w-[62ch] text-[13px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
         25 points each, published so it's auditable rather than a black box. Savings rate: 20%+ scores full
         marks, scaling down to 0 at or below 0%. Emergency fund: scales linearly to full marks at 6 months of
         expenses covered. Debt-to-income: full marks under 20% of annual income, scaling down to 0 above 50%.

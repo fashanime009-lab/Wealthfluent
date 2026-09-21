@@ -259,7 +259,7 @@ export default function QuizzesPage() {
             <p className="font-mono-tech mt-1 text-[40px] font-medium leading-none tabular-nums text-[#34d399] sm:text-[46px]">
               {score}/{answeredCount || 0}
             </p>
-            <p className="mt-3 text-[12.5px] text-[#eef1ec]/45">
+            <p className="mt-3 text-[12.5px] text-[#eef1ec]/50">
               {lastUpdated
                 ? `Updated ${lastUpdated.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}`
                 : "Connecting"}
@@ -275,7 +275,7 @@ export default function QuizzesPage() {
         )}
 
         {loading && (
-          <div className="mt-10 flex items-center justify-center gap-3 text-[13.5px] font-medium text-[#111814]/55 dark:text-[#eef1ec]/55">
+          <div className="mt-10 flex items-center justify-center gap-3 text-[13.5px] font-medium text-[#111814]/60 dark:text-[#eef1ec]/55">
             <Loader2 className="animate-spin" size={18} />
             Loading live quiz questions...
           </div>
@@ -291,7 +291,7 @@ export default function QuizzesPage() {
               <article key={item.id} className="border border-[#111814]/12 bg-[#ffffff] p-6 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
                 <div className="flex items-center justify-between gap-4">
                   <span className="text-[12px] font-semibold text-[#047857] dark:text-[#34d399]">Question {index + 1}</span>
-                  <span className="text-[11.5px] text-[#111814]/45 dark:text-[#eef1ec]/45">{item.source}</span>
+                  <span className="text-[11.5px] text-[#111814]/60 dark:text-[#eef1ec]/50">{item.source}</span>
                 </div>
                 <h2 className="font-display mt-4 text-[18px] font-bold leading-snug text-[#111814] dark:text-[#eef1ec]">
                   {item.question}
@@ -331,7 +331,7 @@ export default function QuizzesPage() {
                 <div className="mt-6 flex items-center justify-between">
                   <button
                     onClick={() => chooseAnswer(item.id, "")}
-                    className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#111814]/55 transition hover:text-[#111814] dark:text-[#eef1ec]/55 dark:hover:text-[#eef1ec]"
+                    className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#111814]/60 transition hover:text-[#111814] dark:text-[#eef1ec]/55 dark:hover:text-[#eef1ec]"
                   >
                     <RotateCcw size={14} />
                     Reset

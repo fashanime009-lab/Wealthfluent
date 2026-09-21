@@ -98,7 +98,7 @@ export default function Footer() {
       <div className="mx-auto max-w-[1240px] px-5 pb-8 pt-14 sm:px-8 lg:px-10">
         <div className="flex flex-col gap-6 border-b border-[#eef1ec]/10 pb-10 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="font-display text-[20px] font-bold text-[#eef1ec]">Sharper money decisions, every Sunday.</h3>
+            <h2 className="font-display text-[20px] font-bold text-[#eef1ec]">Sharper money decisions, every Sunday.</h2>
             <p className="mt-1.5 max-w-md text-[13.5px] leading-6 text-[#eef1ec]/50">
               Market updates and new calculators — straight to your inbox, no spam.
             </p>
@@ -152,7 +152,7 @@ export default function Footer() {
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             {footerColumns.map((column) => (
               <div key={column.title}>
-                <h4 className="text-[12.5px] font-semibold text-[#eef1ec]/40">{column.title}</h4>
+                <h3 className="text-[12.5px] font-semibold text-[#eef1ec]/50">{column.title}</h3>
                 <ul className="mt-3.5 space-y-2.5">
                   {column.links.map((link) => (
                     <li key={link.label}>
@@ -167,7 +167,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-[#eef1ec]/10 pt-6 text-[12.5px] font-medium text-[#eef1ec]/40 sm:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-[#eef1ec]/10 pt-6 text-[12.5px] font-medium text-[#eef1ec]/50 sm:flex-row">
           <p>© {new Date().getFullYear()} FINAIW. All rights reserved.</p>
           <p>Your numbers stay on your device — 100% free, no signup.</p>
         </div>

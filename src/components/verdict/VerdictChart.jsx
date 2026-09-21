@@ -42,8 +42,8 @@ export default function VerdictChart({ data, keys, colors, labels }) {
             <circle key={key} cx={x(data.length - 1)} cy={y(last[key])} r="3.5" fill={colors[ki]} />
           );
         })}
-        <text x={padding.left} y={height - 4} fontSize="10" fill="currentColor" className="text-[#111814]/40 dark:text-[#eef1ec]/40" fontFamily="IBM Plex Mono, monospace">Year 1</text>
-        <text x={width - padding.right} y={height - 4} fontSize="10" fill="currentColor" className="text-[#111814]/40 dark:text-[#eef1ec]/40" fontFamily="IBM Plex Mono, monospace" textAnchor="end">
+        <text x={padding.left} y={height - 4} fontSize="10" fill="currentColor" className="text-[#111814]/60 dark:text-[#eef1ec]/50" fontFamily="IBM Plex Mono, monospace">Year 1</text>
+        <text x={width - padding.right} y={height - 4} fontSize="10" fill="currentColor" className="text-[#111814]/60 dark:text-[#eef1ec]/50" fontFamily="IBM Plex Mono, monospace" textAnchor="end">
           Year {data[data.length - 1].year}
         </text>
       </svg>

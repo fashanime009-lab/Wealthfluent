@@ -29,7 +29,7 @@ export default function VerdictResult({ tone = "caution", headline, reasoning, a
         <div className="mt-6 border-t border-[#111814]/10 pt-6 dark:border-[#eef1ec]/10">
           <VerdictScale a={a} b={b} fmt={fmt} tone={tone} />
           {(a.note || b.note) && (
-            <div className="mt-2 flex items-baseline justify-between gap-4 text-[12px] text-[#111814]/50 dark:text-[#eef1ec]/50">
+            <div className="mt-2 flex items-baseline justify-between gap-4 text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">
               <span>{a.note}</span>
               <span className="text-right">{b.note}</span>
             </div>

@@ -143,7 +143,7 @@ export default function WealthAgeCalculatorPage() {
               ))}
 
               {/* Disclaimer */}
-              <div className="space-y-1 border-t border-[#111814]/10 pt-6 text-[12px] leading-5 text-[#111814]/45 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/45">
+              <div className="space-y-1 border-t border-[#111814]/10 pt-6 text-[12px] leading-5 text-[#111814]/60 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/50">
                 <p>
                   <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
                   This is a motivational comparison tool, not a precise actuarial or
@@ -161,25 +161,25 @@ export default function WealthAgeCalculatorPage() {
               {/* Top stat cards */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="border border-[#111814]/12 bg-[#ffffff] p-5 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                  <p className="text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">Financial Age</p>
+                  <p className="text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">Financial Age</p>
                   <p className="font-mono-tech mt-1 text-[28px] font-bold tabular-nums text-[#047857] dark:text-[#34d399]">
                     {results.wealthAge}
                   </p>
                 </div>
                 <div className="border border-[#111814]/12 bg-[#ffffff] p-5 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                  <p className="text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">Wealth Score</p>
+                  <p className="text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">Wealth Score</p>
                   <p className="font-mono-tech mt-1 text-[28px] font-bold tabular-nums text-[#111814] dark:text-[#eef1ec]">
                     {results.wealthScore}
                   </p>
                 </div>
                 <div className="border border-[#111814]/12 bg-[#ffffff] p-5 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                  <p className="text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">Savings Rate</p>
+                  <p className="text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">Savings Rate</p>
                   <p className="font-mono-tech mt-1 text-[28px] font-bold tabular-nums text-[#111814] dark:text-[#eef1ec]">
                     {Math.round(results.savingsRate)}%
                   </p>
                 </div>
                 <div className="border border-[#111814]/12 bg-[#ffffff] p-5 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                  <p className="text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">Net Worth</p>
+                  <p className="text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">Net Worth</p>
                   <p className="font-mono-tech mt-1 break-words text-[20px] font-bold tabular-nums text-[#111814] dark:text-[#eef1ec]">
                     {fmt(results.netWorth)}
                   </p>
@@ -192,7 +192,7 @@ export default function WealthAgeCalculatorPage() {
                   <div className="flex justify-center">
                     <div className="flex h-[150px] w-[150px] items-center justify-center rounded-full border-[8px] border-[#047857] bg-[#eef1ec] dark:border-[#34d399] dark:bg-[#0e1512]">
                       <div className="text-center">
-                        <p className="text-[12px] text-[#111814]/55 dark:text-[#eef1ec]/55">Wealth Score</p>
+                        <p className="text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/55">Wealth Score</p>
                         <p className="font-mono-tech mt-1 text-[34px] font-bold tabular-nums text-[#047857] dark:text-[#34d399]">
                           {results.wealthScore}
                         </p>

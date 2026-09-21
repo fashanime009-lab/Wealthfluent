@@ -138,7 +138,7 @@ export default function FutureValueCalculatorPage() {
                   </div>
                 </div>
               </div>
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Please note that these calculators are for illustrations only and do not represent actual returns.
                 Stock Market does not have a fixed rate of return and it is not possible to predict the rate of return.
               </p>

@@ -184,8 +184,9 @@ const currency = settings.currency;
                     .replace(/(\d+)/g, ' $1');
                   return (
                     <div key={key} className="flex items-center gap-3">
-                      <label className="w-1/2 text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">{label}</label>
+                      <label htmlFor={`asset-${key}`} className="w-1/2 text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">{label}</label>
                       <input
+                        id={`asset-${key}`}
                         type="number"
                         min="0"
                         step="1000"
@@ -214,8 +215,9 @@ const currency = settings.currency;
                     .replace(/(\d+)/g, ' $1');
                   return (
                     <div key={key} className="flex items-center gap-3">
-                      <label className="w-1/2 text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">{label}</label>
+                      <label htmlFor={`liability-${key}`} className="w-1/2 text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">{label}</label>
                       <input
+                        id={`liability-${key}`}
                         type="number"
                         min="0"
                         step="1000"
@@ -271,7 +273,7 @@ const currency = settings.currency;
           </div>
 
           {/* Disclaimer */}
-          <p className="mt-8 text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+          <p className="mt-8 text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
             <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
             Please note that these calculators are for illustrations only and do not represent actual returns.
             Stock Market does not have a fixed rate of return and it is not possible to predict the rate of return.

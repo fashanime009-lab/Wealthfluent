@@ -129,7 +129,7 @@ export default function GrowthChart({
   if (xLabelIdx.length > 1 && x(xLabelIdx.at(-1)) - x(xLabelIdx.at(-2)) < 26) xLabelIdx.splice(-2, 1);
 
   const points = data.map((d, i) => [x(i), y(d[yKey])]);
-  const muted = "text-[#111814]/45 dark:text-[#eef1ec]/45";
+  const muted = "text-[#111814]/60 dark:text-[#eef1ec]/50";
   const label = "text-[#111814]/60 dark:text-[#eef1ec]/60";
 
   const pick = (event) => {

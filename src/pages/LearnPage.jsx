@@ -18,13 +18,13 @@ function LessonRow({ lesson, done }) {
             <span className="text-[12px] font-medium text-[#047857] dark:text-[#34d399]">Completed</span>
           )}
         </div>
-        <p className="mt-1 max-w-[46ch] text-[13.5px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+        <p className="mt-1 max-w-[46ch] text-[13.5px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
           {lesson.summary}
         </p>
       </div>
       <div className="min-w-0 sm:text-right">
-        <span className="text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">{lesson.category}</span>
-        <p className="font-mono-tech mt-1 text-[13px] tabular-nums text-[#111814]/55 dark:text-[#eef1ec]/55">
+        <span className="text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">{lesson.category}</span>
+        <p className="font-mono-tech mt-1 text-[13px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/55">
           {lesson.readTime}
         </p>
       </div>
@@ -99,7 +99,7 @@ export default function LearnPage() {
             <span className="font-mono-tech text-[22px] font-medium tabular-nums text-[#047857] dark:text-[#34d399]">
               {streak}
             </span>
-            <span className="ml-2 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">
+            <span className="ml-2 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">
               {streak === 1 ? "day streak" : "day streak"}
             </span>
           </div>
@@ -107,13 +107,13 @@ export default function LearnPage() {
             <span className="font-mono-tech text-[22px] font-medium tabular-nums text-[#047857] dark:text-[#34d399]">
               {total}/{LESSONS.length}
             </span>
-            <span className="ml-2 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">lessons completed</span>
+            <span className="ml-2 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">lessons completed</span>
           </div>
           <div>
             <span className="font-mono-tech text-[22px] font-medium tabular-nums text-[#047857] dark:text-[#34d399]">
               {categories.length}
             </span>
-            <span className="ml-2 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">categories</span>
+            <span className="ml-2 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">categories</span>
           </div>
         </div>
 
@@ -142,7 +142,7 @@ export default function LearnPage() {
             <h2 className="font-display text-[22px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">
               All lessons
             </h2>
-            <span className="font-mono-tech text-[12px] tabular-nums text-[#111814]/45 dark:text-[#eef1ec]/45">
+            <span className="font-mono-tech text-[12px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
               {filteredLessons.length} lesson{filteredLessons.length === 1 ? "" : "s"}
             </span>
           </div>
@@ -155,7 +155,7 @@ export default function LearnPage() {
               className={`text-[14px] font-semibold transition ${
                 activeCategory === "All"
                   ? "text-[#111814] dark:text-[#eef1ec]"
-                  : "text-[#111814]/40 hover:text-[#111814]/70 dark:text-[#eef1ec]/40 dark:hover:text-[#eef1ec]/70"
+                  : "text-[#111814]/60 hover:text-[#111814]/70 dark:text-[#eef1ec]/50 dark:hover:text-[#eef1ec]/70"
               }`}
             >
               All ({LESSONS.length})
@@ -171,7 +171,7 @@ export default function LearnPage() {
                   className={`text-[14px] font-semibold transition ${
                     active
                       ? "text-[#111814] dark:text-[#eef1ec]"
-                      : "text-[#111814]/40 hover:text-[#111814]/70 dark:text-[#eef1ec]/40 dark:hover:text-[#eef1ec]/70"
+                      : "text-[#111814]/60 hover:text-[#111814]/70 dark:text-[#eef1ec]/50 dark:hover:text-[#eef1ec]/70"
                   }`}
                 >
                   {category} ({count})
@@ -181,7 +181,7 @@ export default function LearnPage() {
           </div>
 
           {filteredLessons.length === 0 ? (
-            <p className="mt-8 border border-[#111814]/10 p-6 text-center text-[13px] font-medium text-[#111814]/45 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/45">
+            <p className="mt-8 border border-[#111814]/10 p-6 text-center text-[13px] font-medium text-[#111814]/60 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/50">
               No lessons in this category yet.
             </p>
           ) : (

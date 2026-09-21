@@ -48,8 +48,9 @@ export default function FinancialProfilePage() {
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
           {FIELDS.map((field) => (
             <div key={field.key}>
-              <label className="text-[13px] font-medium text-[#111814]/70 dark:text-[#eef1ec]/70">{field.label}</label>
+              <label htmlFor={`profile-${field.key}`} className="text-[13px] font-medium text-[#111814]/70 dark:text-[#eef1ec]/70">{field.label}</label>
               <input
+                id={`profile-${field.key}`}
                 type="number"
                 min="0"
                 required

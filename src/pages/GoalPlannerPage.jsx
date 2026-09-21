@@ -290,7 +290,7 @@ const currency = settings.currency;
               </div>
 
               {/* Disclaimer */}
-              <p className="mt-6 text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="mt-6 text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
                 Please note that these calculators are for illustrations only and do not represent actual returns.
                 Stock Market does not have a fixed rate of return and it is not possible to predict the rate of return.

@@ -14,7 +14,7 @@ export default function StatsStrip() {
             <span className="font-mono-tech text-[26px] font-medium tabular-nums text-[#047857] dark:text-[#34d399]">
               {stat.value}
             </span>
-            <span className="ml-2.5 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">{stat.label}</span>
+            <span className="ml-2.5 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">{stat.label}</span>
           </div>
         ))}
       </div>

@@ -27,7 +27,7 @@ export default function RelatedLinks() {
               >
                 {item.label}
               </Link>
-              {item.note && <span className="text-[#111814]/55 dark:text-[#eef1ec]/55"> — {item.note}</span>}
+              {item.note && <span className="text-[#111814]/60 dark:text-[#eef1ec]/55"> — {item.note}</span>}
             </span>
           </li>
         ))}

@@ -13,8 +13,8 @@ export default function CompactNumbersToggle() {
   return (
     <div className="flex flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-8">
       <div>
-        <h3 className="text-[14px] font-semibold text-[#111814] dark:text-[#eef1ec]">Compact numbers</h3>
-        <p className="mt-1 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">
+        <h3 id="compact-numbers-label" className="text-[14px] font-semibold text-[#111814] dark:text-[#eef1ec]">Compact numbers</h3>
+        <p className="mt-1 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">
           Show large amounts as{" "}
           <span className="font-mono-tech tabular-nums text-[#111814] dark:text-[#eef1ec]">{preview}</span> instead
           of the full figure.
@@ -24,6 +24,7 @@ export default function CompactNumbersToggle() {
       <button
         type="button"
         role="switch"
+        aria-labelledby="compact-numbers-label"
         aria-checked={settings.compactNumbers}
         onClick={() => setCompactNumbers(!settings.compactNumbers)}
         className={`relative h-6 w-11 flex-shrink-0 rounded-full transition-colors ${

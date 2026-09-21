@@ -20,7 +20,7 @@ export default function CalcResultPanel({ label, value, note }) {
       <p className="font-mono-tech mt-1 text-[30px] font-medium leading-none tabular-nums text-[#34d399] sm:text-[46px]">
         {value}
       </p>
-      {note && <p className="mt-3 text-[12.5px] text-[#eef1ec]/45">{note}</p>}
+      {note && <p className="mt-3 text-[12.5px] text-[#eef1ec]/50">{note}</p>}
     </div>
   );
 }

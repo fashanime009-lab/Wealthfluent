@@ -102,7 +102,7 @@ function ResultCard({ match }) {
         <h3 className="font-display mt-1 text-[16px] font-bold text-[#eef1ec]">{tool.title}</h3>
         <p className="mt-1 text-[13px] leading-5 text-[#eef1ec]/60">{tool.description}</p>
         {matchedTerms.length > 0 && (
-          <p className="mt-2 text-[11.5px] text-[#eef1ec]/40">Matched: {matchedTerms.slice(0, 4).join(", ")}</p>
+          <p className="mt-2 text-[11.5px] text-[#eef1ec]/50">Matched: {matchedTerms.slice(0, 4).join(", ")}</p>
         )}
       </div>
       <Link

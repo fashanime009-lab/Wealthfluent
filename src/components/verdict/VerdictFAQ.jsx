@@ -20,7 +20,7 @@ export default function VerdictFAQ({ items, className = "" }) {
               <span className="text-[14px] font-semibold text-[#111814] dark:text-[#eef1ec]">{item.q}</span>
               <ChevronDown
                 size={16}
-                className={`shrink-0 text-[#111814]/40 transition-transform dark:text-[#eef1ec]/40 ${open === i ? "rotate-180" : ""}`}
+                className={`shrink-0 text-[#111814]/60 transition-transform dark:text-[#eef1ec]/50 ${open === i ? "rotate-180" : ""}`}
               />
             </button>
             {/* Always rendered, never conditionally mounted — every page

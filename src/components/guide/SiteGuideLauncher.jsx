@@ -54,7 +54,7 @@ export default function SiteGuideLauncher() {
   };
 
   return (
-    <div className={`fixed right-5 z-[110] transition-[bottom] duration-300 ${cookieBannerVisible ? "bottom-28 sm:bottom-24" : "bottom-5"}`}>
+    <div role="region" aria-label="Site guide" className={`fixed right-5 z-[110] transition-[bottom] duration-300 ${cookieBannerVisible ? "bottom-28 sm:bottom-24" : "bottom-5"}`}>
       {open && (
         <div className="mb-3 w-[92vw] max-w-[380px]">
           <Suspense fallback={null}>
@@ -68,7 +68,7 @@ export default function SiteGuideLauncher() {
           <button
             onClick={dismissHint}
             aria-label="Dismiss"
-            className="absolute right-2.5 top-2.5 text-[#eef1ec]/40 hover:text-[#eef1ec]"
+            className="absolute right-2.5 top-2.5 text-[#eef1ec]/50 hover:text-[#eef1ec]"
           >
             <X size={13} />
           </button>

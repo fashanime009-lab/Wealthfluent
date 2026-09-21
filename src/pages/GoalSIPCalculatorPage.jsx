@@ -105,7 +105,7 @@ export default function GoalSIPCalculatorPage() {
                   share={results.goalShare}
                   tone="signal"
                 />
-                <p className="mt-1 text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">
+                <p className="mt-1 text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">
                   {results.goalShare.toFixed(1)}% of your goal amount
                 </p>
               </div>
@@ -128,7 +128,7 @@ export default function GoalSIPCalculatorPage() {
               </button>
 
               {/* Disclaimer */}
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
                 Please note that these calculators are for illustrations only and do not represent actual returns.
                 Stock Market does not have a fixed rate of return and it is not possible to predict the rate of return.

@@ -123,13 +123,13 @@ export default function BondYieldCalculatorPage() {
                 <div className="py-3.5">
                   <div className="flex items-baseline justify-between gap-4">
                     <span className="text-[13.5px] text-[#111814]/65 dark:text-[#eef1ec]/65">Price vs par</span>
-                    <span className={`font-mono-tech text-[15px] tabular-nums ${currentPrice > parValue ? "text-amber-600" : currentPrice < parValue ? "text-[#047857] dark:text-[#34d399]" : "text-[#111814] dark:text-[#eef1ec]"}`}>
+                    <span className={`font-mono-tech text-[15px] tabular-nums ${currentPrice > parValue ? "text-amber-700" : currentPrice < parValue ? "text-[#047857] dark:text-[#34d399]" : "text-[#111814] dark:text-[#eef1ec]"}`}>
                       {currentPrice > parValue ? "Premium" : currentPrice < parValue ? "Discount" : "At Par"}
                     </span>
                   </div>
                 </div>
               </div>
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Please note that these calculators are for illustrations only and do not represent actual returns.
                 Bond yields and market prices change over time based on interest rates, credit quality, and market
                 conditions. Actual investment returns may differ from these estimates.

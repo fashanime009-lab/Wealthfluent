@@ -86,7 +86,7 @@ export default function EMICalculatorPage() {
                 <CalcStat label="Total interest" value={fmt(totalInterest)} share={interestShare} />
                 <CalcStat label="Total payment" value={fmt(totalPayment)} share={100} />
               </div>
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 These figures are illustrative only and don't represent actual loan terms or guaranteed approvals.
                 Interest rates and loan terms vary by lender policy and borrower eligibility.
               </p>

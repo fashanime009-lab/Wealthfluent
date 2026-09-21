@@ -130,7 +130,7 @@ export default function SIPCalculatorPage() {
               </button>
 
               {/* Disclaimer */}
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
                 Please note that these calculators are for illustrations only and do not represent actual returns.
                 Stock Market does not have a fixed rate of return and it is not possible to predict the rate of return.
@@ -211,19 +211,19 @@ export default function SIPCalculatorPage() {
 
                   <div className="mt-8 grid grid-cols-3 gap-4">
                     <div className="border border-[#111814]/12 p-4 text-center dark:border-[#eef1ec]/12">
-                      <p className="text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">Monthly SIP</p>
+                      <p className="text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">Monthly SIP</p>
                       <p className="font-mono-tech mt-1 text-[18px] font-semibold tabular-nums text-[#111814] dark:text-[#eef1ec]">
                         {fmt(monthlyInvestment)}
                       </p>
                     </div>
                     <div className="border border-[#111814]/12 p-4 text-center dark:border-[#eef1ec]/12">
-                      <p className="text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">Expected Return</p>
+                      <p className="text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">Expected Return</p>
                       <p className="font-mono-tech mt-1 text-[18px] font-semibold tabular-nums text-[#047857] dark:text-[#34d399]">
                         {annualReturn}%
                       </p>
                     </div>
                     <div className="border border-[#111814]/12 p-4 text-center dark:border-[#eef1ec]/12">
-                      <p className="text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">Investment Time</p>
+                      <p className="text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">Investment Time</p>
                       <p className="font-mono-tech mt-1 text-[18px] font-semibold tabular-nums text-[#111814] dark:text-[#eef1ec]">
                         {years} Years
                       </p>

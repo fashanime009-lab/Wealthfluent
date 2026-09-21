@@ -131,7 +131,7 @@ export default function GSTCalculatorPage() {
                 <CalcStat label={`GST @ ${gstRate}%`} value={`+ ${fmt(gstAmount)}`} share={totalAmount > 0 ? (gstAmount / totalAmount) * 100 : 0} tone="signal" />
                 <CalcStat label="Total amount (including GST)" value={fmt(totalAmount)} share={100} />
               </div>
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 This calculator is for illustrative purposes only. GST rates and classifications may vary based on
                 goods/services and government notifications. Please consult a tax professional for accurate tax
                 compliance.

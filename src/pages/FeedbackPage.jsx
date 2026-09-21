@@ -163,7 +163,7 @@ export default function FeedbackPage() {
                 className={fieldClass}
                 placeholder="you@example.com"
               />
-              <p className="mt-1.5 text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="mt-1.5 text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Optional — we'll only use this to respond to your feedback.
               </p>
             </div>
@@ -195,7 +195,7 @@ export default function FeedbackPage() {
                   </label>
                 ))}
               </div>
-              <p className="mt-1.5 text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">{ratingLabels[formData.rating]}</p>
+              <p className="mt-1.5 text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">{ratingLabels[formData.rating]}</p>
             </div>
 
             {/* Feedback Type */}
@@ -284,7 +284,7 @@ export default function FeedbackPage() {
           </p>
 
           {/* Disclaimer */}
-          <p className="mt-6 border-t border-[#111814]/10 pt-4 text-[12px] leading-5 text-[#111814]/45 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/45">
+          <p className="mt-6 border-t border-[#111814]/10 pt-4 text-[12px] leading-5 text-[#111814]/60 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/50">
             <span className="font-semibold text-[#111814]/70 dark:text-[#eef1ec]/70">Privacy Note:</span> Your feedback is
             confidential and will only be used to improve our services. We do not share or sell your
             information. See our{" "}

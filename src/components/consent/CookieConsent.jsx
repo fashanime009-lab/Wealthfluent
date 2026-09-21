@@ -104,7 +104,7 @@ export default function CookieConsent() {
   if (consent || !visible) return null;
 
   return (
-    <div data-runtime-only="cookie-consent" className="fixed inset-x-0 bottom-0 z-[100] flex justify-center p-4 sm:p-5">
+    <div role="region" aria-label="Cookie preferences" data-runtime-only="cookie-consent" className="fixed inset-x-0 bottom-0 z-[100] flex justify-center p-4 sm:p-5">
       <div className="flex max-h-[90vh] w-full max-w-2xl flex-col border border-[#111814]/12 bg-[#eef1ec] dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
         <div className="flex flex-shrink-0 flex-col gap-4 border-b border-[#111814]/10 p-5 dark:border-[#eef1ec]/10 sm:flex-row sm:items-center">
           <div className="flex-1">
@@ -124,7 +124,7 @@ export default function CookieConsent() {
                 setDraftAnalytics(true);
                 setExpanded((v) => !v);
               }}
-              className="mt-2.5 inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#111814]/55 hover:text-[#111814] dark:text-[#eef1ec]/55 dark:hover:text-[#eef1ec]"
+              className="mt-2.5 inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#111814]/60 hover:text-[#111814] dark:text-[#eef1ec]/55 dark:hover:text-[#eef1ec]"
             >
               {expanded ? "Hide details" : "See exactly what's stored, and choose"}
               <ChevronDown size={14} className={`transition ${expanded ? "rotate-180" : ""}`} />
@@ -157,7 +157,7 @@ export default function CookieConsent() {
                 <p className="font-display text-[13.5px] font-bold text-[#111814] dark:text-[#eef1ec]">
                   Local storage (not a cookie) — always on
                 </p>
-                <p className="mt-1 text-[12.5px] leading-5 text-[#111814]/55 dark:text-[#eef1ec]/55">
+                <p className="mt-1 text-[12.5px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">
                   Your financial profile, goals, learning streak, calculator history, and
                   display preferences (theme, currency — often auto-set from your device's clock
                   and timezone) are saved on this device only, so the app remembers them between
@@ -173,7 +173,7 @@ export default function CookieConsent() {
                   without breaking the calculators and dashboard themselves.
                 </p>
               </div>
-              <span className="mt-0.5 flex-shrink-0 text-[11px] font-semibold text-[#111814]/40 dark:text-[#eef1ec]/40">
+              <span className="mt-0.5 flex-shrink-0 text-[11px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Always on
               </span>
             </div>
@@ -184,7 +184,7 @@ export default function CookieConsent() {
                 <p className="font-display text-[13.5px] font-bold text-[#111814] dark:text-[#eef1ec]">
                   Analytics cookies (Google Analytics)
                 </p>
-                <p className="mt-1 text-[12.5px] leading-5 text-[#111814]/55 dark:text-[#eef1ec]/55">
+                <p className="mt-1 text-[12.5px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">
                   If enabled, Google Analytics sets cookies to help us see which calculators
                   and pages people actually use, so we know what to improve or build next. If
                   you turn this off, no analytics cookies are set and every tool on the site
@@ -204,7 +204,7 @@ export default function CookieConsent() {
                 <p className="font-display text-[13.5px] font-bold text-[#111814] dark:text-[#eef1ec]">
                   Advertising cookies (Google AdSense)
                 </p>
-                <p className="mt-1 text-[12.5px] leading-5 text-[#111814]/55 dark:text-[#eef1ec]/55">
+                <p className="mt-1 text-[12.5px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">
                   If enabled, Google AdSense sets cookies to show ads and measure their
                   performance — this is what keeps every calculator on FINAIW free. If you turn
                   this off, no ad cookies are set and every tool on the site still works exactly

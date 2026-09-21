@@ -85,13 +85,13 @@ export default function InflationCalculatorPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="border border-[#111814]/12 bg-[#ffffff] p-4 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                  <p className="text-[12px] text-[#111814]/55 dark:text-[#eef1ec]/55">Current Expenses</p>
+                  <p className="text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/55">Current Expenses</p>
                   <p className="font-mono-tech mt-1 text-[17px] font-semibold tabular-nums text-[#111814] dark:text-[#eef1ec]">
                     {fmt(currentExpenses)}
                   </p>
                 </div>
                 <div className="border border-[#111814]/12 bg-[#ffffff] p-4 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                  <p className="text-[12px] text-[#111814]/55 dark:text-[#eef1ec]/55">Time Period</p>
+                  <p className="text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/55">Time Period</p>
                   <p className="font-mono-tech mt-1 text-[17px] font-semibold tabular-nums text-[#111814] dark:text-[#eef1ec]">
                     {timePeriod} Years
                   </p>
@@ -100,11 +100,11 @@ export default function InflationCalculatorPage() {
 
               {/* Inflation Impact Breakdown */}
               <div className="border border-[#111814]/12 bg-[#ffffff] p-6 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                <h3 className="text-[13.5px] font-semibold text-[#111814] dark:text-[#eef1ec]">Inflation Impact</h3>
+                <h2 className="text-[13.5px] font-semibold text-[#111814] dark:text-[#eef1ec]">Inflation Impact</h2>
                 <div className="mt-3 space-y-3">
                   <div className="flex justify-between text-[13.5px]">
                     <span className="text-[#111814]/65 dark:text-[#eef1ec]/65">Increase in Cost</span>
-                    <span className="font-mono-tech tabular-nums text-amber-600 dark:text-amber-400">
+                    <span className="font-mono-tech tabular-nums text-amber-800 dark:text-amber-400">
                       +{fmt(futureCost - currentExpenses)}
                     </span>
                   </div>
@@ -122,14 +122,14 @@ export default function InflationCalculatorPage() {
                       }}
                     />
                   </div>
-                  <p className="text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">
+                  <p className="text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">
                     {purchasingPowerLoss}% of your money's purchasing power will be eroded by inflation
                   </p>
                 </div>
               </div>
 
               {/* Disclaimer */}
-              <p className="text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
                 Please note that these calculators are for illustrations only and do not represent actual returns.
                 Stock Market does not have a fixed rate of return and it is not possible to predict the rate of return.

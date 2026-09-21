@@ -53,7 +53,7 @@ function LessonContent({ slug }) {
 
         <Link
           to="/learn"
-          className="text-[13px] font-semibold text-[#111814]/55 underline decoration-[#111814]/25 underline-offset-4 hover:text-[#111814] dark:text-[#eef1ec]/55 dark:decoration-[#eef1ec]/25 dark:hover:text-[#eef1ec]"
+          className="text-[13px] font-semibold text-[#111814]/60 underline decoration-[#111814]/25 underline-offset-4 hover:text-[#111814] dark:text-[#eef1ec]/55 dark:decoration-[#eef1ec]/25 dark:hover:text-[#eef1ec]"
         >
           All lessons
         </Link>
@@ -64,7 +64,7 @@ function LessonContent({ slug }) {
         <h1 className="font-display mt-2 text-[32px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[38px]">
           {lesson.title}
         </h1>
-        <p className="font-mono-tech mt-2 text-[12.5px] tabular-nums text-[#111814]/45 dark:text-[#eef1ec]/45">
+        <p className="font-mono-tech mt-2 text-[12.5px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
           {lesson.readTime} read
         </p>
 

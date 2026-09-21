@@ -20,7 +20,7 @@ export default function GoalCard({ goal, onAddMoney, onComplete, onDelete }) {
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-[15.5px] font-bold text-[#111814] dark:text-[#eef1ec]">{goal.title}</h3>
           {goal.targetDate && (
-            <p className="mt-1 text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">
+            <p className="mt-1 text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">
               Target: {new Date(goal.targetDate).toLocaleDateString(undefined, { month: "short", year: "numeric" })}
             </p>
           )}
@@ -28,12 +28,12 @@ export default function GoalCard({ goal, onAddMoney, onComplete, onDelete }) {
             <span className="font-mono-tech text-[16px] font-medium tabular-nums text-[#111814] dark:text-[#eef1ec]">
               {formatCurrency(goal.currentAmount, currency, settings.compactNumbers)}
             </span>
-            <span className="text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">
+            <span className="text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">
               of {formatCurrency(goal.targetAmount, currency, settings.compactNumbers)}
             </span>
           </div>
           {!goal.completed && remaining > 0 && (
-            <p className="mt-0.5 text-[11.5px] text-[#111814]/45 dark:text-[#eef1ec]/45">
+            <p className="mt-0.5 text-[11.5px] text-[#111814]/60 dark:text-[#eef1ec]/50">
               {formatCurrency(remaining, currency)} to go
             </p>
           )}

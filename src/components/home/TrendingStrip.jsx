@@ -29,7 +29,7 @@ export default function TrendingStrip() {
   return (
     <section className="mx-auto max-w-[1240px] px-5 py-10 sm:px-8 lg:px-12">
       <div className="flex items-center justify-between">
-        <span className="text-[13px] font-semibold text-[#111814]/50 dark:text-[#eef1ec]/50">Trending in finance</span>
+        <span className="text-[13px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">Trending in finance</span>
         <Link to="/news" className="text-[13px] font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25">
           View all news
         </Link>
@@ -50,7 +50,7 @@ export default function TrendingStrip() {
                 className="flex items-baseline justify-between gap-4 py-4 transition-opacity hover:opacity-70"
               >
                 <p className="min-w-0 truncate text-[13.5px] font-medium text-[#111814] dark:text-[#eef1ec]">{item.title}</p>
-                <span className="flex-shrink-0 text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">{item.source}</span>
+                <span className="flex-shrink-0 text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">{item.source}</span>
               </a>
             ))}
       </div>

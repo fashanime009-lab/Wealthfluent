@@ -30,9 +30,9 @@ export default function LearningSection() {
           >
             <div className="min-w-0">
               <h3 className="font-display text-[16px] font-bold text-[#111814] dark:text-[#eef1ec]">{lesson.title}</h3>
-              <p className="mt-1 max-w-[52ch] text-[13px] leading-5 text-[#111814]/55 dark:text-[#eef1ec]/55">{lesson.summary}</p>
+              <p className="mt-1 max-w-[52ch] text-[13px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">{lesson.summary}</p>
             </div>
-            <span className="flex-shrink-0 text-[12px] text-[#111814]/45 dark:text-[#eef1ec]/45">{lesson.readTime}</span>
+            <span className="flex-shrink-0 text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">{lesson.readTime}</span>
           </Link>
         ))}
       </div>

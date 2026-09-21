@@ -24,7 +24,7 @@ export default function Modal({ open, onClose, title, children }) {
           <button
             onClick={onClose}
             aria-label="Close"
-            className="grid h-9 w-9 place-items-center text-[#111814]/45 hover:bg-[#111814]/5 hover:text-[#111814] dark:text-[#eef1ec]/45 dark:hover:bg-[#eef1ec]/10 dark:hover:text-[#eef1ec]"
+            className="grid h-9 w-9 place-items-center text-[#111814]/60 hover:bg-[#111814]/5 hover:text-[#111814] dark:text-[#eef1ec]/50 dark:hover:bg-[#eef1ec]/10 dark:hover:text-[#eef1ec]"
           >
             <X size={18} />
           </button>

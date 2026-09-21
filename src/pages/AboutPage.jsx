@@ -103,7 +103,7 @@ export default function AboutPage() {
             <div className="mt-4 divide-y divide-[#111814]/8 dark:divide-[#eef1ec]/8">
               {offerings.map((item) => (
                 <div key={item.title} className="py-5">
-                  <h4 className="font-display text-[15px] font-bold text-[#111814] dark:text-[#eef1ec]">{item.title}</h4>
+                  <h3 className="font-display text-[15px] font-bold text-[#111814] dark:text-[#eef1ec]">{item.title}</h3>
                   <p className="mt-1.5 max-w-[60ch] text-[13.5px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/60">
                     {item.desc}
                   </p>
@@ -120,8 +120,8 @@ export default function AboutPage() {
             <div className="mt-6 grid gap-x-8 gap-y-6 sm:grid-cols-2">
               {whyPoints.map((point) => (
                 <div key={point.title}>
-                  <h4 className="text-[14.5px] font-semibold text-[#111814] dark:text-[#eef1ec]">{point.title}</h4>
-                  <p className="mt-1 text-[13px] leading-5 text-[#111814]/55 dark:text-[#eef1ec]/55">{point.desc}</p>
+                  <h3 className="text-[14.5px] font-semibold text-[#111814] dark:text-[#eef1ec]">{point.title}</h3>
+                  <p className="mt-1 text-[13px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">{point.desc}</p>
                 </div>
               ))}
             </div>
@@ -134,7 +134,7 @@ export default function AboutPage() {
                 <span className="font-mono-tech text-[22px] font-medium tabular-nums text-[#047857] dark:text-[#34d399]">
                   {stat.value}
                 </span>
-                <span className="ml-2 text-[13px] text-[#111814]/55 dark:text-[#eef1ec]/55">{stat.label}</span>
+                <span className="ml-2 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">{stat.label}</span>
               </div>
             ))}
           </div>
@@ -158,7 +158,7 @@ export default function AboutPage() {
             </Link>
           </div>
 
-          <p className="mt-10 text-[12px] leading-5 text-[#111814]/45 dark:text-[#eef1ec]/45">
+          <p className="mt-10 text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
             FINAIW is an educational platform. All tools and content are for illustrative purposes
             only. Please consult a qualified financial advisor for personalised advice.
           </p>

@@ -133,12 +133,14 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
             {/* Annual Increase Input */}
             <div className="mb-8">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <label className="whitespace-nowrap text-[13px] font-medium text-[#111814]/70 dark:text-[#eef1ec]/70">
+                <label htmlFor="annual-increase" className="whitespace-nowrap text-[13px] font-medium text-[#111814]/70 dark:text-[#eef1ec]/70">
                   Annual increase in investment
                 </label>
                 <div className="flex max-w-xs flex-1 items-center gap-4">
                   <input
+                    id="annual-increase"
                     type="range"
+                    aria-valuetext={`${annualIncrease}%`}
                     min="0"
                     max="30"
                     step="1"
@@ -157,7 +159,7 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
                   Recalculate targets
                 </button>
               </div>
-              <p className="mt-2 text-[12.5px] text-[#111814]/45 dark:text-[#eef1ec]/45">
+              <p className="mt-2 text-[12.5px] text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Enter the total investment made each year for this goal in the cells below.
               </p>
             </div>
@@ -201,6 +203,7 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
                           type="number"
                           min="0"
                           step="1000"
+                          aria-label={`Target for ${row.year}`}
                           value={row.target || ""}
                           onChange={(e) => updateRow(row.id, "target", e.target.value)}
                           className="ml-auto block w-full max-w-[180px] border border-[#111814]/15 bg-transparent px-3 py-1.5 text-right font-mono-tech text-[13.5px] tabular-nums text-[#111814] outline-none focus:border-[#047857] dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:focus:border-[#34d399]"
@@ -212,6 +215,7 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
                           type="number"
                           min="0"
                           step="1000"
+                          aria-label={`Actual for ${row.year}`}
                           value={row.actual || ""}
                           onChange={(e) => updateRow(row.id, "actual", e.target.value)}
                           className="ml-auto block w-full max-w-[180px] border border-[#111814]/15 bg-transparent px-3 py-1.5 text-right font-mono-tech text-[13.5px] tabular-nums text-[#111814] outline-none focus:border-[#047857] dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:focus:border-[#34d399]"
@@ -221,7 +225,7 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
                       <td className="px-3 py-2 text-center">
                         <button
                           onClick={() => removeRow(row.id)}
-                          className={`text-[#111814]/40 transition hover:text-red-500 dark:text-[#eef1ec]/40 ${
+                          className={`text-[#111814]/60 transition hover:text-red-500 dark:text-[#eef1ec]/50 ${
                             rows.length <= 1 ? "cursor-not-allowed opacity-30" : ""
                           }`}
                           disabled={rows.length <= 1}
@@ -302,7 +306,7 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
             </div>
 
             {/* Disclaimer */}
-            <div className="mt-8 space-y-1 border-t border-[#111814]/10 pt-4 text-[12px] leading-5 text-[#111814]/45 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/45">
+            <div className="mt-8 space-y-1 border-t border-[#111814]/10 pt-4 text-[12px] leading-5 text-[#111814]/60 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/50">
               <p>
                 Please note that these calculators are for illustrations only and do not represent actual returns.
               </p>

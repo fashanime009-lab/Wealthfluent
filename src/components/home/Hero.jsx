@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSettings } from "@/context/SettingsContext";
 import { formatCurrency } from "@/utils/currency";
@@ -15,6 +15,8 @@ export default function Hero() {
   const fmt = (v) => formatCurrency(v, settings.currency, settings.compactNumbers);
   const { ref: panelRef, style: panelStyle, onPointerMove: onPanelMove, onPointerLeave: onPanelLeave } = useTilt();
 
+  const monthlyId = useId();
+  const yearsId = useId();
   const [monthly, setMonthly] = useState(10000);
   const [years, setYears] = useState(15);
   const futureValue = sipFutureValue(monthly, years, RATE);
@@ -41,11 +43,13 @@ export default function Hero() {
 
           <div className="mt-6">
             <div className="flex items-baseline justify-between gap-3">
-              <label className="text-[13px] text-[#eef1ec]/70">Monthly investment</label>
+              <label htmlFor={monthlyId} className="text-[13px] text-[#eef1ec]/70">Monthly investment</label>
               <span className="font-mono-tech text-[15px] tabular-nums text-[#eef1ec]">{fmt(monthly)}</span>
             </div>
             <input
+              id={monthlyId}
               type="range"
+              aria-valuetext={fmt(monthly)}
               min={1000}
               max={100000}
               step={1000}
@@ -57,11 +61,13 @@ export default function Hero() {
 
           <div className="mt-6">
             <div className="flex items-baseline justify-between gap-3">
-              <label className="text-[13px] text-[#eef1ec]/70">Time horizon</label>
+              <label htmlFor={yearsId} className="text-[13px] text-[#eef1ec]/70">Time horizon</label>
               <span className="font-mono-tech text-[15px] tabular-nums text-[#eef1ec]">{years} yrs</span>
             </div>
             <input
+              id={yearsId}
               type="range"
+              aria-valuetext={`${years} years`}
               min={1}
               max={30}
               value={years}

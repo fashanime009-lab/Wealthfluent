@@ -35,7 +35,7 @@ export default function ClearDataControl() {
     <div className="flex flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-8">
       <div>
         <h3 className="text-[14px] font-semibold text-[#111814] dark:text-[#eef1ec]">Clear my data</h3>
-        <p className="mt-1 max-w-md text-[13px] leading-6 text-[#111814]/55 dark:text-[#eef1ec]/55">
+        <p className="mt-1 max-w-md text-[13px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
           Permanently erases your financial profile, goals, learning streak, calculator history, and display
           preferences from this browser. Nothing was ever sent anywhere, so this is the only place it can be
           cleared — there's no account or server copy to delete.
