@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { useFinance } from "../context/FinanceContext";
@@ -15,9 +16,18 @@ import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
+// Where the "SIP vs Lump Sum" article lives. The lesson already exists; if it is
+// ever replaced by a longer article, change this one path.
+const SIP_VS_LUMP_SUM_PATH = "/learn/sip-vs-lump-sum";
+
+// In-copy link styling, matching the underlined links used elsewhere in the content.
+const linkClass =
+  "font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25";
+
 const FAQ_ITEMS = [
   { q: "What is a good SIP amount?", a: "A good SIP amount depends on income, financial goals, and investment horizon." },
   { q: "Is SIP better than FD?", a: "SIPs offer market-linked growth potential, while fixed deposits provide stable fixed returns." },
+  { q: "Is SIP better than lump sum investment?", a: "It depends on your situation. If you invest from monthly income, a SIP is the practical way to do it — there is no lump sum to compare against. If you already have a large amount available, investing it sooner has historically tended to beat spreading it out over most long periods, because markets rise more often than they fall and money invested earlier compounds for longer. A SIP (or staggering the amount over a few months) mainly reduces the risk of investing everything just before a fall. A calculator that assumes a steady return, like this one, will always favour the lump sum because the money starts earning sooner — that is a property of the assumption, not a prediction." },
   { q: "Can SIP create long-term wealth?", a: "Long-term SIP investing combined with compounding can significantly grow wealth over time." },
   { q: "What happens if I miss a SIP installment?", a: "Most mutual funds simply skip that month without penalty — your SIP continues from the next scheduled date. Repeated missed installments over several months can sometimes trigger an auto-cancellation, so check your specific fund's policy." },
   { q: "Should I stop my SIP when markets fall?", a: "Generally no — a falling market means your fixed SIP amount buys more units at a lower price, which is the entire point of rupee-cost averaging. Stopping during a downturn is one of the most common ways investors damage their own long-term returns." },
@@ -61,14 +71,14 @@ export default function SIPCalculatorPage() {
   return (
     <>
       <Seo
-        title="SIP Calculator – Calculate Investment Growth"
-        description="Enter your monthly SIP amount, expected return, and investment period to see how a mutual fund SIP grows over time, including total invested versus total returns."
+        title="SIP Calculator - See What Your Monthly SIP Grows To | FINAIW"
+        description="Calculate what your SIP investment could grow to with real compound math. Free, no signup — see monthly amount, expected return, and final corpus instantly."
         path="/sip-calculator"
         keywords="SIP calculator, mutual fund calculator, investment calculator, SIP return calculator"
         jsonLd={[
         calculatorSchema({
           name: "SIP Calculator",
-          description: "Enter your monthly SIP amount, expected return, and investment period to see how a mutual fund SIP grows over time, including total invested versus total returns.",
+          description: "Calculate what your SIP investment could grow to with real compound math. Free, no signup — see monthly amount, expected return, and final corpus instantly.",
           path: "/sip-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
@@ -80,7 +90,7 @@ export default function SIPCalculatorPage() {
           <CalcHeader
             category="Investment planning"
             title="SIP Calculator"
-            description="Find the future value of your monthly/quarterly SIP investment."
+            description="Find the future value of your monthly SIP investment."
           />
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
@@ -140,35 +150,96 @@ export default function SIPCalculatorPage() {
 
           {/* SEO Content */}
           <div className="mt-16">
-            <CalcSection title="What Is SIP Calculator?">
+            <CalcSection title="What is a SIP and how does it work?">
               <p>
-                A SIP Calculator helps investors estimate future wealth creation
-                through Systematic Investment Plans (SIP) using monthly investments,
-                expected annual returns, and investment duration.
+                A SIP, or Systematic Investment Plan, is a way of investing a fixed amount in a mutual fund at regular
+                intervals — usually every month — instead of putting in one large sum. Each installment is debited
+                automatically and buys units of the fund at that day's price (its NAV).
+              </p>
+              <p>
+                Because the amount is fixed, your money buys more units when the price is low and fewer when it is
+                high, which averages out your purchase price over time. This is called rupee-cost averaging. It also
+                turns investing into a habit: you don't have to decide when to invest, because the schedule does.
+              </p>
+              <p>
+                For example, investing ₹5,000 a month for 15 years means putting in ₹9,00,000 in total. At an assumed
+                12% a year, this calculator estimates it grows to about ₹25,22,880 — roughly ₹16,22,880 of that from
+                returns. The 12% is an assumption you can change, not a promise: real fund returns vary from year to
+                year and can be negative.
+              </p>
+              <p>
+                Working backward from a target amount instead? The{" "}
+                <Link to="/goal-sip" className={linkClass}>
+                  Goal SIP Calculator
+                </Link>{" "}
+                finds the monthly SIP you would need to reach it.
               </p>
             </CalcSection>
 
-            <CalcSection title="How Are SIP Returns Calculated?">
+            <CalcSection title="How is SIP return calculated?">
               <p>
-                Each monthly installment compounds for a different length of time,
-                so SIP maturity uses the future value of a growing annuity:
+                Each monthly installment compounds for a different length of time — the first for the whole period,
+                the last for a single month — so a SIP's maturity value uses the future value of equal payments made
+                at the start of each month:
               </p>
               <p className="font-mono-tech border border-[#111814]/12 px-4 py-3 text-[13px] tabular-nums text-[#111814] dark:border-[#eef1ec]/12 dark:text-[#eef1ec]">
                 FV = P × [((1 + r)^n − 1) / r] × (1 + r)
               </p>
               <p>
                 Here <strong className="text-[#111814] dark:text-[#eef1ec]">P</strong> is your monthly investment,{" "}
-                <strong className="text-[#111814] dark:text-[#eef1ec]">r</strong> is
-                the monthly rate of return, and <strong className="text-[#111814] dark:text-[#eef1ec]">n</strong> is the number of
-                months invested. Because each installment starts compounding at a
-                different point, roughly half your final corpus in a long SIP
-                typically comes from your earliest 3-4 years of contributions —
-                which is why staying invested through a long horizon matters more
-                than the exact monthly amount.
+                <strong className="text-[#111814] dark:text-[#eef1ec]">r</strong> is the monthly rate of return (the
+                annual rate divided by 12, then by 100), and{" "}
+                <strong className="text-[#111814] dark:text-[#eef1ec]">n</strong> is the number of months invested
+                (years × 12).
+              </p>
+              <p>
+                For the defaults above, P = ₹5,000. A 12% annual return gives r = 12 ÷ 12 ÷ 100 = 0.01, and 15 years
+                gives n = 180. Then (1.01)^180 = 5.9958, so [(1.01)^180 − 1] / 0.01 = 499.58. Multiplying by ₹5,000
+                gives about ₹24,97,900, and the final × 1.01 gives ₹25,22,880 — the same figure the calculator above
+                produces for those inputs.
+              </p>
+              <p>
+                Because early installments compound the longest, they carry disproportionate weight. In this example
+                the first 5 years of installments are only a third of the money you put in (₹3,00,000 of ₹9,00,000),
+                yet they account for about 54% of the final corpus. That is why staying invested for a long horizon
+                matters more than the exact monthly amount.
+              </p>
+              <p>
+                Already invested? The{" "}
+                <Link to="/cagr-calculator" className={linkClass}>
+                  CAGR Calculator
+                </Link>{" "}
+                can check your actual returns after the fact. It compares one starting value with one ending value, so
+                for a SIP with monthly installments treat it as a rough guide — the exact measure is XIRR, which
+                weights each installment by its date.
               </p>
             </CalcSection>
 
             <AdSlot slotId="sip_calc_mid" />
+
+            <CalcSection title="SIP vs Lump Sum — which is better?">
+              <p>
+                They answer different situations. A SIP is how most people invest, out of monthly income. A lump sum
+                applies when you already have a large amount available, such as a bonus or maturity proceeds.
+              </p>
+              <p>
+                If the money is there today, a calculation with a steady return always favours investing it all at
+                once, because every rupee starts earning sooner. ₹6,00,000 invested as a lump sum for 5 years at 12%
+                grows to about ₹10,90,018; the same ₹6,00,000 invested as ₹10,000 a month over those 5 years (with the
+                not-yet-invested part earning nothing) grows to about ₹8,24,864. But that gap comes from assuming a
+                smooth 12%. Real markets fall as well as rise, and a SIP's real benefit — spreading your entry points so
+                you don't invest everything just before a downturn — is exactly what a fixed-return calculator can't
+                show.
+              </p>
+              <p>
+                For how to choose, including the middle path of investing part now and staggering the rest, read the
+                full{" "}
+                <Link to={SIP_VS_LUMP_SUM_PATH} className={linkClass}>
+                  SIP vs Lump Sum
+                </Link>{" "}
+                lesson.
+              </p>
+            </CalcSection>
 
             <CalcSection title="Benefits Of SIP Investments">
               <CalcBenefitGrid
