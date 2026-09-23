@@ -50,7 +50,7 @@ export default function CalculatorsSection() {
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8 lg:px-12">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <h2 className="font-display text-[20px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[22px]">
-          20 calculators. Every one shows real math.
+          20 free financial calculators. Every one shows real math.
         </h2>
         <Link
           to="/calculators"
