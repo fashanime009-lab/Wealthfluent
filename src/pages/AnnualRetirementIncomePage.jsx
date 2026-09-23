@@ -1,11 +1,28 @@
 import { useSettings } from "../context/SettingsContext";
-import { currencies } from "../data/currencies";
+import { formatCurrency } from "../utils/currency";
 import { useState, useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
+import CalcHeader from "@/components/calculators/CalcHeader";
+import CalcField from "@/components/calculators/CalcField";
+import CalcResultPanel from "@/components/calculators/CalcResultPanel";
+import CalcStat from "@/components/calculators/CalcStat";
+import CalcSection from "@/components/calculators/CalcSection";
+import RelatedLinks from "@/components/calculators/RelatedLinks";
+import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
+import VerdictFAQ from "@/components/verdict/VerdictFAQ";
+import useTilt from "@/hooks/useTilt";
+
+const FAQ_ITEMS = [
+  { q: "What is a realistic pre-retirement growth rate?", a: "Expected long-term investment returns vary depending on your portfolio, asset allocation, and market conditions. Stocks have historically delivered higher long-term returns than bonds or cash, but they also involve greater risk. Choose assumptions that match your investment strategy. Choose based on your asset allocation." },
+  { q: "What should I enter for \"Years to Pay Out\"?", a: "Estimate your life expectancy minus your retirement age. A common approach is to plan for 25-30 years post-retirement." },
+  { q: "Can I withdraw more than the calculated amount?", a: "Withdrawing more may deplete your corpus sooner. The calculator provides a sustainable annual income assuming the corpus earns the given rate and lasts the specified years. Adjust the parameters to see different scenarios." },
+  { q: "Does this account for inflation during retirement?", a: "Not directly — the annual income figure is level (the same amount each year) rather than rising with inflation. In practice, expenses tend to rise over a 25-30 year retirement, so treat this figure as a starting point and build in some buffer or a rising withdrawal schedule." },
+];
 
 export default function AnnualRetirementIncomePage() {
+  const { ref: corpusRef, style: corpusStyle, onPointerMove: onCorpusMove, onPointerLeave: onCorpusLeave } = useTilt();
   // ─── State ──────────────────────────────────────────────────────
   const [currentPrincipal, setCurrentPrincipal] = useState(100000);
   const [annualAddition, setAnnualAddition] = useState(12000);
@@ -14,7 +31,6 @@ export default function AnnualRetirementIncomePage() {
   const [yearsToPayOut, setYearsToPayOut] = useState(25);
   const [postRetGrowthRate, setPostRetGrowthRate] = useState(8);
   const { settings } = useSettings();
-  const currency = (currencies.find((c) => c.code === settings.currency) || currencies[0]).symbol;
 
   // ─── Calculations ──────────────────────────────────────────────
   const results = useMemo(() => {
@@ -57,18 +73,10 @@ export default function AnnualRetirementIncomePage() {
     };
   }, [currentPrincipal, annualAddition, yearsToGrow, preRetGrowthRate, yearsToPayOut, postRetGrowthRate]);
 
-  // ─── Format currency ──────────────────────────────────────────
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
-  // ─── Handlers ──────────────────────────────────────────────────
-  const handleChange = (setter) => (e) => {
-    setter(Number(e.target.value) || 0);
-  };
+  // Shared, currency-aware formatter (lakh/crore grouping for INR, each
+  // currency's own convention otherwise) — this page used to hardcode
+  // en-US grouping with just the symbol, unlike the rest of the site.
+  const fmt = (v) => formatCurrency(v, settings.currency);
 
   return (
     <>
@@ -83,328 +91,94 @@ export default function AnnualRetirementIncomePage() {
           description: "Calculate your retirement corpus and annual retirement income based on your pre-retirement savings and post-retirement payout period.",
           path: "/annual-retirement-income",
         }),
-        faqSchema([
-          {
-            "question": "What is a realistic pre-retirement growth rate?",
-            "answer": "Expected long-term investment returns vary depending on your portfolio, asset allocation, and market conditions. Stocks have historically delivered higher long-term returns than bonds or cash, but they also involve greater risk. Choose assumptions that match your investment strategy. Choose based on your asset allocation."
-          },
-          {
-            "question": "What should I enter for \"Years to Pay Out\"?",
-            "answer": "Estimate your life expectancy minus your retirement age. A common approach is to plan for 25-30 years post-retirement."
-          },
-          {
-            "question": "Can I withdraw more than the calculated amount?",
-            "answer": "Withdrawing more may deplete your corpus sooner. The calculator provides a sustainable annual income assuming the corpus earns the given rate and lasts the specified years. Adjust the parameters to see different scenarios."
-          },
-          {
-            "question": "Does this account for inflation during retirement?",
-            "answer": "Not directly \u2014 the annual income figure is level (the same amount each year) rather than rising with inflation. In practice, expenses tend to rise over a 25-30 year retirement, so treat this figure as a starting point and build in some buffer or a rising withdrawal schedule."
-          }
-        ]),
+        faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
-      <div className="min-h-screen bg-[#f3f7fc] text-slate-800">
-        
+      <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
+        <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
+          <CalcHeader
+            category="Retirement planning"
+            title="Annual Retirement Income Calculator"
+            description="Estimate your retirement corpus and the annual income you can expect during retirement."
+          />
 
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-          {/* Header */}
-          <div className="mb-10">
-            <p className="text-emerald-700 font-semibold text-sm uppercase tracking-wider mb-2">
-              Retirement Planning Tool
-            </p>
-            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
-              Annual Retirement Income Calculator
-            </h1>
-            <p className="text-slate-500 text-lg mt-3 max-w-2xl">
-              Estimate your retirement corpus and the annual income you can expect during retirement.
-            </p>
-          </div>
+          <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
+            <div className="space-y-8 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+              <div className="space-y-7 border-b border-[#111814]/10 pb-8 dark:border-[#eef1ec]/10">
+                <p className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Pre-retirement</p>
+                <CalcField label="Current principal" value={currentPrincipal} onChange={setCurrentPrincipal} min={0} max={10000000} step={1000} format={fmt} />
+                <CalcField label="Annual addition" value={annualAddition} onChange={setAnnualAddition} min={0} max={1000000} step={500} format={fmt} />
+                <CalcField label="Years to grow" value={yearsToGrow} onChange={setYearsToGrow} min={1} max={50} suffix=" yrs" />
+                <CalcField label="Growth rate" value={preRetGrowthRate} onChange={setPreRetGrowthRate} min={0} max={30} step={0.5} suffix="%" />
+              </div>
 
-          {/* Calculator Grid */}
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Left Panel – Inputs */}
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8">
-            <h2 className="text-2xl font-semibold text-slate-800 mb-6">
-                Retirement Details
-              </h2>
-
-              <div className="space-y-8">
-                {/* Section: Pre-Retirement */}
-                <div className="border-b border-slate-100 pb-6">
-                  <h3 className="text-sm font-semibold text-emerald-700 mb-4">PRE‑RETIREMENT</h3>
-                  <div className="space-y-6">
-                    {/* Current Principal */}
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        
-                        <label className="text-sm font-medium text-slate-600">Current Principal</label>
-                        
-                        <span className="text-sm font-semibold text-emerald-700">{currency}{formatCurrency(currentPrincipal)}</span>
-                        
-                      </div>
-                      <input
-                        type="range"
-                        min="0"
-                        max="10000000"
-                        step="1000"
-                        value={currentPrincipal}
-                        onChange={handleChange(setCurrentPrincipal)}
-                        className="w-full h-2 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-700"
-                      />
-                      <div className="flex justify-between text-xs text-slate-400 mt-1">
-  <span>{currency}0</span>
-  <span>{currency}10,000,000</span>
-</div>
-                      <input
-                        type="number"
-                        min="0"
-                        max="10000000"
-                        step="1000"
-                        value={currentPrincipal}
-                        onChange={(e) => setCurrentPrincipal(Number(e.target.value) || 0)}
-                        className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-600"
-                      />
-                    </div>
-
-                    {/* Annual Addition */}
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <label className="text-sm font-medium text-slate-600">Annual Addition</label>
-                        <span className="text-sm font-semibold text-emerald-700">{currency}{formatCurrency(annualAddition)}</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="0"
-                        max="1000000"
-                        step="500"
-                        value={annualAddition}
-                        onChange={handleChange(setAnnualAddition)}
-                        className="w-full h-2 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-700"
-                      />
-                      <div className="flex justify-between text-xs text-slate-400 mt-1">
-  <span>{currency}0</span>
-  <span>{currency}1,000,000</span>
-</div>
-                      <input
-                        type="number"
-                        min="0"
-                        max="1000000"
-                        step="500"
-                        value={annualAddition}
-                        onChange={(e) => setAnnualAddition(Number(e.target.value) || 0)}
-                        className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-600"
-                      />
-                    </div>
-
-                    {/* Years to Grow */}
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <label className="text-sm font-medium text-slate-600">Years to Grow</label>
-                        <span className="text-sm font-semibold text-emerald-700">{yearsToGrow} Years</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="1"
-                        max="50"
-                        step="1"
-                        value={yearsToGrow}
-                        onChange={handleChange(setYearsToGrow)}
-                        className="w-full h-2 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-700"
-                      />
-                      <input
-                        type="number"
-                        min="1"
-                        max="50"
-                        step="1"
-                        value={yearsToGrow}
-                        onChange={(e) => setYearsToGrow(Number(e.target.value) || 1)}
-                        className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-600"
-                      />
-                    </div>
-
-                    {/* Growth Rate */}
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <label className="text-sm font-medium text-slate-600">Growth Rate (%)</label>
-                        <span className="text-sm font-semibold text-emerald-700">{preRetGrowthRate}%</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="0"
-                        max="30"
-                        step="0.5"
-                        value={preRetGrowthRate}
-                        onChange={handleChange(setPreRetGrowthRate)}
-                        className="w-full h-2 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-700"
-                      />
-                      <input
-                        type="number"
-                        min="0"
-                        max="30"
-                        step="0.5"
-                        value={preRetGrowthRate}
-                        onChange={(e) => setPreRetGrowthRate(Number(e.target.value) || 0)}
-                        className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-600"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Section: In Retirement */}
-                <div>
-                  <h3 className="text-sm font-semibold text-emerald-600 mb-4">IN RETIREMENT</h3>
-                  <div className="space-y-6">
-                    {/* Years to Pay Out */}
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <label className="text-sm font-medium text-slate-600">Years to Pay Out</label>
-                        <span className="text-sm font-semibold text-emerald-700">{yearsToPayOut} Years</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="1"
-                        max="50"
-                        step="1"
-                        value={yearsToPayOut}
-                        onChange={handleChange(setYearsToPayOut)}
-                        className="w-full h-2 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-700"
-                      />
-                      <input
-                        type="number"
-                        min="1"
-                        max="50"
-                        step="1"
-                        value={yearsToPayOut}
-                        onChange={(e) => setYearsToPayOut(Number(e.target.value) || 1)}
-                        className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-600"
-                      />
-                    </div>
-
-                    {/* Growth Rate */}
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <label className="text-sm font-medium text-slate-600">Growth Rate (%)</label>
-                        <span className="text-sm font-semibold text-emerald-700">{postRetGrowthRate}%</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="0"
-                        max="15"
-                        step="0.5"
-                        value={postRetGrowthRate}
-                        onChange={handleChange(setPostRetGrowthRate)}
-                        className="w-full h-2 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-700"
-                      />
-                      <input
-                        type="number"
-                        min="0"
-                        max="15"
-                        step="0.5"
-                        value={postRetGrowthRate}
-                        onChange={(e) => setPostRetGrowthRate(Number(e.target.value) || 0)}
-                        className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-600"
-                      />
-                    </div>
-                  </div>
-                </div>
+              <div className="space-y-7">
+                <p className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">In retirement</p>
+                <CalcField label="Years to pay out" value={yearsToPayOut} onChange={setYearsToPayOut} min={1} max={50} suffix=" yrs" />
+                <CalcField label="Growth rate" value={postRetGrowthRate} onChange={setPostRetGrowthRate} min={0} max={15} step={0.5} suffix="%" />
               </div>
             </div>
 
-            {/* Right Panel – Results */}
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-6 md:p-8 flex flex-col">
-              <h2 className="text-2xl font-semibold text-slate-800 mb-6">Results</h2>
-
-              <div className="flex-1 space-y-6">
-                {/* Annual Retirement Income */}
-                <div className="bg-gradient-to-br from-emerald-50 to-indigo-50 rounded-2xl p-6 border border-emerald-100">
-                  <p className="text-sm text-slate-500">Annual Retirement Income</p>
-                  <p className="text-4xl md:text-5xl font-bold text-emerald-700 mt-1">
-                    {currency}{formatCurrency(results.annualIncome)}
-                  </p>
-                </div>
-
-                {/* Corpus at Retirement */}
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-100">
-                  <p className="text-sm text-slate-500">Corpus at Retirement</p>
-                  <p className="text-3xl font-bold text-emerald-600 mt-1">
-                    {currency}{formatCurrency(results.corpusAtRetirement)}
-                  </p>
-                </div>
-
-                {/* Summary */}
-                <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200/50 space-y-3">
-                  <h3 className="font-semibold text-slate-700 text-sm">Investment Summary</h3>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Total Invested (Pre-Retirement)</span>
-                    <span className="font-medium">{currency}{formatCurrency(results.totalInvested)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Pre-Retirement Growth Rate</span>
-                    <span className="font-medium">{preRetGrowthRate}%</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Years to Grow</span>
-                    <span className="font-medium">{yearsToGrow} Years</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">Post-Retirement Growth Rate</span>
-                    <span className="font-medium">{postRetGrowthRate}%</span>
-                  </div>
-                  <div className="flex justify-between text-sm border-t border-slate-200 pt-2">
-                    <span className="text-slate-500">Payout Period</span>
-                    <span className="font-medium">{yearsToPayOut} Years</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Disclaimer */}
-              <div className="mt-6 text-xs text-slate-400 space-y-1 border-t border-slate-200 pt-4">
-                <p>
-                  <span className="font-medium text-slate-500">Disclaimer:</span>{" "}
-                  Please note that these calculators are for illustrations only and do not represent actual returns.
-                </p>
-                <p>
-                  Investment returns are not guaranteed. Actual retirement income depends on investment performance, inflation, taxes, fees, and future market conditions.
+            <div className="space-y-6">
+              <CalcResultPanel label="Annual retirement income" value={fmt(results.annualIncome)} />
+              <div
+                ref={corpusRef}
+                onPointerMove={onCorpusMove}
+                onPointerLeave={onCorpusLeave}
+                style={corpusStyle}
+                className="rounded-lg bg-[#0e1512] p-6 sm:p-7"
+              >
+                <p className="text-[13px] text-[#eef1ec]/55">Corpus at retirement</p>
+                <p className="font-mono-tech mt-1 text-[26px] font-medium leading-none tabular-nums text-[#eef1ec] sm:text-[30px]">
+                  {fmt(results.corpusAtRetirement)}
                 </p>
               </div>
+              <div className="divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+                <CalcStat label="Total invested (pre-retirement)" value={fmt(results.totalInvested)} />
+                <CalcStat label="Pre-retirement growth rate" value={`${preRetGrowthRate}%`} />
+                <CalcStat label="Years to grow" value={`${yearsToGrow} yrs`} />
+                <CalcStat label="Post-retirement growth rate" value={`${postRetGrowthRate}%`} />
+                <CalcStat label="Payout period" value={`${yearsToPayOut} yrs`} />
+              </div>
+              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
+                Please note that these calculators are for illustrations only and do not represent actual returns.
+                Investment returns are not guaranteed. Actual retirement income depends on investment performance,
+                inflation, taxes, fees, and future market conditions.
+              </p>
             </div>
           </div>
 
-          {/* SEO Content */}
-          <div className="mt-16 space-y-10">
+          <div className="mt-16">
             <AdSlot slotId="arincome_calc_mid" />
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
-              <h2 className="text-2xl font-bold text-slate-800 mb-4">What Is an Annual Retirement Income Calculator?</h2>
-              <p className="text-slate-500 leading-relaxed">
-                This calculator helps you estimate how much annual income you can expect during retirement based on your current savings, regular contributions, and expected returns. It projects your corpus at retirement and then calculates a sustainable annual withdrawal over your retirement years.
-              </p>
-            </div>
 
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
-              <h2 className="text-2xl font-bold text-slate-800 mb-4">How Is This Calculated?</h2>
-              <p className="text-slate-500 leading-relaxed">
-                The calculation runs in two stages. First, your pre-retirement
-                corpus grows using compound growth on your current principal plus
-                the future value of your annual additions. Second, that corpus is
-                treated as a fixed pool earning the post-retirement growth rate,
-                and the calculator solves for the level annual withdrawal that
-                exactly exhausts it after your chosen payout period — similar to
-                how a loan amortizes, just running in reverse from a lump sum down
-                to zero instead of from zero up to a payoff.
+            <CalcSection title="What is an annual retirement income calculator?">
+              <p>
+                This calculator helps you estimate how much annual income you can expect during retirement based on
+                your current savings, regular contributions, and expected returns. It projects your corpus at
+                retirement and then calculates a sustainable annual withdrawal over your retirement years.
               </p>
-              <p className="text-slate-500 leading-relaxed mt-4">
-                This means your post-retirement growth rate assumption matters
-                enormously: a corpus that keeps earning even a modest return
-                during retirement can sustain meaningfully higher withdrawals than
-                one assumed to sit in cash, since the remaining balance keeps
-                growing between withdrawals rather than only shrinking.
-              </p>
-            </div>
+            </CalcSection>
 
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
-              <h2 className="text-2xl font-bold text-slate-800 mb-4">How to Use This Calculator</h2>
-              <ol className="list-decimal list-inside text-slate-500 space-y-2">
+            <CalcSection title="How is this calculated?">
+              <p>
+                The calculation runs in two stages. First, your pre-retirement corpus grows using compound growth
+                on your current principal plus the future value of your annual additions. Second, that corpus is
+                treated as a fixed pool earning the post-retirement growth rate, and the calculator solves for the
+                level annual withdrawal that exactly exhausts it after your chosen payout period — similar to how a
+                loan amortizes, just running in reverse from a lump sum down to zero instead of from zero up to a
+                payoff.
+              </p>
+              <p>
+                This means your post-retirement growth rate assumption matters enormously: a corpus that keeps
+                earning even a modest return during retirement can sustain meaningfully higher withdrawals than one
+                assumed to sit in cash, since the remaining balance keeps growing between withdrawals rather than
+                only shrinking.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="How to use this calculator">
+              <ol className="list-decimal space-y-2 pl-5">
                 <li>Enter your current principal (savings earmarked for retirement).</li>
                 <li>Enter your annual addition (how much you'll add each year until retirement).</li>
                 <li>Set the years to grow (remaining working years).</li>
@@ -413,63 +187,22 @@ export default function AnnualRetirementIncomePage() {
                 <li>Choose a post-retirement growth rate (return on remaining corpus).</li>
                 <li>The calculator will show your annual retirement income and corpus.</li>
               </ol>
-            </div>
+            </CalcSection>
 
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
-              <h2 className="text-2xl font-bold text-slate-800 mb-4">Understanding the Results</h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-emerald-700 mb-2">Corpus at Retirement</h3>
-                  <p className="text-slate-500 leading-relaxed">
-                    This is the total amount you'll have saved by the time you retire, considering your current savings, annual additions, and investment growth.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-emerald-700 mb-2">Annual Retirement Income</h3>
-                  <p className="text-slate-500 leading-relaxed">
-                    This is the amount you can withdraw each year during retirement, assuming the remaining corpus continues to earn the post-retirement growth rate.
-                  </p>
-                </div>
-              </div>
-            </div>
+            <CalcSection title="Understanding the results">
+              <CalcBenefitGrid
+                items={[
+                  { title: "Corpus at retirement", text: "This is the total amount you'll have saved by the time you retire, considering your current savings, annual additions, and investment growth." },
+                  { title: "Annual retirement income", text: "This is the amount you can withdraw each year during retirement, assuming the remaining corpus continues to earn the post-retirement growth rate." },
+                ]}
+              />
+            </CalcSection>
 
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
-              <h2 className="text-2xl font-bold text-slate-800 mb-4">Frequently Asked Questions</h2>
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-700">What is a realistic pre-retirement growth rate?</h3>
-                  <p className="text-slate-500 leading-relaxed">
-                    Expected long-term investment returns vary depending on your portfolio, asset allocation, and market conditions. Stocks have historically delivered higher long-term returns than bonds or cash, but they also involve greater risk. Choose assumptions that match your investment strategy. Choose based on your asset allocation.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-700">What should I enter for "Years to Pay Out"?</h3>
-                  <p className="text-slate-500 leading-relaxed">
-                    Estimate your life expectancy minus your retirement age. A common approach is to plan for 25-30 years post-retirement.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-700">Can I withdraw more than the calculated amount?</h3>
-                  <p className="text-slate-500 leading-relaxed">
-                    Withdrawing more may deplete your corpus sooner. The calculator provides a sustainable annual income assuming the corpus earns the given rate and lasts the specified years. Adjust the parameters to see different scenarios.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-700">Does this account for inflation during retirement?</h3>
-                  <p className="text-slate-500 leading-relaxed">
-                    Not directly — the annual income figure is level (the same
-                    amount each year) rather than rising with inflation. In
-                    practice, expenses tend to rise over a 25-30 year retirement,
-                    so treat this figure as a starting point and build in some
-                    buffer or a rising withdrawal schedule.
-                  </p>
-                </div>
-              </div>
-            </div>
+            <RelatedLinks />
+
+            <VerdictFAQ items={FAQ_ITEMS} className="border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />
           </div>
-        </section>
-
-        
+        </div>
       </div>
     </>
   );

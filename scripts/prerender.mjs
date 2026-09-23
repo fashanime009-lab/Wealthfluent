@@ -29,44 +29,133 @@
  * React takes over, which is a harmless side benefit (faster first
  * paint), not a regression.
  *
+ * RUNTIME-ONLY CONTENT
+ * The snapshot must contain only what a crawler needs, never things that
+ * belong to a live visitor's session. Three layers keep it that way:
+ *   1. window.__PRERENDER__ is set before any page script runs, so
+ *      timed UI (cookie banner, first-visit hint) and live ad requests
+ *      skip themselves instead of racing the capture — see
+ *      src/utils/prerender.js.
+ *   2. stripInjectedContent() removes what third-party code injects
+ *      regardless (ad slots/iframes, ad-network scripts and their side
+ *      effects).
+ *   3. findRuntimeOnlyContent() (scripts/lib/runtimeOnlyContent.mjs)
+ *      inspects every snapshot before it is written and fails the route
+ *      — and so the build — if anything of that kind slipped through.
+ * Layer 2 matters for speed, not just tidiness: AdSense's loader injects a
+ * <script src=".../show_ads_impl.js"> into <head>, and a snapshot that keeps
+ * it ships that as a synchronous, parser-blocking script on every page.
+ *
  * HOW IT RUNS
  * Wired up as the "postbuild" script in package.json, so it fires
  * automatically every time `npm run build` runs — no separate step to
  * remember.
  *
- * ONE-TIME SETUP
- *   npm install --save-dev puppeteer
- * Then just run `npm run build` as usual.
+ * RUNNING IN VERCEL'S BUILD CONTAINER
+ * Vercel's build image is missing system shared libraries (libnss3.so
+ * and others) a normal downloaded Chrome binary needs — the full
+ * `puppeteer` package (which bundles that binary) fails there with
+ * "error while loading shared libraries: libnss3.so". Fixed by using
+ * `puppeteer-core` (no bundled browser) together with
+ * `@sparticuz/chromium`, a Chromium build compiled specifically to run
+ * standalone in serverless/CI build containers like Vercel's — see
+ * launchBrowser() below. Locally (or anywhere not running on Vercel),
+ * it instead launches your own installed Chrome via puppeteer-core's
+ * `channel: "chrome"`, so no second Chrome download is needed for
+ * everyday local builds.
  *
- * NOTE ON DEPLOYING
- * Puppeteer downloads a real Chromium binary, which makes this step
- * slow (and sometimes flaky) to run inside Vercel's own build
- * container. It's more reliable to run `npm run build` locally (or in
- * a GitHub Actions job) and deploy the resulting prebuilt `dist/`
- * folder, e.g. with `vercel deploy --prebuilt`, rather than letting
- * Vercel run the build itself. If you'd rather have Vercel do the
- * build, you'll likely need to add `--no-sandbox` to the launch args
- * below and confirm the build container has enough memory.
+ * ONE-TIME SETUP
+ *   npm install --save-dev puppeteer-core @sparticuz/chromium
+ * Then just run `npm run build` as usual — locally or on Vercel.
  */
 
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import { findRuntimeOnlyContent, readAllowedScriptSrcs } from "./lib/runtimeOnlyContent.mjs";
+
+// Vercel sets VERCEL=1 during both build and runtime — that's the signal
+// to use the serverless-compatible Chromium instead of a local install.
+// @sparticuz/chromium is only imported in that branch so a local build
+// never needs it downloaded/loaded at all.
+//
+// `vercel build` run locally (e.g. via the CLI, to test a prod build
+// before deploying) ALSO sets VERCEL=1 to replicate Vercel's env vars,
+// but the build still executes on the local machine, not inside Vercel's
+// actual Linux container — @sparticuz/chromium's binary is Linux-only,
+// so launching it locally on macOS/Windows fails with ENOEXEC. Requiring
+// linux as well as the env var distinguishes a real remote Vercel build
+// from a local `vercel build` emulating one.
+async function launchBrowser() {
+  if (process.env.VERCEL && process.platform === "linux") {
+    const { default: chromium } = await import("@sparticuz/chromium");
+    // Matches @sparticuz/chromium's own documented usage exactly: args
+    // must go through puppeteer's defaultArgs() (merges chromium's flags
+    // with puppeteer-core's own required ones) rather than being passed
+    // raw, and "shell" is the specific headless mode this Chromium build
+    // supports — plain `true` is not.
+    return puppeteer.launch({
+      headless: "shell",
+      args: await puppeteer.defaultArgs({ args: chromium.args, headless: "shell" }),
+      executablePath: await chromium.executablePath(),
+    });
+  }
+
+  return puppeteer.launch({
+    headless: true,
+    channel: "chrome",
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const DIST = path.join(ROOT, "dist");
 const PORT = 4173;
 const BASE_URL = `http://localhost:${PORT}`;
-// The real domain crawlers hit in production. Falls back to the same
-// default src/components/seo/Seo.jsx uses so the two never drift apart.
-// Snapshots are captured against BASE_URL (localhost), so every
-// absolute URL baked into canonical/og:url/og:image/twitter:image gets
-// rewritten to this before writing — otherwise every prerendered file
-// would ship pointing crawlers at localhost.
-const SITE_URL = (process.env.VITE_SITE_URL || "https://finaiw.com").replace(/\/+$/, "");
+// The real domain crawlers hit in production — www.finaiw.com is the
+// domain Vercel actually serves from (finaiw.com redirects to it), so
+// that's the correct fallback, not the apex domain. Snapshots are
+// captured against BASE_URL (localhost), so every absolute URL baked
+// into canonical/og:url/og:image/twitter:image gets rewritten to this
+// before writing — otherwise every prerendered file would ship pointing
+// crawlers at localhost. See rewriteSiteUrls() for why this replacement
+// is scoped to only those tags, never applied to the whole document.
+const SITE_URL = (process.env.VITE_SITE_URL || "https://www.finaiw.com").replace(/\/+$/, "");
+
+// Rewrites BASE_URL -> SITE_URL only inside the specific tags meant to
+// carry the real production URL: the canonical link, OG/Twitter meta
+// content, and inline JSON-LD. Deliberately never touches <script src>
+// — a previous version of this function did a blanket find-and-replace
+// across the ENTIRE captured HTML, which also rewrote the app's own JS
+// bundle <script src> tags to a hardcoded absolute origin. That origin
+// didn't match the domain the page actually loads from, so every
+// script became cross-origin relative to the page's real 'self' — and
+// CSP correctly refused to run any of them, breaking the live site.
+//
+// <link rel="modulepreload"> hints for lazy-loaded route chunks are a
+// separate case: React Router/Vite insert these into the DOM at
+// runtime with an ABSOLUTE href (`new URL(path, import.meta.url).href`),
+// unlike the static template's script tags, which stay root-relative.
+// Rewriting those to SITE_URL would reintroduce the exact same
+// domain-mismatch risk, so they're stripped back to root-relative
+// instead — matching every other asset reference, and immune to
+// www-vs-apex mismatches entirely since there's no domain baked in.
+function rewriteSiteUrls(html) {
+  const escapedBase = BASE_URL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const baseUrlPattern = new RegExp(escapedBase, "g");
+  const swap = (match, prefix, url, suffix) => prefix + url.replace(baseUrlPattern, SITE_URL) + suffix;
+
+  return html
+    .replace(/(<link rel="canonical"[^>]*href=")([^"]*)(")/g, swap)
+    .replace(/(<meta (?:property|name)="(?:og|twitter):[a-z:]+"[^>]*content=")([^"]*)(")/g, swap)
+    .replace(/(<script type="application\/ld\+json">)([\s\S]*?)(<\/script>)/g, swap)
+    .replace(/<link rel="modulepreload"[^>]*href="([^"]*)"[^>]*>/g, (match, url) =>
+      match.replace(url, url.replace(baseUrlPattern, ""))
+    );
+}
 
 // Reads the canonical route list straight from the files you already
 // maintain, so this script never drifts out of sync with them.
@@ -148,6 +237,68 @@ function dedupeByCapturedKey(html, pattern) {
   });
 }
 
+// Runs INSIDE the page (via page.evaluate) right before content() is
+// captured. adsbygoogle.js loads unconditionally (needed for AdSense's
+// own non-JS verification crawler — see index.html), so during the
+// prerender crawl it genuinely fires: our own AdSlot push(), AND —
+// independently of any component we render — Google's Auto Ads feature,
+// which scans the page and injects its own ad units directly into the
+// DOM whenever it's enabled on the AdSense account, with no <ins> tag of
+// ours involved at all. Either source bakes a live ad iframe (real
+// doubleclick request URLs, this build server's own localhost origin in
+// a query param, sometimes a reCAPTCHA-style verification frame) into
+// the static HTML shipped to every visitor. Removing every ad element
+// right before capture — regardless of which mechanism created it —
+// is the only place that reliably catches both. Real visitors are
+// unaffected: this only ever runs against the throwaway prerender
+// snapshot, and ads load fresh in their own browser once the client
+// bundle takes over.
+//
+// It also drops any external <script src> the source template doesn't
+// declare. The AdSense loader injects its own show_ads_impl.js tag into
+// <head> — with no async/defer and fetchpriority="high", so kept in a
+// snapshot it becomes a synchronous, render-blocking script on every page
+// (multiple seconds on a slow connection), pinned to whatever Google build
+// was current at build time. adsbygoogle.js, which the template does keep,
+// loads its own copy at runtime anyway. The template's scripts (gtag,
+// adsbygoogle.js) are passed in and kept.
+//
+// And it undoes the layout side effect of responsive ads: AdSense sets
+// `height: auto !important` inline on <main> and the page wrappers around
+// an ad slot. The app never writes an inline !important style itself, so
+// any that exist in the snapshot are the ad script's.
+//
+// Google's ad scripts also add five <meta http-equiv="origin-trial"> tokens
+// to <head>. The site uses no origin trials, so they are pure ad-network
+// residue.
+function stripInjectedContent(allowedScriptSrcs) {
+  document.querySelectorAll('meta[http-equiv="origin-trial"]').forEach((el) => el.remove());
+  document.querySelectorAll("script[src]").forEach((el) => {
+    const src = el.getAttribute("src");
+    if (/^https?:\/\//.test(src) && !src.startsWith(location.origin) && !allowedScriptSrcs.includes(src)) {
+      el.remove();
+    }
+  });
+  document.querySelectorAll("[style]").forEach((el) => {
+    if (el.style.getPropertyValue("height") === "auto" && el.style.getPropertyPriority("height") === "important") {
+      el.style.removeProperty("height");
+      if (!el.getAttribute("style").trim()) el.removeAttribute("style");
+    }
+  });
+  document
+    .querySelectorAll(
+      [
+        "ins.adsbygoogle",
+        'iframe[id^="google_ads_iframe"]',
+        'iframe[id="google_esf"]',
+        'iframe[src*="doubleclick.net"]',
+        'iframe[src*="googlesyndication.com"]',
+        'iframe[src*="google.com/recaptcha"]',
+      ].join(",")
+    )
+    .forEach((el) => el.remove());
+}
+
 function waitForServer(url, timeoutMs = 20000) {
   const start = Date.now();
   return new Promise((resolve, reject) => {
@@ -191,11 +342,14 @@ async function main() {
   try {
     await waitForServer(BASE_URL);
 
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+    const allowedScriptSrcs = readAllowedScriptSrcs(readFileSync(path.join(ROOT, "index.html"), "utf-8"));
+    const browser = await launchBrowser();
     const page = await browser.newPage();
+    // See src/utils/prerender.js — lets timed, visitor-only UI and ad
+    // requests skip themselves.
+    await page.evaluateOnNewDocument(() => {
+      window.__PRERENDER__ = true;
+    });
 
     for (const route of routes) {
       try {
@@ -206,10 +360,16 @@ async function main() {
         await page
           .waitForSelector('meta[property="og:title"]', { timeout: 5000 })
           .catch(() => {});
+        await page.evaluate(stripInjectedContent, allowedScriptSrcs);
 
-        const html = dedupeHeadTags(
-          (await page.content()).split(BASE_URL).join(SITE_URL)
-        );
+        const html = dedupeHeadTags(rewriteSiteUrls(await page.content()));
+
+        // Fail the route (and the build) rather than ship a snapshot with
+        // visitor-only content in it. Nothing is written for this route.
+        const problems = findRuntimeOnlyContent(html, { allowedScriptSrcs });
+        if (problems.length > 0) {
+          throw new Error(`runtime-only content in snapshot:\n      - ${problems.join("\n      - ")}`);
+        }
         const outPath =
           route === "/"
             ? path.join(DIST, "index.html")

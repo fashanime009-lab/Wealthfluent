@@ -64,7 +64,16 @@ export function computeFinancialHealth(profile) {
 
   const netWorthScore = netWorthToIncome <= 0 ? 0 : Math.max(0, Math.min(25, (netWorthToIncome / 3) * 25));
 
-  const score = Math.round(savingsScore + emergencyScore + debtScore + netWorthScore);
+  // Round each component once, then sum the rounded values — summing the
+  // raw values and rounding only the total let the displayed breakdown
+  // (each row already rounded for display) add up to one point off from
+  // the headline score, which reads as a real bug on a page whose whole
+  // pitch is "nothing hidden, fully auditable."
+  const savingsScoreRounded = Math.round(savingsScore);
+  const emergencyScoreRounded = Math.round(emergencyScore);
+  const debtScoreRounded = Math.round(debtScore);
+  const netWorthScoreRounded = Math.round(netWorthScore);
+  const score = savingsScoreRounded + emergencyScoreRounded + debtScoreRounded + netWorthScoreRounded;
 
   return {
     netWorth,
@@ -74,10 +83,10 @@ export function computeFinancialHealth(profile) {
     emergencyMonths,
     score,
     breakdown: [
-      { label: "Savings Rate", value: `${savingsRate.toFixed(0)}%`, score: savingsScore, max: 25 },
-      { label: "Emergency Fund", value: `${emergencyMonths.toFixed(1)} mo`, score: Math.round(emergencyScore), max: 25 },
-      { label: "Debt-to-Income", value: `${debtToIncome.toFixed(0)}%`, score: debtScore, max: 25 },
-      { label: "Net Worth", value: null, score: Math.round(netWorthScore), max: 25 },
+      { label: "Savings Rate", value: `${savingsRate.toFixed(0)}%`, score: savingsScoreRounded, max: 25 },
+      { label: "Emergency Fund", value: `${emergencyMonths.toFixed(1)} mo`, score: emergencyScoreRounded, max: 25 },
+      { label: "Debt-to-Income", value: `${debtToIncome.toFixed(0)}%`, score: debtScoreRounded, max: 25 },
+      { label: "Net Worth", value: null, score: netWorthScoreRounded, max: 25 },
     ],
   };
 }

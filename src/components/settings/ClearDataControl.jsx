@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Trash2, ShieldCheck } from "lucide-react";
 
 // The exact set of first-party localStorage keys FINAIW writes to on this
 // device (financial profile, goals, learning streak, calculator history,
@@ -33,39 +32,29 @@ export default function ClearDataControl() {
   };
 
   return (
-    <div className="flex flex-col gap-4 px-5 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-      <div className="flex items-start gap-4 sm:items-center sm:gap-5">
-        <div className="grid h-12 w-12 flex-shrink-0 place-items-center rounded-2xl bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
-          <Trash2 size={20} />
-        </div>
-        <div>
-          <h3 className="font-bold text-slate-900 dark:text-white">
-            Clear My Data
-          </h3>
-          <p className="mt-1 max-w-md text-sm text-slate-500 dark:text-slate-400">
-            Permanently erases your financial profile, goals, learning streak,
-            calculator history, and display preferences from this browser.
-            Nothing was ever sent anywhere, so this is the only place it can
-            be cleared — there's no account or server copy to delete.
-          </p>
-        </div>
+    <div className="flex flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+      <div>
+        <h3 className="text-[14px] font-semibold text-[#111814] dark:text-[#eef1ec]">Clear my data</h3>
+        <p className="mt-1 max-w-md text-[13px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
+          Permanently erases your financial profile, goals, learning streak, calculator history, and display
+          preferences from this browser. Nothing was ever sent anywhere, so this is the only place it can be
+          cleared — there's no account or server copy to delete.
+        </p>
       </div>
 
       {cleared ? (
-        <span className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-emerald-50 px-4 py-2.5 text-sm font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 sm:w-auto">
-          <ShieldCheck size={16} /> Cleared
-        </span>
+        <span className="flex-shrink-0 text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Cleared</span>
       ) : confirming ? (
         <div className="flex flex-shrink-0 gap-2">
           <button
             onClick={() => setConfirming(false)}
-            className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5 sm:flex-none"
+            className="border border-[#111814]/15 px-4 py-2.5 text-[13px] font-semibold text-[#111814]/70 transition hover:bg-[#111814]/5 dark:border-[#eef1ec]/15 dark:text-[#eef1ec]/70 dark:hover:bg-[#eef1ec]/5"
           >
             Cancel
           </button>
           <button
             onClick={handleClear}
-            className="flex-1 rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700 sm:flex-none"
+            className="bg-[#9a3412] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[#7c2d12]"
           >
             Yes, erase it
           </button>
@@ -73,7 +62,7 @@ export default function ClearDataControl() {
       ) : (
         <button
           onClick={() => setConfirming(true)}
-          className="w-full flex-shrink-0 rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-bold text-rose-600 transition hover:bg-rose-50 dark:border-rose-500/30 dark:text-rose-400 dark:hover:bg-rose-500/10 sm:w-auto"
+          className="flex-shrink-0 border border-[#9a3412]/40 px-4 py-2.5 text-[13px] font-semibold text-[#9a3412] transition hover:bg-[#9a3412]/10 dark:text-[#d9552e] dark:border-[#d9552e]/40 dark:hover:bg-[#d9552e]/10"
         >
           Clear my data
         </button>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { LESSONS, getLessonBySlug } from "@/data/lessons";
 import { isLessonComplete, markLessonComplete } from "@/services/learningEngine";
 import Seo from "@/components/seo/Seo";
@@ -29,71 +29,86 @@ function LessonContent({ slug }) {
   };
 
   return (
-    <div className="mx-auto max-w-2xl px-5 py-14 sm:px-8">
-      <Seo
-        title={`${lesson.title} — Learn`}
-        description={lesson.summary}
-        path={`/learn/${lesson.slug}`}
-        type="article"
-        keywords={`${lesson.title}, personal finance, ${lesson.category}, financial literacy`}
-        jsonLd={[
-          articleSchema({
-            title: lesson.title,
-            description: lesson.summary,
-            path: `/learn/${lesson.slug}`,
-          }),
-          breadcrumbSchema([
-            { name: "Home", path: "/" },
-            { name: "Learn", path: "/learn" },
-            { name: lesson.title, path: `/learn/${lesson.slug}` },
-          ]),
-        ]}
-      />
-
-      <Link to="/learn" className="inline-flex items-center gap-2 text-[13px] font-bold text-slate-500 hover:text-emerald-700">
-        <ArrowLeft size={15} /> All lessons
-      </Link>
-
-      <span className="mt-6 inline-block rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black uppercase tracking-wide text-emerald-700">
-        {lesson.category}
-      </span>
-      <h1 className="mt-4 text-4xl font-black text-slate-950">{lesson.title}</h1>
-      <p className="mt-2 text-[13px] font-bold text-slate-400">{lesson.readTime} read</p>
-
-      <div className="mt-8 space-y-5 text-[15px] leading-7 text-slate-700">
-        {lesson.body.map((para, i) => (
-          <p key={i}>{para}</p>
-        ))}
-      </div>
-
-      {lesson.relatedTool && (
-        <Link
-          to={lesson.relatedTool.to}
-          className="mt-8 flex items-center justify-between rounded-2xl bg-emerald-50 px-6 py-4 text-[13px] font-black text-emerald-800 ring-1 ring-emerald-100"
-        >
-          {lesson.relatedTool.label}
-          <ArrowRight size={16} />
-        </Link>
-      )}
-
-      <div className="mt-10 flex flex-wrap items-center gap-4 border-t border-slate-200 pt-8">
-        <button
-          onClick={handleComplete}
-          disabled={done}
-          className={`inline-flex items-center gap-2 rounded-xl px-6 py-3.5 text-[13px] font-black transition ${
-            done ? "bg-emerald-100 text-emerald-700" : "bg-emerald-800 text-white hover:bg-emerald-900"
-          }`}
-        >
-          <CheckCircle2 size={16} />
-          {done ? "Completed" : "Mark as complete"}
-        </button>
+    <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
+      <div className="mx-auto max-w-[680px] px-5 py-16 sm:px-8">
+        <Seo
+          title={`${lesson.title} — Learn`}
+          description={lesson.summary}
+          path={`/learn/${lesson.slug}`}
+          type="article"
+          keywords={`${lesson.title}, personal finance, ${lesson.category}, financial literacy`}
+          jsonLd={[
+            articleSchema({
+              title: lesson.title,
+              description: lesson.summary,
+              path: `/learn/${lesson.slug}`,
+            }),
+            breadcrumbSchema([
+              { name: "Home", path: "/" },
+              { name: "Learn", path: "/learn" },
+              { name: lesson.title, path: `/learn/${lesson.slug}` },
+            ]),
+          ]}
+        />
 
         <Link
-          to={`/learn/${next.slug}`}
-          className="inline-flex items-center gap-2 text-[13px] font-black text-slate-600 hover:text-emerald-700"
+          to="/learn"
+          className="text-[13px] font-semibold text-[#111814]/60 underline decoration-[#111814]/25 underline-offset-4 hover:text-[#111814] dark:text-[#eef1ec]/55 dark:decoration-[#eef1ec]/25 dark:hover:text-[#eef1ec]"
         >
-          Next: {next.title} <ArrowRight size={15} />
+          All lessons
         </Link>
+
+        <span className="mt-8 block text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">
+          {lesson.category}
+        </span>
+        <h1 className="font-display mt-2 text-[32px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[38px]">
+          {lesson.title}
+        </h1>
+        <p className="font-mono-tech mt-2 text-[12.5px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
+          {lesson.readTime} read
+        </p>
+
+        <div className="mt-9 space-y-5 text-[15px] leading-7 text-[#111814]/75 dark:text-[#eef1ec]/75">
+          {lesson.body.map((para, i) => (
+            <p key={i}>{para}</p>
+          ))}
+        </div>
+
+        {lesson.relatedTool && (
+          <Link
+            to={lesson.relatedTool.to}
+            className="mt-10 flex items-center justify-between gap-4 border border-[#111814]/12 bg-[#ffffff] px-6 py-5 transition-opacity hover:opacity-80 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]"
+          >
+            <span className="text-[14px] font-semibold text-[#111814] dark:text-[#eef1ec]">
+              {lesson.relatedTool.label}
+            </span>
+            <span className="flex-shrink-0 text-[13px] font-semibold text-[#047857] underline decoration-[#047857]/30 underline-offset-4 dark:text-[#34d399] dark:decoration-[#34d399]/30">
+              Open
+            </span>
+          </Link>
+        )}
+
+        <div className="mt-10 flex flex-wrap items-center gap-6 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
+          <button
+            onClick={handleComplete}
+            disabled={done}
+            className={`inline-flex items-center gap-2 border px-6 py-3 text-[13px] font-semibold transition ${
+              done
+                ? "border-[#047857]/30 text-[#047857] dark:border-[#34d399]/30 dark:text-[#34d399]"
+                : "border-[#111814] text-[#111814] hover:bg-[#111814] hover:text-[#eef1ec] dark:border-[#eef1ec] dark:text-[#eef1ec] dark:hover:bg-[#eef1ec] dark:hover:text-[#0b1210]"
+            }`}
+          >
+            <CheckCircle2 size={16} />
+            {done ? "Completed" : "Mark as complete"}
+          </button>
+
+          <Link
+            to={`/learn/${next.slug}`}
+            className="text-[13px] font-semibold text-[#111814]/70 underline decoration-[#111814]/25 underline-offset-4 hover:text-[#111814] dark:text-[#eef1ec]/70 dark:decoration-[#eef1ec]/25 dark:hover:text-[#eef1ec]"
+          >
+            Next: {next.title}
+          </Link>
+        </div>
       </div>
     </div>
   );

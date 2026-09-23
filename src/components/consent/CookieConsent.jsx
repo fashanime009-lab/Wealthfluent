@@ -1,36 +1,46 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Cookie, X, ChevronDown, Info, BarChart3 } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import { getItem, setItem } from "../../utils/safeStorage";
 import { updateAnalyticsConsent, updateAdConsent } from "../../lib/analytics";
+import { isPrerendering } from "../../utils/prerender";
+
+function Toggle({ checked, onChange, label }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      onClick={onChange}
+      className={`relative h-5 w-9 flex-shrink-0 border transition ${
+        checked
+          ? "border-[#047857] bg-[#047857] dark:border-[#34d399] dark:bg-[#34d399]"
+          : "border-[#111814]/20 bg-transparent dark:border-[#eef1ec]/20"
+      }`}
+    >
+      <span
+        className={`absolute top-0.5 h-3.5 w-3.5 transition ${
+          checked ? "left-[18px] bg-[#eef1ec] dark:bg-[#052e22]" : "left-0.5 bg-[#111814]/35 dark:bg-[#eef1ec]/35"
+        }`}
+      />
+    </button>
+  );
+}
 
 const STORAGE_KEY = "finaiw-cookie-consent";
 
-// Loads (or removes) the AdSense script based on consent. This is one of
-// two things on the whole site that actually set a cookie (the other is
-// Google Analytics, gated via Consent Mode — see src/lib/analytics.js) —
-// everything else FINAIW remembers about you (financial profile, goals,
-// streak, theme, currency) is localStorage: first-party, device-only,
-// never sent to us or anyone else, and not something cookie-consent rules
-// apply to. Keeping that distinction accurate is the whole point of this
-// component.
-function setAdsenseEnabled(enabled) {
-  const existing = document.getElementById("adsbygoogle-script");
-  if (enabled && !existing) {
-    const script = document.createElement("script");
-    script.id = "adsbygoogle-script";
-    script.async = true;
-    script.crossOrigin = "anonymous";
-    script.src =
-      "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX";
-    document.head.appendChild(script);
-  }
-  // Note: once Google's script has loaded, it may have already set its own
-  // cookies for that session. There's no supported client-side API to force
-  // those out immediately on decline; the reliable guarantee is exactly
-  // what this file already does — never inject the script unless
-  // `enabled` is true, so a decline means the cookies are never set at all
-  // on any later visit.
-}
+// Advertising (Google AdSense) and analytics (Google Analytics) are the
+// two things on the whole site that actually set a cookie — everything
+// else FINAIW remembers about you (financial profile, goals, streak,
+// theme, currency) is localStorage: first-party, device-only, never sent
+// to us or anyone else, and not something cookie-consent rules apply to.
+// Both Google scripts always load (see index.html) so Google's own
+// verification crawlers can find them without clicking this banner; what
+// this component actually controls is the Consent Mode signals
+// (updateAdConsent / updateAnalyticsConsent) that tell those scripts
+// whether they're allowed to set a cookie or personalize anything — not
+// whether the script is present at all.
 
 // Reads whatever's in localStorage and normalizes it to the current shape.
 // Handles three generations of stored value: the original plain
@@ -42,7 +52,7 @@ function setAdsenseEnabled(enabled) {
 // bundled decision it was at the time.
 function readStoredConsent() {
   if (typeof window === "undefined") return null;
-  const raw = localStorage.getItem(STORAGE_KEY);
+  const raw = getItem(STORAGE_KEY);
   if (!raw) return null;
   if (raw === "accepted") return { advertising: true, analytics: true };
   if (raw === "declined") return { advertising: false, analytics: false };
@@ -67,11 +77,14 @@ export default function CookieConsent() {
 
   useEffect(() => {
     if (consent) {
-      setAdsenseEnabled(consent.advertising === true);
       updateAdConsent(consent.advertising === true);
       updateAnalyticsConsent(consent.analytics === true);
       return undefined;
     }
+    // Never show in the prerender snapshot: the timer below races the capture,
+    // and a dialog frozen into static HTML is dead markup that flashes at
+    // every returning visitor. Real visitors never set this flag.
+    if (isPrerendering()) return undefined;
     // Small delay so it doesn't compete with the initial page paint.
     const t = setTimeout(() => setVisible(true), 600);
     return () => clearTimeout(t);
@@ -80,9 +93,8 @@ export default function CookieConsent() {
 
   const save = (advertising, analytics) => {
     const value = { advertising, analytics, decidedAt: new Date().toISOString() };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+    setItem(STORAGE_KEY, JSON.stringify(value));
     setConsent(value);
-    setAdsenseEnabled(advertising);
     updateAdConsent(advertising);
     updateAnalyticsConsent(analytics);
     setVisible(false);
@@ -92,21 +104,17 @@ export default function CookieConsent() {
   if (consent || !visible) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[100] flex justify-center p-4 sm:p-5">
-      <div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_50px_rgba(15,23,42,.16)] dark:border-white/10 dark:bg-slate-900">
-        <div className="relative flex flex-shrink-0 flex-col items-start gap-4 p-5 sm:flex-row sm:items-center">
-          <span className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
-            <Cookie size={19} />
-          </span>
-
+    <div role="region" aria-label="Cookie preferences" data-runtime-only="cookie-consent" className="fixed inset-x-0 bottom-0 z-[100] flex justify-center p-4 sm:p-5">
+      <div className="flex max-h-[90vh] w-full max-w-2xl flex-col border border-[#111814]/12 bg-[#eef1ec] dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+        <div className="flex flex-shrink-0 flex-col gap-4 border-b border-[#111814]/10 p-5 dark:border-[#eef1ec]/10 sm:flex-row sm:items-center">
           <div className="flex-1">
-            <p className="text-[13px] leading-6 text-slate-600 dark:text-slate-300">
-              FINAIW itself doesn't set tracking cookies. Your financial profile, goals and
-              preferences are saved only in your browser's local storage and never sent anywhere —
-              see below for exactly what that means. The two things that <em>do</em> use real
-              cookies are analytics (so we can see which tools people actually use) and
-              advertising (which is what keeps the site free).{" "}
-              <Link to="/privacy-policy" className="font-semibold text-emerald-700 hover:underline dark:text-emerald-400">
+            <p className="text-[13px] leading-6 text-[#111814]/65 dark:text-[#eef1ec]/65">
+              FINAIW itself doesn't set tracking cookies. Analytics and advertising <em>do</em> use
+              real cookies, and it's your call whether to allow them.{" "}
+              <Link
+                to="/privacy-policy"
+                className="font-semibold text-[#047857] underline decoration-[#047857]/30 underline-offset-2 dark:text-[#34d399] dark:decoration-[#34d399]/30"
+              >
                 Privacy Policy
               </Link>
             </p>
@@ -116,135 +124,104 @@ export default function CookieConsent() {
                 setDraftAnalytics(true);
                 setExpanded((v) => !v);
               }}
-              className="mt-2 inline-flex items-center gap-1 text-[12.5px] font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+              className="mt-2.5 inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#111814]/60 hover:text-[#111814] dark:text-[#eef1ec]/55 dark:hover:text-[#eef1ec]"
             >
               {expanded ? "Hide details" : "See exactly what's stored, and choose"}
               <ChevronDown size={14} className={`transition ${expanded ? "rotate-180" : ""}`} />
             </button>
           </div>
 
-          <div className="flex w-full flex-shrink-0 gap-2 sm:w-auto">
+          <div className="flex w-full flex-shrink-0 gap-2.5 sm:w-auto">
             <button
               onClick={() => save(false, false)}
-              className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-[13px] font-bold text-slate-600 transition hover:bg-slate-50 sm:flex-none dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5"
+              className="flex-1 border border-[#111814]/20 px-4 py-2.5 text-[13px] font-semibold text-[#111814]/70 transition hover:border-[#111814]/35 sm:flex-none dark:border-[#eef1ec]/20 dark:text-[#eef1ec]/70 dark:hover:border-[#eef1ec]/35"
             >
               Decline
             </button>
             <button
               onClick={() => save(true, true)}
-              className="flex-1 rounded-xl bg-emerald-800 px-4 py-2.5 text-[13px] font-black text-white transition hover:bg-emerald-900 sm:flex-none"
+              className="flex-1 bg-[#047857] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[#065f46] sm:flex-none"
             >
               Accept
             </button>
           </div>
-
-          <button
-            onClick={() => save(false, false)}
-            aria-label="Dismiss"
-            className="absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-full text-slate-400 transition hover:bg-slate-100 sm:hidden dark:hover:bg-white/10"
-          >
-            <X size={15} />
-          </button>
         </div>
 
         {expanded && (
-          <div className="space-y-3 overflow-y-auto border-t border-slate-100 bg-slate-50/70 p-5 dark:border-white/10 dark:bg-white/[0.03]">
+          <div className="space-y-4 overflow-y-auto border-t border-[#111814]/10 p-5 dark:border-[#eef1ec]/10">
             {/* Necessary — this is genuinely not a cookie, and genuinely
                 can't be turned off without breaking the product, so it's
                 shown as always-on rather than as a fake toggle. */}
-            <div className="flex items-start justify-between gap-4 rounded-xl border border-slate-200/70 bg-white p-4 dark:border-white/10 dark:bg-slate-900">
-              <div className="flex min-w-0 gap-3">
-                <Info size={16} className="mt-0.5 flex-shrink-0 text-slate-400" />
-                <div className="min-w-0">
-                  <p className="text-[13px] font-black text-slate-900 dark:text-white">
-                    Local storage (not a cookie) — always on
-                  </p>
-                  <p className="mt-1 text-[12.5px] leading-5 text-slate-500 dark:text-slate-400">
-                    Your financial profile, goals, learning streak, calculator history, and
-                    display preferences (theme, currency) are saved on this device only, so the
-                    app remembers them between visits. Nothing is transmitted to FINAIW's servers
-                    or any third party — you can verify or clear it anytime from{" "}
-                    <Link to="/settings" className="font-semibold text-emerald-700 hover:underline dark:text-emerald-400">
-                      Settings
-                    </Link>
-                    . This isn't part of cookie consent rules and can't be meaningfully "declined"
-                    without breaking the calculators and dashboard themselves.
-                  </p>
-                </div>
+            <div className="flex items-start justify-between gap-4 border-t border-[#111814]/10 pt-4 first:border-t-0 first:pt-0 dark:border-[#eef1ec]/10">
+              <div className="min-w-0">
+                <p className="font-display text-[13.5px] font-bold text-[#111814] dark:text-[#eef1ec]">
+                  Local storage (not a cookie) — always on
+                </p>
+                <p className="mt-1 text-[12.5px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">
+                  Your financial profile, goals, learning streak, calculator history, and
+                  display preferences (theme, currency — often auto-set from your device's clock
+                  and timezone) are saved on this device only, so the app remembers them between
+                  visits. Nothing is transmitted to FINAIW's servers
+                  or any third party — you can verify or clear it anytime from{" "}
+                  <Link
+                    to="/settings"
+                    className="font-semibold text-[#047857] underline decoration-[#047857]/30 underline-offset-2 dark:text-[#34d399] dark:decoration-[#34d399]/30"
+                  >
+                    Settings
+                  </Link>
+                  . This isn't part of cookie consent rules and can't be meaningfully "declined"
+                  without breaking the calculators and dashboard themselves.
+                </p>
               </div>
-              <span className="mt-1 flex-shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-slate-400 dark:bg-white/10 dark:text-slate-500">
+              <span className="mt-0.5 flex-shrink-0 text-[11px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Always on
               </span>
             </div>
 
             {/* Analytics — real cookies (Google Analytics), genuinely optional. */}
-            <div className="flex items-start justify-between gap-4 rounded-xl border border-slate-200/70 bg-white p-4 dark:border-white/10 dark:bg-slate-900">
-              <div className="flex min-w-0 gap-3">
-                <BarChart3 size={16} className="mt-0.5 flex-shrink-0 text-slate-400" />
-                <div className="min-w-0">
-                  <p className="text-[13px] font-black text-slate-900 dark:text-white">
-                    Analytics cookies (Google Analytics)
-                  </p>
-                  <p className="mt-1 text-[12.5px] leading-5 text-slate-500 dark:text-slate-400">
-                    If enabled, Google Analytics sets cookies to help us see which calculators
-                    and pages people actually use, so we know what to improve or build next. If
-                    you turn this off, no analytics cookies are set and every tool on the site
-                    still works exactly the same.
-                  </p>
-                </div>
+            <div className="flex items-start justify-between gap-4 border-t border-[#111814]/10 pt-4 dark:border-[#eef1ec]/10">
+              <div className="min-w-0">
+                <p className="font-display text-[13.5px] font-bold text-[#111814] dark:text-[#eef1ec]">
+                  Analytics cookies (Google Analytics)
+                </p>
+                <p className="mt-1 text-[12.5px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">
+                  If enabled, Google Analytics sets cookies to help us see which calculators
+                  and pages people actually use, so we know what to improve or build next. If
+                  you turn this off, no analytics cookies are set and every tool on the site
+                  still works exactly the same.
+                </p>
               </div>
-              <button
-                role="switch"
-                aria-checked={draftAnalytics}
-                onClick={() => setDraftAnalytics((v) => !v)}
-                className={`relative mt-1 h-6 w-11 flex-shrink-0 rounded-full transition ${
-                  draftAnalytics ? "bg-emerald-600" : "bg-slate-300 dark:bg-white/15"
-                }`}
-              >
-                <span
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition ${
-                    draftAnalytics ? "left-5" : "left-0.5"
-                  }`}
-                />
-              </button>
+              <Toggle
+                checked={draftAnalytics}
+                onChange={() => setDraftAnalytics((v) => !v)}
+                label="Toggle analytics cookies"
+              />
             </div>
 
             {/* Advertising — real cookies (Google AdSense), genuinely optional. */}
-            <div className="flex items-start justify-between gap-4 rounded-xl border border-slate-200/70 bg-white p-4 dark:border-white/10 dark:bg-slate-900">
-              <div className="flex min-w-0 gap-3">
-                <Cookie size={16} className="mt-0.5 flex-shrink-0 text-slate-400" />
-                <div className="min-w-0">
-                  <p className="text-[13px] font-black text-slate-900 dark:text-white">
-                    Advertising cookies (Google AdSense)
-                  </p>
-                  <p className="mt-1 text-[12.5px] leading-5 text-slate-500 dark:text-slate-400">
-                    If enabled, Google AdSense sets cookies to show ads and measure their
-                    performance — this is what keeps every calculator on FINAIW free. If you turn
-                    this off, no ad cookies are set and every tool on the site still works exactly
-                    the same; you just won't see ads.
-                  </p>
-                </div>
+            <div className="flex items-start justify-between gap-4 border-t border-[#111814]/10 pt-4 dark:border-[#eef1ec]/10">
+              <div className="min-w-0">
+                <p className="font-display text-[13.5px] font-bold text-[#111814] dark:text-[#eef1ec]">
+                  Advertising cookies (Google AdSense)
+                </p>
+                <p className="mt-1 text-[12.5px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">
+                  If enabled, Google AdSense sets cookies to show ads and measure their
+                  performance — this is what keeps every calculator on FINAIW free. If you turn
+                  this off, no ad cookies are set and every tool on the site still works exactly
+                  the same; you just won't see ads.
+                </p>
               </div>
-              <button
-                role="switch"
-                aria-checked={draftAdvertising}
-                onClick={() => setDraftAdvertising((v) => !v)}
-                className={`relative mt-1 h-6 w-11 flex-shrink-0 rounded-full transition ${
-                  draftAdvertising ? "bg-emerald-600" : "bg-slate-300 dark:bg-white/15"
-                }`}
-              >
-                <span
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition ${
-                    draftAdvertising ? "left-5" : "left-0.5"
-                  }`}
-                />
-              </button>
+              <Toggle
+                checked={draftAdvertising}
+                onChange={() => setDraftAdvertising((v) => !v)}
+                label="Toggle advertising cookies"
+              />
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-end border-t border-[#111814]/10 pt-4 dark:border-[#eef1ec]/10">
               <button
                 onClick={() => save(draftAdvertising, draftAnalytics)}
-                className="rounded-xl bg-emerald-800 px-5 py-2.5 text-[13px] font-black text-white transition hover:bg-emerald-900"
+                className="bg-[#047857] px-5 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[#065f46]"
               >
                 Save preferences
               </button>

@@ -3,8 +3,9 @@ import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
-import VerdictFAQ from "@/components/verdict/VerdictFAQ";
+import VerdictContent from "@/components/verdict/VerdictContent";
 import AdSlot from "@/components/ads/AdSlot";
+import { INSURANCE_NEED } from "@/data/verdictContent";
 import { calculateInsuranceNeed } from "@/verdict/logic/insuranceNeed";
 import { formatCurrency } from "@/utils/currency";
 import { useSettings } from "@/context/SettingsContext";
@@ -32,7 +33,8 @@ export default function InsuranceNeedPage() {
     : "This gap is what a term policy should cover — the difference between what your dependents would need and what you currently have.";
 
   return (
-    <div className="mx-auto max-w-5xl px-5 py-14 sm:px-8 lg:px-12">
+    <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
+    <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
       <Seo
         title="How Much Term Life Insurance Do You Need? — Real Verdict | FINAIW"
         description="Calculate the exact term insurance cover you need using the standard needs-based method — free, no signup."
@@ -43,27 +45,18 @@ export default function InsuranceNeedPage() {
           { name: "Verdict", path: "/verdict" },
           { name: "How Much Term Life Insurance Do You Need?", path: "/verdict/insurance-need" },
         ]),
-        faqSchema([
-          {
-            "question": "Why not just use '10-15x annual income'?",
-            "answer": "That rule ignores your actual debts, goals, and existing savings — it can leave you under- or over-insured. The needs-based method here accounts for your specific numbers instead."
-          },
-          {
-            "question": "Should I include my spouse's income?",
-            "answer": "This calculates cover for one person's income being lost. If both partners work, run it separately for each."
-          }
-        ]),
+        faqSchema(INSURANCE_NEED.faqs.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
-      <span className="text-[12px] font-black uppercase tracking-wide text-emerald-700">Verdict</span>
-      <h1 className="mt-3 text-[36px] font-black leading-tight text-slate-950 sm:text-[44px]">How Much Term Insurance Do You Need?</h1>
-      <p className="mt-3 max-w-xl text-[15px] leading-7 text-slate-600">
+      <span className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Verdict</span>
+      <h1 className="font-display mt-2 text-[32px] font-extrabold leading-tight tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[40px]">How Much Term Insurance Do You Need?</h1>
+      <p className="mt-3 max-w-[52ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
         Not "10x your income" — the actual number, based on what your dependents would really need to replace.
       </p>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_1.1fr]">
-        <div className="space-y-7 rounded-3xl border border-slate-200/70 bg-white p-7 shadow-sm">
+      <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
+        <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
           <VerdictSlider label="Your annual income" value={annualIncome} onChange={setAnnualIncome} min={200000} max={10000000} step={50000} format={fmt} />
           <VerdictSlider label="Years of income to replace" value={incomeReplacementYears} onChange={setIncomeReplacementYears} min={5} max={30} suffix=" yrs" />
           <VerdictSlider label="Outstanding loans" value={outstandingLoans} onChange={setOutstandingLoans} min={0} max={20000000} step={100000} format={fmt} />
@@ -73,30 +66,20 @@ export default function InsuranceNeedPage() {
         </div>
 
         <div className="space-y-6">
-          <VerdictResult tone={result.tone} headline={headline} reasoning={reasoning}>
-            <div className="grid grid-cols-2 gap-4 border-t border-white pt-5">
-              <div>
-                <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">Total need</p>
-                <p className="mt-1 text-[22px] font-black text-slate-950">{fmt(result.totalNeed)}</p>
-              </div>
-              <div>
-                <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">Total you have</p>
-                <p className="mt-1 text-[22px] font-black text-slate-950">{fmt(result.totalHave)}</p>
-              </div>
-            </div>
-          </VerdictResult>
+          <VerdictResult
+            tone={result.tone}
+            headline={headline}
+            reasoning={reasoning}
+            fmt={fmt}
+            a={{ label: "What you'd need", value: result.totalNeed }}
+            b={{ label: "What you have", value: result.totalHave }}
+          />
 
           <AdSlot slotId="verdict_insurance_need_result" />
         </div>
       </div>
-
-      <VerdictFAQ
-        className="mt-16 max-w-2xl"
-        items={[
-          { q: "Why not just use '10-15x annual income'?", a: "That rule ignores your actual debts, goals, and existing savings — it can leave you under- or over-insured. The needs-based method here accounts for your specific numbers instead." },
-          { q: "Should I include my spouse's income?", a: "This calculates cover for one person's income being lost. If both partners work, run it separately for each." },
-        ]}
-      />
+      <VerdictContent content={INSURANCE_NEED} />
+    </div>
     </div>
   );
 }

@@ -1,13 +1,31 @@
 @import "tailwindcss";
+
+/* Self-hosted (no external font requests — keeps this out of the cookie
+   consent conversation entirely, unlike a Google Fonts CDN link). Archivo
+   carries headlines/UI; IBM Plex Mono renders every computed figure across
+   calculators and verdicts as a fixed-width instrument readout instead of
+   prose — the two fonts split along the same line the product itself
+   does: words vs. numbers. See design.md for the rest of the system. */
+@import "./fonts.css";
+
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-mono-tech: "IBM Plex Mono", ui-monospace, monospace;
+}
+
 :root {
-  --bg: #ffffff;
-  --bg-secondary: #f8fafc;
+  /* Mirrors the site's real field/ink/panel tokens (see categoryColors.js,
+     verdict/palette.js) so any component still reading these legacy vars —
+     currently just src/journeys/ — inherits the actual brand colors
+     instead of a disconnected generic slate-and-blue palette. */
+  --bg: #eef1ec;
+  --bg-secondary: #f7f3ec;
   --card: #ffffff;
-  --text: #0f172a;
-  --text-secondary: #64748b;
-  --border: #e2e8f0;
+  --text: #111814;
+  --text-secondary: rgba(17, 24, 20, 0.65);
+  --border: rgba(17, 24, 20, 0.15);
   /* Explicitly declare the document's rendering mode instead of leaving it
      unset. Unset (`normal`) lets the browser fall back to the OS-level
      preference for native UI (form control chrome, scrollbars, default
@@ -26,12 +44,12 @@ html.dark {
   /* These CSS vars are kept for any future component that opts in to
      them explicitly, but body no longer reads them (see note below) — so
      defining them here no longer cascades a full-page color flip. */
-  --bg: #020617;
-  --bg-secondary: #071120;
-  --card: #0f172a;
-  --text: #ffffff;
-  --text-secondary: #94a3b8;
-  --border: rgba(255, 255, 255, 0.08);
+  --bg: #0b1210;
+  --bg-secondary: #0b1210;
+  --card: #0b1210;
+  --text: #eef1ec;
+  --text-secondary: rgba(238, 241, 236, 0.65);
+  --border: rgba(238, 241, 236, 0.15);
 }
 
 html {
@@ -71,6 +89,112 @@ body,
 @theme {
   --height-18: 4.5rem; /* 72px */
 }
+
+/* Verdict tone colors are chosen at runtime (go = green, caution/stop =
+   amber — see src/components/verdict/palette.js) and need a light and a
+   dark value, which plain inline `style` can't branch on. Callers set
+   --tone-l/--tone-d inline; these two rules pick the right one per theme. */
+.tone-text { color: var(--tone-l); }
+.dark .tone-text { color: var(--tone-d); }
+.tone-bg { background-color: var(--tone-l); }
+.dark .tone-bg { background-color: var(--tone-d); }
+.tone-ring { --tw-ring-color: var(--tone-l); }
+.dark .tone-ring { --tw-ring-color: var(--tone-d); }
+
+/* Draw-in for the Hero growth chart, using the `pathLength="1"` SVG
+   attribute so the animation is normalized regardless of actual path
+   geometry. Hero.jsx keys the <path> on its own inputs, so React remounts
+   it (replaying this animation) every time a slider moves — the curve
+   visibly redraws itself in response to the user's own action, not just
+   once on load. */
+@keyframes chart-draw-in {
+  to { stroke-dashoffset: 0; }
+}
+.chart-draw-in {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: chart-draw-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* The homepage verdict "room" fills its scale bars in once when scrolled
+   into view (see useInView) instead of snapping straight to their resting
+   width, so the section has one deliberate moment of motion. */
+.room-fill-in {
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  opacity: 0;
+  transform: translateY(10px);
+}
+.room-fill-in.is-in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Instrument-style range input — a thin track with a small solid thumb,
+   used by every slider on calculator and verdict pages instead of the
+   browser's chunky default. Firefox and WebKit need separate
+   pseudo-element rules; there's no shorthand that covers both. */
+.instrument-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  border-radius: 999px;
+  background-color: rgba(17, 24, 20, 0.14);
+  cursor: pointer;
+}
+.dark .instrument-range { background-color: rgba(238, 241, 236, 0.18); }
+.instrument-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #047857;
+  border: 3px solid #eef1ec;
+  box-shadow: 0 0 0 1px rgba(17, 24, 20, 0.18);
+  cursor: pointer;
+}
+.dark .instrument-range::-webkit-slider-thumb { background: #34d399; border-color: #0b1210; }
+.instrument-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #047857;
+  border: 3px solid #eef1ec;
+  box-shadow: 0 0 0 1px rgba(17, 24, 20, 0.18);
+  cursor: pointer;
+}
+.dark .instrument-range::-moz-range-thumb { background: #34d399; border-color: #0b1210; }
+.instrument-range::-moz-range-track { background: transparent; height: 3px; }
+
+/* Same instrument slider, tuned for sitting directly on the dark panel
+   surface (the homepage's live demo) instead of a light card. */
+.instrument-range-panel {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  border-radius: 999px;
+  background-color: rgba(238, 241, 236, 0.2);
+  cursor: pointer;
+}
+.instrument-range-panel::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #34d399;
+  border: 3px solid #0e1512;
+  box-shadow: 0 0 0 1px rgba(238, 241, 236, 0.35);
+  cursor: pointer;
+}
+.instrument-range-panel::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #34d399;
+  border: 3px solid #0e1512;
+  box-shadow: 0 0 0 1px rgba(238, 241, 236, 0.35);
+  cursor: pointer;
+}
+.instrument-range-panel::-moz-range-track { background: transparent; height: 3px; }
 
 @keyframes toast {
   from {

@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Compass, X } from "lucide-react";
-import SiteGuide from "./SiteGuide";
+
+// The guide panel only exists once opened, so it loads then (warmed on hover/focus).
+const loadSiteGuide = () => import("./SiteGuide");
+const SiteGuide = lazy(loadSiteGuide);
+import { getItem, setItem } from "@/utils/safeStorage";
+import { isPrerendering } from "@/utils/prerender";
 
 const HINT_SEEN_KEY = "finaiw-guide-hint-seen";
 const COOKIE_CONSENT_KEY = "finaiw-cookie-consent";
@@ -13,12 +18,14 @@ export default function SiteGuideLauncher() {
   // would overlap it, so this button lifts itself up while that banner is
   // still showing.
   const [cookieBannerVisible, setCookieBannerVisible] = useState(
-    () => typeof window !== "undefined" && !localStorage.getItem(COOKIE_CONSENT_KEY)
+    () => typeof window !== "undefined" && !getItem(COOKIE_CONSENT_KEY)
   );
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
-    if (localStorage.getItem(HINT_SEEN_KEY)) return undefined;
+    if (getItem(HINT_SEEN_KEY)) return undefined;
+    // Same reason as the cookie banner: a timed hint must not race the snapshot.
+    if (isPrerendering()) return undefined;
     const t = setTimeout(() => setShowHint(true), 2200);
     return () => clearTimeout(t);
   }, []);
@@ -29,7 +36,7 @@ export default function SiteGuideLauncher() {
     // with no custom event, so poll briefly rather than over-engineer a
     // cross-component event bus for a one-time UI adjustment.
     const interval = setInterval(() => {
-      if (localStorage.getItem(COOKIE_CONSENT_KEY)) {
+      if (getItem(COOKIE_CONSENT_KEY)) {
         setCookieBannerVisible(false);
       }
     }, 400);
@@ -38,7 +45,7 @@ export default function SiteGuideLauncher() {
 
   const dismissHint = () => {
     setShowHint(false);
-    localStorage.setItem(HINT_SEEN_KEY, "1");
+    setItem(HINT_SEEN_KEY, "1");
   };
 
   const toggleGuide = () => {
@@ -47,44 +54,40 @@ export default function SiteGuideLauncher() {
   };
 
   return (
-    <div className={`fixed right-5 z-[110] transition-[bottom] duration-300 ${cookieBannerVisible ? "bottom-28 sm:bottom-24" : "bottom-5"}`}>
+    <div role="region" aria-label="Site guide" className={`fixed right-5 z-[110] transition-[bottom] duration-300 ${cookieBannerVisible ? "bottom-28 sm:bottom-24" : "bottom-5"}`}>
       {open && (
-        <div className="relative mb-3 w-[92vw] max-w-[380px]">
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            aria-label="Close guide"
-            className="absolute -top-3 -right-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-white text-slate-600 shadow-[0_8px_24px_rgba(15,23,42,.18)] hover:text-slate-900 dark:bg-slate-800 dark:text-slate-300"
-          >
-            <X size={16} />
-          </button>
-          <SiteGuide onNavigate={() => setOpen(false)} />
+        <div className="mb-3 w-[92vw] max-w-[380px]">
+          <Suspense fallback={null}>
+            <SiteGuide onNavigate={() => setOpen(false)} onClose={() => setOpen(false)} />
+          </Suspense>
         </div>
       )}
 
       {!open && showHint && (
-        <div className="absolute bottom-full right-0 mb-3 w-[220px] rounded-2xl bg-slate-950 p-3.5 text-white shadow-[0_16px_35px_rgba(15,23,42,.3)]">
+        <div data-runtime-only="site-guide-hint" className="absolute bottom-full right-0 mb-3 w-[220px] border border-[#eef1ec]/15 bg-[#0e1512] p-3.5">
           <button
             onClick={dismissHint}
             aria-label="Dismiss"
-            className="absolute right-2 top-2 text-slate-400 hover:text-white"
+            className="absolute right-2.5 top-2.5 text-[#eef1ec]/50 hover:text-[#eef1ec]"
           >
             <X size={13} />
           </button>
-          <p className="pr-4 text-[12.5px] font-semibold leading-5">
+          <p className="pr-4 text-[12.5px] leading-5 text-[#eef1ec]/85">
             New here? Tap for a 30-second guide to what's on this site.
           </p>
-          <div className="absolute -bottom-1.5 right-6 h-3 w-3 rotate-45 bg-slate-950" />
         </div>
       )}
 
       <button
         type="button"
         onClick={toggleGuide}
+        onPointerEnter={loadSiteGuide}
+        onFocus={loadSiteGuide}
         aria-label={open ? "Close site guide" : "Open site guide"}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-800 text-white shadow-[0_16px_35px_rgba(4,120,87,.35)] transition hover:-translate-y-0.5 hover:bg-emerald-900"
+        className="flex h-13 w-13 items-center justify-center rounded-full bg-[#047857] text-white transition hover:bg-[#065f46] dark:bg-[#34d399] dark:text-[#052e22] dark:hover:bg-[#6ee7b7]"
+        style={{ height: 52, width: 52 }}
       >
-        {open ? <X size={22} /> : <Compass size={22} />}
+        {open ? <X size={20} /> : <Compass size={20} />}
       </button>
     </div>
   );

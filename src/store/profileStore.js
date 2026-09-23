@@ -1,3 +1,4 @@
+import { readObject } from "../utils/safeStorage";
 // ======================================================
 // FINAIW Profile Store
 // Single Source of Truth
@@ -79,13 +80,13 @@ const defaultProfile = {
 };
 
 export function getProfile() {
-  const saved = localStorage.getItem(STORAGE_KEY);
+  const saved = readObject(STORAGE_KEY, null);
 
   if (!saved) {
     return structuredClone(defaultProfile);
   }
 
-  return JSON.parse(saved);
+  return saved;
 }
 
 export function saveProfile(profile) {

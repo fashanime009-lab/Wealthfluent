@@ -1,14 +1,5 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import {
-  ArrowRight,
-  Share2,
-  ShieldCheck,
-  Sparkles,
-  Mail,
-  Settings as SettingsIcon,
-  Cookie,
-} from "lucide-react";
 import Logo from "./Logo";
 
 const footerColumns = [
@@ -35,7 +26,7 @@ const footerColumns = [
     title: "Company",
     links: [
       { label: "Why FINAIW", to: "/about" },
-      { label: "Contact Us", to: "/contact" },
+      { label: "Contact us", to: "/contact" },
       { label: "Settings", to: "/settings" },
       { label: "Help", to: "/help" },
       { label: "Feedback", to: "/feedback" },
@@ -45,17 +36,12 @@ const footerColumns = [
   {
     title: "Legal",
     links: [
-      { label: "Privacy Policy", to: "/privacy-policy" },
-      { label: "Data Disclaimer", to: "/disclaimer" },
-      { label: "Terms of Service", to: "/terms-of-service" },
-      { label: "Privacy Dashboard", to: "/settings#privacy-data" },
+      { label: "Privacy policy", to: "/privacy-policy" },
+      { label: "Data disclaimer", to: "/disclaimer" },
+      { label: "Terms of service", to: "/terms-of-service" },
+      { label: "Privacy dashboard", to: "/settings#privacy-data" },
     ],
   },
-];
-
-const trustBadges = [
-  { icon: ShieldCheck, label: "Your data stays on your device" },
-  { icon: Sparkles, label: "100% free, no signup" },
 ];
 
 export default function Footer() {
@@ -108,95 +94,57 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative mt-8 overflow-hidden bg-[#050b16] text-white">
-      {/* Ambient glow accents */}
-      <div className="pointer-events-none absolute -top-40 left-1/4 h-80 w-80 rounded-full bg-emerald-500/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-32 right-1/4 h-72 w-72 rounded-full bg-sky-500/10 blur-[120px]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent" />
-
-      <div className="relative mx-auto max-w-[1560px] px-5 pb-8 pt-16 sm:px-8 lg:px-10">
-        {/* Top: Newsletter banner */}
-        <div className="flex flex-col items-start justify-between gap-8 rounded-[28px] bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-8 ring-1 ring-white/10 sm:flex-row sm:items-center sm:p-10">
+    <footer className="mt-8 bg-[#0e1512] text-[#eef1ec]">
+      <div className="mx-auto max-w-[1240px] px-5 pb-8 pt-14 sm:px-8 lg:px-10">
+        <div className="flex flex-col gap-6 border-b border-[#eef1ec]/10 pb-10 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/10 px-3 py-1 text-[11px] font-bold text-emerald-300 ring-1 ring-emerald-400/20">
-              <Mail size={12} /> Weekly newsletter
-            </div>
-            <h3 className="mt-4 text-2xl font-black tracking-tight text-white sm:text-[28px]">
-              Sharper money decisions, every Sunday.
-            </h3>
-            <p className="mt-2 max-w-md text-[14px] font-medium leading-6 text-slate-400">
-              Market updates, new calculators and practical investing ideas — straight to your inbox, no spam.
+            <h2 className="font-display text-[20px] font-bold text-[#eef1ec]">Sharper money decisions, every Sunday.</h2>
+            <p className="mt-1.5 max-w-md text-[13.5px] leading-6 text-[#eef1ec]/50">
+              Market updates and new calculators — straight to your inbox, no spam.
             </p>
           </div>
-          <form
-            onSubmit={subscribe}
-            className="flex w-full max-w-md flex-shrink-0 items-center overflow-hidden rounded-2xl bg-white/[0.06] p-1.5 ring-1 ring-white/15 focus-within:ring-emerald-400/50"
-          >
+          <form onSubmit={subscribe} className="flex w-full max-w-sm flex-shrink-0 items-center gap-2 border-b border-[#eef1ec]/25 pb-1.5">
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="min-w-0 flex-1 bg-transparent px-4 py-3 text-[13px] font-semibold text-white placeholder:text-slate-500 outline-none"
+              className="min-w-0 flex-1 bg-transparent text-[13px] font-medium text-[#eef1ec] placeholder:text-[#eef1ec]/35 outline-none"
             />
             <button
               type="submit"
               disabled={submitting}
-              className="flex flex-shrink-0 items-center gap-1.5 rounded-xl bg-emerald-500 px-4 py-3 text-[13px] font-black text-slate-950 transition hover:bg-emerald-400 disabled:opacity-60"
+              className="flex-shrink-0 text-[13px] font-semibold text-[#34d399] disabled:opacity-50"
             >
-              {subscribed ? "Subscribed ✓" : "Subscribe"}
-              {!subscribed && <ArrowRight size={15} />}
+              {subscribed ? "Subscribed" : "Subscribe"}
             </button>
           </form>
         </div>
 
-        {/* Middle: Brand + link columns */}
-        <div className="mt-14 grid gap-12 lg:grid-cols-[1.3fr_2fr]">
+        <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-[1.3fr_2fr]">
           <div>
             <Link to="/" className="flex items-center gap-2.5">
               <Logo size="lg" onDark taglineVisibility="always" />
             </Link>
-            <p className="mt-5 max-w-sm text-[13.5px] font-medium leading-6 text-slate-400">
-              A personal finance operating system — calculators, verdicts, goal tracking and
-              learning, built to help you decide with clarity.
+            <p className="mt-5 max-w-sm text-[13.5px] leading-6 text-[#eef1ec]/50">
+              Calculators, verdicts, goal tracking and learning — free, and built to help you decide
+              with clarity.
             </p>
-
-            <div className="mt-6 flex flex-wrap gap-2">
-              {trustBadges.map((badge) => {
-                const Icon = badge.icon;
-                return (
-                  <span
-                    key={badge.label}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-3 py-1.5 text-[11.5px] font-bold text-slate-300 ring-1 ring-white/10"
-                  >
-                    <Icon size={13} className="text-emerald-400" />
-                    {badge.label}
-                  </span>
-                );
-              })}
-            </div>
-
-            <div className="mt-7 flex flex-wrap gap-2">
+            <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
               <button
+                type="button"
                 onClick={share}
-                aria-label="Share FINAIW"
-                className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-4 py-2.5 text-[12.5px] font-bold text-slate-300 ring-1 ring-white/10 transition hover:bg-white/[0.1] hover:text-white"
+                className="text-[12.5px] font-semibold text-[#eef1ec]/50 underline decoration-[#eef1ec]/25 underline-offset-4 hover:text-[#eef1ec]/80"
               >
-                <Share2 size={14} /> Share FINAIW
+                Share FINAIW
               </button>
-              <Link
-                to="/settings"
-                className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-4 py-2.5 text-[12.5px] font-bold text-slate-300 ring-1 ring-white/10 transition hover:bg-white/[0.1] hover:text-white"
-              >
-                <SettingsIcon size={14} /> Settings
-              </Link>
               <button
+                type="button"
                 onClick={manageCookies}
-                aria-label="Manage cookie preferences"
-                className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-4 py-2.5 text-[12.5px] font-bold text-slate-300 ring-1 ring-white/10 transition hover:bg-white/[0.1] hover:text-white"
+                className="text-[12.5px] font-semibold text-[#eef1ec]/50 underline decoration-[#eef1ec]/25 underline-offset-4 hover:text-[#eef1ec]/80"
               >
-                <Cookie size={14} /> Cookie Preferences
+                Cookie preferences
               </button>
             </div>
           </div>
@@ -204,16 +152,11 @@ export default function Footer() {
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             {footerColumns.map((column) => (
               <div key={column.title}>
-                <h4 className="text-[12px] font-black uppercase tracking-[0.08em] text-slate-500">
-                  {column.title}
-                </h4>
-                <ul className="mt-4 space-y-3">
+                <h3 className="text-[12.5px] font-semibold text-[#eef1ec]/50">{column.title}</h3>
+                <ul className="mt-3.5 space-y-2.5">
                   {column.links.map((link) => (
                     <li key={link.label}>
-                      <Link
-                        to={link.to}
-                        className="text-[13.5px] font-semibold text-slate-300 transition hover:text-emerald-400"
-                      >
+                      <Link to={link.to} className="text-[13.5px] font-medium text-[#eef1ec]/75 transition hover:text-[#eef1ec]">
                         {link.label}
                       </Link>
                     </li>
@@ -224,14 +167,9 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
-          <p className="text-[12.5px] font-semibold text-slate-500">
-            © {new Date().getFullYear()} FINAIW. All rights reserved.
-          </p>
-          <p className="text-[12.5px] font-semibold text-slate-500">
-            Made with <span className="text-rose-500">♥</span> in India
-          </p>
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-[#eef1ec]/10 pt-6 text-[12.5px] font-medium text-[#eef1ec]/50 sm:flex-row">
+          <p>© {new Date().getFullYear()} FINAIW. All rights reserved.</p>
+          <p>Your numbers stay on your device — 100% free, no signup.</p>
         </div>
       </div>
     </footer>

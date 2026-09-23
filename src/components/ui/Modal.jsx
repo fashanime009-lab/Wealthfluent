@@ -17,14 +17,14 @@ export default function Modal({ open, onClose, title, children }) {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
-      <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-md rounded-3xl bg-white p-7 shadow-[0_30px_90px_rgba(15,23,42,.25)]">
+      <div className="absolute inset-0 bg-[#111814]/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-md border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-black text-slate-950">{title}</h2>
+          <h2 className="font-display text-[19px] font-bold text-[#111814] dark:text-[#eef1ec]">{title}</h2>
           <button
             onClick={onClose}
             aria-label="Close"
-            className="grid h-9 w-9 place-items-center rounded-xl text-slate-400 hover:bg-slate-50 hover:text-slate-700"
+            className="grid h-9 w-9 place-items-center text-[#111814]/60 hover:bg-[#111814]/5 hover:text-[#111814] dark:text-[#eef1ec]/50 dark:hover:bg-[#eef1ec]/10 dark:hover:text-[#eef1ec]"
           >
             <X size={18} />
           </button>

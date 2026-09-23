@@ -14,12 +14,12 @@ export default function Logo({
 
   const finColor = onDark ? "text-white" : "text-slate-950 dark:text-white";
   const aiwColor = onDark ? "text-emerald-400" : "text-emerald-700 dark:text-emerald-400";
-  const taglineColor = onDark ? "text-slate-500" : "text-slate-400";
+  const taglineColor = onDark ? "text-slate-400" : "text-slate-600 dark:text-slate-400";
   const taglineDisplay = taglineVisibility === "always" ? "block" : "hidden sm:block";
 
   return (
     <span className="leading-tight">
-      <span className={`block ${wordSize} font-black tracking-[-0.045em]`}>
+      <span className={`font-display block ${wordSize} font-black tracking-[-0.045em]`}>
         <span className={finColor}>FIN</span>
         <span className={aiwColor}>AIW</span>
       </span>
