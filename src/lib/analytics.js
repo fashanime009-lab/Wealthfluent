@@ -6,6 +6,8 @@
 // that determines whether any cookie gets set or any identifiable data is
 // collected — not whether the script is present.
 
+import { hasAnalyticsConsent } from "./consent";
+
 function gtagReady() {
   return typeof window !== "undefined" && typeof window.gtag === "function";
 }
@@ -58,4 +60,15 @@ export function trackPageview(path) {
     page_location: window.location.href,
     page_title: document.title,
   });
+}
+
+// For product events tied to something a visitor chose to do (share a
+// result, download a card) rather than the ambient pageview above — these
+// are only ever useful attributed to a real person's behavior, so unlike
+// trackPageview there's no cookieless-ping fallback: if analytics consent
+// hasn't been explicitly granted, this is a silent no-op rather than a
+// denied-but-sent event.
+export function trackEvent(name, params = {}) {
+  if (!gtagReady() || !hasAnalyticsConsent()) return;
+  window.gtag("event", name, params);
 }

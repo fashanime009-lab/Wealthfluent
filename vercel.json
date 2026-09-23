@@ -3,10 +3,20 @@
 
   "rewrites": [
     {
+      "source": "/net-worth-percentile/share",
+      "destination": "/api/net-worth-share"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
+
+  "functions": {
+    "api/og/index.js": {
+      "includeFiles": "node_modules/harfbuzzjs/hb.wasm"
+    }
+  },
 
   "headers": [
     {

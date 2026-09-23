@@ -2,36 +2,63 @@
 //
 // There is no live, per-person global wealth register — no tool anywhere
 // can give you an exact rank. What follows is a smooth statistical model
-// calibrated against the two most widely-cited reference points from
-// global wealth-distribution research (UBS/Credit Suisse Global Wealth
-// Report-style figures, repeated across financial media for years):
-//   - the median adult net worth worldwide is roughly $8,500
-//   - roughly $1,000,000 in net worth places someone in the world's
-//     wealthiest ~1% of adults
-// Global wealth is famously right-skewed — a small share of people hold
-// a large share of total wealth — which a log-normal distribution
-// approximates well and is the standard textbook model for this kind of
-// data. This is a genuine estimate, not a precise ranking, and both
-// reference points move slowly year to year — see the page's own
-// disclaimer before treating the output as more precise than it is.
-const MEDIAN_NET_WORTH_USD = 8500;
+// (a log-normal distribution, the standard textbook model for right-skewed
+// wealth data) calibrated against two figures from the UBS Global Wealth
+// Report 2026 (covering 2025 data):
+//
+//   - "The proportion of adults in the lowest wealth band, i.e. below
+//      USD 10,000, dropped from almost 75% in 2000 to just over 41% in
+//      2025." — modeled here as exactly 41%.
+//      https://www.ubs.com/global/en/media/display-page-ndp/en-20260630-gwr-2026.html
+//   - The world's ~57.5 million USD millionaires are, against a world
+//     adult population of roughly 5.6 billion, almost exactly 1% of all
+//     adults — so $1,000,000 is kept as the top-1% threshold rather than
+//     moved, since this data doesn't actually contradict it.
+//
+// Unlike the previous version of this file, the median is NOT an input —
+// it's the output of fitting the curve to those two points (41% of
+// adults are below $10,000, i.e. below the 50th percentile, so the real
+// median must sit above $10,000; the fit below puts it at roughly
+// $15,000). Recalibrating shifted every percentile noticeably: someone
+// with $45,000, for example, moves from "richer than ~79% of adults" to
+// "~73%" — genuinely less impressive than before, which is the point of
+// using the real distribution rather than a stale anchor.
+//
+// Both reference points move slowly (annually, with each new report) —
+// see the page's own disclaimer before treating the output as more
+// precise than it is.
+const WORLD_BAND_THRESHOLD_USD = 10000;
 const TOP_1_PCT_THRESHOLD_USD = 1000000;
 
-const Z_99TH_PERCENTILE = 2.326;
-const MU = Math.log(MEDIAN_NET_WORTH_USD);
-const SIGMA = (Math.log(TOP_1_PCT_THRESHOLD_USD) - MU) / Z_99TH_PERCENTILE;
+// Standard-normal quantiles at those two reference probabilities — 41%
+// (Φ⁻¹(0.41)) and 99% (Φ⁻¹(0.99)) — computed once against the same
+// erf-based normalCdf this file already uses below, so the fit is
+// internally consistent rather than mixing in an independently-sourced
+// approximation.
+const Z_BAND = -0.2275; // Φ⁻¹(0.41)
+const Z_99TH_PERCENTILE = 2.3263;
 
-// Approximate, fixed conversion to USD — NOT a live exchange rate. Good
+const SIGMA = (Math.log(TOP_1_PCT_THRESHOLD_USD) - Math.log(WORLD_BAND_THRESHOLD_USD)) / (Z_99TH_PERCENTILE - Z_BAND);
+const MU = Math.log(WORLD_BAND_THRESHOLD_USD) - SIGMA * Z_BAND;
+
+// The fitted curve's own 50th percentile — derived, not assumed. ≈ $15,072.
+export const MEDIAN_NET_WORTH_USD = Math.exp(MU);
+
+// Approximate, fixed conversion to USD — NOT a live exchange rate, but a
+// real one: Federal Reserve H.10 noon buying rates, 18 Sep 2026. Good
 // enough to place a figure on a global curve; not precise enough for
-// anything that needs today's actual rate.
+// anything that needs today's actual rate. (The previous table's INR
+// rate — ~83/$ — was stale enough by ~15% to move someone's result by a
+// meaningful number of percentile points; update this table periodically
+// rather than treating it as permanent.)
 export const USD_CONVERSION_RATES = {
   USD: 1,
-  EUR: 1.08,
-  GBP: 1.27,
-  INR: 0.012,
-  JPY: 0.0067,
-  AUD: 0.65,
-  CAD: 0.73,
+  EUR: 1.15,
+  GBP: 1.34,
+  INR: 0.0104,
+  JPY: 0.0064,
+  AUD: 0.71,
+  CAD: 0.714,
 };
 
 // Abramowitz & Stegun 7.1.26 — accurate to ~1.5e-7, plenty for this.

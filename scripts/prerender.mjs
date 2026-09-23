@@ -148,12 +148,29 @@ function rewriteSiteUrls(html) {
   const baseUrlPattern = new RegExp(escapedBase, "g");
   const swap = (match, prefix, url, suffix) => prefix + url.replace(baseUrlPattern, SITE_URL) + suffix;
 
+  // Encoded form of the same swap, for BASE_URL that appears already
+  // percent-encoded — e.g. a share button's href="https://wa.me/?text=...
+  // http%3A%2F%2Flocalhost%3A4173..." (an absolute link embedded inside
+  // another URL's query string via encodeURIComponent). The plain-text
+  // regex below never matches that, since there's no literal ":" next to
+  // "localhost" once it's percent-encoded.
+  const encodedBase = encodeURIComponent(BASE_URL).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const encodedBaseUrlPattern = new RegExp(encodedBase, "g");
+  const encodedSiteUrl = encodeURIComponent(SITE_URL);
+
   return html
     .replace(/(<link rel="canonical"[^>]*href=")([^"]*)(")/g, swap)
     .replace(/(<meta (?:property|name)="(?:og|twitter):[a-z:]+"[^>]*content=")([^"]*)(")/g, swap)
     .replace(/(<script type="application\/ld\+json">)([\s\S]*?)(<\/script>)/g, swap)
     .replace(/<link rel="modulepreload"[^>]*href="([^"]*)"[^>]*>/g, (match, url) =>
       match.replace(url, url.replace(baseUrlPattern, ""))
+    )
+    // Ordinary in-page links (e.g. share buttons whose href embeds an
+    // absolute site URL, plain or percent-encoded) — scoped to <a ...>
+    // tags specifically, never <script src>, for the same CSP reason
+    // documented above.
+    .replace(/(<a\b[^>]*\bhref=")([^"]*)(")/g, (match, prefix, url, suffix) =>
+      prefix + url.replace(baseUrlPattern, SITE_URL).replace(encodedBaseUrlPattern, encodedSiteUrl) + suffix
     );
 }
 

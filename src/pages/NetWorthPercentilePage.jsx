@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import Seo from "@/components/seo/Seo";
+import Seo, { SITE_URL } from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
@@ -8,6 +8,7 @@ import {
   calculateGlobalWealthPercentile,
   getReferenceThresholdsUSD,
   USD_CONVERSION_RATES,
+  MEDIAN_NET_WORTH_USD,
 } from "../services/calculators/globalWealthPercentile";
 import AdSlot from "../components/ads/AdSlot";
 import CalcField from "@/components/calculators/CalcField";
@@ -17,10 +18,13 @@ import CalcSection from "@/components/calculators/CalcSection";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
+import ShareResult from "@/components/share/ShareResult";
+import useShareLanding from "@/hooks/useShareLanding";
+import { drawNetWorthShareCard } from "@/components/share/drawNetWorthShareCard";
 
 const FAQ_ITEMS = [
-  { q: "Where do the $8,500 median and $1,000,000 top-1% figures come from?", a: "They're the two most widely-cited reference points from global wealth-distribution research (the kind of figures repeated across financial media for years, drawing on data like the UBS/Credit Suisse Global Wealth Report): worldwide median adult net worth is roughly $8,500, and roughly $1,000,000 in net worth places someone in the wealthiest 1% of the world's adults. Everything in between is estimated from a statistical curve fit to those two points — not a precise, per-person ranking, since no dataset like that exists." },
-  { q: "Why does so little net worth put me ahead of half the world?", a: "Global wealth is heavily concentrated — a large share of the world's adults have little to no savings or own no property, especially outside high-income countries, while a relatively small share holds a large share of total wealth. Someone with $8,500 in net worth — a single paid-off used car, say — is already at the world median, which surprises a lot of people in wealthier countries." },
+  { q: "Where do the $15,000 median and $1,000,000 top-1% figures come from?", a: "Both come from the UBS Global Wealth Report 2026, the most current major global wealth-distribution study. It states that just over 41% of the world's adults held under $10,000 in net worth in 2025 — fitting a statistical curve to that (41% below $10,000) and the world's ~57.5 million-strong dollar-millionaire population (almost exactly 1% of all adults) implies a global median net worth of roughly $15,000, with about $1,000,000 still marking the entry point to the wealthiest 1%. Everything in between is estimated from that same curve — not a precise, per-person ranking, since no dataset like that exists." },
+  { q: "Why does so little net worth put me ahead of half the world?", a: "Global wealth is heavily concentrated — a large share of the world's adults have little to no savings or own no property, especially outside high-income countries, while a relatively small share holds a large share of total wealth. Someone with $15,000 in net worth — a modest used car and some savings, say — is already at the world median, which surprises a lot of people in wealthier countries." },
   { q: "My net worth is negative — what does that mean here?", a: "It means your debts exceed your assets, which this model can't place on the curve (it's mathematically undefined at zero and below). It's also extremely common early in life or career in wealthy countries — student loans, a new mortgage — and says more about life stage and country than lifetime financial trajectory." },
   { q: "Is this the same as income percentile?", a: "No — this measures net worth (what you own minus what you owe), not annual income. The two are related but genuinely different: a retiree with a paid-off home and modest income can rank far higher on wealth than a high-earning 25-year-old who hasn't had time to accumulate assets yet." },
   { q: "How is my currency converted for this?", a: "Using a fixed, approximate conversion to US dollars (since the reference data is USD-denominated) — not a live exchange rate. It's accurate enough to place your number on the right part of the global curve, not precise enough to treat as today's actual rate." },
@@ -47,6 +51,11 @@ export default function NetWorthPercentilePage() {
   );
 
   const thresholds = useMemo(() => getReferenceThresholdsUSD(), []);
+
+  // A visitor arriving via a shared link (?p=<top-percent>, one decimal —
+  // see the Share URL note below) sees a banner instead of the blank
+  // default input. Fires a consent-gated share_landing GA4 event once.
+  const sharedTopPercent = useShareLanding("p", { context: "net_worth_percentile" });
 
   const headline =
     result.percentile === null
@@ -89,6 +98,11 @@ export default function NetWorthPercentilePage() {
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             {/* Left Panel – Input */}
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+              {sharedTopPercent !== null && (
+                <p className="border border-[#047857]/30 bg-[#047857]/[0.08] px-4 py-3 text-[13.5px] font-semibold text-[#047857] dark:border-[#34d399]/25 dark:bg-[#34d399]/[0.08] dark:text-[#34d399]">
+                  Your friend is in the top {sharedTopPercent}% of the world. Where do you rank?
+                </p>
+              )}
               <CalcField
                 label="Your net worth (assets minus debts)"
                 value={netWorth}
@@ -127,7 +141,10 @@ export default function NetWorthPercentilePage() {
                     <strong className="text-[#111814] dark:text-[#eef1ec]">
                       {result.timesMedian >= 1 ? `${result.timesMedian.toFixed(1)}×` : `${(result.timesMedian * 100).toFixed(0)}%`}
                     </strong>{" "}
-                    the world's median adult net worth (≈ {fmt(8500 / rate)}).
+                    the world's median adult net worth (≈ {fmt(MEDIAN_NET_WORTH_USD / rate)}).
+                  </p>
+                  <p className="mt-3 text-[11px] text-[#111814]/45 dark:text-[#eef1ec]/40">
+                    Data: UBS Global Wealth Report 2026 (estimate)
                   </p>
                 </div>
               ) : (
@@ -139,6 +156,16 @@ export default function NetWorthPercentilePage() {
                     the FAQ below.
                   </p>
                 </div>
+              )}
+
+              {result.percentile !== null && (
+                <ShareResult
+                  shareUrl={`${SITE_URL}/net-worth-percentile/share?p=${result.topPercent}`}
+                  shareText={`I'm in the top ${result.topPercent}% of the world by net worth — wealthier than ${result.percentile}% of adults. Where do you rank?`}
+                  drawCard={(ctx, size) => drawNetWorthShareCard(ctx, size, result)}
+                  fileName="finaiw-net-worth-percentile.png"
+                  analyticsContext="net_worth_percentile"
+                />
               )}
 
               {/* Reference thresholds */}
@@ -167,9 +194,12 @@ export default function NetWorthPercentilePage() {
               <p>
                 No dataset ranks every adult on Earth by net worth — nothing like that exists. This tool instead
                 uses a statistical curve (a log-normal distribution, the standard model for this kind of
-                right-skewed data) calibrated against the two most widely-cited reference points from global
-                wealth-distribution research: a worldwide median adult net worth around $8,500, and roughly
-                $1,000,000 marking the entry point to the world's wealthiest 1%.
+                right-skewed data) calibrated against two figures from the{" "}
+                <strong className="text-[#111814] dark:text-[#eef1ec]">UBS Global Wealth Report 2026</strong>: just
+                over 41% of the world's adults held under $10,000 in net worth in 2025, and the world's roughly 57.5
+                million dollar-millionaires are almost exactly 1% of all adults, keeping $1,000,000 as the entry
+                point to the world's wealthiest 1%. Fitting a curve to those two points implies a worldwide median
+                adult net worth of roughly $15,000 — itself an estimate, not a UBS-quoted figure.
               </p>
               <p>
                 Global wealth is heavily concentrated — a large share of adults worldwide have little to no net

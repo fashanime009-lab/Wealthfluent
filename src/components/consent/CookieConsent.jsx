@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { getItem, setItem } from "../../utils/safeStorage";
+import { COOKIE_CONSENT_KEY } from "@/lib/consent";
 import { updateAnalyticsConsent, updateAdConsent } from "../../lib/analytics";
 import { isPrerendering } from "../../utils/prerender";
 
@@ -28,7 +29,6 @@ function Toggle({ checked, onChange, label }) {
   );
 }
 
-const STORAGE_KEY = "finaiw-cookie-consent";
 
 // Advertising (Google AdSense) and analytics (Google Analytics) are the
 // two things on the whole site that actually set a cookie — everything
@@ -52,7 +52,7 @@ const STORAGE_KEY = "finaiw-cookie-consent";
 // bundled decision it was at the time.
 function readStoredConsent() {
   if (typeof window === "undefined") return null;
-  const raw = getItem(STORAGE_KEY);
+  const raw = getItem(COOKIE_CONSENT_KEY);
   if (!raw) return null;
   if (raw === "accepted") return { advertising: true, analytics: true };
   if (raw === "declined") return { advertising: false, analytics: false };
@@ -93,7 +93,7 @@ export default function CookieConsent() {
 
   const save = (advertising, analytics) => {
     const value = { advertising, analytics, decidedAt: new Date().toISOString() };
-    setItem(STORAGE_KEY, JSON.stringify(value));
+    setItem(COOKIE_CONSENT_KEY, JSON.stringify(value));
     setConsent(value);
     updateAdConsent(advertising);
     updateAnalyticsConsent(analytics);

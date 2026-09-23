@@ -5,10 +5,10 @@ import { Compass, X } from "lucide-react";
 const loadSiteGuide = () => import("./SiteGuide");
 const SiteGuide = lazy(loadSiteGuide);
 import { getItem, setItem } from "@/utils/safeStorage";
+import { COOKIE_CONSENT_KEY } from "@/lib/consent";
 import { isPrerendering } from "@/utils/prerender";
 
 const HINT_SEEN_KEY = "finaiw-guide-hint-seen";
-const COOKIE_CONSENT_KEY = "finaiw-cookie-consent";
 
 export default function SiteGuideLauncher() {
   const [open, setOpen] = useState(false);

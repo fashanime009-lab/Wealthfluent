@@ -51,7 +51,10 @@ export function findRuntimeOnlyContent(html, { allowedScriptSrcs }) {
   if (AD_LAYOUT_STYLE.test(html)) problems.push("ad script layout override (inline height: auto !important)");
   if (/<meta\b[^>]*http-equiv="origin-trial"/i.test(html)) problems.push("origin-trial <meta> injected by ad scripts");
 
-  const local = html.match(/(?:localhost|127\.0\.0\.1):\d+/);
+  // Plain and percent-encoded forms — the latter catches a localhost
+  // origin embedded inside another URL's query string (e.g. a share
+  // button's href="https://wa.me/?text=...http%3A%2F%2Flocalhost%3A4173...").
+  const local = html.match(/(?:localhost|127\.0\.0\.1):\d+/) || html.match(/localhost%3A\d+/i);
   if (local) problems.push(`local build-server URL: ${local[0]}`);
 
   for (const m of html.matchAll(new RegExp(`${RUNTIME_ONLY_ATTR}="([^"]*)"`, "g"))) {
