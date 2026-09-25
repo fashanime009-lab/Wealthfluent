@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
-import Seo from "@/components/seo/Seo";
+import Seo, { SITE_URL } from "@/components/seo/Seo";
+import ShareResult from "@/components/share/ShareResult";
+import { drawVerdictShareCard } from "@/components/share/drawVerdictShareCard";
 import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
@@ -42,8 +44,8 @@ export default function DebtVsInvestPage() {
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
     <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
       <Seo
-        title="Pay Off Debt vs Invest Calculator — Real Verdict | FINAIW"
-        description="Should extra cash go toward debt or investing? A real net-worth simulation compares both paths."
+        title="Should I Pay Off Debt or Invest? Calculator | FINAIW"
+        description="Should I pay off debt or invest? Enter your debt rate and expected return to see which path leaves you with more net worth, simulated monthly. Free."
         path="/verdict/debt-vs-invest"
         jsonLd={[
         breadcrumbSchema([
@@ -87,6 +89,16 @@ export default function DebtVsInvestPage() {
               <VerdictChart data={result.series} keys={["debtFirst", "investFirst"]} colors={["#047857", "#9a3412"]} labels={["Debt-first", "Invest-first"]} />
             </div>
           </div>
+
+          <ShareResult
+            title="Share this verdict"
+            privacyNote="The link goes to this tool and the card shows the verdict headline — never the numbers you entered."
+            shareUrl={`${SITE_URL}/verdict/debt-vs-invest`}
+            shareText={`Pay Off Debt vs Invest verdict: ${headline}. Run your own numbers:`}
+            drawCard={(ctx, size) => drawVerdictShareCard(ctx, size, { label: "Pay Off Debt vs Invest", headline })}
+            fileName="finaiw-debt-vs-invest.png"
+            analyticsContext="verdict_debt_vs_invest"
+          />
 
           <AdSlot slotId="verdict_debt_vs_invest_result" />
         </div>

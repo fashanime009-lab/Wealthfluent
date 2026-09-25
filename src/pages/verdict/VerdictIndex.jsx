@@ -69,8 +69,8 @@ export default function VerdictIndex() {
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
     <div className="mx-auto max-w-[860px] px-5 py-16 sm:px-8 lg:px-12">
       <Seo
-        title="Verdict — Financial Decisions, Decided"
-        description="Real answers to the money decisions you're actually stuck on — rent vs buy, debt vs invest, lease vs buy a car, how much insurance you need, and term vs endowment — with the math shown. Free, no signup."
+        title="Rent vs Buy, Debt vs Invest – Money Decision Tools"
+        description="Real answers to rent vs buy, pay off debt vs invest, lease vs buy a car, how much term insurance you need, and term vs endowment — math shown. Free."
         path="/verdict"
         keywords="rent vs buy calculator, pay off debt vs invest, lease vs buy car, term insurance calculator, term vs endowment, financial decision tool"
         jsonLd={[

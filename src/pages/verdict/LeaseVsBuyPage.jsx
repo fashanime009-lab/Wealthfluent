@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
-import Seo from "@/components/seo/Seo";
+import Seo, { SITE_URL } from "@/components/seo/Seo";
+import ShareResult from "@/components/share/ShareResult";
+import { drawVerdictShareCard } from "@/components/share/drawVerdictShareCard";
 import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
@@ -84,6 +86,16 @@ export default function LeaseVsBuyPage() {
             fmt={fmt}
             a={{ label: "Buying", value: result.buyerNetWorth, note: `Resale value ${fmt(result.carResaleValue)}` }}
             b={{ label: "Leasing & investing", value: result.lesseeNetWorth }}
+          />
+
+          <ShareResult
+            title="Share this verdict"
+            privacyNote="The link goes to this tool and the card shows the verdict headline — never the numbers you entered."
+            shareUrl={`${SITE_URL}/verdict/lease-vs-buy-car`}
+            shareText={`Lease vs Buy a Car verdict: ${headline}. Run your own numbers:`}
+            drawCard={(ctx, size) => drawVerdictShareCard(ctx, size, { label: "Lease vs Buy a Car", headline })}
+            fileName="finaiw-lease-vs-buy-car.png"
+            analyticsContext="verdict_lease_vs_buy_car"
           />
 
           <AdSlot slotId="verdict_lease_vs_buy_result" />

@@ -39,3 +39,23 @@ export function downloadBlob(blob, fileName) {
   a.remove();
   URL.revokeObjectURL(url);
 }
+
+// Draws text wrapped to maxWidth from (x, y); returns the y of the last line
+// so callers can position whatever follows it.
+export function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(" ");
+  let line = "";
+  let lineY = y;
+  for (const word of words) {
+    const test = line ? `${line} ${word}` : word;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      ctx.fillText(line, x, lineY);
+      line = word;
+      lineY += lineHeight;
+    } else {
+      line = test;
+    }
+  }
+  if (line) ctx.fillText(line, x, lineY);
+  return lineY;
+}

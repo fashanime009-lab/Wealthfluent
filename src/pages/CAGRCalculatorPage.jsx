@@ -14,7 +14,10 @@ import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const FAQ_ITEMS = [
-  { q: "What is a good CAGR?", a: "A good CAGR depends on asset type, market conditions, and investment risk levels. A good CAGR depends on the investment type, market conditions, and level of risk. Historically, stock markets have delivered strong long-term returns, while fixed-income investments generally provide lower but more stable returns." },
+  { q: "What is a good CAGR?", a: "It depends on the investment type, market conditions, and level of risk. Historically, stock markets have delivered strong long-term returns, while fixed-income investments generally provide lower but more stable returns." },
+  { q: "What does CAGR mean?", a: "CAGR stands for Compound Annual Growth Rate: the single, constant yearly growth rate that would take an investment from its starting value to its ending value over a set number of years, with growth compounding each year. It smooths out the ups and downs — an investment that doubled in 5 years has a CAGR of about 14.87%, whether it grew evenly or in bursts." },
+  { q: "How do I calculate CAGR for a stock or mutual fund?", a: "Take the value at the end divided by the value at the start, raise it to the power of 1 divided by the number of years, subtract 1, and multiply by 100. Or enter the three numbers above. This works for a stock, fund NAV or portfolio bought once and held. If you added money at different times, as with a monthly SIP, CAGR isn't accurate — use XIRR, which weights each cash flow by its date." },
+  { q: "What is the difference between CAGR and average annual return?", a: "An average adds up yearly returns and divides by the number of years, ignoring compounding, so it overstates growth when returns swing. If an investment gains 50% one year and loses 50% the next, the average return is 0%, but ₹100 becomes ₹75 — a CAGR of about −13.4% a year. CAGR is the figure that matches what your money actually did." },
   { q: "Why is CAGR important?", a: "CAGR provides a smoothed annual growth rate that removes volatility, making it easier to compare investments with different time horizons and evaluate long-term performance." },
   { q: "What is the difference between CAGR and absolute return?", a: "Absolute return measures total growth over the entire period, while CAGR expresses it as an annualised rate, making comparisons across different timeframes more meaningful." },
   { q: "Does CAGR account for volatility or risk?", a: "No. CAGR only looks at the start and end values, so it can't tell you how bumpy the path was. Two investments with the same CAGR can have very different volatility — pair it with standard deviation or a year-by-year return chart for the full picture." },
@@ -43,14 +46,14 @@ export default function CAGRCalculatorPage() {
   return (
     <>
       <Seo
-        title="CAGR Calculator – Investment Growth Rate"
-        description="Work out the annualized growth rate (CAGR) of any investment from its starting value, ending value, and holding period — useful for comparing returns across different investments."
+        title="CAGR Calculator – Compound Annual Growth Rate"
+        description="Free CAGR calculator: find the compound annual growth rate from a starting value, ending value and years. Formula, worked examples and how to read it."
         path="/cagr-calculator"
-        keywords="CAGR calculator, compound annual growth rate, investment growth, mutual fund returns"
+        keywords="CAGR calculator, what is CAGR, CAGR meaning, compound annual growth rate, CAGR formula, CAGR calculator for stocks, mutual fund CAGR"
         jsonLd={[
         calculatorSchema({
           name: "CAGR Calculator",
-          description: "Work out the annualized growth rate (CAGR) of any investment from its starting value, ending value, and holding period — useful for comparing returns across different investments.",
+          description: "Free CAGR calculator: find the compound annual growth rate from a starting value, ending value and years. Formula, worked examples and how to read it.",
           path: "/cagr-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
@@ -135,6 +138,21 @@ export default function CAGRCalculatorPage() {
                 comparing it across sources — a CAGR measured from a market bottom
                 to a peak will look far better than the same period measured
                 peak-to-peak.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="CAGR example: what a return really means">
+              <p>
+                Suppose you bought a stock or fund for ₹50,000 and it's worth ₹1,00,000 five years later. The total
+                gain is 100%, but the more useful number is the yearly rate: (1,00,000 ÷ 50,000)^(1/5) − 1 = 14.87%
+                a year. That's the figure to compare against a fixed deposit at 7% or an index fund's long-run
+                return — the 100% total alone can't be compared with anything held for a different length of time.
+              </p>
+              <p>
+                CAGR also shows why average returns mislead. A fall of 50% needs a gain of 100% to recover, so
+                volatile investments compound slower than their average suggests. When you compare funds or stocks,
+                use the same start and end dates for each, and treat CAGR as the summary of the outcome — not a
+                forecast of the next five years.
               </p>
             </CalcSection>
 

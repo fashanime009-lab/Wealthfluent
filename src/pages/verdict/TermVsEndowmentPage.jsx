@@ -41,8 +41,8 @@ export default function TermVsEndowmentPage() {
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
     <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
       <Seo
-        title="Term Insurance vs Endowment/ULIP — Real Verdict | FINAIW"
-        description="Should the same premium go into a term plan plus investing, or an endowment/ULIP policy? A real maturity-value simulation compares both."
+        title="Term vs Endowment vs ULIP – Which Is Better? | FINAIW"
+        description="Term insurance vs endowment plan vs ULIP: see what the same premium grows to under each, and how the three really differ. Free maturity simulation."
         path="/verdict/term-vs-endowment"
         jsonLd={[
         breadcrumbSchema([

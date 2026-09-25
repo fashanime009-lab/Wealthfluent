@@ -14,7 +14,10 @@ import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const FAQ_ITEMS = [
-  { q: "How is FD maturity amount calculated?", a: "FD maturity amount depends on principal investment, interest rate, compounding frequency, and investment duration." },
+  { q: "How is FD maturity amount calculated?", a: "Maturity value = P × (1 + R / (100 × m))^(m × N), where P is the deposit, R the annual rate, N the years and m the number of times interest compounds a year. A ₹1,00,000 deposit at 7% for 5 years, compounded quarterly, matures at about ₹1,41,478 — ₹41,478 of interest." },
+  { q: "How do I calculate FD interest for a monthly payout?", a: "With a monthly-payout FD the interest is paid out instead of reinvested, so it doesn't compound: monthly interest ≈ deposit × annual rate ÷ 12. On ₹1,00,000 at 7% that's roughly ₹583 a month, and the ₹1,00,000 comes back at maturity. Banks often quote a slightly lower rate for payout FDs than for cumulative ones, so use your bank's actual payout rate. This calculator shows the cumulative (reinvested) case." },
+  { q: "How much should I invest in a fixed deposit?", a: "There's no single right amount. A common way to decide: first build an emergency fund, then put money you'll need within the next 1–5 years — a house down payment, tuition, a wedding — into FDs, because they don't fall in value. Money you won't need for 5+ years often earns more elsewhere, but only you can weigh that against your risk comfort. Try the deposit amount and tenure above to see what different sums earn." },
+  { q: "Is a term deposit the same as a fixed deposit?", a: "Yes. \"Fixed deposit\" is the usual name in India; \"term deposit\" is the same product in the UK, Australia and elsewhere — a lump sum locked for a fixed tenure at a fixed rate. This calculator works for either; just enter your bank's rate, tenure and compounding frequency." },
   { q: "Are fixed deposits risk-free?", a: "Fixed deposits are generally considered low-risk investments, especially when offered by regulated banks and institutions." },
   { q: "Which is better: Fixed Deposit or Recurring Investment?", a: "Fixed deposits provide stable returns, while recurring investments in diversified portfolios may offer higher long-term growth but with greater risk." },
   { q: "Is FD interest taxable?", a: "Yes — FD interest is added to your taxable income and taxed at your slab rate. Banks deduct TDS if interest earned crosses the threshold set for the year, but you still owe tax on the full interest amount regardless of TDS deduction." },
@@ -54,38 +57,17 @@ export default function FDCalculatorPage() {
   return (
     <>
       <Seo
-        title="Fixed Deposit Calculator – Deposit Growth & Returns"
-        description="Enter your deposit amount, interest rate, and tenure to see your fixed deposit's maturity value and total interest earned, with support for different compounding frequencies."
+        title="Fixed Deposit (FD) Calculator – Maturity & Interest"
+        description="Calculate FD maturity value and interest from your deposit, rate and tenure. Compare annual to monthly compounding and payout vs cumulative FDs. Free."
         path="/fd-calculator"
-        keywords="Fixed Deposit Calculator, fixed deposit calculator, FD returns, investment calculator"
+        keywords="fixed deposit calculator, FD calculator, FD return calculator, fixed deposit interest calculator, FD monthly payout, term deposit calculator"
         jsonLd={[
         calculatorSchema({
           name: "Fixed Deposit Calculator",
-          description: "Enter your deposit amount, interest rate, and tenure to see your fixed deposit's maturity value and total interest earned, with support for different compounding frequencies.",
+          description: "Calculate FD maturity value and interest from your deposit, rate and tenure. Compare annual to monthly compounding and payout vs cumulative FDs. Free.",
           path: "/fd-calculator",
         }),
-        faqSchema([
-          {
-            "question": "How is FD maturity amount calculated?",
-            "answer": "FD maturity amount depends on principal investment, interest rate, compounding frequency, and investment duration."
-          },
-          {
-            "question": "Are fixed deposits risk-free?",
-            "answer": "Fixed deposits are generally considered low-risk investments, especially when offered by regulated banks and institutions."
-          },
-          {
-            "question": "Which is better: Fixed Deposit or Recurring Investment?",
-            "answer": "Fixed deposits provide stable returns, while recurring investments in diversified portfolios may offer higher long-term growth but with greater risk."
-          },
-          {
-            "question": "Is FD interest taxable?",
-            "answer": "Yes — FD interest is added to your taxable income and taxed at your slab rate. Banks deduct TDS if interest earned crosses the threshold set for the year, but you still owe tax on the full interest amount regardless of TDS deduction."
-          },
-          {
-            "question": "What happens if I withdraw an FD before maturity?",
-            "answer": "Most banks apply a penalty — commonly 0.5–1% lower interest than the rate you'd have earned for the period actually held — rather than forfeiting all interest. Terms vary by bank, so check the specific premature-withdrawal clause before investing."
-          }
-        ]),
+        faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
@@ -141,9 +123,9 @@ export default function FDCalculatorPage() {
           <div className="mt-16">
             <AdSlot slotId="fd_calc_mid" />
 
-            <CalcSection title="What Is Fixed Deposit Calculator?">
+            <CalcSection title="What is a fixed deposit (FD) calculator?">
               <p>
-                An Fixed Deposit Calculator helps investors estimate fixed deposit maturity value and total interest
+                A fixed deposit calculator helps investors estimate fixed deposit maturity value and total interest
                 earnings based on investment amount, interest rate, and investment duration. Fixed deposits, term
                 deposits, certificates of deposit, and similar savings products are popular low-risk investment
                 options offered by banks and financial institutions worldwide.
@@ -176,6 +158,24 @@ export default function FDCalculatorPage() {
                 ₹1,41,478 quarterly and ₹1,41,763 monthly. The gap is small on a short deposit and widens with a
                 larger amount, a higher rate or a longer tenure, so check your bank's actual compounding frequency
                 before comparing FD offers side by side.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Cumulative FD vs monthly payout FD">
+              <p>
+                Banks let you take FD interest in two ways. In a <strong className="text-[#111814] dark:text-[#eef1ec]">cumulative</strong>{" "}
+                (reinvestment) FD, interest stays in the deposit and compounds, and you receive everything at
+                maturity — that's what the calculator above shows. In a{" "}
+                <strong className="text-[#111814] dark:text-[#eef1ec]">payout</strong> FD, interest is paid out every
+                month, quarter or year instead, so the deposit itself doesn't compound and the principal comes back
+                unchanged.
+              </p>
+              <p>
+                For a monthly payout, the interest is roughly deposit × annual rate ÷ 12: a ₹1,00,000 deposit at 7%
+                pays about ₹583 a month, ₹7,000 a year. The same deposit compounded quarterly for a year would grow to
+                about ₹1,07,186 instead. Payout FDs suit people who need regular income, such as retirees covering
+                expenses; cumulative FDs suit a goal with a fixed date. Banks often quote a slightly lower rate for
+                payouts, so compare the effective return, not just the headline rate.
               </p>
             </CalcSection>
 

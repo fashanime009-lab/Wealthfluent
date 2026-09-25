@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
-import Seo from "@/components/seo/Seo";
+import Seo, { SITE_URL } from "@/components/seo/Seo";
+import ShareResult from "@/components/share/ShareResult";
+import { drawVerdictShareCard } from "@/components/share/drawVerdictShareCard";
 import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
@@ -97,6 +99,16 @@ export default function RentVsBuyPage() {
               <VerdictChart data={result.series} keys={["buy", "rent"]} colors={["#047857", "#9a3412"]} labels={["Buying", "Renting & investing"]} />
             </div>
           </div>
+
+          <ShareResult
+            title="Share this verdict"
+            privacyNote="The link goes to this tool and the card shows the verdict headline — never the numbers you entered."
+            shareUrl={`${SITE_URL}/verdict/rent-vs-buy`}
+            shareText={`Rent vs Buy verdict: ${headline}. Run your own numbers:`}
+            drawCard={(ctx, size) => drawVerdictShareCard(ctx, size, { label: "Rent vs Buy", headline })}
+            fileName="finaiw-rent-vs-buy.png"
+            analyticsContext="verdict_rent_vs_buy"
+          />
 
           <AdSlot slotId="verdict_rent_vs_buy_result" />
         </div>

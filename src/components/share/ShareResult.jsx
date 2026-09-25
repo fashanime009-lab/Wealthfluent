@@ -10,9 +10,9 @@ const buttonClass =
  * The share/download UI for a calculated result — reusable across any page
  * that has a single shareable outcome to show off. Built for the Global
  * Net Worth Percentile page first; the verdict pages (rent-vs-buy,
- * debt-vs-invest, lease-vs-buy-car) are meant to use this next, sharing
- * the verdict itself (e.g. "Renting wins by ₹40L over 10 years" as text,
- * never the visitor's actual rent/price/income inputs).
+ * debt-vs-invest, lease-vs-buy-car) use it too, sharing the verdict
+ * headline (e.g. "Buying wins by ₹4.2L") and a link to the tool, never the
+ * visitor's actual rent/price/income inputs.
  *
  * The caller owns all copy and the card's visual content — this component
  * only owns the mechanics: rendering + downloading the PNG, native share,
@@ -27,8 +27,19 @@ const buttonClass =
  *   fileName          download filename, e.g. "finaiw-net-worth-percentile.png"
  *   analyticsContext  short string identifying which tool this is, added
  *                      to every GA4 event so tools can be told apart later
+ *   title, privacyNote  heading and the one-line note under it; the defaults
+ *                      are the percentile page's wording, so other tools
+ *                      should pass their own
  */
-export default function ShareResult({ shareUrl, shareText, drawCard, fileName, analyticsContext }) {
+export default function ShareResult({
+  shareUrl,
+  shareText,
+  drawCard,
+  fileName,
+  analyticsContext,
+  title = "Share your result",
+  privacyNote = "The link and card share your percentile only — never the amount you entered.",
+}) {
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState("");
@@ -105,10 +116,10 @@ export default function ShareResult({ shareUrl, shareText, drawCard, fileName, a
   return (
     <div className="border border-[#111814]/12 bg-[#ffffff] p-6 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
       <p className="text-[12px] font-semibold uppercase tracking-wide text-[#111814]/60 dark:text-[#eef1ec]/50">
-        Share your result
+        {title}
       </p>
       <p className="mt-1.5 text-[12.5px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
-        The link and card share your percentile only — never the amount you entered.
+        {privacyNote}
       </p>
 
       <div className="mt-4 flex flex-wrap gap-2.5">

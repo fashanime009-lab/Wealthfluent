@@ -1,27 +1,11 @@
+import { wrapText } from "@/utils/shareCard";
+
 // The downloadable 1080x1350 card for the Global Net Worth Percentile page
 // — see ShareResult.jsx / shareCard.js for the generic render/download
 // mechanics this plugs into. Deliberately shows only the percentile, never
 // the net worth figure that produced it (the site's privacy promise:
 // nothing a visitor enters is sent anywhere, and that includes what gets
 // shared on their behalf).
-function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-  const words = text.split(" ");
-  let line = "";
-  let lineY = y;
-  for (const word of words) {
-    const test = line ? `${line} ${word}` : word;
-    if (ctx.measureText(test).width > maxWidth && line) {
-      ctx.fillText(line, x, lineY);
-      line = word;
-      lineY += lineHeight;
-    } else {
-      line = test;
-    }
-  }
-  if (line) ctx.fillText(line, x, lineY);
-  return lineY;
-}
-
 export function drawNetWorthShareCard(ctx, { width, height }, result) {
   const pad = 72;
 

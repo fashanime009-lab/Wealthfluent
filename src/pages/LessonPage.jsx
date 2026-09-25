@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { CheckCircle2 } from "lucide-react";
 import { LESSONS, getLessonBySlug } from "@/data/lessons";
+import { getLessonRelated } from "@/data/recommendations/lessonRecommendations";
 import { isLessonComplete, markLessonComplete } from "@/services/learningEngine";
 import Seo from "@/components/seo/Seo";
 import { articleSchema, breadcrumbSchema } from "@/components/seo/schema";
@@ -22,6 +23,7 @@ function LessonContent({ slug }) {
 
   const index = LESSONS.findIndex((l) => l.slug === lesson.slug);
   const next = LESSONS[(index + 1) % LESSONS.length];
+  const related = getLessonRelated(lesson.slug);
 
   const handleComplete = () => {
     markLessonComplete(lesson.slug);
@@ -86,6 +88,27 @@ function LessonContent({ slug }) {
               Open
             </span>
           </Link>
+        )}
+
+        {related.length > 0 && (
+          <section aria-labelledby="keep-learning" className="mt-12">
+            <h2 id="keep-learning" className="font-display text-[20px] font-extrabold text-[#111814] dark:text-[#eef1ec]">
+              Keep learning
+            </h2>
+            <ul className="mt-5 space-y-4">
+              {related.map((item) => (
+                <li key={item.to}>
+                  <Link
+                    to={item.to}
+                    className="font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
+                  >
+                    {item.label}
+                  </Link>
+                  <span className="text-[14px] text-[#111814]/60 dark:text-[#eef1ec]/55"> — {item.note}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
 
         <div className="mt-10 flex flex-wrap items-center gap-6 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">

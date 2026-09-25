@@ -15,6 +15,7 @@ import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const FAQ_ITEMS = [
   { q: "How is EMI calculated?", a: "EMI depends on loan amount, interest rate, and repayment duration using standard amortization formulas." },
+  { q: "What is the difference between a flat rate and a reducing-balance rate?", a: "A flat rate charges interest on the original loan amount for the whole tenure, while a reducing-balance rate charges it only on what you still owe. A flat rate therefore costs much more than the same number quoted as a reducing rate — often close to double once converted. This calculator uses the reducing-balance method that home and most bank loans use, so ask a lender to state its rate on that basis before you compare offers." },
   { q: "Does longer loan tenure reduce EMI?", a: "Longer tenure generally reduces monthly EMI but may increase total interest paid." },
   { q: "Which loan has lowest EMI?", a: "Lower EMIs depend on lower interest rates, smaller loan amounts, and longer repayment periods." },
   { q: "Does prepaying a loan reduce EMI or tenure?", a: "Most lenders let you choose: reduce the tenure while keeping the EMI the same (saves the most total interest), or reduce the EMI while keeping the original tenure. Shortening the tenure is usually the better move if you can afford the current EMI." },
@@ -50,14 +51,14 @@ export default function EMICalculatorPage() {
   return (
     <>
       <Seo
-        title="Loan EMI Calculator – Calculate Monthly Loan Payments"
-        description="See your monthly EMI, total interest, and total repayment for home, personal, car, or education loans — just enter the loan amount, rate, and tenure."
+        title="EMI Calculator – Home, Car & Personal Loan Payments"
+        description="Work out your monthly EMI, total interest and total repayment for a home, car, personal or education loan. See how tenure and rate change the cost. Free."
         path="/emi-calculator"
-        keywords="EMI calculator, loan EMI calculator, home loan EMI, personal loan EMI, car loan EMI"
+        keywords="EMI calculator, loan EMI calculator, home loan EMI calculator, personal loan EMI, car loan EMI, EMI formula"
         jsonLd={[
           calculatorSchema({
             name: "Loan EMI Calculator",
-            description: "See your monthly EMI, total interest, and total repayment for home, personal, car, or education loans — just enter the loan amount, rate, and tenure.",
+            description: "Work out your monthly EMI, total interest and total repayment for a home, car, personal or education loan. See how tenure and rate change the cost. Free.",
             path: "/emi-calculator",
           }),
           faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
@@ -124,6 +125,20 @@ export default function EMICalculatorPage() {
                 installments (loan tenure in years × 12). For example, a ₹5,00,000 loan at 10% annual interest over
                 5 years has R = 0.008333 and N = 60, which works out to an EMI of roughly ₹10,624/month — the same
                 figure the calculator above produces for those inputs.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="EMI example: how tenure changes what you pay">
+              <p>
+                On a ₹5,00,000 loan at 10%, the EMI is about ₹16,134 over 3 years, ₹10,624 over 5 years, ₹8,301
+                over 7 years and ₹6,608 over 10 years. The total interest paid moves the other way: roughly
+                ₹80,809, ₹1,37,411, ₹1,97,250 and ₹2,92,904. Stretching a loan from 5 to 10 years lowers the monthly
+                burden by about 38% but more than doubles the interest.
+              </p>
+              <p>
+                That is the trade-off to weigh before you borrow: a longer tenure makes the EMI comfortable, a
+                shorter one makes the loan cheaper. A common rule of thumb is to keep your EMIs at 30–40% of
+                monthly income or less — the Home Affordability Calculator tests a property against exactly that.
               </p>
             </CalcSection>
 
