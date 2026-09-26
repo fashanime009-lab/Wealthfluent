@@ -88,9 +88,10 @@ export default function AboutPage() {
                 checks that the calculations behave correctly, and reviews the site every day.
               </p>
               <p>
-                Two other team members help with planning, feedback and tracking how the site is performing.
-                They have other full-time careers and prefer not to be named publicly, so everything on
-                FINAIW is published under the FINAIW name, with Harsh as its editor.
+                <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Nishit Bhatt</strong> (MBA in
+                Finance) and <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Shilp Gangar</strong>{" "}
+                are members of the team. They help with planning, feedback and tracking how the site is
+                performing, alongside their other full-time work.
               </p>
             </div>
           </div>
