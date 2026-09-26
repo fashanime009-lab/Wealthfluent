@@ -4,7 +4,6 @@ import { Search, RefreshCw } from "lucide-react";
 import { DEFAULT_NEWS_QUERY, fetchNews, NEWS_REFRESH_INTERVAL } from "../services/newsService";
 import { LESSONS } from "../data/lessons";
 import useVisibleInterval from "../hooks/useVisibleInterval";
-import AdSlot from "../components/ads/AdSlot";
 import Seo from "../components/seo/Seo";
 import { breadcrumbSchema } from "../components/seo/schema";
 
@@ -195,43 +194,33 @@ export default function NewsPage() {
 
         {visibleArticles.length > 0 ? (
           <>
-            {/* Ad only ever renders alongside real article content, never
-                next to the empty/fallback state below. */}
-            <div className="mt-8">
-              <AdSlot slotId="insights_top" />
-            </div>
-
-            <div className="mt-4 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">
-              {visibleArticles.map((article, index) => (
-                <>
-                  {index === 6 && (
-                    <div key="insights-mid-ad" className="py-2">
-                      <AdSlot slotId="insights_mid" />
-                    </div>
+            {/* No ads on this page: it lists headlines from other publishers,
+                which isn't original content of ours, and AdSense doesn't
+                allow ads on aggregated third-party content. */}
+            <div className="mt-8 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">
+              {visibleArticles.map((article) => (
+                <a
+                  key={article.id}
+                  href={article.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="grid gap-2 py-6 transition-opacity hover:opacity-70"
+                >
+                  <div className="flex flex-wrap items-baseline gap-x-2.5">
+                    <span className="text-[12.5px] font-semibold text-[#047857] dark:text-[#34d399]">{article.source}</span>
+                    <span className="font-mono-tech text-[11.5px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
+                      {timeAgo(article.publishedAt)}
+                    </span>
+                  </div>
+                  <h2 className="font-display text-[17px] font-bold leading-snug text-[#111814] dark:text-[#eef1ec]">
+                    {article.title}
+                  </h2>
+                  {article.description && (
+                    <p className="max-w-[68ch] text-[13.5px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
+                      {article.description}
+                    </p>
                   )}
-                  <a
-                    key={article.id}
-                    href={article.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="grid gap-2 py-6 transition-opacity hover:opacity-70"
-                  >
-                    <div className="flex flex-wrap items-baseline gap-x-2.5">
-                      <span className="text-[12.5px] font-semibold text-[#047857] dark:text-[#34d399]">{article.source}</span>
-                      <span className="font-mono-tech text-[11.5px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
-                        {timeAgo(article.publishedAt)}
-                      </span>
-                    </div>
-                    <h2 className="font-display text-[17px] font-bold leading-snug text-[#111814] dark:text-[#eef1ec]">
-                      {article.title}
-                    </h2>
-                    {article.description && (
-                      <p className="max-w-[68ch] text-[13.5px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
-                        {article.description}
-                      </p>
-                    )}
-                  </a>
-                </>
+                </a>
               ))}
             </div>
           </>

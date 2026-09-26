@@ -75,6 +75,26 @@ export default function AboutPage() {
             </div>
           </div>
 
+          {/* Who is behind it */}
+          <div className="mt-10 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10">
+            <h2 className="font-display text-[22px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">
+              Who is behind FINAIW
+            </h2>
+            <div className="mt-3 max-w-[68ch] space-y-4 text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+              <p>
+                FINAIW is run by a small team of three, based in Mumbai, India.{" "}
+                <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Harsh Sanghani</strong> is the
+                founder and editor: an information technology engineer who builds and maintains the tools,
+                checks that the calculations behave correctly, and reviews the site every day.
+              </p>
+              <p>
+                Two other team members help with planning, feedback and tracking how the site is performing.
+                They have other full-time careers and prefer not to be named publicly, so everything on
+                FINAIW is published under the FINAIW name, with Harsh as its editor.
+              </p>
+            </div>
+          </div>
+
           {/* Mission & Vision */}
           <div className="mt-10 grid gap-8 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10 sm:grid-cols-2">
             <div>
@@ -124,6 +144,53 @@ export default function AboutPage() {
                   <p className="mt-1 text-[13px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">{point.desc}</p>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* How we build and check */}
+          <div className="mt-10 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10">
+            <h2 className="font-display text-[22px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">
+              How we build and check the numbers
+            </h2>
+            <div className="mt-3 max-w-[68ch] space-y-4 text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+              <p>
+                Every calculator uses a standard, published formula, and the formula is written out on the
+                page — for example the reducing-balance formula for loan EMIs, and the compound-growth
+                formulas behind fixed deposits and CAGR. The worked examples in our text are calculated with
+                the same formulas as the tools, so the figures you read match what the calculator shows.
+              </p>
+              <p>
+                Assumptions such as returns, inflation and interest rates are inputs you can change, and our
+                pages say where the defaults come from. Where a tool relies on fixed reference data, we
+                name it: the Global Net Worth Percentile, for instance, is an estimate based on the UBS
+                Global Wealth Report 2026 and uses approximate exchange rates, and it says so.
+              </p>
+              <p>
+                We review the site about once a week and correct mistakes when we find them or when a reader
+                reports one. If you spot an error, tell us on the{" "}
+                <Link
+                  to="/contact"
+                  className="font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
+                >
+                  contact page
+                </Link>
+                .
+              </p>
+            </div>
+          </div>
+
+          {/* Independence */}
+          <div className="mt-10 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10">
+            <h2 className="font-display text-[22px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]">
+              Independence
+            </h2>
+            <div className="mt-3 max-w-[68ch] space-y-4 text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+              <p>
+                FINAIW does not sell financial products, run affiliate programmes or take commissions, and no
+                company pays to appear in our tools or lessons. The site may show advertising served by
+                Google; ads do not influence what we write or how a calculator works.
+              </p>
+              <p className="text-[12.5px] text-[#111814]/60 dark:text-[#eef1ec]/50">Last reviewed: 26 September 2026.</p>
             </div>
           </div>
 
