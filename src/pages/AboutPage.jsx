@@ -86,14 +86,14 @@ export default function AboutPage() {
               </p>
               <p>
                 <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Nishit B</strong> (MBA in
-                Finance) is the founder. He works as a Financial Crime Risk Analyst at an MNC and came up with
+                Finance) is a co-founder. He works as a Financial Crime Risk Analyst at an MNC and came up with
                 the idea for FINAIW, and he continues to shape its vision. He reviews the site's financial
                 content, formulas and calculator logic, and helps write and edit lessons before anything is
                 published.
               </p>
               <p>
                 <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Harsh S</strong> (B.E. in
-                Information Technology) is the co-founder. He builds and maintains the tools, checks that the
+                Information Technology) is also a co-founder. He builds and maintains the tools, checks that the
                 calculations behave correctly, and reviews the site every day.
               </p>
               <p>
