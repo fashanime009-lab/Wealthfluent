@@ -55,6 +55,7 @@ const SettingsPage = lazy(() => import("./pages/SettingsPage"));
 const HomeBuyingJourney = lazy(() => import("@/journeys/home-buying/pages/HomeBuyingJourney"));
 const EmergencyFundCalculatorPage = lazy(() => import("./pages/EmergencyFundCalculatorPage"));
 const HomeAffordabilityCalculatorPage = lazy(() => import("./pages/HomeAffordabilityCalculatorPage"));
+const LinksPage = lazy(() => import("./pages/LinksPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 export default function App() {
@@ -120,6 +121,7 @@ export default function App() {
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/emergency-fund-calculator" element={<EmergencyFundCalculatorPage />} />
             <Route path="/home-affordability-calculator" element={<HomeAffordabilityCalculatorPage />} />
+            <Route path="/links" element={<LinksPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
           <Route path="/journeys/home-buying" element={<HomeBuyingJourney />} />
