@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { X, ArrowRight } from "lucide-react";
 import Seo from "@/components/seo/Seo";
+import { trackEvent } from "@/lib/analytics";
 
 // Lucide dropped brand marks a while back, so Instagram and Facebook are
 // hand-drawn here in the same stroke style (viewBox 24, 2px round stroke)
@@ -94,6 +95,7 @@ export default function LinksPage() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={label}
+                onClick={() => trackEvent("outbound_click", { platform: label.toLowerCase(), from: "links_page" })}
                 className="flex h-11 w-11 items-center justify-center border border-[#eef1ec]/15 text-[#eef1ec]/70 transition hover:scale-110 hover:border-[#34d399]/50 hover:bg-[#34d399]/10 hover:text-[#34d399]"
               >
                 <Icon size={18} />
