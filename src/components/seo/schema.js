@@ -8,7 +8,11 @@ export const organizationSchema = {
   logo: `${SITE_URL}/favicon.svg`,
   description:
     "FINAIW is a free personal finance platform offering calculators, verdicts, goal tracking, and financial education tools.",
-  sameAs: [],
+  sameAs: [
+    "https://www.instagram.com/finaiw.inc",
+    "https://www.facebook.com/share/14sveM9NKs2/",
+    "https://x.com/Finaiw",
+  ],
 };
 
 export const websiteSchema = {
@@ -87,6 +91,15 @@ export function articleSchema({ title, description, path, publishedTime, modifie
     author: {
       "@type": "Organization",
       name: SITE_NAME,
+    },
+    // Nishit B is the team member who reviews financial content before it's
+    // published (see /about) — naming a real reviewer here, not just the
+    // publisher org, is what Google's own guidance on finance content
+    // ("YMYL") specifically asks for.
+    reviewedBy: {
+      "@type": "Person",
+      name: "Nishit B",
+      jobTitle: "Financial Crime Risk Analyst",
     },
   };
 }
