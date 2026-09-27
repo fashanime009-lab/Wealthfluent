@@ -121,9 +121,12 @@ export default function App() {
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/emergency-fund-calculator" element={<EmergencyFundCalculatorPage />} />
             <Route path="/home-affordability-calculator" element={<HomeAffordabilityCalculatorPage />} />
-            <Route path="/links" element={<LinksPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
+          {/* Outside Layout on purpose: a full-bleed "link in bio" poster page,
+              not a page someone browses alongside the rest of the site — no
+              navbar, footer, cookie banner or guide launcher. */}
+          <Route path="/links" element={<LinksPage />} />
           <Route path="/journeys/home-buying" element={<HomeBuyingJourney />} />
         </Routes>
       </Suspense>
