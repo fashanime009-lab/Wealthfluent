@@ -98,9 +98,9 @@ export default function AboutPage() {
               </p>
               <p>
                 <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Shilp G</strong> (MBA in
-                Finance, M.Com) is also a co-founder. He works as an ESG Data Analyst at an MNC and reviews the
-                site's formulas and figures for accuracy. He also handles marketing and feedback, and tracks
-                how the site is performing.
+                Finance, M.Com) works as an ESG Data Analyst at an MNC and is FINAIW's in-house business
+                consultant. He helps with marketing and feedback, keeps track of how the site is doing, and
+                checks the formulas and figures for accuracy.
               </p>
             </div>
           </div>
