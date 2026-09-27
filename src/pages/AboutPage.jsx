@@ -82,20 +82,25 @@ export default function AboutPage() {
             </h2>
             <div className="mt-3 max-w-[68ch] space-y-4 text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
               <p>
-                FINAIW is run by a small team of three, based in Mumbai, India.{" "}
-                <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Harsh S</strong> (B.E. in
-                Information Technology) is the founder and editor: he builds and maintains the tools, checks
-                that the calculations behave correctly, and reviews the site every day.
+                FINAIW is run by a small team of three, based in Mumbai, India.
               </p>
               <p>
                 <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Nishit B</strong> (MBA in
-                Finance) works as a Financial Crime Risk Analyst, and reviews the site's financial content,
-                formulas and calculator logic, and helps write and edit lessons, before anything is published.
+                Finance) is the founder. He works as a Financial Crime Risk Analyst at an MNC and came up with
+                the idea for FINAIW, and he continues to shape its vision. He reviews the site's financial
+                content, formulas and calculator logic, and helps write and edit lessons before anything is
+                published.
+              </p>
+              <p>
+                <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Harsh S</strong> (B.E. in
+                Information Technology) is the co-founder. He builds and maintains the tools, checks that the
+                calculations behave correctly, and reviews the site every day.
               </p>
               <p>
                 <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Shilp G</strong> (MBA in
-                Finance, M.Com) works as an ESG Data Analyst, and reviews the site's formulas and figures for
-                accuracy alongside marketing, feedback and tracking how the site is performing.
+                Finance, M.Com) is also a co-founder. He works as an ESG Data Analyst at an MNC and reviews the
+                site's formulas and figures for accuracy. He also handles marketing and feedback, and tracks
+                how the site is performing.
               </p>
             </div>
           </div>
