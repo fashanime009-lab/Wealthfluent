@@ -24,23 +24,22 @@
     <!--
       Google tag (gtag.js) — Consent Mode v2.
 
-      The script itself is always present (required for Google's own
-      verification tools, e.g. Analytics' "Retest" tag-detection check, to
-      find it at all), but everything it's allowed to actually DO is
-      gated by consent signals, not by whether the script loaded:
+      Both this and AdSense's own script (adsbygoogle.js, right below)
+      are always present — required for Google's own verification tools
+      (Analytics' "Retest" tag-detection check, and AdSense's site-
+      ownership crawler) to find them at all, since neither crawler
+      clicks the cookie banner. Everything either script is allowed to
+      actually DO is gated by consent signals instead, not by whether
+      the script loaded:
 
       - Default state below is fully denied — no analytics/ad cookies,
         no personalization — until the visitor makes a real choice.
       - src/components/consent/CookieConsent.jsx calls
         gtag('consent', 'update', {...}) once they accept/decline (or
         immediately, silently, on later visits if a prior choice is
-        already saved), which is what actually turns storage on or off.
-
-      This is different from AdSense's own script (adsbygoogle.js, loaded
-      separately in CookieConsent.jsx) — that one genuinely isn't injected
-      at all until consent, since it doesn't have an equivalent
-      "detect the tag first, respect consent signals after" verification
-      flow the way gtag.js's Consent Mode does.
+        already saved), which is what actually turns storage on or off
+        for both Analytics and AdSense — the ad_storage / ad_user_data /
+        ad_personalization signals below are what AdSense itself reads.
     -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6NY6L0MKP0"></script>
     <script>
@@ -61,6 +60,8 @@
       // src/components/ScrollToTop.jsx via trackPageview() instead.
       gtag('config', 'G-6NY6L0MKP0', { send_page_view: false });
     </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1366197478696723"
+     crossorigin="anonymous"></script>
   </head>
   <body>
     <div id="root"></div>

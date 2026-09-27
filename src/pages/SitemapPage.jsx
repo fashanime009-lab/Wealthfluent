@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
-import { Home, Calculator, Wrench, BookOpen, Scale, ArrowRight, Map } from "lucide-react";
 
 const sitemapSections = [
   {
     title: "Home & About",
-    icon: Home,
     pages: [
       { name: "Home", path: "/", description: "Main landing page" },
       { name: "About Us", path: "/about", description: "Learn about FINAIW" },
@@ -17,7 +15,6 @@ const sitemapSections = [
   },
   {
     title: "Calculators",
-    icon: Calculator,
     pages: [
       { name: "All Calculators", path: "/calculators", description: "Browse all calculators" },
       { name: "SIP Calculator", path: "/sip-calculator", description: "Estimate mutual fund SIP returns" },
@@ -32,7 +29,9 @@ const sitemapSections = [
       { name: "Bond Yield Calculator", path: "/bond-yield-calculator", description: "Calculate bond yields" },
       { name: "Net Worth Calculator", path: "/networth-calculator", description: "Track assets and liabilities" },
       { name: "Emergency Fund Calculator", path: "/emergency-fund-calculator", description: "Plan your safety net" },
+      { name: "Home Affordability Calculator", path: "/home-affordability-calculator", description: "Check whether a property fits your income" },
       { name: "Wealth Age Calculator", path: "/wealth-age-calculator", description: "Compare your financial age to your real age" },
+      { name: "Global Net Worth Percentile", path: "/net-worth-percentile", description: "How your net worth compares to the whole world" },
       { name: "Retirement Calculator", path: "/retirement-calculator", description: "Plan retirement wealth" },
       { name: "Annual Retirement Income", path: "/annual-retirement-income", description: "Calculate retirement income" },
       { name: "Retirement Investment Tracker", path: "/retirement-investment-tracker", description: "Track retirement investments" },
@@ -42,20 +41,23 @@ const sitemapSections = [
   },
   {
     title: "Verdicts",
-    icon: Scale,
     pages: [
       { name: "All Verdicts", path: "/verdict", description: "Browse all verdict tools" },
       { name: "Rent vs Buy", path: "/verdict/rent-vs-buy", description: "Should you rent or buy a home" },
       { name: "Debt vs Invest", path: "/verdict/debt-vs-invest", description: "Pay off debt or invest first" },
       { name: "Lease vs Buy a Car", path: "/verdict/lease-vs-buy-car", description: "Compare leasing vs buying a car" },
       { name: "Do You Need Insurance", path: "/verdict/insurance-need", description: "Check if you need life insurance" },
+      { name: "Term Insurance vs Endowment/ULIP", path: "/verdict/term-vs-endowment", description: "Compare a term plan plus investing against a bundled policy" },
     ],
   },
   {
     title: "Tools & Resources",
-    icon: Wrench,
     pages: [
       { name: "All Tools", path: "/tools", description: "Browse all tools" },
+      { name: "Financial Goal Planner", path: "/financial-goal-planner", description: "Optimizes your budget across every goal at once" },
+      { name: "Investment Risk Analyzer", path: "/investment-risk-analyzer", description: "Risk profile reconciled against your real finances" },
+      { name: "Financial Health Checkup", path: "/financial-health-checkup", description: "A composite financial health score out of 100" },
+      { name: "Debt Payoff Strategy Planner", path: "/debt-payoff-planner", description: "Snowball vs avalanche, simulated month by month" },
       { name: "Goals", path: "/goals", description: "Track your savings goals" },
       { name: "Financial Profile", path: "/financial-profile", description: "Update your financial profile" },
       { name: "Insights", path: "/insights", description: "Personalized financial insights" },
@@ -63,7 +65,6 @@ const sitemapSections = [
   },
   {
     title: "Learning Center",
-    icon: BookOpen,
     pages: [
       { name: "Learn", path: "/learn", description: "Daily financial lessons" },
       { name: "News", path: "/news", description: "Latest financial news" },
@@ -72,7 +73,6 @@ const sitemapSections = [
   },
   {
     title: "Legal",
-    icon: Scale,
     pages: [
       { name: "Privacy Policy", path: "/privacy-policy", description: "How we protect your data" },
       { name: "Disclaimer", path: "/disclaimer", description: "Legal disclaimer" },
@@ -83,9 +83,22 @@ const sitemapSections = [
 
 const totalPages = sitemapSections.reduce((sum, section) => sum + section.pages.length, 0);
 
+// A real slugify, not just a whitespace swap — "Tools & Resources" and
+// "Home & About" both contain "&", which produced ids like
+// "tools-&-resources". That's a valid HTML id, but not a valid unescaped
+// CSS selector, and document.querySelector() in ScrollToTop.jsx throws a
+// SyntaxError on it — an uncaught error there crashes the whole React
+// tree, so clicking either of these quick-links blanked the entire page.
+const sectionAnchor = (title) =>
+  title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+
 export default function SitemapPage() {
   return (
-    <>
+    <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <Seo
         title="Sitemap"
         description="Explore the complete sitemap of FINAIW. Find all calculators, tools, resources, and legal pages in one place."
@@ -96,110 +109,91 @@ export default function SitemapPage() {
           "@type": "WebPage",
           name: "Sitemap - FINAIW",
           description: "Complete sitemap of FINAIW showing all available pages.",
-          url: "https://finaiw.com/sitemap",
+          url: "https://www.finaiw.com/sitemap",
         }}
       />
 
-      <div className="min-h-screen bg-[#fbfdfc]">
-        <section className="mx-auto max-w-[1200px] px-5 py-14 sm:px-8 lg:px-12">
-          <div className="rounded-[32px] border border-slate-200 bg-white p-8 sm:p-12">
-            {/* Header */}
-            <div className="mb-10 text-center">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-[12px] font-black text-emerald-800 ring-1 ring-emerald-100">
-                <Map size={13} /> FINAIW Sitemap
-              </span>
-              <h1 className="mx-auto mt-5 text-[34px] font-black leading-[1.1] tracking-[-0.03em] text-slate-950 sm:text-[42px]">
-                Site navigation
-              </h1>
-              <p className="mx-auto mt-4 max-w-2xl text-[15px] font-medium leading-7 text-slate-500">
-                Explore all pages on FINAIW — from calculators and tools to learning resources and
-                legal information.
-              </p>
-              <p className="mt-2 text-[13px] font-semibold text-slate-400">
-                {totalPages} pages across {sitemapSections.length} categories
-              </p>
-            </div>
+      <div className="mx-auto max-w-[900px] px-5 py-16 sm:px-8 lg:px-12">
+        <span className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Sitemap</span>
+        <h1 className="font-display mt-2 max-w-lg text-[34px] font-extrabold leading-[1.15] tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[42px]">
+          Site navigation
+        </h1>
+        <p className="mt-4 max-w-[58ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+          Explore all pages on FINAIW — from calculators and tools to learning resources and legal
+          information.
+        </p>
+        <p className="font-mono-tech mt-2 text-[12.5px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
+          {totalPages} pages across {sitemapSections.length} categories
+        </p>
 
-            {/* Quick Links */}
-            <div className="mb-12 flex flex-wrap justify-center gap-2">
-              {sitemapSections.map((section) => {
-                const Icon = section.icon;
-                return (
-                  <a
-                    key={section.title}
-                    href={`#${section.title.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-4 py-2 text-[13px] font-bold text-slate-700 transition hover:bg-slate-200"
+        {/* Quick links — plain text tabs, not pills */}
+        <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-b border-[#111814]/10 pb-4 dark:border-[#eef1ec]/10">
+          {sitemapSections.map((section) => (
+            <a
+              key={section.title}
+              href={`#${sectionAnchor(section.title)}`}
+              className="text-[14px] font-semibold text-[#111814]/60 transition hover:text-[#111814]/70 dark:text-[#eef1ec]/50 dark:hover:text-[#eef1ec]/70"
+            >
+              {section.title}
+            </a>
+          ))}
+        </div>
+
+        {/* Sitemap sections — a dense list, not a card grid */}
+        <div className="mt-4">
+          {sitemapSections.map((section) => (
+            <div
+              key={section.title}
+              id={sectionAnchor(section.title)}
+              className="scroll-mt-24 border-b border-[#111814]/10 last:border-b-0 dark:border-[#eef1ec]/10"
+            >
+              <h2 className="pt-8 text-[13px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">
+                {section.title} ({section.pages.length})
+              </h2>
+              <div className="divide-y divide-[#111814]/8 dark:divide-[#eef1ec]/8">
+                {section.pages.map((page) => (
+                  <Link
+                    key={page.path}
+                    to={page.path}
+                    className="flex items-baseline justify-between gap-6 py-4 transition-opacity hover:opacity-70"
                   >
-                    <Icon size={14} className="text-emerald-700" />
-                    {section.title}
-                  </a>
-                );
-              })}
-            </div>
-
-            {/* Sitemap Sections */}
-            <div className="space-y-12">
-              {sitemapSections.map((section) => {
-                const Icon = section.icon;
-                return (
-                  <div key={section.title} id={section.title.toLowerCase().replace(/\s+/g, "-")}>
-                    <div className="mb-5 flex items-center gap-3">
-                      <span className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100">
-                        <Icon size={18} />
-                      </span>
-                      <h2 className="text-[20px] font-black text-slate-950">{section.title}</h2>
-                      <span className="text-[13px] font-semibold text-slate-400">
-                        ({section.pages.length} pages)
-                      </span>
-                    </div>
-                    <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
-                      {section.pages.map((page) => (
-                        <Link
-                          key={page.path}
-                          to={page.path}
-                          className="group flex flex-col rounded-2xl border border-slate-200 p-4 transition hover:border-emerald-300 hover:shadow-[0_14px_35px_rgba(15,23,42,.06)]"
-                        >
-                          <span className="text-[14px] font-bold text-slate-800 transition group-hover:text-emerald-700">
-                            {page.name}
-                          </span>
-                          <span className="mt-1 text-[12.5px] text-slate-500">{page.description}</span>
-                          <span className="mt-2 inline-flex items-center gap-1 text-[11.5px] font-bold text-emerald-600 opacity-0 transition group-hover:opacity-100">
-                            Go to page <ArrowRight size={11} />
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* SEO Note */}
-            <div className="mt-12 border-t border-slate-100 pt-8">
-              <div className="rounded-2xl border border-slate-100 bg-slate-50/60 p-6">
-                <h3 className="text-[13px] font-black text-slate-700">About This Sitemap</h3>
-                <p className="mt-2 text-[13.5px] leading-6 text-slate-500">
-                  This sitemap is designed to help you find exactly what you're looking for on
-                  FINAIW. If you can't find what you need, please visit our{" "}
-                  <Link to="/help" className="font-semibold text-emerald-700 hover:underline">
-                    Help Center
-                  </Link>{" "}
-                  or{" "}
-                  <Link to="/contact" className="font-semibold text-emerald-700 hover:underline">
-                    Contact Us
+                    <span className="min-w-0 flex-shrink-0 text-[14px] font-semibold text-[#111814] dark:text-[#eef1ec]">
+                      {page.name}
+                    </span>
+                    <span className="min-w-0 truncate text-right text-[12.5px] text-[#111814]/60 dark:text-[#eef1ec]/50">
+                      {page.description}
+                    </span>
                   </Link>
-                  .
-                </p>
+                ))}
               </div>
             </div>
+          ))}
+        </div>
 
-            <p className="mt-6 border-t border-slate-100 pt-4 text-[12px] leading-5 text-slate-400">
-              This sitemap is also available in machine-readable format for search engines and
-              crawlers at <code className="text-slate-500">/sitemap.xml</code>.
-            </p>
-          </div>
-        </section>
+        {/* Help note */}
+        <p className="mt-10 max-w-[68ch] text-[13.5px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
+          If you can't find what you need, please visit our{" "}
+          <Link
+            to="/help"
+            className="font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
+          >
+            Help Center
+          </Link>{" "}
+          or{" "}
+          <Link
+            to="/contact"
+            className="font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
+          >
+            Contact Us
+          </Link>
+          .
+        </p>
+
+        <p className="mt-4 max-w-[68ch] text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
+          This sitemap is also available in machine-readable format for search engines and crawlers
+          at <code className="text-[#111814]/60 dark:text-[#eef1ec]/60">/sitemap.xml</code>.
+        </p>
       </div>
-    </>
+    </div>
   );
 }

@@ -7,11 +7,11 @@ export default function JourneyHeader({
 }) {
   return (
     <header className="mb-10">
-      <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-blue-500">
+      <p className="mb-3 text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">
         {eyebrow}
       </p>
 
-      <h1 className="text-4xl font-bold tracking-tight">
+      <h1 className="font-display text-4xl font-bold tracking-tight text-[var(--text)]">
         {title}
       </h1>
 

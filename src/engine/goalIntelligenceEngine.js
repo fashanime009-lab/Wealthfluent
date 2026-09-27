@@ -16,9 +16,10 @@ export function buildGoalIntelligence(goal) {
 
   const amountRemaining = Math.max(target - current, 0);
 
-  let healthLevel = "healthy";
-  let healthScore = 100;
-  let healthReason = "Your goal is progressing normally.";
+  // Every branch below assigns all three, so there's no default to hold.
+  let healthLevel;
+  let healthScore;
+  let healthReason;
 
   if (progress === 0) {
     healthLevel = "starting";

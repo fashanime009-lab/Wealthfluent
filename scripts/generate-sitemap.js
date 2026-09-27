@@ -12,7 +12,11 @@ const __dirname = path.dirname(__filename);
 // PascalCase URLs unlike every other route on the site, which suggests
 // they're leftover internal/dev routes rather than intentional public
 // pages; worth a look to confirm before ever adding them here.
-const today = "2026-09-06";
+// The date this file was regenerated, not a hardcoded one. A fixed date
+// here meant every URL kept claiming "last modified Sep 6" no matter what
+// changed since, and search engines stop trusting lastmod once they've
+// seen it be wrong. Regenerate (npm run sitemap) whenever pages change.
+const today = new Date().toISOString().slice(0, 10);
 
 const routes = [
   { path: "/", lastmod: today, changefreq: "daily", priority: "1.0" },
@@ -42,7 +46,9 @@ const routes = [
   { path: "/bond-yield-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/networth-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/emergency-fund-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
+  { path: "/home-affordability-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/wealth-age-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
+  { path: "/net-worth-percentile", lastmod: today, changefreq: "weekly", priority: "0.9" },
   { path: "/retirement-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/annual-retirement-income", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/retirement-investment-tracker", lastmod: today, changefreq: "weekly", priority: "0.8" },
@@ -54,8 +60,16 @@ const routes = [
   { path: "/verdict/debt-vs-invest", lastmod: today, changefreq: "weekly", priority: "0.7" },
   { path: "/verdict/lease-vs-buy-car", lastmod: today, changefreq: "weekly", priority: "0.7" },
   { path: "/verdict/insurance-need", lastmod: today, changefreq: "weekly", priority: "0.7" },
+  { path: "/verdict/term-vs-endowment", lastmod: today, changefreq: "weekly", priority: "0.7" },
 
   { path: "/tools", lastmod: today, changefreq: "weekly", priority: "0.7" },
+  // These 4 are the site's "advanced tools" tier, distinct from the
+  // calculators above — financial-goal-planner and investment-risk-
+  // analyzer were live pages that had never been added here at all.
+  { path: "/financial-goal-planner", lastmod: today, changefreq: "weekly", priority: "0.7" },
+  { path: "/investment-risk-analyzer", lastmod: today, changefreq: "weekly", priority: "0.7" },
+  { path: "/financial-health-checkup", lastmod: today, changefreq: "weekly", priority: "0.7" },
+  { path: "/debt-payoff-planner", lastmod: today, changefreq: "weekly", priority: "0.7" },
   // /journeys/home-buying intentionally excluded — feature isn't ready/
   // tested yet, so it's not something we want Google to discover or index.
   // Also excluded from robots.txt (see public/robots.txt) and left out of
@@ -83,7 +97,7 @@ const routes = [
 ];
 
 // ─── Base URL ──────────────────────────────────────────────────────
-const baseUrl = "https://finaiw.com";
+const baseUrl = "https://www.finaiw.com";
 
 // ─── Generate sitemap ─────────────────────────────────────────────
 const generateSitemap = () => {

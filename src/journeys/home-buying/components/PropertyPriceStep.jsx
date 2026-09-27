@@ -27,7 +27,7 @@ export default function PropertyPriceStep() {
           type="button"
           onClick={nextStep}
           disabled={!isValid}
-          className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40"
+          className="bg-[#047857] px-6 py-3 font-semibold text-white transition hover:bg-[#065f46] disabled:cursor-not-allowed disabled:opacity-40"
         >
           Continue
         </button>

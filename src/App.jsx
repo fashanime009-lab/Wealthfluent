@@ -25,9 +25,14 @@ const SIPCalculatorPage = lazy(() => import("./pages/SIPCalculatorPage"));
 const ToolsPage = lazy(() => import("./pages/ToolsPage"));
 const WealthFluentHomepage = lazy(() => import("./pages/WealthFluentHomepage"));
 const NetWorthCalculatorPage = lazy(() => import("./pages/NetWorthCalculatorPage"));
+const NetWorthPercentilePage = lazy(() => import("./pages/NetWorthPercentilePage"));
 const GoalPlannerPage = lazy(() => import("./pages/GoalPlannerPage"));
 const GoalsPage = lazy(() => import("./pages/GoalsPage"));
 const FinancialProfilePage = lazy(() => import("./pages/FinancialProfilePage"));
+const FinancialGoalPlannerPage = lazy(() => import("./pages/FinancialGoalPlannerPage"));
+const InvestmentRiskAnalyzerPage = lazy(() => import("./pages/InvestmentRiskAnalyzerPage"));
+const FinancialHealthCheckupPage = lazy(() => import("./pages/FinancialHealthCheckupPage"));
+const DebtPayoffPlannerPage = lazy(() => import("./pages/DebtPayoffPlannerPage"));
 
 const GoalSIPCalculatorPage = lazy(() => import("./pages/GoalSIPCalculatorPage"));
 const AnnualRetirementIncomePage = lazy(() => import("./pages/AnnualRetirementIncomePage"));
@@ -45,9 +50,13 @@ const RentVsBuyPage = lazy(() => import("./pages/verdict/RentVsBuyPage"));
 const DebtVsInvestPage = lazy(() => import("./pages/verdict/DebtVsInvestPage"));
 const LeaseVsBuyPage = lazy(() => import("./pages/verdict/LeaseVsBuyPage"));
 const InsuranceNeedPage = lazy(() => import("./pages/verdict/InsuranceNeedPage"));
+const TermVsEndowmentPage = lazy(() => import("./pages/verdict/TermVsEndowmentPage"));
 const SettingsPage = lazy(() => import("./pages/SettingsPage"));
 const HomeBuyingJourney = lazy(() => import("@/journeys/home-buying/pages/HomeBuyingJourney"));
 const EmergencyFundCalculatorPage = lazy(() => import("./pages/EmergencyFundCalculatorPage"));
+const HomeAffordabilityCalculatorPage = lazy(() => import("./pages/HomeAffordabilityCalculatorPage"));
+const LinksPage = lazy(() => import("./pages/LinksPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 export default function App() {
   return (
@@ -83,9 +92,14 @@ export default function App() {
             <Route path="/tools" element={<ToolsPage />} />
             <Route path="/fire-calculator" element={<FIRECalculatorPage />} />
             <Route path="/networth-calculator" element={<NetWorthCalculatorPage />} />
+            <Route path="/net-worth-percentile" element={<NetWorthPercentilePage />} />
             <Route path="/goal-planner" element={<GoalPlannerPage />} />
             <Route path="/goals" element={<GoalsPage />} />
             <Route path="/financial-profile" element={<FinancialProfilePage />} />
+            <Route path="/financial-goal-planner" element={<FinancialGoalPlannerPage />} />
+            <Route path="/investment-risk-analyzer" element={<InvestmentRiskAnalyzerPage />} />
+            <Route path="/financial-health-checkup" element={<FinancialHealthCheckupPage />} />
+            <Route path="/debt-payoff-planner" element={<DebtPayoffPlannerPage />} />
             
             <Route path="/goal-sip" element={<GoalSIPCalculatorPage />} />
             <Route path="/annual-retirement-income" element={<AnnualRetirementIncomePage />} />
@@ -103,9 +117,16 @@ export default function App() {
             <Route path="/verdict/debt-vs-invest" element={<DebtVsInvestPage />} />
             <Route path="/verdict/lease-vs-buy-car" element={<LeaseVsBuyPage />} />
             <Route path="/verdict/insurance-need" element={<InsuranceNeedPage />} />
+            <Route path="/verdict/term-vs-endowment" element={<TermVsEndowmentPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/emergency-fund-calculator" element={<EmergencyFundCalculatorPage />} />
+            <Route path="/home-affordability-calculator" element={<HomeAffordabilityCalculatorPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
+          {/* Outside Layout on purpose: a full-bleed "link in bio" poster page,
+              not a page someone browses alongside the rest of the site — no
+              navbar, footer, cookie banner or guide launcher. */}
+          <Route path="/links" element={<LinksPage />} />
           <Route path="/journeys/home-buying" element={<HomeBuyingJourney />} />
         </Routes>
       </Suspense>

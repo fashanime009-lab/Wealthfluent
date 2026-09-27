@@ -19,7 +19,20 @@ export default function ScrollToTop() {
       // node doesn't exist yet), retry once after a short delay instead of
       // falling through to the default scroll-to-top behavior below.
       const scrollToHash = () => {
-        const el = document.querySelector(hash);
+        // hash comes straight from the URL — a hand-typed link, an old
+        // bookmark, or (as happened once already) a generated id with a
+        // character that's valid in an HTML id but not in an unescaped
+        // CSS selector. querySelector throws a SyntaxError on those, and
+        // since this runs inside an effect, an uncaught throw here isn't
+        // just a failed scroll — it crashes the whole React tree to a
+        // blank page. Never let a malformed hash do that; just skip the
+        // scroll.
+        let el;
+        try {
+          el = document.querySelector(hash);
+        } catch {
+          return true;
+        }
         if (el) {
           el.scrollIntoView({ behavior: "smooth", block: "start" });
           return true;
