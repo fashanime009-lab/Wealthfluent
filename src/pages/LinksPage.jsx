@@ -1,35 +1,58 @@
 import { Link } from "react-router-dom";
-import { X, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Seo from "@/components/seo/Seo";
 import { trackEvent } from "@/lib/analytics";
 
-// Lucide dropped brand marks a while back, so Instagram and Facebook are
-// hand-drawn here in the same stroke style (viewBox 24, 2px round stroke)
-// as every lucide icon elsewhere on the site, rather than pulling in a
-// whole separate icon set for two glyphs. X's brand mark is close enough
-// to lucide's own "X" (close) icon that it's reused as-is.
-function InstagramIcon(props) {
+// Solid, filled brand glyphs on a tinted circular badge — the earlier
+// thin gray outline icons barely showed up against the dark background.
+// Instagram is built from plain shapes (rounded square + ring + dot) so
+// there's zero risk of a malformed hand-typed path; Facebook and X use
+// their well-known, widely-republished single-path glyphs.
+function InstagramGlyph() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" />
+      <circle cx="12" cy="12" r="4.3" />
+      <circle cx="17.2" cy="6.8" r="1.1" fill="white" stroke="none" />
     </svg>
   );
 }
 
-function FacebookIcon(props) {
+function FacebookGlyph() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="white">
+      <path d="M15.5 8.5h2.1V5.6c-.4-.05-1.6-.16-2.9-.16-2.9 0-4.9 1.77-4.9 5.02v2.6H6.9v3.26h2.9V21h3.3v-6.68h2.8l.45-3.26h-3.25v-2.26c0-.95.26-1.6 1.6-1.6z" />
+    </svg>
+  );
+}
+
+function XGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
+      <path d="M13.6 10.6 21 2h-2.2l-6.4 7.3L7.3 2H2l7.8 11.3L2 22h2.2l6.8-7.7 5.4 7.7H22l-8.4-11.4Zm-2.4 2.7-.8-1.1L4.1 3.6h2.4l5.1 7.2.8 1.1 6.6 9.3h-2.4l-5.4-7.5Z" />
     </svg>
   );
 }
 
 const SOCIALS = [
-  { href: "https://www.instagram.com/finaiw.inc", icon: InstagramIcon, label: "Instagram" },
-  { href: "https://www.facebook.com/share/14sveM9NKs2/", icon: FacebookIcon, label: "Facebook" },
-  { href: "https://x.com/Finaiw", icon: X, label: "X" },
+  {
+    href: "https://www.instagram.com/finaiw.inc",
+    Glyph: InstagramGlyph,
+    label: "Instagram",
+    className: "bg-[radial-gradient(circle_at_30%_110%,#feda75,#fa7e1e_28%,#d62976_48%,#962fbf_68%,#4f5bd5_88%)]",
+  },
+  {
+    href: "https://www.facebook.com/share/14sveM9NKs2/",
+    Glyph: FacebookGlyph,
+    label: "Facebook",
+    className: "bg-[#1877F2]",
+  },
+  {
+    href: "https://x.com/Finaiw",
+    Glyph: XGlyph,
+    label: "X",
+    className: "bg-[#0b1210] border border-white/25",
+  },
 ];
 
 // A single-page "link in bio" landing — meant for Instagram/X/WhatsApp
@@ -88,7 +111,7 @@ export default function LinksPage() {
             Follow FINAIW
           </p>
           <div className="mt-4 flex items-center justify-center gap-4">
-            {SOCIALS.map(({ href, icon: Icon, label }) => (
+            {SOCIALS.map(({ href, Glyph, label, className }) => (
               <a
                 key={label}
                 href={href}
@@ -96,9 +119,9 @@ export default function LinksPage() {
                 rel="noreferrer"
                 aria-label={label}
                 onClick={() => trackEvent("outbound_click", { platform: label.toLowerCase(), from: "links_page" })}
-                className="flex h-11 w-11 items-center justify-center border border-[#eef1ec]/15 text-[#eef1ec]/70 transition hover:scale-110 hover:border-[#34d399]/50 hover:bg-[#34d399]/10 hover:text-[#34d399]"
+                className={`flex h-12 w-12 items-center justify-center rounded-full shadow-lg shadow-black/30 transition hover:scale-110 ${className}`}
               >
-                <Icon size={18} />
+                <Glyph />
               </a>
             ))}
           </div>
