@@ -83,7 +83,7 @@ export default function AboutPage() {
             <div className="mt-3 max-w-[68ch] space-y-4 text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
               <p>
                 FINAIW is run by a small team of three, based in Mumbai, India.{" "}
-                <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Harsh Sanghani</strong> is the
+                <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Harsh S</strong> is the
                 founder and editor: an information technology engineer who builds and maintains the tools,
                 checks that the calculations behave correctly, and reviews the site every day.
               </p>
