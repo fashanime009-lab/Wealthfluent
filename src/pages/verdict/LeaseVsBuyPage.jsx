@@ -46,8 +46,8 @@ export default function LeaseVsBuyPage() {
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
     <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
       <Seo
-        title="Lease vs Buy a Car Calculator — Real Verdict | FINAIW"
-        description="Should you lease or buy your next car? A real net-worth simulation, not just a monthly payment comparison."
+        title="Lease vs Buy a Car Calculator – Which Costs Less?"
+        description="Should you lease or buy your next car? Compares real net worth over time, not just the monthly payment. Free calculator, no signup."
         path="/verdict/lease-vs-buy-car"
         jsonLd={[
         breadcrumbSchema([

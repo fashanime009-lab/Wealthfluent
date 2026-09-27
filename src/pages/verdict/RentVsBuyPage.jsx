@@ -51,8 +51,8 @@ export default function RentVsBuyPage() {
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
     <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
       <Seo
-        title="Rent vs Buy Calculator — Real Verdict | FINAIW"
-        description="See whether renting and investing the difference beats buying a home over your real time horizon — free."
+        title="Rent vs Buy Calculator – Which Wins for You?"
+        description="See whether renting and investing the difference beats buying a home over your own time horizon and numbers. Free net-worth simulation, no signup."
         path="/verdict/rent-vs-buy"
         jsonLd={[
         breadcrumbSchema([

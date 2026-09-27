@@ -36,8 +36,8 @@ export default function InsuranceNeedPage() {
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
     <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
       <Seo
-        title="How Much Term Life Insurance Do You Need? — Real Verdict | FINAIW"
-        description="Calculate the exact term insurance cover you need using the standard needs-based method — free, no signup."
+        title="How Much Term Insurance Do You Need? Calculator"
+        description="Work out the term insurance cover you actually need from your income, loans, goals and savings — the needs-based method, not a flat multiple. Free."
         path="/verdict/insurance-need"
         jsonLd={[
         breadcrumbSchema([
