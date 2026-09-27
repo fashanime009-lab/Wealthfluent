@@ -88,10 +88,10 @@ export default function AboutPage() {
                 checks that the calculations behave correctly, and reviews the site every day.
               </p>
               <p>
-                <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Nishit Bhatt</strong> (MBA in
-                Finance) and <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Shilp Gangar</strong>{" "}
-                are members of the team. They help with planning, feedback and tracking how the site is
-                performing, alongside their other full-time work.
+                <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Nishit B</strong> (MBA in
+                Finance) reviews the site's financial content, formulas and calculator logic, and helps write
+                and edit lessons, before anything is published. A third team member helps with planning,
+                feedback and tracking how the site is performing, alongside their other full-time work.
               </p>
             </div>
           </div>
@@ -167,8 +167,10 @@ export default function AboutPage() {
                 Global Wealth Report 2026 and uses approximate exchange rates, and it says so.
               </p>
               <p>
-                We review the site about once a week and correct mistakes when we find them or when a reader
-                reports one. If you spot an error, tell us on the{" "}
+                Harsh reviews the site every day for how the tools behave, and Nishit B (MBA in Finance)
+                reviews new financial content, formulas and calculator logic before it's published. We
+                correct mistakes when we find them or when a reader reports one. If you spot an error, tell
+                us on the{" "}
                 <Link
                   to="/contact"
                   className="font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
