@@ -89,12 +89,13 @@ export default function AboutPage() {
               </p>
               <p>
                 <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Nishit B</strong> (MBA in
-                Finance; CFA Level 1 attempted) reviews the site's financial content, formulas and calculator
-                logic, and helps write and edit lessons, before anything is published.
+                Finance) works as a Financial Crime Risk Analyst, and reviews the site's financial content,
+                formulas and calculator logic, and helps write and edit lessons, before anything is published.
               </p>
               <p>
                 <strong className="font-semibold text-[#111814] dark:text-[#eef1ec]">Shilp G</strong> (MBA in
-                Finance, M.Com, LLB) helps with marketing, feedback and tracking how the site is performing.
+                Finance, M.Com) works as an ESG Data Analyst, and reviews the site's formulas and figures for
+                accuracy alongside marketing, feedback and tracking how the site is performing.
               </p>
             </div>
           </div>
@@ -170,9 +171,10 @@ export default function AboutPage() {
                 Global Wealth Report 2026 and uses approximate exchange rates, and it says so.
               </p>
               <p>
-                Harsh reviews the site every day for how the tools behave, and Nishit B reviews new
-                financial content, formulas and calculator logic before it's published. We correct mistakes
-                when we find them or when a reader reports one. If you spot an error, tell us on the{" "}
+                Harsh reviews the site every day for how the tools behave, Nishit B reviews new financial
+                content, formulas and calculator logic before it's published, and Shilp G also checks
+                formulas and figures for accuracy. We correct mistakes when we find them or when a reader
+                reports one. If you spot an error, tell us on the{" "}
                 <Link
                   to="/contact"
                   className="font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
