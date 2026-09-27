@@ -6,8 +6,38 @@ import {
   BookOpen,
   Info,
   Wallet,
+  X,
 } from "lucide-react";
 import Seo from "@/components/seo/Seo";
+
+// Lucide dropped brand marks a while back, so Instagram and Facebook are
+// hand-drawn here in the same stroke style (viewBox 24, 2px round stroke)
+// as every lucide icon on this page, rather than pulling in a whole
+// separate icon set for two glyphs. X's brand mark is close enough to
+// lucide's own "X" (close) icon that it's reused as-is.
+function InstagramIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
+
+function FacebookIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
+
+const SOCIALS = [
+  { href: "https://www.instagram.com/finaiw.inc", icon: InstagramIcon, label: "Instagram" },
+  { href: "https://www.facebook.com/share/14sveM9NKs2/", icon: FacebookIcon, label: "Facebook" },
+  { href: "https://x.com/Finaiw", icon: X, label: "X" },
+];
 
 // A single-page "link in bio" landing — meant for Instagram/X/WhatsApp
 // profile links, not for site navigation, so it's kept out of the navbar
@@ -89,9 +119,24 @@ export default function LinksPage() {
             ))}
           </div>
 
+          <div className="mt-10 flex items-center justify-center gap-4">
+            {SOCIALS.map(({ href, icon: Icon, label }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={label}
+                className="flex h-11 w-11 items-center justify-center border border-[#111814]/12 text-[#111814]/70 transition hover:border-[#111814]/30 hover:text-[#047857] dark:border-[#eef1ec]/12 dark:text-[#eef1ec]/65 dark:hover:border-[#eef1ec]/30 dark:hover:text-[#34d399]"
+              >
+                <Icon size={18} />
+              </a>
+            ))}
+          </div>
+
           <Link
             to="/"
-            className="mt-10 inline-block text-[13px] font-semibold text-[#111814]/60 underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec]/55 dark:decoration-[#eef1ec]/25"
+            className="mt-8 inline-block text-[13px] font-semibold text-[#111814]/60 underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec]/55 dark:decoration-[#eef1ec]/25"
           >
             finaiw.com
           </Link>
