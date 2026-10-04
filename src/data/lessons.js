@@ -304,7 +304,7 @@ export const LESSONS = [
       "PPF's compounding is worth seeing in numbers: contributing the full ₹1.5 lakh a year for 15 years at a 7.1% rate grows to roughly ₹40.7 lakh from ₹22.5 lakh invested — and because the interest and the final withdrawal are both tax-free, that ₹40.7 lakh is the actual amount received, not a pre-tax figure to be reduced further.",
       "NPS's annuitization rule is the detail that catches people off guard at retirement: at least 40% of the NPS corpus must be used to buy an annuity (a regular pension), which is itself taxable as income when received, while up to 60% can be withdrawn as a lump sum. EPF and PPF have no such requirement — the full amount is available to withdraw. This locked-in portion is the direct cost of NPS's extra deduction and higher return potential.",
     ],
-    relatedTool: { label: "Try the Retirement Calculator", to: "/retirement-calculator" },
+    relatedTool: { label: "Try the PPF Calculator", to: "/ppf-calculator" },
   },
   {
     slug: "rebalancing-a-portfolio",
@@ -372,7 +372,7 @@ export const LESSONS = [
       "HRA exemption is calculated as the lowest of three numbers: actual HRA received, rent paid minus 10% of basic salary, or 50% of basic salary in a metro (40% elsewhere) — not simply 'rent paid.' Someone with ₹40,000 monthly basic pay and ₹20,000 monthly HRA who pays ₹18,000 rent gets an exemption based on whichever of those three figures is smallest, which is often well below the full HRA received.",
       "Because which regime wins depends entirely on your own deductions, run the comparison with your actual numbers each year rather than reusing last year's answer — a year with a new home loan, higher 80C investments, or a jump in HRA-eligible rent can flip which regime comes out ahead, even if your income barely changed.",
     ],
-    relatedTool: { label: "Explore Calculators", to: "/calculators" },
+    relatedTool: { label: "Try the HRA Calculator", to: "/hra-calculator" },
   },
   {
     slug: "sip-vs-lump-sum",
