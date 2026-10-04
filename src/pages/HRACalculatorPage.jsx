@@ -41,8 +41,8 @@ export default function HRACalculatorPage() {
   return (
     <>
       <Seo
-        title="HRA Calculator – House Rent Allowance Exemption"
-        description="Calculate your tax-exempt HRA from basic salary, HRA received and rent paid, using the actual three-way Income Tax rule. Free, no signup."
+        title="HRA Calculator India – House Rent Allowance Exemption"
+        description="Calculate your Indian tax-exempt HRA from basic salary, HRA received and rent paid, using the actual three-way Income Tax rule. Free, no signup."
         path="/hra-calculator"
         keywords="HRA calculator, house rent allowance calculator, HRA exemption calculator, HRA exemption rules"
         jsonLd={[
@@ -60,7 +60,7 @@ export default function HRACalculatorPage() {
           <CalcHeader
             category="Tax & salary"
             title="HRA Calculator"
-            description="Work out your tax-exempt HRA — the lowest of three figures, not simply what you receive or what you pay in rent."
+            description="Work out your tax-exempt HRA under Indian income tax rules — the lowest of three figures, not simply what you receive or pay in rent."
           />
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">

@@ -48,8 +48,8 @@ export default function RDCalculatorPage() {
   return (
     <>
       <Seo
-        title="RD Calculator – Recurring Deposit Maturity Value"
-        description="Calculate your recurring deposit's maturity value and interest earned from your monthly deposit, interest rate and tenure. Free, no signup."
+        title="RD Calculator India – Recurring Deposit Maturity"
+        description="Calculate your Indian recurring deposit's maturity value and interest earned from your monthly deposit, interest rate and tenure. Free, no signup."
         path="/rd-calculator"
         keywords="RD calculator, recurring deposit calculator, RD maturity calculator, RD interest calculator"
         jsonLd={[
@@ -67,7 +67,7 @@ export default function RDCalculatorPage() {
           <CalcHeader
             category="Loan & interest"
             title="RD Calculator"
-            description="Estimate your recurring deposit's maturity value and interest earned from a fixed monthly deposit."
+            description="Estimate your recurring deposit's maturity value and interest earned, for an Indian bank RD with a fixed monthly deposit."
           />
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">

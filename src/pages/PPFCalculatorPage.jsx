@@ -46,8 +46,8 @@ export default function PPFCalculatorPage() {
   return (
     <>
       <Seo
-        title="PPF Calculator – Public Provident Fund Maturity Value"
-        description="Calculate your PPF maturity value and interest earned from your yearly contribution, interest rate and tenure. Free, no signup."
+        title="PPF Calculator India – Public Provident Fund Maturity"
+        description="Calculate your Indian PPF maturity value and interest earned from your yearly contribution, interest rate and tenure. Free, no signup."
         path="/ppf-calculator"
         keywords="PPF calculator, public provident fund calculator, PPF maturity calculator, PPF interest calculator"
         jsonLd={[
@@ -65,7 +65,7 @@ export default function PPFCalculatorPage() {
           <CalcHeader
             category="Investment planning"
             title="PPF Calculator"
-            description="Estimate your Public Provident Fund maturity value from your yearly contribution and the current interest rate."
+            description="Estimate your Indian Public Provident Fund maturity value from your yearly contribution and the current interest rate."
           />
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">

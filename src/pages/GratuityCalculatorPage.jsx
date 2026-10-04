@@ -41,8 +41,8 @@ export default function GratuityCalculatorPage() {
   return (
     <>
       <Seo
-        title="Gratuity Calculator – Estimate Your Gratuity Amount"
-        description="Calculate your gratuity amount from your last drawn salary and years of service, using the Payment of Gratuity Act formula. Free, no signup."
+        title="Gratuity Calculator India – Estimate Your Gratuity"
+        description="Calculate your Indian gratuity amount from your last drawn salary and years of service, using the Payment of Gratuity Act formula. Free, no signup."
         path="/gratuity-calculator"
         keywords="gratuity calculator, gratuity calculator India, gratuity formula, payment of gratuity act"
         jsonLd={[
@@ -60,7 +60,7 @@ export default function GratuityCalculatorPage() {
           <CalcHeader
             category="Retirement planning"
             title="Gratuity Calculator"
-            description="Estimate the gratuity you're entitled to from your last drawn salary and years of service."
+            description="Estimate the gratuity you're entitled to under India's Payment of Gratuity Act, from your last drawn salary and years of service."
           />
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
