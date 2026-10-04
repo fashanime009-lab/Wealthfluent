@@ -64,6 +64,7 @@ export default function PPFCalculatorPage() {
         <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
           <CalcHeader
             category="Investment planning"
+            scope="india"
             title="PPF Calculator"
             description="Estimate your Indian Public Provident Fund maturity value from your yearly contribution and the current interest rate."
           />

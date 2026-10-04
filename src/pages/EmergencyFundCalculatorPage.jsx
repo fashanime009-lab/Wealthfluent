@@ -59,7 +59,7 @@ export default function EmergencyFundCalculatorPage() {
   return (
     <>
       <Seo
-        title="Emergency Fund Calculator – FINAIW"
+        title="Emergency Fund Calculator – How Much Should You Save?"
         description="Calculate how much you need in your emergency fund based on your monthly expenses and savings. Plan for financial security."
         path="/emergency-fund-calculator"
         keywords="emergency fund calculator, rainy day fund, savings goal, financial security"

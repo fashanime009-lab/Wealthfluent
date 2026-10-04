@@ -66,6 +66,7 @@ export default function RDCalculatorPage() {
         <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
           <CalcHeader
             category="Loan & interest"
+            scope="india"
             title="RD Calculator"
             description="Estimate your recurring deposit's maturity value and interest earned, for an Indian bank RD with a fixed monthly deposit."
           />

@@ -56,7 +56,7 @@ export default function HomeAffordabilityCalculatorPage() {
   return (
     <>
       <Seo
-        title="Home Affordability Calculator – FINAIW"
+        title="Home Affordability Calculator – Can You Afford It?"
         description="Check whether a home is actually affordable for your income — estimated EMI, EMI-to-income ratio, and debt-to-income ratio, before you commit to a property."
         path="/home-affordability-calculator"
         keywords="home affordability calculator, how much home can I afford, EMI to income ratio, debt to income ratio, home loan eligibility"

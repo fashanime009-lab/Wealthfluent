@@ -59,6 +59,7 @@ export default function HRACalculatorPage() {
         <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
           <CalcHeader
             category="Tax & salary"
+            scope="india"
             title="HRA Calculator"
             description="Work out your tax-exempt HRA under Indian income tax rules — the lowest of three figures, not simply what you receive or pay in rent."
           />

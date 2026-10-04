@@ -82,7 +82,8 @@ export default function GSTCalculatorPage() {
       <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
         <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
           <CalcHeader
-            category="Loan & interest"
+            category="Tax & salary"
+            scope="india"
             title="GST Calculator"
             description="Calculate GST amount, tax-inclusive pricing, and invoice totals instantly for businesses and consumers in India."
           />

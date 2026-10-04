@@ -59,6 +59,7 @@ export default function GratuityCalculatorPage() {
         <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
           <CalcHeader
             category="Retirement planning"
+            scope="india"
             title="Gratuity Calculator"
             description="Estimate the gratuity you're entitled to under India's Payment of Gratuity Act, from your last drawn salary and years of service."
           />
