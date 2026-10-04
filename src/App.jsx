@@ -16,6 +16,10 @@ const EMICalculatorPage = lazy(() => import("./pages/EMICalculatorPage"));
 const FDCalculatorPage = lazy(() => import("./pages/FDCalculatorPage"));
 const FIRECalculatorPage = lazy(() => import("./pages/FIRECalculatorPage"));
 const GSTCalculatorPage = lazy(() => import("./pages/GSTCalculatorPage"));
+const RDCalculatorPage = lazy(() => import("./pages/RDCalculatorPage"));
+const GratuityCalculatorPage = lazy(() => import("./pages/GratuityCalculatorPage"));
+const PPFCalculatorPage = lazy(() => import("./pages/PPFCalculatorPage"));
+const HRACalculatorPage = lazy(() => import("./pages/HRACalculatorPage"));
 const NewsPage = lazy(() => import("./pages/NewsPage"));
 const InsightsPage = lazy(() => import("./pages/InsightsPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
@@ -87,6 +91,10 @@ export default function App() {
             <Route path="/fd-calculator" element={<FDCalculatorPage />} />
             <Route path="/cagr-calculator" element={<CAGRCalculatorPage />} />
             <Route path="/gst-calculator" element={<GSTCalculatorPage />} />
+            <Route path="/rd-calculator" element={<RDCalculatorPage />} />
+            <Route path="/gratuity-calculator" element={<GratuityCalculatorPage />} />
+            <Route path="/ppf-calculator" element={<PPFCalculatorPage />} />
+            <Route path="/hra-calculator" element={<HRACalculatorPage />} />
             <Route path="/retirement-calculator" element={<RetirementCalculatorPage />} />
             <Route path="/calculators" element={<CalculatorsPage />} />
             <Route path="/tools" element={<ToolsPage />} />

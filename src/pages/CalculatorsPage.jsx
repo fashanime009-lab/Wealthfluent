@@ -12,7 +12,7 @@ const CATEGORY_DATA = {
       { title: "Rate of Return Calculator", desc: "The annualized return between two values.", route: "/rate-of-return-calculator", example: "₹1L → ₹2.5L in 8 yrs → 12.1%/yr" },
       { title: "Bond Yield Calculator", desc: "Current yield and yield to maturity on a bond.", route: "/bond-yield-calculator", example: "₹1,000 face, 8% coupon, ₹950 price → 8.4%" },
       { title: "Fixed Deposit Calculator", desc: "Maturity value and interest earned on an FD.", route: "/fd-calculator", example: "₹2L at 7% for 5 yrs → ₹2.83L" },
-      { title: "GST Calculator", desc: "GST on a purchase or invoice, India.", route: "/gst-calculator", example: "₹10,000 at 18% → ₹1,800 GST" },
+      { title: "RD Calculator", desc: "Maturity value and interest earned on a recurring deposit.", route: "/rd-calculator", example: "₹5,000/mo at 7% for 5 yrs → ₹3.6L", note: "New" },
       { title: "Home Affordability Calculator", desc: "Check whether a property actually fits your income.", route: "/home-affordability-calculator", example: "₹50L home, ₹1L/mo income → Good fit", note: "New" },
     ],
   },
@@ -22,6 +22,7 @@ const CATEGORY_DATA = {
       { title: "Goal Investment Calculator", desc: "The monthly SIP needed to hit a target amount.", route: "/goal-sip", example: "₹10L in 5 yrs at 12% → ₹12,123/mo" },
       { title: "Inflation Calculator", desc: "What today's money will cost you later.", route: "/inflation-calculator", example: "₹100 today, 6% inflation, 10 yrs → ₹179" },
       { title: "CAGR Calculator", desc: "The compound annual growth rate between two values.", route: "/cagr-calculator", example: "₹1L → ₹2L in 5 yrs → 14.9% CAGR" },
+      { title: "PPF Calculator", desc: "Maturity value of your Public Provident Fund contributions.", route: "/ppf-calculator", example: "₹1.5L/yr at 7.1% for 15 yrs → ₹40.7L", note: "New" },
     ],
   },
   retirement: {
@@ -30,6 +31,7 @@ const CATEGORY_DATA = {
       { title: "FIRE Calculator", desc: "The number you need to retire early, at 25x expenses.", route: "/fire-calculator", example: "₹6L/yr expenses → ₹1.5Cr FIRE number", note: "New" },
       { title: "Annual Retirement Income Calculator", desc: "Sustainable yearly income from a retirement corpus.", route: "/annual-retirement-income", example: "₹50L corpus at 4% → ₹2L/yr" },
       { title: "Retirement Investment Tracker", desc: "Track retirement investments year by year, in one place.", route: "/retirement-investment-tracker", example: "Tracks contributions, growth, and allocation" },
+      { title: "Gratuity Calculator", desc: "Your gratuity entitlement from salary and years of service.", route: "/gratuity-calculator", example: "₹50,000 salary, 8 yrs → ₹2.3L", note: "New" },
     ],
   },
   wealth: {
@@ -39,6 +41,12 @@ const CATEGORY_DATA = {
       { title: "Emergency Fund Calculator", desc: "The safety net you need for unexpected expenses.", route: "/emergency-fund-calculator", example: "₹40,000/mo expenses × 6 mo → ₹2.4L", note: "New" },
       { title: "Wealth Age Calculator", desc: "How your net worth and savings rate compare to your age.", route: "/wealth-age-calculator", example: "Compares real age to financial age", note: "New" },
       { title: "Global Net Worth Percentile", desc: "How your net worth compares to the whole world's adults.", route: "/net-worth-percentile", example: "$117,000 → top 10% globally", note: "New" },
+    ],
+  },
+  tax: {
+    calculators: [
+      { title: "GST Calculator", desc: "GST on a purchase or invoice, India.", route: "/gst-calculator", example: "₹10,000 at 18% → ₹1,800 GST" },
+      { title: "HRA Calculator", desc: "Your tax-exempt HRA from basic salary, HRA and rent paid.", route: "/hra-calculator", example: "₹40k basic, ₹18k rent, metro → ₹14k exempt", note: "New" },
     ],
   },
 };

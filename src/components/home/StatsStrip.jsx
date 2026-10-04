@@ -1,5 +1,5 @@
 const STATS = [
-  { value: "20", label: "calculators" },
+  { value: "24", label: "calculators" },
   { value: "5", label: "verdict tools" },
   { value: "30+", label: "learning guides" },
   { value: "0", label: "data leaves your device" },

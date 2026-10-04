@@ -48,12 +48,37 @@ export const CALCULATOR_RECOMMENDATIONS = {
     label: "Fixed Deposit Calculator",
     summary: "Maturity value and interest earned on a fixed deposit, at your compounding frequency.",
     lesson: "compound-interest",
-    calculator: "/sip-calculator",
+    calculator: "/rd-calculator",
+  },
+  "/rd-calculator": {
+    label: "RD Calculator",
+    summary: "Maturity value and interest earned on a recurring deposit, from a fixed monthly deposit.",
+    lesson: "compound-interest",
+    calculator: "/fd-calculator",
   },
   "/gst-calculator": {
     label: "GST Calculator",
     summary: "Add GST to a base amount, or work it out of a GST-inclusive price.",
     lesson: "understanding-gst",
+    calculator: "/hra-calculator",
+  },
+  "/hra-calculator": {
+    label: "HRA Calculator",
+    summary: "Your tax-exempt HRA — the lowest of three figures, not simply what you receive or pay.",
+    lesson: "salary-structuring-and-tax",
+    calculator: "/gst-calculator",
+  },
+  "/gratuity-calculator": {
+    label: "Gratuity Calculator",
+    summary: "Your gratuity entitlement from your last drawn salary and years of service.",
+    lesson: "retirement-planning",
+    calculator: "/retirement-calculator",
+  },
+  "/ppf-calculator": {
+    label: "PPF Calculator",
+    summary: "Maturity value of your Public Provident Fund contributions, fully tax-free.",
+    lesson: "nps-vs-ppf-vs-epf",
+    calculator: "/retirement-calculator",
   },
   "/home-affordability-calculator": {
     label: "Home Affordability Calculator",

@@ -9,6 +9,7 @@ import {
   Landmark,
   Flame,
   Wallet,
+  Receipt,
 } from "lucide-react";
 
 // Category metadata shared across the homepage spotlight and the full
@@ -28,7 +29,7 @@ export const calculatorCategories = [
     description: "Plan recurring investments and long-term wealth creation.",
     icon: TrendingUp,
     tone: "emerald",
-    count: 4,
+    count: 5,
   },
   {
     id: "retirement",
@@ -36,7 +37,7 @@ export const calculatorCategories = [
     description: "Secure your future with smart retirement strategies.",
     icon: Flame,
     tone: "amber",
-    count: 4,
+    count: 5,
   },
   {
     id: "wealth",
@@ -45,6 +46,14 @@ export const calculatorCategories = [
     icon: Wallet,
     tone: "violet",
     count: 5,
+  },
+  {
+    id: "tax",
+    name: "Tax & Salary",
+    description: "GST, HRA and other salary and tax calculations.",
+    icon: Receipt,
+    tone: "rose",
+    count: 2,
   },
 ];
 
