@@ -32,6 +32,18 @@ export const CALCULATOR_RECOMMENDATIONS = {
     lesson: "compound-interest",
     calculator: "/sip-calculator",
   },
+  "/power-of-compounding": {
+    label: "Power of Compounding Calculator",
+    summary: "Compound interest next to simple interest on the same numbers, so the gap is a figure, not a phrase.",
+    lesson: "compound-interest",
+    calculator: "/future-value-calculator",
+  },
+  "/cost-of-delay-calculator": {
+    label: "Cost of Delay Calculator",
+    summary: "What delaying your monthly investment by a few years actually costs in final value.",
+    lesson: "compound-interest",
+    calculator: "/sip-calculator",
+  },
   "/rate-of-return-calculator": {
     label: "Rate of Return Calculator",
     summary: "The annualized return between a starting and an ending value.",
@@ -130,7 +142,13 @@ export const CALCULATOR_RECOMMENDATIONS = {
     label: "Annual Retirement Income Calculator",
     summary: "The yearly income a retirement corpus can pay out over the retirement period.",
     lesson: "retirement-planning",
-    calculator: "/retirement-calculator",
+    calculator: "/swp-calculator",
+  },
+  "/swp-calculator": {
+    label: "SWP Calculator",
+    summary: "How long a lump sum lasts with a fixed monthly withdrawal — or whether it's sustainable forever.",
+    lesson: "retirement-planning",
+    calculator: "/annual-retirement-income",
   },
   "/retirement-investment-tracker": {
     label: "Retirement Investment Tracker",

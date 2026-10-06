@@ -29,7 +29,7 @@ export const calculatorCategories = [
     description: "Plan recurring investments and long-term wealth creation.",
     icon: TrendingUp,
     tone: "emerald",
-    count: 5,
+    count: 7,
   },
   {
     id: "retirement",
@@ -37,7 +37,7 @@ export const calculatorCategories = [
     description: "Secure your future with smart retirement strategies.",
     icon: Flame,
     tone: "amber",
-    count: 5,
+    count: 6,
   },
   {
     id: "wealth",
