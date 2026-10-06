@@ -174,6 +174,17 @@ function rewriteSiteUrls(html) {
     );
 }
 
+// Prerendered for real HTML/OG tags and so a cold load never flashes the
+// homepage (see the "/" ordering note below for why an unprerendered
+// route falls back to dist/index.html's fully-baked content rather than
+// a neutral shell), but deliberately kept OUT of public/sitemap.xml —
+// each already carries its own <Seo noindex /> or isn't meant to be
+// discovered by crawling, and this project's convention (see robots.txt
+// below) is that non-indexable pages don't appear in the sitemap either.
+// Prerendering and "should Google index this" are separate questions;
+// this list is only about the former.
+const EXTRA_PRERENDER_ROUTES = ["/links"];
+
 // Reads the canonical route list straight from the files you already
 // maintain, so this script never drifts out of sync with them.
 function getIndexableRoutes() {
@@ -190,7 +201,7 @@ function getIndexableRoutes() {
   // pages (e.g. /settings) that render generic/empty content anyway
   // outside of a logged-in session, so prerendering them wastes build
   // time and would just bake in a placeholder.
-  const routes = locs.filter(
+  const routes = [...locs, ...EXTRA_PRERENDER_ROUTES].filter(
     (route) => !disallowed.some((d) => route === d || route.startsWith(d + "/"))
   );
 
