@@ -12,6 +12,7 @@ export const organizationSchema = {
     "https://www.instagram.com/finaiw.inc",
     "https://www.facebook.com/share/14sveM9NKs2/",
     "https://x.com/Finaiw",
+    "https://www.pinterest.com/finaiwinc/",
   ],
 };
 
