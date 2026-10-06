@@ -47,6 +47,8 @@ const routes = [
   { path: "/swp-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/power-of-compounding", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/cost-of-delay-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
+  { path: "/lumpsum-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
+  { path: "/step-up-sip-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/inflation-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/future-value-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/rate-of-return-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },

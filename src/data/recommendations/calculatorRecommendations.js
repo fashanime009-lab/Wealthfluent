@@ -104,13 +104,25 @@ export const CALCULATOR_RECOMMENDATIONS = {
     label: "SIP Calculator",
     summary: "What a recurring monthly investment grows to over time.",
     lesson: "sip-vs-lump-sum",
-    calculator: "/goal-sip",
+    calculator: "/step-up-sip-calculator",
   },
   "/goal-sip": {
     label: "Goal SIP Calculator",
     summary: "The monthly SIP needed to reach a target amount.",
     lesson: "sip-vs-lump-sum",
     calculator: "/sip-calculator",
+  },
+  "/lumpsum-calculator": {
+    label: "Lumpsum Calculator",
+    summary: "What a one-time investment grows to, compounded monthly.",
+    lesson: "sip-vs-lump-sum",
+    calculator: "/sip-calculator",
+  },
+  "/step-up-sip-calculator": {
+    label: "Step-Up SIP Calculator",
+    summary: "A SIP that increases every year, against a flat SIP of the same starting amount.",
+    lesson: "sip-vs-lump-sum",
+    calculator: "/lumpsum-calculator",
   },
   "/inflation-calculator": {
     label: "Inflation Calculator",

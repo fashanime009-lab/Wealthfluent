@@ -43,6 +43,8 @@ const sitemapSections = [
       { name: "SWP Calculator", path: "/swp-calculator", description: "How long a lump sum lasts with regular withdrawals" },
       { name: "Power of Compounding Calculator", path: "/power-of-compounding", description: "Simple vs compound interest, side by side" },
       { name: "Cost of Delay Calculator", path: "/cost-of-delay-calculator", description: "What waiting to invest actually costs" },
+      { name: "Lumpsum Calculator", path: "/lumpsum-calculator", description: "What a one-time investment grows to" },
+      { name: "Step-Up SIP Calculator", path: "/step-up-sip-calculator", description: "A SIP that increases every year, vs a flat SIP" },
       { name: "Goal Planner", path: "/goal-planner", description: "Plan with asset allocation" },
     ],
   },

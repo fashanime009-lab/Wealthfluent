@@ -119,6 +119,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.finaiw.com/lumpsum-calculator</loc>
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.finaiw.com/step-up-sip-calculator</loc>
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.finaiw.com/inflation-calculator</loc>
     <lastmod>2026-10-06</lastmod>
     <changefreq>weekly</changefreq>

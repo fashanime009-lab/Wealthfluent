@@ -25,6 +25,8 @@ const CATEGORY_DATA = {
       { title: "Power of Compounding Calculator", desc: "Compound interest next to simple interest, same numbers.", route: "/power-of-compounding", example: "₹1L at 10% for 20 yrs → ₹3.73L extra", note: "New" },
       { title: "Cost of Delay Calculator", desc: "What waiting a few years to start investing actually costs.", route: "/cost-of-delay-calculator", example: "5-yr delay on ₹10k/mo → ₹89.8L less", note: "New" },
       { title: "PPF Calculator", desc: "Maturity value of your Public Provident Fund contributions, India.", route: "/ppf-calculator", example: "₹1.5L/yr at 7.1% for 15 yrs → ₹40.7L", note: "New" },
+      { title: "Lumpsum Calculator", desc: "What a one-time investment grows to, compounded monthly.", route: "/lumpsum-calculator", example: "₹1L at 12% for 10 yrs → ₹3.3L", note: "New" },
+      { title: "Step-Up SIP Calculator", desc: "A SIP that increases every year, against a flat SIP.", route: "/step-up-sip-calculator", example: "₹5,000/mo, +10%/yr at 12% for 15 yrs → ₹43.4L", note: "New" },
     ],
   },
   retirement: {

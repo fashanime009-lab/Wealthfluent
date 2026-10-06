@@ -23,6 +23,8 @@ const HRACalculatorPage = lazy(() => import("./pages/HRACalculatorPage"));
 const SWPCalculatorPage = lazy(() => import("./pages/SWPCalculatorPage"));
 const PowerOfCompoundingPage = lazy(() => import("./pages/PowerOfCompoundingPage"));
 const CostOfDelayCalculatorPage = lazy(() => import("./pages/CostOfDelayCalculatorPage"));
+const LumpsumCalculatorPage = lazy(() => import("./pages/LumpsumCalculatorPage"));
+const StepUpSIPCalculatorPage = lazy(() => import("./pages/StepUpSIPCalculatorPage"));
 const NewsPage = lazy(() => import("./pages/NewsPage"));
 const InsightsPage = lazy(() => import("./pages/InsightsPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
@@ -101,6 +103,8 @@ export default function App() {
             <Route path="/swp-calculator" element={<SWPCalculatorPage />} />
             <Route path="/power-of-compounding" element={<PowerOfCompoundingPage />} />
             <Route path="/cost-of-delay-calculator" element={<CostOfDelayCalculatorPage />} />
+            <Route path="/lumpsum-calculator" element={<LumpsumCalculatorPage />} />
+            <Route path="/step-up-sip-calculator" element={<StepUpSIPCalculatorPage />} />
             <Route path="/retirement-calculator" element={<RetirementCalculatorPage />} />
             <Route path="/calculators" element={<CalculatorsPage />} />
             <Route path="/tools" element={<ToolsPage />} />

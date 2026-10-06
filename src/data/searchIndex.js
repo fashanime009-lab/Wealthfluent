@@ -29,6 +29,8 @@ export const searchIndex = [
   { title: "SWP Calculator", description: "How long a lump sum lasts with regular withdrawals", path: "/swp-calculator", category: "Calculator" },
   { title: "Power of Compounding Calculator", description: "Simple vs compound interest, side by side", path: "/power-of-compounding", category: "Calculator" },
   { title: "Cost of Delay Calculator", description: "What waiting to invest actually costs", path: "/cost-of-delay-calculator", category: "Calculator" },
+  { title: "Lumpsum Calculator", description: "What a one-time investment grows to", path: "/lumpsum-calculator", category: "Calculator" },
+  { title: "Step-Up SIP Calculator", description: "A SIP that increases every year, vs a flat SIP", path: "/step-up-sip-calculator", category: "Calculator" },
   { title: "Inflation Calculator", description: "See how inflation affects your money", path: "/inflation-calculator", category: "Calculator" },
   { title: "Future Value Calculator", description: "Project compound interest growth", path: "/future-value-calculator", category: "Calculator" },
   { title: "Rate of Return Calculator", description: "Calculate annualized returns", path: "/rate-of-return-calculator", category: "Calculator" },

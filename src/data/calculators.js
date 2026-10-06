@@ -29,7 +29,7 @@ export const calculatorCategories = [
     description: "Plan recurring investments and long-term wealth creation.",
     icon: TrendingUp,
     tone: "emerald",
-    count: 7,
+    count: 9,
   },
   {
     id: "retirement",
