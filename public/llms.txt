@@ -1,0 +1,59 @@
+# FINAIW
+
+> FINAIW is a free personal-finance website: calculators, "verdict" tools that compare two real options, planning tools, and short lessons. Nothing needs an account, and the numbers you enter stay in your browser. Amounts default to Indian formatting (lakh/crore) and can be switched between seven currencies. Everything here is educational, not financial advice.
+
+Key facts for anyone summarising or citing this site:
+
+- Calculators show their working: each page states the formula and lists the assumptions it makes (for example, that projections are pre-tax and not inflation-adjusted unless stated).
+- Verdict pages compare two options over a time horizon using the same inputs on both sides, and say what would flip the answer.
+- Return and growth figures are projections from the inputs you set, not predictions or promises.
+
+## Calculators
+
+- [Loan EMI Calculator](https://www.finaiw.com/emi-calculator): monthly EMI, total interest and total payment for a loan amount, rate and tenure
+- [Home Affordability Calculator](https://www.finaiw.com/home-affordability-calculator): whether a property price fits your income, from the EMI and debt-to-income ratios
+- [FD Calculator](https://www.finaiw.com/fd-calculator): fixed-deposit maturity value and interest, with selectable compounding
+- [GST Calculator](https://www.finaiw.com/gst-calculator): add GST to a base amount, or remove it from a GST-inclusive price
+- [Future Value Calculator](https://www.finaiw.com/future-value-calculator): what a lump sum grows to at a compound annual rate
+- [Rate of Return Calculator](https://www.finaiw.com/rate-of-return-calculator): the annualised return between a starting and an ending value
+- [Bond Yield Calculator](https://www.finaiw.com/bond-yield-calculator): current yield and approximate yield to maturity
+- [SIP Calculator](https://www.finaiw.com/sip-calculator): what a monthly SIP grows to over time
+- [Goal SIP Calculator](https://www.finaiw.com/goal-sip): the monthly SIP needed to reach a target amount
+- [Inflation Calculator](https://www.finaiw.com/inflation-calculator): what today's expenses will cost in future, and the purchasing power lost
+- [CAGR Calculator](https://www.finaiw.com/cagr-calculator): compound annual growth rate between two values
+- [Retirement Calculator](https://www.finaiw.com/retirement-calculator): the corpus a fixed monthly investment builds by retirement
+- [FIRE Calculator](https://www.finaiw.com/fire-calculator): your financial-independence number at 25x expenses and how close you are
+- [Annual Retirement Income Calculator](https://www.finaiw.com/annual-retirement-income): the yearly income a retirement corpus can pay out
+- [Retirement Investment Tracker](https://www.finaiw.com/retirement-investment-tracker): yearly targets against actual contributions
+- [Retirement Corpus Planner](https://www.finaiw.com/goal-planner): the corpus needed to retire, with inflation, life expectancy and returns by asset class
+- [Net Worth Calculator](https://www.finaiw.com/networth-calculator): net worth from itemised assets and liabilities
+- [Global Net Worth Percentile Calculator](https://www.finaiw.com/net-worth-percentile): where a net worth ranks among the world's adults
+- [Emergency Fund Calculator](https://www.finaiw.com/emergency-fund-calculator): the safety net to hold and how many months you are covered
+- [Wealth Age Calculator](https://www.finaiw.com/wealth-age-calculator): a wealth age and score from savings rate and net worth
+
+## Verdicts (compare two options)
+
+- [All verdicts](https://www.finaiw.com/verdict): the index of decision tools
+- [Rent vs Buy a Home](https://www.finaiw.com/verdict/rent-vs-buy): net worth of renting and investing the difference versus buying
+- [Pay Off Debt vs Invest](https://www.finaiw.com/verdict/debt-vs-invest): paying a loan down faster versus investing the same money
+- [Lease vs Buy a Car](https://www.finaiw.com/verdict/lease-vs-buy-car): leasing and investing the difference versus buying
+- [How Much Term Insurance Do You Need?](https://www.finaiw.com/verdict/insurance-need): a needs-based estimate of life cover
+- [Term Insurance vs Endowment/ULIP](https://www.finaiw.com/verdict/term-vs-endowment): a term plan plus investing versus a bundled policy
+
+## Planning tools
+
+- [Financial Goal Planner (multi-goal budget optimizer)](https://www.finaiw.com/financial-goal-planner): splits a monthly budget across several goals at once
+- [Investment Risk Analyzer](https://www.finaiw.com/investment-risk-analyzer): a risk profile checked against what your finances can afford
+- [Financial Health Checkup](https://www.finaiw.com/financial-health-checkup): a 0-100 score from savings rate, emergency fund, debt and net worth
+- [Debt Payoff Strategy Planner](https://www.finaiw.com/debt-payoff-planner): snowball versus avalanche, simulated month by month
+
+## Learn
+
+- [Learn](https://www.finaiw.com/learn): the full library of short lessons (compound interest, SIPs, retirement, insurance, taxes and more)
+
+## About and policies
+
+- [About](https://www.finaiw.com/about)
+- [Disclaimer](https://www.finaiw.com/disclaimer)
+- [Privacy Policy](https://www.finaiw.com/privacy-policy)
+- [Sitemap (all pages, machine-readable)](https://www.finaiw.com/sitemap.xml)

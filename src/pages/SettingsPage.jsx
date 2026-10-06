@@ -1,5 +1,5 @@
 import Seo from "../components/seo/Seo";
-import { Settings, Globe } from "lucide-react";
+import { Globe } from "lucide-react";
 
 import SettingsSection from "../components/settings/SettingsSection";
 import CompactNumbersToggle from "../components/settings/CompactNumbersToggle";
@@ -9,7 +9,7 @@ import { useSettings } from "../context/SettingsContext";
 import { currencies } from "../data/currencies";
 
 export default function SettingsPage() {
-  const { settings, setCurrency } = useSettings();
+  const { settings, setCurrencyManually, resetCurrencyToAuto } = useSettings();
 
   return (
     <>
@@ -20,20 +20,17 @@ export default function SettingsPage() {
         noindex
       />
 
-      <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950">
-        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:px-12">
           {/* Header */}
           <div className="mb-10">
-            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
-              <Settings size={15} />
-              Settings
-            </div>
+            <span className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Settings</span>
 
-            <h1 className="mt-5 text-5xl font-black tracking-[-0.04em] text-slate-950 dark:text-white">
+            <h1 className="font-display mt-3 text-4xl font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-5xl">
               Personalize FINAIW
             </h1>
 
-            <p className="mt-3 max-w-2xl text-slate-500 dark:text-slate-400">
+            <p className="mt-3 max-w-2xl text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
               Set your preferences once and every calculator, verdict and future AI feature will automatically
               follow them.
             </p>
@@ -46,24 +43,35 @@ export default function SettingsPage() {
             >
               <div className="flex flex-col gap-4 px-5 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-8">
                 <div className="flex items-start gap-4 sm:items-center sm:gap-5">
-                  <div className="grid h-12 w-12 flex-shrink-0 place-items-center rounded-2xl bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
-                    <Globe size={22} />
-                  </div>
+                  <Globe className="mt-0.5 flex-shrink-0 text-[#047857] dark:text-[#34d399]" size={20} />
 
                   <div>
-                    <h3 className="font-bold text-slate-900 dark:text-white">
+                    <h3 className="font-semibold text-[#111814] dark:text-[#eef1ec]">
                       Preferred Currency
                     </h3>
-                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                      Used across every calculator and dashboard.
+                    <p className="mt-1 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">
+                      Used across every calculator and dashboard.{" "}
+                      {settings.region === "auto"
+                        ? "Auto-detected from your device's timezone — pick one below to lock it in."
+                        : "Set manually."}
                     </p>
+                    {settings.region !== "auto" && (
+                      <button
+                        type="button"
+                        onClick={resetCurrencyToAuto}
+                        className="mt-1.5 text-[12.5px] font-semibold text-[#047857] underline decoration-[#047857]/30 underline-offset-2 dark:text-[#34d399] dark:decoration-[#34d399]/30"
+                      >
+                        Switch back to automatic
+                      </button>
+                    )}
                   </div>
                 </div>
 
                 <select
+                  aria-label="Preferred currency"
                   value={settings.currency}
-                  onChange={(e) => setCurrency(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 font-semibold text-slate-500 outline-none transition focus:border-emerald-500 dark:border-white/10 dark:bg-slate-800 dark:text-slate-300 sm:w-auto"
+                  onChange={(e) => setCurrencyManually(e.target.value)}
+                  className="w-full border border-[#111814]/15 bg-transparent px-4 py-2.5 text-[13.5px] font-medium text-[#111814] outline-none transition focus:border-[#047857] dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:focus:border-[#34d399] sm:w-auto"
                 >
                   {currencies.map((item) => (
                     <option key={item.code} value={item.code}>
@@ -73,7 +81,7 @@ export default function SettingsPage() {
                 </select>
               </div>
 
-              <div className="border-t border-slate-100 dark:border-white/10">
+              <div className="border-t border-[#111814]/10 dark:border-[#eef1ec]/10">
                 <CompactNumbersToggle />
               </div>
             </SettingsSection>
@@ -94,7 +102,7 @@ export default function SettingsPage() {
               </SettingsSection>
             </div>
           </div>
-        </section>
+        </div>
       </div>
     </>
   );

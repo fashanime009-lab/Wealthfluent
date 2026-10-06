@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import Modal from "@/components/ui/Modal";
 import { addContribution } from "@/services/personalGoals";
 import { useSettings } from "@/context/SettingsContext";
 import { formatCurrency } from "@/utils/currency";
 
+const inputClass =
+  "mt-1.5 w-full border border-[#111814]/15 bg-transparent px-4 py-3 text-[14px] text-[#111814] outline-none focus:border-[#047857] dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:focus:border-[#34d399]";
+const labelClass = "text-[12px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/55";
+
 export default function AddContributionModal({ open, onClose, goal, onAdded }) {
+  const id = useId();
   const { settings } = useSettings();
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
@@ -23,38 +28,40 @@ export default function AddContributionModal({ open, onClose, goal, onAdded }) {
 
   return (
     <Modal open={open} onClose={onClose} title={`Add to "${goal.title}"`}>
-      <p className="text-[13px] text-slate-500">
+      <p className="font-mono-tech text-[13px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/55">
         Currently {formatCurrency(goal.currentAmount, settings.currency)} of {formatCurrency(goal.targetAmount, settings.currency)}
       </p>
       <form onSubmit={handleSubmit} className="mt-4 space-y-4">
         <div>
-          <label className="text-[12px] font-bold text-slate-500">Amount</label>
+          <label htmlFor={`${id}-amount`} className={labelClass}>Amount</label>
           <input
+            id={`${id}-amount`}
             type="number"
             required
             autoFocus
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="5000"
-            className="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-emerald-500"
+            className={`${inputClass} font-mono-tech`}
           />
-          <p className="mt-1.5 text-[11px] text-slate-400">Use a negative number to correct an overstated amount.</p>
+          <p className="mt-1.5 text-[11px] text-[#111814]/60 dark:text-[#eef1ec]/50">Use a negative number to correct an overstated amount.</p>
         </div>
         <div>
-          <label className="text-[12px] font-bold text-slate-500">Note (optional)</label>
+          <label htmlFor={`${id}-note`} className={labelClass}>Note (optional)</label>
           <input
+            id={`${id}-note`}
             type="text"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="e.g. Bonus this month"
-            className="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-emerald-500"
+            className={inputClass}
           />
         </div>
         <button
           type="submit"
-          className="w-full rounded-xl bg-emerald-800 py-3.5 text-[14px] font-black text-white transition hover:bg-emerald-900"
+          className="w-full bg-[#047857] py-3.5 text-[14px] font-semibold text-white transition hover:bg-[#065f46]"
         >
-          Add Contribution
+          Add contribution
         </button>
       </form>
     </Modal>

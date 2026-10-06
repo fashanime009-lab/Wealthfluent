@@ -1,5 +1,6 @@
 import { useJourney } from "@/journeys/shared/context/JourneyContext";
 import { calculateHomeAffordability } from "@/services/calculators/homeAffordability";
+import { TONE_COLOR } from "@/components/verdict/palette";
 
 export default function AffordabilityAnalysisStep() {
   const { answers, previousStep } = useJourney();
@@ -7,8 +8,8 @@ export default function AffordabilityAnalysisStep() {
   const result = calculateHomeAffordability(answers);
  if (!answers.propertyPrice || !answers.monthlyIncome) {
   return (
-    <section className="mx-auto max-w-3xl rounded-2xl border border-slate-200 p-10 text-center dark:border-slate-700">
-      <h2 className="text-3xl font-bold">
+    <section className="mx-auto max-w-3xl border border-[#111814]/12 p-10 text-center dark:border-[#eef1ec]/12">
+      <h2 className="font-display text-3xl font-bold text-[var(--text)]">
         Complete the Journey
       </h2>
 
@@ -18,7 +19,7 @@ export default function AffordabilityAnalysisStep() {
 
       <button
         onClick={previousStep}
-        className="mt-8 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white"
+        className="mt-8 bg-[#047857] px-6 py-3 font-semibold text-white transition hover:bg-[#065f46]"
       >
         Go Back
       </button>
@@ -43,17 +44,16 @@ export default function AffordabilityAnalysisStep() {
     }).format(Number(value));
   }
 
-  const badgeClass =
-    affordabilityScore >= 80
-      ? "bg-green-100 text-green-700"
-      : affordabilityScore >= 60
-      ? "bg-yellow-100 text-yellow-700"
-      : "bg-red-100 text-red-700";
+  // Same two-signal convention as the Verdict system (see palette.js):
+  // green means decisive/good, rust covers everything short of that —
+  // color only ever encodes confidence, the actual text label ("Caution"
+  // vs "High Risk") carries the finer distinction.
+  const tone = affordabilityScore >= 80 ? TONE_COLOR.go : TONE_COLOR.caution;
 
   return (
     <section className="mx-auto max-w-4xl">
 
-      <h1 className="text-4xl font-bold">
+      <h1 className="font-display text-4xl font-bold text-[var(--text)]">
         Home Affordability Analysis
       </h1>
 
@@ -61,29 +61,21 @@ export default function AffordabilityAnalysisStep() {
         Based on the information you provided.
       </p>
 
-      <div className="mt-10 rounded-3xl border border-slate-200 bg-[var(--card)] p-10 dark:border-slate-700">
+      <div className="mt-10 border border-[#111814]/12 bg-[var(--card)] p-10 dark:border-[#eef1ec]/12">
 
   <div className="flex items-center gap-3">
 
-    <div
-      className={`h-4 w-4 rounded-full ${
-        affordabilityScore >= 80
-          ? "bg-green-500"
-          : affordabilityScore >= 60
-          ? "bg-yellow-500"
-          : "bg-red-500"
-      }`}
-    />
+    <div className="tone-bg h-2.5 w-2.5 flex-shrink-0" style={{ "--tone-l": tone.light, "--tone-d": tone.dark }} />
 
-    <span className="text-sm font-semibold uppercase tracking-widest text-[var(--text-secondary)]">
+    <span className="tone-text text-[13px] font-semibold" style={{ "--tone-l": tone.light, "--tone-d": tone.dark }}>
 
-      {recommendation} Match
+      {recommendation} match
 
     </span>
 
   </div>
 
-  <h2 className="mt-6 text-6xl font-bold">
+  <h2 className="font-mono-tech mt-6 text-6xl font-bold text-[var(--text)]">
 
     {affordabilityScore}
 
@@ -93,7 +85,7 @@ export default function AffordabilityAnalysisStep() {
 
   </h2>
 
-  <h3 className="mt-6 text-3xl font-bold">
+  <h3 className="font-display mt-6 text-3xl font-bold text-[var(--text)]">
 
     {recommendation === "Excellent" &&
       "You can comfortably afford this home."}
@@ -119,9 +111,9 @@ export default function AffordabilityAnalysisStep() {
 
 </div>
 
-<div className="mt-8 rounded-2xl border border-slate-200 p-8 dark:border-slate-700">
+<div className="mt-8 border border-[#111814]/12 p-8 dark:border-[#eef1ec]/12">
 
-  <h3 className="text-2xl font-bold">
+  <h3 className="font-display text-2xl font-bold text-[var(--text)]">
 
     Why this result?
 
@@ -169,7 +161,7 @@ export default function AffordabilityAnalysisStep() {
 
 </div>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-2">
+      <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
 
         <MetricCard
           title="You'll Need to Borrow"
@@ -193,9 +185,9 @@ export default function AffordabilityAnalysisStep() {
 
       </div>
 
-      <div className="mt-10 rounded-2xl border border-slate-200 p-6 dark:border-slate-700">
+      <div className="mt-10 border border-[#111814]/12 p-6 dark:border-[#eef1ec]/12">
 
-        <h3 className="text-xl font-semibold">
+        <h3 className="font-display text-xl font-semibold text-[var(--text)]">
           Recommended Next Steps
         </h3>
 
@@ -217,13 +209,13 @@ export default function AffordabilityAnalysisStep() {
 
         <button
           onClick={previousStep}
-          className="rounded-xl border border-slate-300 px-6 py-3 font-semibold"
+          className="border border-[#111814]/15 px-6 py-3 font-semibold text-[#111814] transition hover:bg-[#111814]/5 dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:hover:bg-[#eef1ec]/5"
         >
           Back
         </button>
 
         <button
-          className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white"
+          className="bg-[#047857] px-6 py-3 font-semibold text-white transition hover:bg-[#065f46]"
         >
           Complete Analysis
         </button>
@@ -236,12 +228,12 @@ export default function AffordabilityAnalysisStep() {
 
 function MetricCard({ title, value }) {
   return (
-    <div className="rounded-2xl border border-slate-200 p-6 dark:border-slate-700">
+    <div className="border border-[#111814]/12 p-6 dark:border-[#eef1ec]/12">
       <p className="text-sm text-[var(--text-secondary)]">
         {title}
       </p>
 
-      <h3 className="mt-2 text-2xl font-bold">
+      <h3 className="font-mono-tech mt-2 text-2xl font-bold text-[var(--text)]">
         {value}
       </h3>
     </div>

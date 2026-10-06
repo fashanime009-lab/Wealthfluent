@@ -64,7 +64,7 @@ const emiRatio =
   return (
     <section className="max-w-3xl">
 
-      <h2 className="text-4xl font-bold tracking-tight">
+      <h2 className="font-display text-4xl font-bold tracking-tight text-[var(--text)]">
   Review Your Information
 </h2>
 
@@ -72,7 +72,7 @@ const emiRatio =
         Please confirm everything looks correct before we analyze your affordability.
       </p>
 
-      <div className="mt-10 rounded-2xl border border-slate-200 dark:border-slate-700">
+      <div className="mt-10 border border-[#111814]/12 dark:border-[#eef1ec]/12">
 
         <SummaryRow
           label="Property Price"
@@ -101,17 +101,17 @@ const emiRatio =
 
       </div>
 
-<div className="mt-10 rounded-2xl bg-blue-50 p-6 dark:bg-slate-800">
+<div className="mt-10 bg-[#0e1512] p-6">
 
-  <h3 className="text-xl font-semibold">
+  <h3 className="font-display text-xl font-semibold text-[#eef1ec]">
     Your Home Buying Snapshot
   </h3>
 
   <div className="mt-6 flex items-center justify-between">
 
-    <span>Available Cash Flow</span>
+    <span className="text-[#eef1ec]/70">Available Cash Flow</span>
 
-    <span className="text-2xl font-bold text-blue-600">
+    <span className="font-mono-tech text-2xl font-bold text-[#34d399]">
 
       {formatCurrency(availableCashFlow)}
 
@@ -119,7 +119,7 @@ const emiRatio =
 
   </div>
 
-  <p className="mt-4 text-sm text-[var(--text-secondary)]">
+  <p className="mt-4 text-sm text-[#eef1ec]/55">
 
     Income − Expenses − Existing EMI
 
@@ -129,6 +129,7 @@ const emiRatio =
   <SummaryRow
     label="Loan Required"
     value={formatCurrency(loanAmount)}
+    onDark
   />
 
   <SummaryRow
@@ -136,18 +137,20 @@ const emiRatio =
     value={formatCurrency(
       estimatedEMI
     )}
+    onDark
   />
 
   <SummaryRow
     label="EMI / Income"
     value={`${emiRatio.toFixed(1)}%`}
+    onDark
   />
 
 </div>
 </div>
-<div className="mt-8 rounded-xl border border-slate-200 p-6 dark:border-slate-700">
+<div className="mt-8 border border-[#111814]/12 p-6 dark:border-[#eef1ec]/12">
 
-  <h3 className="font-semibold text-xl">
+  <h3 className="font-display text-xl font-semibold text-[var(--text)]">
 
     Initial Assessment
 
@@ -174,7 +177,7 @@ const emiRatio =
         <button
           type="button"
           onClick={previousStep}
-          className="rounded-xl border border-slate-300 px-6 py-3 font-semibold"
+          className="border border-[#111814]/15 px-6 py-3 font-semibold text-[#111814] transition hover:bg-[#111814]/5 dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:hover:bg-[#eef1ec]/5"
         >
           Back
         </button>
@@ -182,7 +185,7 @@ const emiRatio =
         <button
   type="button"
   onClick={nextStep}
-  className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
+  className="bg-[#047857] px-6 py-3 font-semibold text-white transition hover:bg-[#065f46]"
 >
   Continue to Affordability Analysis
 </button>
@@ -193,14 +196,18 @@ const emiRatio =
   );
 }
 
-function SummaryRow({ label, value }) {
+function SummaryRow({ label, value, onDark = false }) {
   return (
-    <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5 last:border-none dark:border-slate-700">
-      <span className="font-medium">
+    <div
+      className={`flex items-center justify-between border-b px-6 py-5 last:border-none ${
+        onDark ? "border-[#eef1ec]/10" : "border-[#111814]/10 dark:border-[#eef1ec]/10"
+      }`}
+    >
+      <span className={`font-medium ${onDark ? "text-[#eef1ec]/70" : "text-[var(--text)]"}`}>
         {label}
       </span>
 
-      <span className="font-semibold">
+      <span className={`font-mono-tech font-semibold ${onDark ? "text-[#eef1ec]" : "text-[var(--text)]"}`}>
         {value}
       </span>
     </div>

@@ -1,6 +1,8 @@
 import { currencies } from "../data/currencies";
 
-export function formatCurrency(value, currencyCode = "USD", compact = false) {
+// fractionDigits: decimals to show. Whole units by default; pass 2 where the
+// cents matter (a bond's price against its face value, a monthly SIP amount).
+export function formatCurrency(value, currencyCode = "USD", compact = false, fractionDigits = 0) {
   if (value == null || Number.isNaN(value)) return "";
 
   const currency =
@@ -14,7 +16,8 @@ export function formatCurrency(value, currencyCode = "USD", compact = false) {
   return new Intl.NumberFormat(currency.locale, {
     style: "currency",
     currency: currency.code,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
   }).format(value);
 }
 

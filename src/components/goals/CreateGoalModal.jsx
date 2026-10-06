@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import Modal from "@/components/ui/Modal";
 import { createPersonalGoal, GOAL_CATEGORIES } from "@/services/personalGoals";
 
+const inputClass =
+  "mt-1.5 w-full border border-[#111814]/15 bg-transparent px-4 py-3 text-[14px] text-[#111814] outline-none focus:border-[#047857] dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:focus:border-[#34d399]";
+const labelClass = "text-[12px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/55";
+
 export default function CreateGoalModal({ open, onClose, onCreated }) {
+  const id = useId();
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState(GOAL_CATEGORIES[0].id);
   const [targetAmount, setTargetAmount] = useState("");
@@ -38,24 +43,21 @@ export default function CreateGoalModal({ open, onClose, onCreated }) {
     <Modal open={open} onClose={onClose} title="Create a goal">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-[12px] font-bold text-slate-500">What are you saving for?</label>
+          <label htmlFor={`${id}-title`} className={labelClass}>What are you saving for?</label>
           <input
+            id={`${id}-title`}
             type="text"
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. Trip to Japan, Emergency Fund"
-            className="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-emerald-500"
+            className={inputClass}
           />
         </div>
 
         <div>
-          <label className="text-[12px] font-bold text-slate-500">Category</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] outline-none focus:border-emerald-500"
-          >
+          <label htmlFor={`${id}-category`} className={labelClass}>Category</label>
+          <select id={`${id}-category`} value={category} onChange={(e) => setCategory(e.target.value)} className={inputClass}>
             {GOAL_CATEGORIES.map((c) => (
               <option key={c.id} value={c.id}>{c.label}</option>
             ))}
@@ -64,45 +66,48 @@ export default function CreateGoalModal({ open, onClose, onCreated }) {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-[12px] font-bold text-slate-500">Target amount</label>
+            <label htmlFor={`${id}-target`} className={labelClass}>Target amount</label>
             <input
+              id={`${id}-target`}
               type="number"
               required
               min="1"
               value={targetAmount}
               onChange={(e) => setTargetAmount(e.target.value)}
               placeholder="500000"
-              className="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-emerald-500"
+              className={`${inputClass} font-mono-tech`}
             />
           </div>
           <div>
-            <label className="text-[12px] font-bold text-slate-500">Already saved (optional)</label>
+            <label htmlFor={`${id}-saved`} className={labelClass}>Already saved (optional)</label>
             <input
+              id={`${id}-saved`}
               type="number"
               min="0"
               value={startingAmount}
               onChange={(e) => setStartingAmount(e.target.value)}
               placeholder="0"
-              className="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-emerald-500"
+              className={`${inputClass} font-mono-tech`}
             />
           </div>
         </div>
 
         <div>
-          <label className="text-[12px] font-bold text-slate-500">Target date (optional)</label>
+          <label htmlFor={`${id}-date`} className={labelClass}>Target date (optional)</label>
           <input
+            id={`${id}-date`}
             type="date"
             value={targetDate}
             onChange={(e) => setTargetDate(e.target.value)}
-            className="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-emerald-500"
+            className={inputClass}
           />
         </div>
 
         <button
           type="submit"
-          className="w-full rounded-xl bg-emerald-800 py-3.5 text-[14px] font-black text-white transition hover:bg-emerald-900"
+          className="w-full bg-[#047857] py-3.5 text-[14px] font-semibold text-white transition hover:bg-[#065f46]"
         >
-          Create Goal
+          Create goal
         </button>
       </form>
     </Modal>
