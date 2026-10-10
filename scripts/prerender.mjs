@@ -185,6 +185,14 @@ function rewriteSiteUrls(html) {
 // this list is only about the former.
 const EXTRA_PRERENDER_ROUTES = ["/links"];
 
+// The reverse case: routes that belong in public/sitemap.xml for Google but
+// must NOT be prerendered. /games is a separate static site (the vanilla-JS
+// games hub, built elsewhere and copied into public/games/) with its own
+// real index.html already sitting on disk — it isn't a React route at all,
+// so crawling it through vite preview's SPA fallback would hit the 404
+// route and overwrite that real file with a rendered-404 page.
+const SITEMAP_ONLY_ROUTES = ["/games/"];
+
 // Reads the canonical route list straight from the files you already
 // maintain, so this script never drifts out of sync with them.
 function getIndexableRoutes() {
@@ -202,7 +210,9 @@ function getIndexableRoutes() {
   // outside of a logged-in session, so prerendering them wastes build
   // time and would just bake in a placeholder.
   const routes = [...locs, ...EXTRA_PRERENDER_ROUTES].filter(
-    (route) => !disallowed.some((d) => route === d || route.startsWith(d + "/"))
+    (route) =>
+      !disallowed.some((d) => route === d || route.startsWith(d + "/")) &&
+      !SITEMAP_ONLY_ROUTES.includes(route)
   );
 
   // "/" must be prerendered LAST. This script overwrites dist/index.html

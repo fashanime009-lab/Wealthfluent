@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Finaiw Games</title>
+    <meta
+      name="description"
+      content="Short, hands-on finance games: trade a simulated stock market and build a property empire. No accounts, no real money."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <script>
+      // Apply the saved theme before first paint to avoid a flash.
+      try {
+        var s = JSON.parse(localStorage.getItem('finaiw:app:settings') || '{}');
+        var t = s.theme || 'system';
+        if (t === 'system') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+    <script type="module" crossorigin src="./assets/index-MmqJhThL.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/store-CqjaZUv0.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-DqZ2z3a1.js">
+    <link rel="modulepreload" crossorigin href="./assets/preload-helper-uBIymjUX.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-BVJJ2hxM.css">
+  </head>
+  <body>
+    <div id="app"></div>
+    <noscript>Finaiw Games needs JavaScript to run.</noscript>
+  </body>
+</html>

@@ -84,6 +84,15 @@ export default function Navbar() {
                   {item.label}
                 </NavLink>
               ))}
+              {/* Plain anchor, not NavLink: /games is a separate static
+                  app outside the SPA router, so this needs a real page
+                  load rather than a client-side route match. */}
+              <a
+                href="/games/"
+                className="text-[13.5px] font-semibold text-[#111814]/60 transition hover:text-[#111814] dark:text-[#eef1ec]/50 dark:hover:text-[#eef1ec]"
+              >
+                Games
+              </a>
             </nav>
 
             <div className="ml-auto flex items-center gap-1">
@@ -147,6 +156,12 @@ export default function Navbar() {
                 {item.label}
               </NavLink>
             ))}
+            <a
+              href="/games/"
+              className="border-b border-[#111814]/8 py-3.5 text-[14px] font-semibold text-[#111814] dark:border-[#eef1ec]/8 dark:text-[#eef1ec]"
+            >
+              Games
+            </a>
             <button
               type="button"
               onClick={() => {
