@@ -5,6 +5,7 @@ import { LESSONS, getLessonBySlug } from "@/data/lessons";
 import { getLessonRelated } from "@/data/recommendations/lessonRecommendations";
 import { isLessonComplete, markLessonComplete, getStreak, getLessonsCompletedCount } from "@/services/learningEngine";
 import { highlightText, extractKeyNumbers } from "@/utils/highlightNumbers";
+import LessonChart from "@/components/learn/LessonChart";
 import Seo from "@/components/seo/Seo";
 import { articleSchema, breadcrumbSchema } from "@/components/seo/schema";
 
@@ -163,6 +164,8 @@ function LessonContent({ slug }) {
             </p>
           ))}
         </div>
+
+        <LessonChart chart={lesson.chart} />
 
         {keyNumbers.length > 0 && (
           <div className="mt-10 border border-[#111814]/12 bg-[#ffffff] p-6 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">

@@ -14,6 +14,15 @@ export const LESSONS = [
       "Debt compounds the same way, just working against you. A ₹50,000 credit card balance left untouched at a typical 36% annual rate (compounded monthly) grows to roughly ₹1,01,640 in two years — more than doubling — which is the clearest illustration of why carrying high-interest debt while also trying to invest rarely makes sense: the debt is compounding faster than most realistic investment returns.",
       "None of this requires predicting markets or picking the right stock. The two inputs that matter most — starting early and staying consistent — are also the two most within your control, which is exactly why they're worth more attention than the search for a slightly better return.",
     ],
+    chart: {
+      type: "growth",
+      title: "₹5,000/month at 12% — starting now vs waiting 10 years",
+      unit: "INR",
+      series: [
+        { label: "Start now", tone: "primary", gen: { kind: "sip", monthly: 5000, rate: 12, years: 30 } },
+        { label: "Wait 10 years", tone: "muted", gen: { kind: "sip", monthly: 5000, rate: 12, years: 30, delayYears: 10 } },
+      ],
+    },
     relatedTool: { label: "Try the SIP Calculator", to: "/sip-calculator" },
   },
   {
@@ -116,6 +125,16 @@ export const LESSONS = [
       "The snowball method would clear the credit card first too in this example, since it's also the smallest balance — but the two methods diverge when the highest-rate debt isn't the smallest one. If the ₹1 lakh personal loan carried the highest rate instead, avalanche would prioritize it over the smaller credit card balance, while snowball would still clear the smaller balance first for the quick win. Avalanche is mathematically cheaper whenever the highest-rate debt isn't already the smallest.",
       "A rough gut-check for any debt: multiply the balance by its annual rate to see the yearly cost of carrying it. ₹50,000 at 36% costs about ₹18,000 a year just in interest — money that buys nothing and can't be recovered. Debts above roughly 15–18% are worth attacking aggressively before directing extra cash anywhere else, including investments, since few investments reliably clear that bar after risk and tax.",
     ],
+    chart: {
+      type: "bar",
+      title: "Same debts, very different yearly cost just from the rate",
+      unit: "INR",
+      bars: [
+        { label: "₹50K card @36%", value: 18000 },
+        { label: "₹1L loan @14%", value: 14000 },
+        { label: "₹2L loan @9%", value: 18000 },
+      ],
+    },
     relatedTool: { label: "Try the Debt vs Invest Verdict", to: "/verdict/debt-vs-invest" },
   },
   {
@@ -150,6 +169,15 @@ export const LESSONS = [
       "Tax makes the gap worse than it looks. A fixed deposit paying 7% sounds close to keeping up with 6% inflation, but after 30% tax on the interest, the real return drops to about 4.9% nominal — a real loss of roughly 1.1% a year once inflation is accounted for. Money sitting in an FD for a long-term goal isn't just growing slowly; in after-tax, after-inflation terms, it's often shrinking.",
       "To inflate a target correctly: take today's cost, then compound it forward at your assumed inflation rate for the years until you need it, not the number of years you'll be investing. A ₹20 lakh goal 15 years away, at 7% inflation, needs roughly ₹55 lakh by the time it arrives — treating it as a ₹20 lakh goal and investing accordingly would fall well short.",
     ],
+    chart: {
+      type: "growth",
+      title: "What today's ₹100 costs later, at 6% vs 8% inflation",
+      unit: "INR",
+      series: [
+        { label: "6% inflation", tone: "primary", gen: { kind: "lumpsum", principal: 100, rate: 6, years: 20 } },
+        { label: "8% inflation", tone: "muted", gen: { kind: "lumpsum", principal: 100, rate: 8, years: 20 } },
+      ],
+    },
     relatedTool: { label: "Try the Inflation Calculator", to: "/inflation-calculator" },
   },
   {
@@ -252,6 +280,15 @@ export const LESSONS = [
       "Because early EMIs are mostly interest, prepaying in the first few years has outsized impact. A lump sum applied in year 2 of a 20-year loan reduces principal while nearly two decades of interest on that amount are still ahead — the same prepayment made in year 18 saves far less, since most of the interest on that portion has already been paid. This is why 'prepay early, even in small amounts' beats 'save up a bigger prepayment for later.'",
       "Two structurally similar-sounding options are actually very different: reducing the EMI while keeping the tenure the same after a prepayment saves comparatively little interest, while reducing the tenure while keeping the EMI the same saves substantially more — most lenders default to the EMI-reduction option unless you specifically request the tenure-reduction one.",
     ],
+    chart: {
+      type: "bar",
+      title: "₹40L loan at 8.5% — total interest paid, by tenure",
+      unit: "INR",
+      bars: [
+        { label: "15 years", value: 3090000 },
+        { label: "25 years", value: 5660000 },
+      ],
+    },
     relatedTool: { label: "Try the EMI Calculator", to: "/emi-calculator" },
   },
   {
@@ -270,6 +307,15 @@ export const LESSONS = [
       "When judging an active fund, compare it with the index fund for its own benchmark over 5 to 10 years, net of fees — not with other active funds, which only tells you who was best among the ones trying. A single strong year is weak evidence, since past outperformance often doesn't repeat. And check that you're comparing the same plan type: direct plans narrow the fee gap by removing distributor commission.",
       "A workable way to decide: choose index funds if you want low cost and little monitoring, especially for large-cap exposure; consider an active fund only where you can name why the manager should win — a less efficient segment, a long consistent record against the benchmark, a reasonable expense ratio — and review it regularly. Neither choice is a mistake in itself; paying active fees for a fund that just tracks the index quietly, is.",
     ],
+    chart: {
+      type: "growth",
+      title: "₹10L for 20 years — index fund (12%) vs active fund (10.5% after fees)",
+      unit: "INR",
+      series: [
+        { label: "Index fund", tone: "primary", gen: { kind: "lumpsum", principal: 1000000, rate: 12, years: 20 } },
+        { label: "Active fund", tone: "muted", gen: { kind: "lumpsum", principal: 1000000, rate: 10.5, years: 20 } },
+      ],
+    },
     relatedTool: { label: "Try the SIP Calculator", to: "/sip-calculator" },
   },
   {
@@ -304,6 +350,12 @@ export const LESSONS = [
       "PPF's compounding is worth seeing in numbers: contributing the full ₹1.5 lakh a year for 15 years at a 7.1% rate grows to roughly ₹40.7 lakh from ₹22.5 lakh invested — and because the interest and the final withdrawal are both tax-free, that ₹40.7 lakh is the actual amount received, not a pre-tax figure to be reduced further.",
       "NPS's annuitization rule is the detail that catches people off guard at retirement: at least 40% of the NPS corpus must be used to buy an annuity (a regular pension), which is itself taxable as income when received, while up to 60% can be withdrawn as a lump sum. EPF and PPF have no such requirement — the full amount is available to withdraw. This locked-in portion is the direct cost of NPS's extra deduction and higher return potential.",
     ],
+    chart: {
+      type: "growth",
+      title: "₹1.5L/year into PPF at 7.1%, over 15 years",
+      unit: "INR",
+      series: [{ label: "PPF corpus", tone: "primary", gen: { kind: "annual", annualAmount: 150000, rate: 7.1, years: 15 } }],
+    },
     relatedTool: { label: "Try the PPF Calculator", to: "/ppf-calculator" },
   },
   {
@@ -389,6 +441,15 @@ export const LESSONS = [
       "The largest risk with SIPs is behavioural, not mathematical. Investors often stop their SIPs when markets fall, exactly when the same amount buys more units at lower prices. Automating the SIP from your bank account and leaving it alone through a downturn is what makes rupee-cost averaging work. A SIP doesn't guarantee a profit or protect against a loss, and it works best over long periods, ideally five years or more.",
       "For a large windfall, a systematic transfer plan (STP) is a middle path: park the money in a liquid or debt fund and move a fixed amount into an equity fund every month over several months. Match the method to your situation. Choose SIP for regular income and a long horizon, and consider a lump sum, or a partial one, only for money you truly won't need for many years. Whichever you pick, the amount you invest and the number of years you stay invested count for far more than the entry method.",
     ],
+    chart: {
+      type: "bar",
+      title: "₹10,000/month for 10 years at 12%",
+      unit: "INR",
+      bars: [
+        { label: "Invested", value: 1200000 },
+        { label: "Grows to", value: 2300000 },
+      ],
+    },
     relatedTool: { label: "Try the SIP Calculator", to: "/sip-calculator" },
   },
   {
@@ -459,6 +520,17 @@ export const LESSONS = [
       "This is why FIRE calculations focus on the gap between income and spending rather than on income alone. Two households earning the same salary but saving 20% versus 50% aren't on similar paths that differ slightly — they're on fundamentally different timelines, because the saver's target corpus is also smaller (built from lower expenses) while their yearly contribution toward it is larger.",
       "A practical middle ground many people use, short of full early retirement: 'Coast FIRE' — reaching a corpus early enough that it will grow to a full retirement target by a normal retirement age on its own, without further contributions, even if you keep working and spending your full income in the meantime. It captures much of the psychological benefit of financial independence without requiring the more extreme savings rate that early retirement itself demands.",
     ],
+    chart: {
+      type: "bar",
+      title: "Savings rate vs years to financial independence",
+      unit: "years",
+      bars: [
+        { label: "10%", value: 52 },
+        { label: "30%", value: 28 },
+        { label: "50%", value: 17 },
+        { label: "70%", value: 9 },
+      ],
+    },
     relatedTool: { label: "Try the FIRE Calculator", to: "/fire-calculator" },
   },
   {
