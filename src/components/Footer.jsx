@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import Logo from "./Logo";
+import SocialLinks from "./SocialLinks";
 
 const footerColumns = [
   {
@@ -131,6 +132,7 @@ export default function Footer() {
               Calculators, verdicts, goal tracking and learning — free, and built to help you decide
               with clarity.
             </p>
+            <SocialLinks className="mt-5" />
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
               <button
                 type="button"

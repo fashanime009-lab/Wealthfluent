@@ -1,4 +1,5 @@
 import { SITE_URL, SITE_NAME } from "./Seo";
+import { SOCIAL_LINKS } from "../../data/social";
 
 export const organizationSchema = {
   "@context": "https://schema.org",
@@ -8,12 +9,7 @@ export const organizationSchema = {
   logo: `${SITE_URL}/favicon.svg`,
   description:
     "FINAIW is a free personal finance platform offering calculators, verdicts, goal tracking, and financial education tools.",
-  sameAs: [
-    "https://www.instagram.com/finaiw.inc",
-    "https://www.facebook.com/share/14sveM9NKs2/",
-    "https://x.com/Finaiw",
-    "https://www.pinterest.com/finaiwinc/",
-  ],
+  sameAs: SOCIAL_LINKS.map((s) => s.url),
 };
 
 export const websiteSchema = {
