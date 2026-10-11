@@ -110,6 +110,11 @@ function LessonContent({ slug }) {
               title: lesson.title,
               description: lesson.summary,
               path: `/learn/${lesson.slug}`,
+              // All 30 lessons shipped together in one batch (see
+              // src/data/lessons.js's git history) rather than being
+              // authored on individual dates, so one real shared date is
+              // more honest here than inventing 30 distinct ones.
+              publishedTime: "2026-09-11",
             }),
             breadcrumbSchema([
               { name: "Home", path: "/" },

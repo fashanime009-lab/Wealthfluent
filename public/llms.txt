@@ -18,7 +18,16 @@ Key facts for anyone summarising or citing this site:
 - [Rate of Return Calculator](https://www.finaiw.com/rate-of-return-calculator): the annualised return between a starting and an ending value
 - [Bond Yield Calculator](https://www.finaiw.com/bond-yield-calculator): current yield and approximate yield to maturity
 - [SIP Calculator](https://www.finaiw.com/sip-calculator): what a monthly SIP grows to over time
+- [Lumpsum Calculator](https://www.finaiw.com/lumpsum-calculator): what a one-time investment grows to at a compound annual rate
+- [Step-Up SIP Calculator](https://www.finaiw.com/step-up-sip-calculator): what a SIP grows to when the monthly amount increases every year
 - [Goal SIP Calculator](https://www.finaiw.com/goal-sip): the monthly SIP needed to reach a target amount
+- [SWP Calculator](https://www.finaiw.com/swp-calculator): how long a lump sum lasts under a fixed monthly withdrawal, or whether it sustains the payout indefinitely
+- [RD Calculator](https://www.finaiw.com/rd-calculator): recurring-deposit maturity value and interest earned
+- [PPF Calculator](https://www.finaiw.com/ppf-calculator): Public Provident Fund maturity value from yearly contribution, rate and tenure
+- [Power of Compounding Calculator](https://www.finaiw.com/power-of-compounding): how much more compound interest earns than simple interest on the same amount, rate and years
+- [Cost of Delay Calculator](https://www.finaiw.com/cost-of-delay-calculator): what delaying a monthly investment by a few years costs in final value
+- [Gratuity Calculator](https://www.finaiw.com/gratuity-calculator): Indian gratuity amount from last drawn salary and years of service
+- [HRA Calculator](https://www.finaiw.com/hra-calculator): tax-exempt House Rent Allowance from basic salary, HRA received and rent paid
 - [Inflation Calculator](https://www.finaiw.com/inflation-calculator): what today's expenses will cost in future, and the purchasing power lost
 - [CAGR Calculator](https://www.finaiw.com/cagr-calculator): compound annual growth rate between two values
 - [Retirement Calculator](https://www.finaiw.com/retirement-calculator): the corpus a fixed monthly investment builds by retirement

@@ -5,11 +5,6 @@ const WIDTH = 640;
 const HEIGHT = 240;
 const PAD = { top: 16, right: 16, bottom: 32, left: 54 };
 
-const TONES = {
-  primary: { line: "#047857", lineDark: "#34d399", fill: "#047857" },
-  muted: { line: "#b45309", lineDark: "#f59e0b", fill: "#b45309" },
-};
-
 function formatValue(value, unit) {
   if (unit === "years") return `${Math.round(value)}y`;
   return formatCurrency(value, "INR", true);
@@ -68,7 +63,6 @@ function GrowthChart({ chart }) {
         </text>
       ))}
       {series.map((s, i) => {
-        const tone = TONES[s.tone] || TONES.primary;
         const d = s.points.map((p, j) => `${j === 0 ? "M" : "L"} ${sx(p.x)} ${sy(p.y)}`).join(" ");
         return (
           <path

@@ -6,25 +6,28 @@ export const organizationSchema = {
   "@type": "Organization",
   name: SITE_NAME,
   url: SITE_URL,
-  logo: `${SITE_URL}/favicon.svg`,
+  // Google's structured-data logo guidance doesn't list SVG as a supported
+  // format (JPG/PNG/WebP only) — logo.png is a 512x512 PNG rendered
+  // straight from favicon.svg (public/favicon.svg), not a separate asset
+  // to keep in sync by hand.
+  logo: `${SITE_URL}/logo.png`,
   description:
     "FINAIW is a free personal finance platform offering calculators, verdicts, goal tracking, and financial education tools.",
   sameAs: SOCIAL_LINKS.map((s) => s.url),
 };
 
+// No SearchAction here: Google's Sitelinks Search Box requires a URL that
+// returns real results for an arbitrary typed-in term, and /calculators?
+// category= only matches five fixed category ids (loan, investment,
+// retirement, wealth, tax) — any other term renders an empty page. Claiming
+// a working search that isn't one is worse than not claiming one; add this
+// back only once /calculators?category= (or a dedicated endpoint) does a
+// real text search.
 export const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: SITE_NAME,
   url: SITE_URL,
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: `${SITE_URL}/calculators?category={search_term_string}`,
-    },
-    "query-input": "required name=search_term_string",
-  },
 };
 
 /**
@@ -82,7 +85,7 @@ export function articleSchema({ title, description, path, publishedTime, modifie
       name: SITE_NAME,
       logo: {
         "@type": "ImageObject",
-        url: `${SITE_URL}/favicon.svg`,
+        url: `${SITE_URL}/logo.png`,
       },
     },
     author: {

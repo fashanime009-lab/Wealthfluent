@@ -19,6 +19,16 @@ export default defineConfig([
     },
   },
   {
+    // Vercel serverless functions and the Vite config itself run under
+    // Node, not in a browser — they need process/require/__dirname/module,
+    // not window/document. Without this, eslint flags every one of those
+    // as undefined, which drowns out any real issue in these files.
+    files: ['api/**/*.js', 'vite.config.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
+  {
     // A context module exports its Provider AND the hook that reads it — the
     // standard React pattern. react-refresh/only-export-components exists
     // to keep Vite's dev-server fast refresh from losing state on edit; it

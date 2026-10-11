@@ -13,11 +13,13 @@ export default function SettingsPage() {
 
   return (
     <>
+      {/* No noindex here: robots.txt already disallows /settings, and
+          Google can't fetch a disallowed page to ever see an in-page
+          noindex meta tag — combining both is redundant, not safer. */}
       <Seo
         title="Settings"
         description="Personalize your FINAIW currency, number format, and theme preferences."
         path="/settings"
-        noindex
       />
 
       <div className="bg-[#eef1ec] dark:bg-[#0b1210]">

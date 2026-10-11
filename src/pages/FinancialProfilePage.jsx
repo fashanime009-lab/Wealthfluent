@@ -29,11 +29,13 @@ export default function FinancialProfilePage() {
   return (
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <div className="mx-auto max-w-lg px-5 py-16 sm:px-8">
+        {/* No noindex here: robots.txt already disallows /financial-profile,
+            and Google can't fetch a disallowed page to ever see an in-page
+            noindex meta tag — combining both is redundant, not safer. */}
         <Seo
           title="Financial Profile"
           description="Enter your real numbers to see your genuine overall financial status."
           path="/financial-profile"
-          noindex
         />
 
         <span className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Financial profile</span>
