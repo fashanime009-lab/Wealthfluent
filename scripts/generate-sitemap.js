@@ -34,10 +34,6 @@ const routes = [
   // here.
 
   { path: "/calculators", lastmod: today, changefreq: "weekly", priority: "0.9" },
-  // Separate static site (vanilla JS, not a React route) — see
-  // SITEMAP_ONLY_ROUTES in scripts/prerender.mjs for why it's listed
-  // here but deliberately skipped by the prerender crawl.
-  { path: "/games/", lastmod: today, changefreq: "weekly", priority: "0.7" },
   { path: "/sip-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/goal-sip", lastmod: today, changefreq: "weekly", priority: "0.8" },
   { path: "/emi-calculator", lastmod: today, changefreq: "weekly", priority: "0.8" },
