@@ -1,11 +1,13 @@
-const STATS = [
-  { value: "29", label: "calculators" },
-  { value: "5", label: "verdict tools" },
-  { value: "30+", label: "learning guides" },
-  { value: "0", label: "data leaves your device" },
-];
+import { TOTAL_CALCULATORS } from "@/data/calculators";
 
 export default function StatsStrip() {
+  const STATS = [
+    { value: String(TOTAL_CALCULATORS), label: "calculators" },
+    { value: "5", label: "verdict tools" },
+    { value: "30+", label: "learning guides" },
+    { value: "0", label: "data leaves your device" },
+  ];
+
   return (
     <section className="mx-auto max-w-[1240px] px-5 py-10 sm:px-8 lg:px-12">
       <div className="grid grid-cols-2 gap-x-6 gap-y-5 border-y border-[#111814]/10 py-8 dark:border-[#eef1ec]/10 sm:grid-cols-4 sm:gap-x-12">

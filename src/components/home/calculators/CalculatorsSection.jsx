@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { useSettings } from "@/context/SettingsContext";
 import { formatCurrency } from "@/utils/currency";
 import { sipFutureValue, emiBreakdown } from "@/utils/projections";
-import { USD_CONVERSION_RATES } from "@/services/calculators/globalWealthPercentile";
+import { CATEGORY_DATA, TOTAL_CALCULATORS } from "@/data/calculators";
+import useExampleCurrency from "@/hooks/useExampleCurrency";
 import useTilt from "@/hooks/useTilt";
 import GrowthChart from "../GrowthChart";
 import { CATEGORY_COLORS } from "@/data/categoryColors";
@@ -20,23 +21,23 @@ const EMI_YEARS = 20;
 // far — the rest pick theirs up in the same pass once this one's
 // approved (see design.md).
 //
-// Each `example` was originally written in INR; `inr(rupees)` (built below
-// from the same table the calculators listing page uses) converts it
-// through its real USD value into the viewer's selected currency, instead
-// of a literal currency-symbol swap that would leave, say, a "$85,00,000
-// assets" line looking like a typo rather than a realistic figure.
+// Pulled from the same CATEGORY_DATA the /calculators listing renders,
+// rather than a separate hardcoded copy — a second copy is exactly how
+// this homepage section and the listing page drifted out of sync before
+// (titles, descriptions and example math all duplicated by hand).
+const ALL_CALCULATORS = Object.values(CATEGORY_DATA).flatMap((c) => c.calculators);
+const findCalc = (route) => ALL_CALCULATORS.find((c) => c.route === route);
 const REST = [
-  { title: "FIRE Calculator", desc: "The number you need to retire early.", route: "/fire-calculator", example: ({ inr, fmt }) => { const p = inr(600000); return `${fmt(p)}/yr expenses → ${fmt(p * 25)} FIRE number`; } },
-  { title: "Net Worth Calculator", desc: "Assets minus liabilities — your real net worth.", route: "/networth-calculator", example: ({ inr, fmt }) => { const assets = inr(8500000); const liabilities = inr(2200000); return `${fmt(assets)} assets − ${fmt(liabilities)} liabilities → ${fmt(assets - liabilities)}`; } },
-  { title: "CAGR Calculator", desc: "The compound annual growth rate between two values.", route: "/cagr-calculator", example: ({ inr, fmt }) => { const p = inr(100000); return `${fmt(p)} → ${fmt(p * 2)} in 5 yrs → 14.9% CAGR`; } },
-  { title: "Fixed Deposit Calculator", desc: "Maturity value and interest earned on an FD.", route: "/fd-calculator", example: ({ inr, fmt }) => { const p = inr(200000); return `${fmt(p)} at 7% for 5 yrs → ${fmt(Math.round(p * 1.415))}`; }, category: "loan" },
+  findCalc("/fire-calculator"),
+  findCalc("/networth-calculator"),
+  findCalc("/cagr-calculator"),
+  { ...findCalc("/fd-calculator"), category: "loan" },
 ];
 
 export default function CalculatorsSection() {
   const { settings } = useSettings();
   const fmt = (v) => formatCurrency(v, settings.currency, settings.compactNumbers);
-  const exampleRate = USD_CONVERSION_RATES[settings.currency] ?? 1;
-  const inr = (rupees) => Math.round((rupees * USD_CONVERSION_RATES.INR) / exampleRate);
+  const { inr } = useExampleCurrency();
   const { ref: sipRef, style: sipStyle, onPointerMove: onSipMove, onPointerLeave: onSipLeave } = useTilt();
   const { ref: emiRef, style: emiStyle, onPointerMove: onEmiMove, onPointerLeave: onEmiLeave } = useTilt();
   const loan = CATEGORY_COLORS.loan;
@@ -59,13 +60,13 @@ export default function CalculatorsSection() {
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8 lg:px-12">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <h2 className="font-display text-[20px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec] sm:text-[22px]">
-          29 free financial calculators. Every one shows real math.
+          {TOTAL_CALCULATORS} free financial calculators. Every one shows real math.
         </h2>
         <Link
           to="/calculators"
           className="flex-shrink-0 text-[13.5px] font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25"
         >
-          See all 29
+          See all {TOTAL_CALCULATORS}
         </Link>
       </div>
 

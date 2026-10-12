@@ -1,7 +1,7 @@
 const STEPS = [
   {
     title: "Pick a calculator or a decision",
-    text: "Eighteen calculators for loans, investments, retirement and wealth — or a verdict tool if you're actually stuck between two options.",
+    text: "Calculators for loans, investments, retirement and wealth — or a verdict tool if you're actually stuck between two options.",
   },
   {
     title: "Enter your real numbers",

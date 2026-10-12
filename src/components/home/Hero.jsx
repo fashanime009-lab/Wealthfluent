@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useSettings } from "@/context/SettingsContext";
 import { formatCurrency } from "@/utils/currency";
 import { sipFutureValue } from "@/utils/projections";
+import { TOTAL_CALCULATORS } from "@/data/calculators";
 import useAnimatedNumber from "@/hooks/useAnimatedNumber";
 import useTilt from "@/hooks/useTilt";
 import ProofStrip from "./ProofStrip";
@@ -98,7 +99,7 @@ export default function Hero() {
             This is what your money actually does.
           </h1>
           <p className="mt-3 max-w-[46ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65 sm:mt-5">
-            29 free calculators and 5 real decisions, decided — rent vs buy, debt vs invest, and more.
+            {TOTAL_CALCULATORS} free calculators and 5 real decisions, decided — rent vs buy, debt vs invest, and more.
             No account, no paywall, and your numbers never leave your device.
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-6 sm:mt-8">
