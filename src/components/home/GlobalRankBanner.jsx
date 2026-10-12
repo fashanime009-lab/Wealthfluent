@@ -26,6 +26,16 @@ export default function GlobalRankBanner() {
           See your global rank →
         </span>
       </Link>
+      <p className="mt-3 text-[12.5px] text-[#111814]/50 dark:text-[#eef1ec]/45">
+        Curious about income instead?{" "}
+        <Link
+          to="/income-percentile"
+          className="font-semibold underline decoration-[#111814]/25 underline-offset-4 hover:text-[#111814] dark:decoration-[#eef1ec]/25 dark:hover:text-[#eef1ec]"
+        >
+          See your global income percentile
+        </Link>
+        .
+      </p>
     </section>
   );
 }

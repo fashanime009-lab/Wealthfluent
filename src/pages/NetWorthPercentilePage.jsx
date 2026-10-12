@@ -28,6 +28,9 @@ const FAQ_ITEMS = [
   { q: "My net worth is negative — what does that mean here?", a: "It means your debts exceed your assets, which this model can't place on the curve (it's mathematically undefined at zero and below). It's also extremely common early in life or career in wealthy countries — student loans, a new mortgage — and says more about life stage and country than lifetime financial trajectory." },
   { q: "Is this the same as income percentile?", a: "No — this measures net worth (what you own minus what you owe), not annual income. The two are related but genuinely different: a retiree with a paid-off home and modest income can rank far higher on wealth than a high-earning 25-year-old who hasn't had time to accumulate assets yet." },
   { q: "How is my currency converted for this?", a: "Using a fixed, approximate conversion to US dollars (since the reference data is USD-denominated) — not a live exchange rate. It's accurate enough to place your number on the right part of the global curve, not precise enough to treat as today's actual rate." },
+  { q: "Is this calculator based on the UBS Global Wealth Report?", a: "Yes. The UBS Global Wealth Report 2026 is the source for both reference points this calculator is calibrated against: that just over 41% of the world's adults held under $10,000 in net worth in 2025, and that the world's roughly 57.5 million dollar-millionaires make up almost exactly 1% of all adults. Every percentile in between is a statistical estimate fitted to those two UBS figures, not a number UBS itself publishes." },
+  { q: "What net worth do I need to be in the global top 1%?", a: "Roughly $1,000,000 in net worth — assets minus debts — puts you at the entry point of the world's wealthiest 1% of adults, based on the UBS Global Wealth Report's count of roughly 57.5 million dollar-millionaires worldwide. That threshold is far lower than what's needed to rank in the top 1% within a wealthy country, because the comparison here is against every adult on Earth, most of whom live in lower-income countries." },
+  { q: "How does this compare to a global rich list?", a: "A rich list (like the various billionaire rankings) only names a few thousand people at the extreme top. This calculator instead estimates where an ordinary net worth — $15,000, $100,000, $500,000 — falls among all ~5.5 billion adults worldwide, which is a far more useful comparison for most people than a billionaire list." },
 ];
 
 export default function NetWorthPercentilePage() {
@@ -67,10 +70,10 @@ export default function NetWorthPercentilePage() {
   return (
     <>
       <Seo
-        title="Global Net Worth Percentile Calculator – FINAIW"
-        description="See exactly how your net worth compares to the rest of the world's adults — free global wealth percentile calculator, any currency, no signup."
+        title="Net Worth Percentile: How Rich Are You vs. the World?"
+        description="See your global wealth percentile using UBS Global Wealth Report data — free net worth percentile calculator, any currency, no signup."
         path="/net-worth-percentile"
-        keywords="net worth percentile calculator, global wealth percentile, how rich am I compared to the world, am I in the top 1% net worth, global wealth calculator, net worth rank"
+        keywords="net worth percentile calculator, global wealth percentile, how rich am I compared to the world, world net worth percentile, UBS global wealth report calculator, net worth needed to be top 1% in the world, global rich list, am I in the top 1% net worth"
         jsonLd={[
           calculatorSchema({
             name: "Global Net Worth Percentile Calculator",
@@ -118,7 +121,11 @@ export default function NetWorthPercentilePage() {
                 <Link to="/networth-calculator" className="font-semibold underline decoration-[#111814]/25 underline-offset-4 dark:decoration-[#eef1ec]/25">
                   Net Worth Calculator
                 </Link>{" "}
-                works it out for you.
+                works it out for you. Curious how your salary compares instead? Try the{" "}
+                <Link to="/income-percentile" className="font-semibold underline decoration-[#111814]/25 underline-offset-4 dark:decoration-[#eef1ec]/25">
+                  Income Percentile Calculator
+                </Link>
+                .
               </p>
             </div>
 
@@ -190,7 +197,7 @@ export default function NetWorthPercentilePage() {
           <div className="mt-16">
             <AdSlot slotId="networth_percentile_mid" />
 
-            <CalcSection title="How This Is Calculated">
+            <CalcSection title="How Rich Am I Compared to the World? The Method Behind This World Net Worth Percentile">
               <p>
                 No dataset ranks every adult on Earth by net worth — nothing like that exists. This tool instead
                 uses a statistical curve (a log-normal distribution, the standard model for this kind of

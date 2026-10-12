@@ -35,6 +35,7 @@ const ToolsPage = lazy(() => import("./pages/ToolsPage"));
 const WealthFluentHomepage = lazy(() => import("./pages/WealthFluentHomepage"));
 const NetWorthCalculatorPage = lazy(() => import("./pages/NetWorthCalculatorPage"));
 const NetWorthPercentilePage = lazy(() => import("./pages/NetWorthPercentilePage"));
+const IncomePercentilePage = lazy(() => import("./pages/IncomePercentilePage"));
 const GoalPlannerPage = lazy(() => import("./pages/GoalPlannerPage"));
 const GoalsPage = lazy(() => import("./pages/GoalsPage"));
 const FinancialProfilePage = lazy(() => import("./pages/FinancialProfilePage"));
@@ -111,6 +112,7 @@ export default function App() {
             <Route path="/fire-calculator" element={<FIRECalculatorPage />} />
             <Route path="/networth-calculator" element={<NetWorthCalculatorPage />} />
             <Route path="/net-worth-percentile" element={<NetWorthPercentilePage />} />
+            <Route path="/income-percentile" element={<IncomePercentilePage />} />
             <Route path="/goal-planner" element={<GoalPlannerPage />} />
             <Route path="/goals" element={<GoalsPage />} />
             <Route path="/financial-profile" element={<FinancialProfilePage />} />

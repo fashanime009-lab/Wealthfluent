@@ -37,6 +37,7 @@ Key facts for anyone summarising or citing this site:
 - [Retirement Corpus Planner](https://www.finaiw.com/goal-planner): the corpus needed to retire, with inflation, life expectancy and returns by asset class
 - [Net Worth Calculator](https://www.finaiw.com/networth-calculator): net worth from itemised assets and liabilities
 - [Global Net Worth Percentile Calculator](https://www.finaiw.com/net-worth-percentile): where a net worth ranks among the world's adults
+- [Global Income Percentile Calculator](https://www.finaiw.com/income-percentile): where an annual income ranks among the world's adults
 - [Emergency Fund Calculator](https://www.finaiw.com/emergency-fund-calculator): the safety net to hold and how many months you are covered
 - [Wealth Age Calculator](https://www.finaiw.com/wealth-age-calculator): a wealth age and score from savings rate and net worth
 

@@ -7,7 +7,8 @@ import { isLessonComplete, markLessonComplete, getStreak, getLessonsCompletedCou
 import { highlightText, extractKeyNumbers } from "@/utils/highlightNumbers";
 import LessonChart from "@/components/learn/LessonChart";
 import Seo from "@/components/seo/Seo";
-import { articleSchema, breadcrumbSchema } from "@/components/seo/schema";
+import { articleSchema, breadcrumbSchema, faqSchema } from "@/components/seo/schema";
+import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 // Outer component just re-keys the real content by slug, so navigating
 // between lessons (via the "Next" link) gets a genuine fresh mount instead
@@ -121,6 +122,7 @@ function LessonContent({ slug }) {
               { name: "Learn", path: "/learn" },
               { name: lesson.title, path: `/learn/${lesson.slug}` },
             ]),
+            ...(lesson.faq ? [faqSchema(lesson.faq.map((f) => ({ question: f.q, answer: f.a })))] : []),
           ]}
         />
 
@@ -172,6 +174,36 @@ function LessonContent({ slug }) {
 
         <LessonChart chart={lesson.chart} />
 
+        {lesson.table && (
+          <div className="mt-10 overflow-x-auto">
+            <table className="w-full min-w-[520px] border-collapse text-left text-[13.5px]">
+              <thead>
+                <tr className="border-b border-[#111814]/15 dark:border-[#eef1ec]/15">
+                  {lesson.table.columns.map((col) => (
+                    <th key={col} className="py-2.5 pr-4 font-semibold text-[#111814]/70 dark:text-[#eef1ec]/70">
+                      {col}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {lesson.table.rows.map((row) => (
+                  <tr key={row[0]} className="border-b border-[#111814]/10 dark:border-[#eef1ec]/10">
+                    {row.map((cell, i) => (
+                      <td
+                        key={i}
+                        className={`py-2.5 pr-4 align-top ${i === 0 ? "font-semibold text-[#111814] dark:text-[#eef1ec]" : "text-[#111814]/65 dark:text-[#eef1ec]/65"}`}
+                      >
+                        {cell}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         {keyNumbers.length > 0 && (
           <div className="mt-10 border border-[#111814]/12 bg-[#ffffff] p-6 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
             <p className="text-[12px] font-semibold uppercase tracking-wide text-[#111814]/50 dark:text-[#eef1ec]/45">
@@ -187,19 +219,23 @@ function LessonContent({ slug }) {
           </div>
         )}
 
-        {lesson.relatedTool && (
+        {/* Most lessons point at one tool (relatedTool); a few are relevant
+            to more than one, hence the plural relatedTools array — both
+            render the same card, just one or several of them. */}
+        {(lesson.relatedTools ?? (lesson.relatedTool ? [lesson.relatedTool] : [])).map((tool) => (
           <Link
-            to={lesson.relatedTool.to}
+            key={tool.to}
+            to={tool.to}
             className="mt-6 flex items-center justify-between gap-4 border border-[#111814]/12 bg-[#ffffff] px-6 py-5 transition-opacity hover:opacity-80 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]"
           >
             <span className="text-[14px] font-semibold text-[#111814] dark:text-[#eef1ec]">
-              {lesson.relatedTool.label}
+              {tool.label}
             </span>
             <span className="flex-shrink-0 text-[13px] font-semibold text-[#047857] underline decoration-[#047857]/30 underline-offset-4 dark:text-[#34d399] dark:decoration-[#34d399]/30">
               Open
             </span>
           </Link>
-        )}
+        ))}
 
         {related.length > 0 && (
           <section aria-labelledby="keep-learning" className="mt-12">
@@ -221,6 +257,8 @@ function LessonContent({ slug }) {
             </ul>
           </section>
         )}
+
+        {lesson.faq && <VerdictFAQ items={lesson.faq} className="mt-12 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />}
 
         <div className="mt-12 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
           <button

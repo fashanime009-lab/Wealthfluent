@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import Logo from "./Logo";
 import SocialLinks from "./SocialLinks";
+import { trackEvent } from "@/lib/analytics";
 
 const footerColumns = [
   {
@@ -65,6 +66,7 @@ export default function Footer() {
         if (data.success) {
           setSubscribed(true);
           setEmail("");
+          trackEvent("newsletter_signup");
         }
       })
       .catch(() => {})

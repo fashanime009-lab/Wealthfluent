@@ -197,8 +197,14 @@ export const CALCULATOR_RECOMMENDATIONS = {
     label: "Global Net Worth Percentile Calculator",
     summary: "Where your net worth ranks among the world's adults.",
     lesson: "net-worth-tracking",
-    // No `calculator`: the page already links /networth-calculator inline,
-    // next to the assets-minus-liabilities input where it's most useful.
+    // No `calculator`: the page already links /networth-calculator and
+    // /income-percentile inline, where they're most useful.
+  },
+  "/income-percentile": {
+    label: "Global Income Percentile Calculator",
+    summary: "Where your annual income ranks among the world's adults.",
+    lesson: "salary-structuring-and-tax",
+    // No `calculator`: the page already links /net-worth-percentile inline.
   },
 
   // ── Advanced tool that other pages may link to (no block of its own) ─

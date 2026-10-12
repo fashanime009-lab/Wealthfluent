@@ -9,7 +9,10 @@ import VerdictFAQ from "./VerdictFAQ";
  * FAQs — rendered from one content object so the visible FAQ and the
  * FAQPage JSON-LD on each page are built from the exact same items.
  *
- * content.sections: [{ title, paragraphs?, steps?, bullets?, grid? }]
+ * content.sections: [{ title, paragraphs?, steps?, bullets?, grid?, table? }]
+ * content.table: { columns: string[], rows: string[][] } — a plain
+ * side-by-side comparison, horizontally scrollable on narrow screens
+ * rather than squeezed, since these tables often have 3+ columns.
  * content.related:  [{ label, to, note }]
  * content.faqs:     [{ q, a }]
  */
@@ -36,6 +39,35 @@ export default function VerdictContent({ content, className = "mt-16 max-w-2xl s
             </ul>
           )}
           {section.grid && <CalcBenefitGrid items={section.grid} />}
+          {section.table && (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[520px] border-collapse text-left text-[13.5px]">
+                <thead>
+                  <tr className="border-b border-[#111814]/15 dark:border-[#eef1ec]/15">
+                    {section.table.columns.map((col) => (
+                      <th key={col} className="py-2.5 pr-4 font-semibold text-[#111814]/70 dark:text-[#eef1ec]/70">
+                        {col}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {section.table.rows.map((row) => (
+                    <tr key={row[0]} className="border-b border-[#111814]/10 dark:border-[#eef1ec]/10">
+                      {row.map((cell, i) => (
+                        <td
+                          key={i}
+                          className={`py-2.5 pr-4 align-top ${i === 0 ? "font-semibold text-[#111814] dark:text-[#eef1ec]" : "text-[#111814]/65 dark:text-[#eef1ec]/65"}`}
+                        >
+                          {cell}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
           {section.after?.map((text) => (
             <p key={text}>{text}</p>
           ))}

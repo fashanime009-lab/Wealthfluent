@@ -24,6 +24,19 @@ const SIP_VS_LUMP_SUM_PATH = "/learn/sip-vs-lump-sum";
 const linkClass =
   "font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25";
 
+// Shared by the worked examples in the body copy below, so the figures
+// render in whichever currency formatCurrency() is given. sipFV mirrors the
+// future-value-of-an-annuity-due formula used by the live calculator above;
+// lumpFV compounds a one-time amount at the same monthly rate, for the
+// lump-sum comparison.
+const sipFV = (monthly, annualReturn, years) => {
+  const r = annualReturn / 12 / 100;
+  const n = years * 12;
+  return r === 0 ? monthly * n : Math.round(monthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r));
+};
+const lumpFV = (principal, annualReturn, years) =>
+  Math.round(principal * Math.pow(1 + annualReturn / 12 / 100, years * 12));
+
 const FAQ_ITEMS = [
   { q: "What is a good SIP amount?", a: "A good SIP amount depends on income, financial goals, and investment horizon." },
   { q: "Is SIP better than FD?", a: "SIPs offer market-linked growth potential, while fixed deposits provide stable fixed returns." },
@@ -58,6 +71,16 @@ export default function SIPCalculatorPage() {
         );
   const estimatedReturns = futureValue - investedAmount;
 
+  // Fixed worked examples for the body copy below — independent of the live
+  // inputs above so the prose stays stable while someone plays with the
+  // calculator, but still currency-aware via fmt().
+  const example1FV = sipFV(5000, 12, 15);
+  const example1Invested = 5000 * 15 * 12;
+  const example1Returns = example1FV - example1Invested;
+  const example1First5yrInvested = 5000 * 5 * 12;
+  const lumpExample = lumpFV(600000, 12, 5);
+  const sipExample = sipFV(10000, 12, 5);
+
   // Update context
   useEffect(() => {
     setSipData({
@@ -71,8 +94,8 @@ export default function SIPCalculatorPage() {
   return (
     <>
       <Seo
-        title="SIP Calculator - See What Your Monthly SIP Grows To | FINAIW"
-        description="Calculate what your SIP investment could grow to with real compound math. Free, no signup — see monthly amount, expected return, and final corpus instantly."
+        title="SIP Calculator: What Your Monthly SIP Grows To"
+        description="SIP calculator with real compound math — see what your monthly SIP grows to, expected returns, and final corpus instantly. Free, no signup."
         path="/sip-calculator"
         keywords="SIP calculator, mutual fund calculator, investment calculator, SIP return calculator"
         jsonLd={[
@@ -162,8 +185,8 @@ export default function SIPCalculatorPage() {
                 turns investing into a habit: you don't have to decide when to invest, because the schedule does.
               </p>
               <p>
-                For example, investing ₹5,000 a month for 15 years means putting in ₹9,00,000 in total. At an assumed
-                12% a year, this calculator estimates it grows to about ₹25,22,880 — roughly ₹16,22,880 of that from
+                For example, investing {fmt(5000)} a month for 15 years means putting in {fmt(example1Invested)} in total. At an assumed
+                12% a year, this calculator estimates it grows to about {fmt(example1FV)} — roughly {fmt(example1Returns)} of that from
                 returns. The 12% is an assumption you can change, not a promise: real fund returns vary from year to
                 year and can be negative.
               </p>
@@ -193,14 +216,14 @@ export default function SIPCalculatorPage() {
                 (years × 12).
               </p>
               <p>
-                For the defaults above, P = ₹5,000. A 12% annual return gives r = 12 ÷ 12 ÷ 100 = 0.01, and 15 years
-                gives n = 180. Then (1.01)^180 = 5.9958, so [(1.01)^180 − 1] / 0.01 = 499.58. Multiplying by ₹5,000
-                gives about ₹24,97,900, and the final × 1.01 gives ₹25,22,880 — the same figure the calculator above
+                For the defaults above, P = {fmt(5000)}. A 12% annual return gives r = 12 ÷ 12 ÷ 100 = 0.01, and 15 years
+                gives n = 180. Then (1.01)^180 = 5.9958, so [(1.01)^180 − 1] / 0.01 = 499.58. Multiplying by {fmt(5000)}
+                gives about {fmt(Math.round(5000 * 499.58))}, and the final × 1.01 gives {fmt(example1FV)} — the same figure the calculator above
                 produces for those inputs.
               </p>
               <p>
                 Because early installments compound the longest, they carry disproportionate weight. In this example
-                the first 5 years of installments are only a third of the money you put in (₹3,00,000 of ₹9,00,000),
+                the first 5 years of installments are only a third of the money you put in ({fmt(example1First5yrInvested)} of {fmt(example1Invested)}),
                 yet they account for about 54% of the final corpus. That is why staying invested for a long horizon
                 matters more than the exact monthly amount.
               </p>
@@ -224,9 +247,9 @@ export default function SIPCalculatorPage() {
               </p>
               <p>
                 If the money is there today, a calculation with a steady return always favours investing it all at
-                once, because every rupee starts earning sooner. ₹6,00,000 invested as a lump sum for 5 years at 12%
-                grows to about ₹10,90,018; the same ₹6,00,000 invested as ₹10,000 a month over those 5 years (with the
-                not-yet-invested part earning nothing) grows to about ₹8,24,864. But that gap comes from assuming a
+                once, because every unit starts earning sooner. {fmt(600000)} invested as a lump sum for 5 years at 12%
+                grows to about {fmt(lumpExample)}; the same {fmt(600000)} invested as {fmt(10000)} a month over those 5 years (with the
+                not-yet-invested part earning nothing) grows to about {fmt(sipExample)}. But that gap comes from assuming a
                 smooth 12%. Real markets fall as well as rise, and a SIP's real benefit — spreading your entry points so
                 you don't invest everything just before a downturn — is exactly what a fixed-return calculator can't
                 show.

@@ -31,15 +31,16 @@ export const websiteSchema = {
 };
 
 /**
- * For a free calculator page. Valid SoftwareApplication markup that helps
- * search engines classify the page, but note it is NOT rich-result eligible on
- * its own: Google's SoftwareApplication result also requires an aggregateRating
- * or review, which we deliberately don't invent.
+ * For a free calculator page. WebApplication is the more precise schema.org
+ * type for a browser-only tool with no install (SoftwareApplication is its
+ * generic parent type). Not rich-result eligible on its own: Google's
+ * SoftwareApplication/WebApplication result also requires an
+ * aggregateRating or review, which we deliberately don't invent.
  */
 export function calculatorSchema({ name, description, path }) {
   return {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
+    "@type": "WebApplication",
     name,
     description,
     url: `${SITE_URL}${path}`,

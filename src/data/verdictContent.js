@@ -188,6 +188,21 @@ export const INSURANCE_NEED = {
       ],
     },
     {
+      title: "Needs-Based Method vs Rules of Thumb",
+      paragraphs: [
+        "\"10x income\" and \"15x income\" are the rules of thumb most often quoted. Here's how they stack up against the needs-based method this tool uses, using the default numbers above (₹12 lakh income, ₹30 lakh loans, ₹20 lakh future goals, ₹20 lakh already in place).",
+      ],
+      table: {
+        columns: ["Method", "What it considers", "Result with the defaults", "Main weakness"],
+        rows: [
+          ["10× annual income", "Only your income", "₹1.2 crore", "Ignores loans, goals and existing savings entirely — can be far too low or too high"],
+          ["15× annual income", "Only your income", "₹1.8 crore", "Same blind spot as 10×, just a different multiple"],
+          ["Human Life Value (HLV)", "Income, expected career length, sometimes a discount rate", "Varies by assumptions, often similar in scale to an income multiple", "Still doesn't see your specific loans or one-off future goals"],
+          ["Needs-based (this tool)", "Income replacement years, loans, future goals, existing savings and cover", "₹2.1 crore gap", "Needs more inputs than a multiple, and is only as good as what you enter"],
+        ],
+      },
+    },
+    {
       title: "Choosing each input",
       grid: [
         {
@@ -346,6 +361,24 @@ export const TERM_VS_ENDOWMENT = {
         "The defaults are a ₹40,000 annual budget, a ₹12,000 term premium, a 20-year horizon, a 12% market return and a 5.5% net return on the endowment. The term path invests ₹28,000 a year and ends with about ₹20.2 lakh; the endowment path puts in the full ₹40,000 a year and ends with about ₹13.9 lakh. Both have paid ₹8 lakh in premiums. Term plus investing is ahead by roughly ₹6.2 lakh.",
         "The gap comes entirely from the return: the endowment puts more money in every year, but it earns much less on it.",
       ],
+    },
+    {
+      title: "Term Insurance vs Endowment vs ULIP, Side by Side",
+      paragraphs: [
+        "The simulation above only compares maturity value. These three products also differ in how they're structured — which matters just as much when you're choosing between them.",
+      ],
+      table: {
+        columns: ["", "Term insurance", "Endowment plan", "ULIP"],
+        rows: [
+          ["What it is", "Pure protection — pays a death benefit only, nothing at maturity", "Protection bundled with a savings component that pays out either way", "Protection bundled with a market-linked investment that pays out either way"],
+          ["Premium for ₹1 crore cover (healthy 30-year-old, rough)", "₹10,000–15,000/year", "₹3–6 lakh/year or more for comparable cover", "₹1–3 lakh/year or more for comparable cover"],
+          ["Where the rest of the premium goes", "Nowhere — there's no savings component, which is why it's cheap", "Insurer's own low-risk portfolio, with a return it partly guarantees", "Market-linked funds you select, after policy charges"],
+          ["Typical net return on the savings portion", "Not applicable", "Often 4–6% after charges", "Varies with fund and market performance, after charges"],
+          ["Liquidity before maturity", "None — there's nothing to withdraw, only cover", "Usually poor; surrendering early loses value", "Usually locked in, commonly 5 years by regulation in many markets"],
+          ["Flexibility", "Fixed cover and term, nothing to adjust", "Fixed by the policy terms", "Can often switch between fund options within the policy"],
+          ["Best suited to", "Most people who want protection and plan to invest separately", "Someone who won't invest on their own and values a guaranteed element", "Someone who wants market exposure bundled with cover and accepts the lock-in"],
+        ],
+      },
     },
     {
       title: "Where it stops being obvious",

@@ -1,4 +1,7 @@
+import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import useTilt from "@/hooks/useTilt";
+import { trackEvent } from "@/lib/analytics";
 
 // The one signature "answer" readout, reused everywhere a calculator has a
 // single headline number — same dark instrument panel as the homepage's
@@ -7,6 +10,20 @@ import useTilt from "@/hooks/useTilt";
 // flat rectangle — see useTilt for why it only ever responds to the cursor.
 export default function CalcResultPanel({ label, value, note }) {
   const { ref, style, onPointerMove, onPointerLeave } = useTilt();
+  const { pathname } = useLocation();
+  const fired = useRef(false);
+
+  // Fires once per page visit, the first time a result is actually shown
+  // (not on every input tweak) — every calculator renders this component
+  // for its headline number, so this is the one place that gives
+  // calculator_used coverage for all of them without touching 27+ pages
+  // individually. tool_name comes from the route itself, which is already
+  // unique per calculator.
+  useEffect(() => {
+    if (fired.current || value == null || value === "") return;
+    fired.current = true;
+    trackEvent("calculator_used", { tool_name: pathname.replace(/^\//, "").replace(/-/g, "_") || "home" });
+  }, [value, pathname]);
 
   return (
     <div

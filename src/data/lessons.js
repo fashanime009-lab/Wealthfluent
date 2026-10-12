@@ -216,7 +216,7 @@ export const LESSONS = [
   },
   {
     slug: "mutual-fund-types",
-    title: "Mutual Fund Types",
+    title: "Types of Mutual Funds: Every Category Explained",
     category: "Beginner",
     readTime: "7 min",
     summary: "Equity, debt, hybrid, index — a map of the mutual fund landscape before you pick one.",
@@ -228,6 +228,24 @@ export const LESSONS = [
       "A fund's price is called its NAV (Net Asset Value) — what one unit is worth that day. Investing ₹10,000 at a NAV of ₹50 buys 200 units; if the NAV later rises to ₹65, those 200 units are worth ₹13,000. The NAV itself going up or down by a large or small number means nothing on its own — a fund at NAV ₹1,000 isn't 'expensive' compared to one at NAV ₹20; only the percentage change and the underlying holdings matter.",
       "Every fund also comes in a direct and a regular plan, holding identical underlying investments but charging different fees — the regular plan pays a distributor commission baked into a higher expense ratio, typically 0.5–1% more a year. On a long-term SIP, that gap compounds into a real sum over decades, which is why a direct plan is usually the better default for anyone comfortable choosing funds without an advisor's ongoing guidance.",
       "Reading a fund's category name correctly avoids a common mistake: 'large-cap fund' and 'large & mid-cap fund' sound similar but carry different volatility, and a 'hybrid aggressive' fund holds far more equity than a 'hybrid conservative' one despite both being labelled hybrid. The category name is a starting filter, not a substitute for checking what the fund actually holds.",
+    ],
+    table: {
+      columns: ["Fund type", "Typical risk", "Typical horizon", "Primary role in a portfolio"],
+      rows: [
+        ["Large-cap equity", "Moderate-high", "5+ years", "Core long-term growth from established companies"],
+        ["Mid/small-cap equity", "High", "7+ years", "Extra growth potential, with higher volatility"],
+        ["Index funds", "Moderate-high (tracks market)", "5+ years", "Low-cost core holding, especially for large-cap exposure"],
+        ["Debt funds", "Low-moderate", "Under 3–5 years", "Stability and liquidity, or the defensive part of a portfolio"],
+        ["Hybrid funds", "Varies by sub-type", "3–7 years", "A single fund blending growth and stability in one allocation"],
+      ],
+    },
+    faq: [
+      { q: "What is the safest type of mutual fund?", a: "Debt funds investing in high-quality, short-duration instruments are generally the least volatile category, though 'safest' still means lower expected returns and some risk — debt funds aren't risk-free the way a bank deposit is, since bond prices can still move with interest rates and credit quality." },
+      { q: "Which mutual fund type is best for beginners?", a: "A large-cap or flexi-cap index fund is a common starting point: broad, well-understood holdings, low fees, and no need to evaluate a manager's stock-picking skill. It isn't the only reasonable choice, but it's a low-complexity way to get started while you learn the other categories." },
+      { q: "What's the difference between equity and debt mutual funds?", a: "Equity funds buy company shares and aim for growth, with more volatility and a 5+ year suggested horizon. Debt funds buy bonds and money-market instruments, aiming for stability and liquidity over shorter periods, with lower expected returns." },
+      { q: "Are index funds a type of equity fund?", a: "An equity index fund is, yes — it holds the same stocks as its benchmark (like the Nifty 50) in the same proportions. Index investing also exists for debt and other asset classes, so \"index fund\" describes the strategy (track a benchmark passively), not a single asset class on its own." },
+      { q: "How many types of mutual funds are there?", a: "Regulators typically define several dozen specific sub-categories, but they group into a handful of broad families: equity (by market-cap and style), debt (by duration and credit quality), hybrid (mixing the two), index/passive funds, and a few specialised categories like sector or international funds." },
+      { q: "Should I own more than one type of mutual fund?", a: "Most people do, by design — a mix of equity for growth and debt for stability, sized to match how far away your goal is and how much volatility you can tolerate. A single hybrid fund can also do this in one product, at the cost of less control over the exact mix." },
     ],
     relatedTool: { label: "Try the SIP Calculator", to: "/sip-calculator" },
   },
@@ -333,7 +351,10 @@ export const LESSONS = [
       "A healthy 30-year-old buying ₹2 crore of term cover for roughly ₹10,000–15,000 a year is paying a premium calculated almost entirely on mortality risk — the insurer's cost of the small chance of paying out early. An endowment plan offering similar cover charges many times that, because most of the premium funds a savings component with a modest, often single-digit return, not because the insurance itself is meaningfully more expensive to provide.",
       "Riders — optional add-ons like critical illness or accidental death cover — can extend a term policy usefully, but each one adds cost and its own conditions and exclusions. It's worth pricing the base cover and each rider separately, and buying only the riders that fill a real gap (such as no separate health cover) rather than the full bundle by default.",
     ],
-    relatedTool: { label: "Try the Term Insurance Verdict", to: "/verdict/insurance-need" },
+    relatedTools: [
+      { label: "How Much Term Insurance Do You Need?", to: "/verdict/insurance-need" },
+      { label: "Term Insurance vs Endowment/ULIP", to: "/verdict/term-vs-endowment" },
+    ],
   },
   {
     slug: "nps-vs-ppf-vs-epf",
@@ -424,7 +445,10 @@ export const LESSONS = [
       "HRA exemption is calculated as the lowest of three numbers: actual HRA received, rent paid minus 10% of basic salary, or 50% of basic salary in a metro (40% elsewhere) — not simply 'rent paid.' Someone with ₹40,000 monthly basic pay and ₹20,000 monthly HRA who pays ₹18,000 rent gets an exemption based on whichever of those three figures is smallest, which is often well below the full HRA received.",
       "Because which regime wins depends entirely on your own deductions, run the comparison with your actual numbers each year rather than reusing last year's answer — a year with a new home loan, higher 80C investments, or a jump in HRA-eligible rent can flip which regime comes out ahead, even if your income barely changed.",
     ],
-    relatedTool: { label: "Try the HRA Calculator", to: "/hra-calculator" },
+    relatedTools: [
+      { label: "Try the HRA Calculator", to: "/hra-calculator" },
+      { label: "See Your Global Income Percentile", to: "/income-percentile" },
+    ],
   },
   {
     slug: "sip-vs-lump-sum",
@@ -454,7 +478,7 @@ export const LESSONS = [
   },
   {
     slug: "reading-a-mutual-fund-factsheet",
-    title: "Reading a Mutual Fund Factsheet",
+    title: "How to Read a Mutual Fund Factsheet (Line by Line)",
     category: "Guide",
     readTime: "6 min",
     summary: "The handful of numbers on a dense factsheet that actually matter for your decision.",
@@ -467,6 +491,25 @@ export const LESSONS = [
       "Check the returns against the fund's benchmark, which sits right beside them. A fund that returned 13% over five years isn't impressive if its benchmark index returned 14% — it took the risk and the fees and still fell behind. Also check which plan the numbers belong to: direct plans carry a lower expense ratio than regular plans because there is no distributor commission, so the same fund can show two different sets of returns.",
       "Look at the top holdings and the sector split to see what you're really buying. A fund described as diversified but with more than half its money in its ten largest holdings, or in a single sector, behaves very differently from one that spreads across many. The factsheet also lists the exit load (the fee for redeeming within a set period), the fund's size and how long the current manager has run it.",
       "A five-minute checklist when comparing two funds: does the category fit your time horizon, is the expense ratio in line with similar funds, how do the 5- and 10-year returns compare with the benchmark, what do the top holdings and sectors look like, and what are the exit load and minimum SIP. If you can answer those five, you've read the factsheet better than most investors do.",
+    ],
+    table: {
+      columns: ["What to check", "What it tells you", "Red flag"],
+      rows: [
+        ["Expense ratio", "The annual fee as a % of your investment, charged regardless of performance", "Meaningfully higher than category peers or a comparable index fund"],
+        ["5- and 10-year returns vs. benchmark", "Whether the fund has actually beaten its own index over a real stretch of time", "Trails its benchmark over 5+ years after fees"],
+        ["Portfolio turnover ratio", "How actively the fund trades, which drives costs and tax events", "150%+ annual turnover with no clear strategy reason"],
+        ["Standard deviation / Sharpe ratio", "How much risk was taken to get the return shown", "High return paired with a much higher standard deviation than peers, and a weak Sharpe ratio"],
+        ["Top holdings & sector split", "Whether the fund is really diversified or concentrated", "Over half the portfolio in the top 10 holdings or one sector, despite being marketed as diversified"],
+        ["Exit load & plan type", "The cost of redeeming early, and whether you're seeing direct or regular-plan returns", "Comparing a regular plan's returns against a direct plan's, or missing the exit load window"],
+      ],
+    },
+    faq: [
+      { q: "What is a mutual fund factsheet?", a: "A one- or two-page monthly summary a fund house publishes for each scheme, usually on its own website. It's the quickest reliable way to see what a fund holds, what it costs and how it has performed — more reliable than an advertisement or a star rating alone." },
+      { q: "How often is a factsheet updated?", a: "Monthly, for almost all funds. The holdings, returns and ratios shown are as of the factsheet's stated date, so always check that date — a factsheet even a few months old can be showing a portfolio that's already changed." },
+      { q: "What is the single most important number on a factsheet?", a: "There isn't one number that matters alone, but expense ratio and the 5- or 10-year return versus benchmark are the two worth checking first — one tells you the guaranteed cost, the other tells you whether the fund has actually earned that cost back." },
+      { q: "What does expense ratio mean on a factsheet?", a: "The annual fee, as a percentage of your investment, that's deducted whether the fund gains or loses that year. It's charged continuously, not just once — the difference between a 0.3% and a 1.5% expense ratio on ₹5 lakh is ₹6,000 a year, every year." },
+      { q: "Why do the same fund's returns sometimes differ between two sources?", a: "Almost always a direct-plan-vs-regular-plan mismatch. Direct plans skip the distributor commission baked into regular plans, so they carry a lower expense ratio and show a higher net return for an identical underlying portfolio — always confirm which plan a quoted return belongs to." },
+      { q: "Where can I find a fund's official factsheet?", a: "On the asset management company's own website, usually under a \"downloads\" or \"factsheets\" section for that scheme, and often through fund-comparison platforms and your broker's app as well." },
     ],
     relatedTool: { label: "Explore Calculators", to: "/calculators" },
   },
@@ -503,7 +546,10 @@ export const LESSONS = [
       "Depreciation is the most commonly overstated part of this exercise. A car bought for ₹8 lakh is typically worth 15–20% less the moment it leaves the showroom, and continues losing value every year after — listing it at its original price can overstate net worth by lakhs on a single asset. The same caution applies to electronics and furniture, which are usually worth including only if the total is genuinely meaningful, given how quickly they lose resale value.",
       "A quarterly check is enough to see the trend without becoming a source of anxiety — checking daily mostly captures market noise in the investment portion, not any real change in financial position. What matters is the direction over several quarters: net worth that's reliably climbing, even slowly, means the underlying habits are working.",
     ],
-    relatedTool: { label: "Try the Net Worth Calculator", to: "/networth-calculator" },
+    relatedTools: [
+      { label: "Try the Net Worth Calculator", to: "/networth-calculator" },
+      { label: "See Your Global Net Worth Percentile", to: "/net-worth-percentile" },
+    ],
   },
   {
     slug: "fire-movement-basics",

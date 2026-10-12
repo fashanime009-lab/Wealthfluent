@@ -1,5 +1,8 @@
+import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import VerdictScale from "./VerdictScale";
 import { TONE_COLOR, TONE_COPY } from "./palette";
+import { trackEvent } from "@/lib/analytics";
 
 /**
  * tone: "go" | "caution" | "stop" — how decisive the computed verdict is
@@ -10,6 +13,17 @@ import { TONE_COLOR, TONE_COPY } from "./palette";
  */
 export default function VerdictResult({ tone = "caution", headline, reasoning, a, b, fmt, children }) {
   const color = TONE_COLOR[tone] ?? TONE_COLOR.caution;
+  const { pathname } = useLocation();
+  const fired = useRef(false);
+
+  // Every verdict page renders this component for its headline answer, so
+  // this is the one place that gives verdict_viewed coverage for all of
+  // them without touching each page individually. Fires once per visit.
+  useEffect(() => {
+    if (fired.current || !headline) return;
+    fired.current = true;
+    trackEvent("verdict_viewed", { verdict_name: pathname.replace(/^\/verdict\//, "").replace(/-/g, "_") || pathname });
+  }, [headline, pathname]);
 
   return (
     <div className="rounded-[2px] border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">

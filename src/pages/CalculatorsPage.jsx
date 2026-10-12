@@ -46,6 +46,7 @@ const CATEGORY_DATA = {
       { title: "Emergency Fund Calculator", desc: "The safety net you need for unexpected expenses.", route: "/emergency-fund-calculator", example: "₹40,000/mo expenses × 6 mo → ₹2.4L", note: "New" },
       { title: "Wealth Age Calculator", desc: "How your net worth and savings rate compare to your age.", route: "/wealth-age-calculator", example: "Compares real age to financial age", note: "New" },
       { title: "Global Net Worth Percentile", desc: "How your net worth compares to the whole world's adults.", route: "/net-worth-percentile", example: "$117,000 → top 10% globally", note: "New" },
+      { title: "Global Income Percentile", desc: "How your annual income compares to the whole world's adults.", route: "/income-percentile", example: "$84,000/yr → top 10% globally", note: "New" },
     ],
   },
   tax: {
