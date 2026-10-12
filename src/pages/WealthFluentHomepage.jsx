@@ -1,5 +1,6 @@
 import Hero from "../components/home/Hero";
 import GlobalRankBanner from "../components/home/GlobalRankBanner";
+import QuestionCards from "../components/home/QuestionCards";
 import FinancialStatusWidget from "../components/home/FinancialStatusWidget";
 import StatsStrip from "../components/home/StatsStrip";
 import CalculatorsSection from "../components/home/calculators/CalculatorsSection";
@@ -30,9 +31,10 @@ export default function WealthFluentHomepage() {
       />
 
       <Hero />
-      <div className="mt-10">
+      <div className="mt-4 sm:mt-10">
         <GlobalRankBanner />
       </div>
+      <QuestionCards />
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8 lg:px-12">
         <FinancialStatusWidget />
       </div>

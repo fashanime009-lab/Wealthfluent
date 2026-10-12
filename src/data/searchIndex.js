@@ -44,7 +44,7 @@ export const searchIndex = [
   { title: "Annual Retirement Income", description: "Estimate sustainable retirement income", path: "/annual-retirement-income", category: "Calculator" },
   { title: "Retirement Investment Tracker", description: "Track investments toward retirement", path: "/retirement-investment-tracker", category: "Calculator" },
   { title: "FIRE Calculator", description: "Financial Independence, Retire Early", path: "/fire-calculator", category: "Calculator" },
-  { title: "Goal Planner", description: "Plan a goal with custom asset allocation", path: "/goal-planner", category: "Calculator" },
+  { title: "Retirement Corpus Planner", description: "Plan a goal with custom asset allocation", path: "/goal-planner", category: "Calculator" },
 
   // Verdicts
   { title: "All Verdicts", description: "Browse every verdict tool", path: "/verdict", category: "Verdict" },

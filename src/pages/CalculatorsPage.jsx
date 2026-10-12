@@ -6,6 +6,7 @@ import { calculatorCategories } from "@/data/calculators";
 import { useSettings } from "@/context/SettingsContext";
 import { formatCurrency } from "@/utils/currency";
 import { USD_CONVERSION_RATES } from "@/services/calculators/globalWealthPercentile";
+import MostPopularRow from "@/components/calculators/MostPopularRow";
 
 // Every `example` below was originally written in INR. Rather than a
 // literal currency-symbol swap (which would leave a "₹30L loan" looking
@@ -68,7 +69,7 @@ const CATEGORY_DATA = {
   wealth: {
     calculators: [
       { title: "Net Worth Calculator", desc: "Assets minus liabilities — your real net worth.", route: "/networth-calculator", example: ({ inr, fmt }) => { const assets = inr(8500000); const liabilities = inr(2200000); return `${fmt(assets)} assets − ${fmt(liabilities)} liabilities → ${fmt(assets - liabilities)}`; } },
-      { title: "Goal Planner", desc: "A savings plan for a target amount with variable allocation.", route: "/goal-planner", example: ({ inr, fmt }) => { const target = inr(5500000); return `${fmt(target)} goal in 12 yrs at 11% → ${fmt(Math.round(target * 0.00334545))}/mo`; } },
+      { title: "Retirement Corpus Planner", desc: "A savings plan for a target amount with variable allocation.", route: "/goal-planner", example: ({ inr, fmt }) => { const target = inr(5500000); return `${fmt(target)} goal in 12 yrs at 11% → ${fmt(Math.round(target * 0.00334545))}/mo`; } },
       { title: "Emergency Fund Calculator", desc: "The safety net you need for unexpected expenses.", route: "/emergency-fund-calculator", example: ({ inr, fmt }) => { const p = inr(40000); return `${fmt(p)}/mo expenses × 6 mo → ${fmt(p * 6)}`; }, note: "New" },
       { title: "Wealth Age Calculator", desc: "How your net worth and savings rate compare to your age.", route: "/wealth-age-calculator", example: "Compares real age to financial age", note: "New" },
       { title: "Global Net Worth Percentile", desc: "How your net worth compares to the whole world's adults.", route: "/net-worth-percentile", example: "$117,000 → top 10% globally", note: "New" },
@@ -158,6 +159,8 @@ export default function CalculatorsPage() {
             Investing, loans, retirement, bonds, inflation and net worth — pick a category or scroll
             the full list. Each one is free and opens straight to the tool, no signup.
           </p>
+
+          <MostPopularRow />
 
           {/* Category filter — plain text tabs, not pills */}
           <div className="mt-9 flex flex-wrap gap-x-6 gap-y-2 border-b border-[#111814]/10 pb-4 dark:border-[#eef1ec]/10">

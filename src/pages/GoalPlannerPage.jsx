@@ -169,13 +169,13 @@ const currency = settings.currency;
   return (
     <>
       <Seo
-        title="Financial Goal Planner – Retirement Planning Tool"
-        description="Plan your retirement with our Financial Goal Planner. Calculate required corpus with variable asset allocation and inflation-adjusted expenses."
+        title="Retirement Corpus Planner – Goal-Based Retirement Calculator"
+        description="Plan the corpus you need to retire, with variable asset allocation and inflation-adjusted expenses. Free retirement goal planner, no signup."
         path="/goal-planner"
-        keywords="goal planner, retirement planning, corpus calculator, financial planning, asset allocation"
+        keywords="retirement corpus planner, goal planner, retirement planning, corpus calculator, financial planning, asset allocation"
         jsonLd={calculatorSchema({
-          name: "Financial Goal Planner",
-          description: "Plan your retirement with our Financial Goal Planner. Calculate required corpus with variable asset allocation and inflation-adjusted expenses.",
+          name: "Retirement Corpus Planner",
+          description: "Plan the corpus you need to retire, with variable asset allocation and inflation-adjusted expenses.",
           path: "/goal-planner",
         })}
       />
@@ -183,7 +183,7 @@ const currency = settings.currency;
         <div className="mx-auto max-w-5xl px-5 py-16 sm:px-8 lg:px-12">
           <CalcHeader
             category="Wealth & Goals"
-            title="Financial Goal Planner"
+            title="Retirement Corpus Planner"
             description="Plan your retirement with variable asset allocation, inflation-adjusted expenses, and retirement contributions."
           />
 

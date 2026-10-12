@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema } from "@/components/seo/schema";
+import MostPopularRow from "@/components/calculators/MostPopularRow";
 
 // Every tool listed here is live — nothing under construction. A "coming
 // soon" placeholder is exactly the kind of thing an AdSense content
@@ -96,6 +97,8 @@ export default function ToolsPage() {
           utilities, and analysis systems built for the way you actually plan, not one formula at
           a time.
         </p>
+
+        <MostPopularRow />
 
         {/* Tools list — plain rows, not a grid of icon cards */}
         <div className="mt-10 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">

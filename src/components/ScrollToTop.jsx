@@ -9,8 +9,19 @@ export default function ScrollToTop() {
   // Separate effect from the scroll logic below (different dependency —
   // this shouldn't re-fire on a same-page hash change, only on an actual
   // new route). No-ops safely if analytics was never enabled/loaded.
+  //
+  // trackPageview reads document.title at call time, but react-helmet-async
+  // commits a new <title> asynchronously (a microtask), not synchronously
+  // during React's own commit phase. Calling trackPageview in the same tick
+  // as this effect risked reading the PREVIOUS route's title (or, on first
+  // load, index.html's static fallback title) instead of the new page's —
+  // which is exactly why GA4 recorded more than one title value for the
+  // same page. A macrotask (setTimeout 0) always runs after any pending
+  // microtask, so by the time this fires, Helmet has already updated
+  // document.title for the new route.
   useEffect(() => {
-    trackPageview(pathname + search);
+    const timeout = setTimeout(() => trackPageview(pathname + search), 0);
+    return () => clearTimeout(timeout);
   }, [pathname, search]);
 
   useEffect(() => {

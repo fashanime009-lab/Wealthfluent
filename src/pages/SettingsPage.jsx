@@ -5,6 +5,7 @@ import SettingsSection from "../components/settings/SettingsSection";
 import CompactNumbersToggle from "../components/settings/CompactNumbersToggle";
 import ThemeToggle from "../components/settings/ThemeToggle";
 import ClearDataControl from "../components/settings/ClearDataControl";
+import SavedResultsList from "../components/settings/SavedResultsList";
 import { useSettings } from "../context/SettingsContext";
 import { currencies } from "../data/currencies";
 
@@ -93,6 +94,13 @@ export default function SettingsPage() {
               description="Customize how FINAIW looks."
             >
               <ThemeToggle />
+            </SettingsSection>
+
+            <SettingsSection
+              title="Saved results"
+              description="Results you've saved from a calculator or verdict, kept only in this browser."
+            >
+              <SavedResultsList />
             </SettingsSection>
 
             <div id="privacy-data" className="scroll-mt-28">

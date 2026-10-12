@@ -46,7 +46,7 @@ const sitemapSections = [
       { name: "Cost of Delay Calculator", path: "/cost-of-delay-calculator", description: "What waiting to invest actually costs" },
       { name: "Lumpsum Calculator", path: "/lumpsum-calculator", description: "What a one-time investment grows to" },
       { name: "Step-Up SIP Calculator", path: "/step-up-sip-calculator", description: "A SIP that increases every year, vs a flat SIP" },
-      { name: "Goal Planner", path: "/goal-planner", description: "Plan with asset allocation" },
+      { name: "Retirement Corpus Planner", path: "/goal-planner", description: "Plan with asset allocation" },
     ],
   },
   {

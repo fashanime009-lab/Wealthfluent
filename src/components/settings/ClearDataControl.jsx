@@ -16,6 +16,7 @@ const CLEARABLE_KEYS = [
   "finaiw-profile",
   "finaiw-history",
   "finaiw-dashboard-preferences",
+  "finaiw-saved-results",
 ];
 
 export default function ClearDataControl() {

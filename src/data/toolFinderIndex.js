@@ -119,11 +119,11 @@ export const TOOL_FINDER_INDEX = [
     keywords: ["net worth", "what am i worth", "assets and liabilities", "how much am i worth"],
   },
   {
-    title: "Goal Planner",
+    title: "Retirement Corpus Planner",
     description: "A savings plan for a target amount with variable allocation.",
     category: "wealth",
     route: "/goal-planner",
-    keywords: ["goal planner", "savings plan", "plan a goal", "save for a house", "save for a wedding", "big purchase plan"],
+    keywords: ["goal planner", "retirement corpus", "savings plan", "plan a goal", "save for a house", "save for a wedding", "big purchase plan"],
   },
   {
     title: "Emergency Fund Calculator",
