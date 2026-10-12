@@ -57,7 +57,7 @@ const decisions = [
     tone: "go",
     a: { label: "Term + invest", value: 2017000 },
     b: { label: "Endowment / ULIP", value: 1395000 },
-    example: "A ₹40,000/yr premium budget over 20 years",
+    example: "A fixed annual premium budget over 20 years",
   },
 ];
 

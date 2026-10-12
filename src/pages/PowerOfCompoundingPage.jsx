@@ -33,6 +33,15 @@ export default function PowerOfCompoundingPage() {
 
   const fmt = (v) => formatCurrency(v, settings.currency);
 
+  // Fixed worked examples for the body copy below, independent of the live
+  // inputs above but currency-aware via fmt().
+  const simpleOf = (p, r, t) => Math.round(p + (p * r * t) / 100);
+  const compoundOf = (p, r, t) => Math.round(p * Math.pow(1 + r / 100, t));
+  const example1Simple = simpleOf(100000, 10, 20);
+  const example1Compound = compoundOf(100000, 10, 20);
+  const example2Simple = simpleOf(100000, 12, 30);
+  const example2Compound = compoundOf(100000, 12, 30);
+
   return (
     <>
       <Seo
@@ -87,8 +96,8 @@ export default function PowerOfCompoundingPage() {
                 side, so the gap between them is something you can actually see rather than take on faith.
               </p>
               <p>
-                Simple interest pays the same rupee amount every year, on the original sum only. Compound interest
-                pays on the original sum plus every rupee it's already earned — so each year's gain is a little
+                Simple interest pays the same amount every year, on the original sum only. Compound interest
+                pays on the original sum plus everything it's already earned — so each year's gain is a little
                 bigger than the one before it, and that effect itself grows over time.
               </p>
             </CalcSection>
@@ -98,22 +107,22 @@ export default function PowerOfCompoundingPage() {
                 Simple = P + (P × R × T) / 100 &nbsp;·&nbsp; Compound = P × (1 + R/100)^T
               </p>
               <p>
-                ₹1 lakh at 10% for 20 years reaches ₹3 lakh under simple interest — a steady ₹10,000 a year, 20
-                times over. Under compound interest, the same inputs reach about ₹6.73 lakh — more than double the
-                simple-interest figure, from the exact same rate and time. That extra ₹3.73 lakh is money earned
+                {fmt(100000)} at 10% for 20 years reaches {fmt(example1Simple)} under simple interest — a steady {fmt(10000)} a year, 20
+                times over. Under compound interest, the same inputs reach about {fmt(example1Compound)} — more than double the
+                simple-interest figure, from the exact same rate and time. That extra {fmt(example1Compound - example1Simple)} is money earned
                 purely because each year's interest went on to earn its own interest.
               </p>
               <p>
                 The gap isn't linear either: at 10 years the compound figure is only modestly ahead of simple; by
-                30 years, compound interest on the same ₹1 lakh at 12% reaches roughly ₹30 lakh against simple
-                interest's ₹4.6 lakh — a gap that keeps widening the longer the money is left alone.
+                30 years, compound interest on the same {fmt(100000)} at 12% reaches roughly {fmt(example2Compound)} against simple
+                interest's {fmt(example2Simple)} — a gap that keeps widening the longer the money is left alone.
               </p>
             </CalcSection>
 
             <CalcSection title="Why this matters for real decisions">
               <CalcBenefitGrid
                 items={[
-                  { title: "Makes 'start early' concrete", text: "Seeing the actual rupee gap, not just the advice, is what makes starting early feel worth the sacrifice it sometimes requires." },
+                  { title: "Makes 'start early' concrete", text: "Seeing the actual gap in your own currency, not just the advice, is what makes starting early feel worth the sacrifice it sometimes requires." },
                   { title: "Shows why rate alone isn't the whole story", text: "A small rate difference matters less over 5 years than over 25 — time is doing most of the work in the compound figure." },
                   { title: "Explains why debt is dangerous the same way", text: "The identical mechanism works against you on a credit card balance, which is why high-interest debt is worth clearing fast." },
                   { title: "A sanity check on 'guaranteed' return claims", text: "If a product's compound growth looks implausibly close to a linear, simple-interest-like line, it's worth asking exactly how the return is actually calculated." },

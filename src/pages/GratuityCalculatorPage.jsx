@@ -19,13 +19,15 @@ import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 // government notification and can change.
 const EXEMPTION_LIMIT = 2000000;
 
-const FAQ_ITEMS = [
-  { q: "What is the gratuity formula in India?", a: "For employees covered under the Payment of Gratuity Act, 1972: Gratuity = (Last drawn basic salary + DA) × 15 × completed years of service ÷ 26. The 26 represents working days in a month under the Act's convention, and 15 represents 15 days' wages per year of service." },
-  { q: "Am I eligible for gratuity?", a: "Generally, yes, after 5 years of continuous service with the same employer, at establishments with 10 or more employees. The 5-year requirement is waived in cases of death or disability. Check your specific employment terms, since some organizations offer gratuity on more generous terms than the legal minimum." },
-  { q: "How are years of service rounded?", a: "A completed year with more than 6 months of service in the final year rounds up to the next full year; 6 months or less rounds down. Someone with 7 years 8 months of service is treated as 8 years; someone with 7 years 4 months is treated as 7." },
-  { q: "Is gratuity taxable?", a: `For private-sector employees covered under the Act, gratuity is tax-exempt up to ₹${(EXEMPTION_LIMIT/100000).toFixed(0)} lakh (the limit is set by government notification and has changed before, so confirm the current figure). Government employees receive full tax exemption. Any amount above the exemption limit is taxed as salary income.` },
-  { q: "What if my employer isn't covered under the Gratuity Act?", a: "A different formula applies: (Last drawn salary × 15 × completed years of service) ÷ 30, using actual days in a month rather than the Act's 26-day convention, and years of service aren't rounded the same way. This calculator uses the Act's formula, which covers most organized-sector employers." },
-];
+function buildFaqItems(fmt) {
+  return [
+    { q: "What is the gratuity formula in India?", a: "For employees covered under the Payment of Gratuity Act, 1972: Gratuity = (Last drawn basic salary + DA) × 15 × completed years of service ÷ 26. The 26 represents working days in a month under the Act's convention, and 15 represents 15 days' wages per year of service." },
+    { q: "Am I eligible for gratuity?", a: "Generally, yes, after 5 years of continuous service with the same employer, at establishments with 10 or more employees. The 5-year requirement is waived in cases of death or disability. Check your specific employment terms, since some organizations offer gratuity on more generous terms than the legal minimum." },
+    { q: "How are years of service rounded?", a: "A completed year with more than 6 months of service in the final year rounds up to the next full year; 6 months or less rounds down. Someone with 7 years 8 months of service is treated as 8 years; someone with 7 years 4 months is treated as 7." },
+    { q: "Is gratuity taxable?", a: `For private-sector employees covered under the Act, gratuity is tax-exempt up to ${fmt(EXEMPTION_LIMIT)} (the limit is set by government notification and has changed before, so confirm the current figure). Government employees receive full tax exemption. Any amount above the exemption limit is taxed as salary income.` },
+    { q: "What if my employer isn't covered under the Gratuity Act?", a: "A different formula applies: (Last drawn salary × 15 × completed years of service) ÷ 30, using actual days in a month rather than the Act's 26-day convention, and years of service aren't rounded the same way. This calculator uses the Act's formula, which covers most organized-sector employers." },
+  ];
+}
 
 export default function GratuityCalculatorPage() {
   const [lastSalary, setLastSalary] = useState(50000);
@@ -37,6 +39,11 @@ export default function GratuityCalculatorPage() {
   const isEligible = years >= 5;
 
   const fmt = (v) => formatCurrency(v, settings.currency);
+  const FAQ_ITEMS = buildFaqItems(fmt);
+
+  const exampleSalary = 50000;
+  const exampleYears = 8;
+  const exampleGratuity = Math.round((exampleSalary * 15 * exampleYears) / 26);
 
   return (
     <>
@@ -84,7 +91,7 @@ export default function GratuityCalculatorPage() {
                   ) : (
                     <div className="border border-[#047857]/25 bg-[#047857]/5 px-6 py-5 dark:border-[#34d399]/25 dark:bg-[#34d399]/5">
                       <p className="text-[13px] text-[#047857] dark:text-[#34d399]">
-                        Fully tax-exempt under the current ₹{(EXEMPTION_LIMIT / 100000).toFixed(0)} lakh limit.
+                        Fully tax-exempt under the current {fmt(EXEMPTION_LIMIT)} limit.
                       </p>
                     </div>
                   )}
@@ -131,8 +138,8 @@ export default function GratuityCalculatorPage() {
                 Gratuity = (Last drawn salary × 15 × Years of service) ÷ 26
               </p>
               <p>
-                "Last drawn salary" means basic pay plus dearness allowance, not your full CTC. A ₹50,000 monthly
-                basic+DA with 8 completed years of service works out to about ₹2,30,769. Years of service are
+                "Last drawn salary" means basic pay plus dearness allowance, not your full CTC. A {fmt(exampleSalary)} monthly
+                basic+DA with {exampleYears} completed years of service works out to about {fmt(exampleGratuity)}. Years of service are
                 rounded: more than 6 months in the final year rounds up to the next full year, 6 months or less
                 rounds down — 12 years 7 months is treated as 13 years, 12 years 4 months as 12.
               </p>

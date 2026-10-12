@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { useSettings } from "../context/SettingsContext";
+import { formatCurrency } from "../utils/currency";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -27,19 +29,14 @@ export default function GSTCalculatorPage() {
   // meta description, search-index entry and sitemap all promise "Add or
   // Remove GST", but only adding was ever implemented.
   const [mode, setMode] = useState("add");
+  const { settings } = useSettings();
 
   const rateFactor = 1 + gstRate / 100;
   const baseAmount = mode === "add" ? amount : amount / rateFactor;
   const totalAmount = mode === "add" ? amount * rateFactor : amount;
   const gstAmount = totalAmount - baseAmount;
 
-  // Format currency
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-IN", {
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-  const fmt = (value) => `₹${formatCurrency(value)}`;
+  const fmt = (value) => formatCurrency(value, settings.currency);
 
   return (
     <>
@@ -164,9 +161,9 @@ export default function GSTCalculatorPage() {
                 GST Amount = (Base Amount × GST Rate) / 100 &nbsp;|&nbsp; Total = Base Amount + GST Amount
               </p>
               <p>
-                For example, a ₹1,000 base amount at 18% GST adds ₹180, for a total of ₹1,180. If you instead have a
-                GST-inclusive price and need to find the base amount, divide by (1 + rate/100): a ₹1,180 inclusive
-                price at 18% GST works back to a ₹1,000 base — the reverse of the forward calculation above.
+                For example, a {fmt(1000)} base amount at 18% GST adds {fmt(180)}, for a total of {fmt(1180)}. If you instead have a
+                GST-inclusive price and need to find the base amount, divide by (1 + rate/100): a {fmt(1180)} inclusive
+                price at 18% GST works back to a {fmt(1000)} base — the reverse of the forward calculation above.
               </p>
             </CalcSection>
 

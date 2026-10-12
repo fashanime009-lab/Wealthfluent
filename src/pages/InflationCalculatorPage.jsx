@@ -46,6 +46,9 @@ export default function InflationCalculatorPage() {
     return 0;
   }, [futureCost, currentExpenses]);
 
+  const example10yr = Math.round(10000 * Math.pow(1.06, 10));
+  const example20yr = Math.round(10000 * Math.pow(1.06, 20));
+
   return (
     <>
       <Seo
@@ -156,10 +159,10 @@ export default function InflationCalculatorPage() {
                 Future Cost = Current Cost × (1 + Inflation Rate/100)^Years
               </p>
               <p>
-                At just 6% annual inflation, something costing ₹10,000 today costs
-                roughly ₹17,900 in 10 years and ₹32,000 in 20 years — which is why
+                At just 6% annual inflation, something costing {fmt(10000)} today costs
+                roughly {fmt(example10yr)} in 10 years and {fmt(example20yr)} in 20 years — which is why
                 a "safe" savings account earning 3-4% is actually losing real value
-                every year, even while the rupee balance keeps growing. Healthcare
+                every year, even while the account balance keeps growing. Healthcare
                 and education costs in particular have historically outpaced
                 general inflation, so goals tied to either deserve a higher
                 assumed rate than everyday expenses.

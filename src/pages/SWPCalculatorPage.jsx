@@ -15,6 +15,31 @@ import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const CAP_YEARS = 75; // a withdrawal plan lasting longer than this is shown as "sustainable indefinitely"
 
+// Shared by the worked example in the body copy below, mirroring the live
+// calculator's own month-by-month simulation so the figures render in
+// whichever currency formatCurrency() is given.
+function swpSimulate(corpus, monthlyWithdrawal, annualRate) {
+  const r = annualRate / 1200;
+  const steadyStateEarnings = corpus * r;
+  if (monthlyWithdrawal <= steadyStateEarnings) return { sustainable: true };
+  let balance = corpus;
+  let months = 0;
+  const capMonths = CAP_YEARS * 12;
+  let totalWithdrawn = 0;
+  while (balance > 0 && months < capMonths) {
+    balance = balance * (1 + r) - monthlyWithdrawal;
+    months++;
+    totalWithdrawn += monthlyWithdrawal;
+  }
+  return {
+    sustainable: false,
+    years: Math.floor(months / 12),
+    remMonths: months % 12,
+    totalWithdrawn,
+    interestEarned: totalWithdrawn - corpus,
+  };
+}
+
 const FAQ_ITEMS = [
   { q: "How is SWP lifespan calculated?", a: "Each month, the withdrawal comes out and the remaining balance earns a month of returns — the same balance compounds and shrinks at once. The calculator simulates this month by month until the balance reaches zero, rather than using a single formula, because the balance itself changes every month." },
   { q: "What does 'sustainable indefinitely' mean?", a: "If your monthly withdrawal is less than or equal to what the corpus earns in an average month, the balance never trends toward zero — withdrawing less than the corpus earns means it can, in principle, keep paying out forever at that rate. Markets don't return a smooth rate every month in reality, so treat this as a best-case read, not a guarantee." },
@@ -30,27 +55,14 @@ export default function SWPCalculatorPage() {
   const { settings } = useSettings();
 
   const result = useMemo(() => {
-    const r = rate / 1200;
-    const steadyStateEarnings = corpus * r;
-    if (monthlyWithdrawal <= steadyStateEarnings) {
-      return { sustainable: true };
-    }
-    let balance = corpus;
-    let months = 0;
-    const capMonths = CAP_YEARS * 12;
-    let totalWithdrawn = 0;
-    while (balance > 0 && months < capMonths) {
-      balance = balance * (1 + r) - monthlyWithdrawal;
-      months++;
-      totalWithdrawn += monthlyWithdrawal;
-    }
-    const years = Math.floor(months / 12);
-    const remMonths = months % 12;
-    const interestEarned = totalWithdrawn - corpus;
-    return { sustainable: false, months, years, remMonths, totalWithdrawn, interestEarned, cappedOut: months >= capMonths };
+    const sim = swpSimulate(corpus, monthlyWithdrawal, rate);
+    return sim.sustainable ? sim : { ...sim, cappedOut: sim.years * 12 + sim.remMonths >= CAP_YEARS * 12 };
   }, [corpus, monthlyWithdrawal, rate]);
 
   const fmt = (v) => formatCurrency(v, settings.currency);
+
+  const exampleCorpus = 5000000;
+  const exampleResult = swpSimulate(exampleCorpus, 35000, 8);
 
   return (
     <>
@@ -139,10 +151,10 @@ export default function SWPCalculatorPage() {
                 Balance = Balance × (1 + monthly rate) − Withdrawal
               </p>
               <p>
-                On a ₹50 lakh corpus with a ₹35,000 monthly withdrawal at 8%, the balance lasts about 38 years and
-                3 months — over that time ₹1.61 crore is withdrawn in total, of which ₹1.11 crore comes from
-                interest and only the original ₹50 lakh from the corpus itself. Drop the withdrawal to ₹30,000 a
-                month on the same corpus and rate, and it becomes sustainable indefinitely — ₹30,000 is below what
+                On a {fmt(exampleCorpus)} corpus with a {fmt(35000)} monthly withdrawal at 8%, the balance lasts about {exampleResult.years} years and
+                {" "}{exampleResult.remMonths} months — over that time {fmt(Math.round(exampleResult.totalWithdrawn))} is withdrawn in total, of which {fmt(Math.round(exampleResult.interestEarned))} comes from
+                interest and only the original {fmt(exampleCorpus)} from the corpus itself. Drop the withdrawal to {fmt(30000)} a
+                month on the same corpus and rate, and it becomes sustainable indefinitely — {fmt(30000)} is below what
                 the corpus earns in an average month, so the balance never trends toward zero.
               </p>
               <p>

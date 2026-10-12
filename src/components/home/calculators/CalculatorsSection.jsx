@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useSettings } from "@/context/SettingsContext";
 import { formatCurrency } from "@/utils/currency";
 import { sipFutureValue, emiBreakdown } from "@/utils/projections";
+import { USD_CONVERSION_RATES } from "@/services/calculators/globalWealthPercentile";
 import useTilt from "@/hooks/useTilt";
 import GrowthChart from "../GrowthChart";
 import { CATEGORY_COLORS } from "@/data/categoryColors";
@@ -18,16 +19,24 @@ const EMI_YEARS = 20;
 // Only "loan" carries a category color and its own instrument panel so
 // far — the rest pick theirs up in the same pass once this one's
 // approved (see design.md).
+//
+// Each `example` was originally written in INR; `inr(rupees)` (built below
+// from the same table the calculators listing page uses) converts it
+// through its real USD value into the viewer's selected currency, instead
+// of a literal currency-symbol swap that would leave, say, a "$85,00,000
+// assets" line looking like a typo rather than a realistic figure.
 const REST = [
-  { title: "FIRE Calculator", desc: "The number you need to retire early.", route: "/fire-calculator", example: "₹6L/yr expenses → ₹1.5Cr FIRE number" },
-  { title: "Net Worth Calculator", desc: "Assets minus liabilities — your real net worth.", route: "/networth-calculator", example: "₹85L assets − ₹22L liabilities → ₹63L" },
-  { title: "CAGR Calculator", desc: "The compound annual growth rate between two values.", route: "/cagr-calculator", example: "₹1L → ₹2L in 5 yrs → 14.9% CAGR" },
-  { title: "Fixed Deposit Calculator", desc: "Maturity value and interest earned on an FD.", route: "/fd-calculator", example: "₹2L at 7% for 5 yrs → ₹2.83L", category: "loan" },
+  { title: "FIRE Calculator", desc: "The number you need to retire early.", route: "/fire-calculator", example: ({ inr, fmt }) => { const p = inr(600000); return `${fmt(p)}/yr expenses → ${fmt(p * 25)} FIRE number`; } },
+  { title: "Net Worth Calculator", desc: "Assets minus liabilities — your real net worth.", route: "/networth-calculator", example: ({ inr, fmt }) => { const assets = inr(8500000); const liabilities = inr(2200000); return `${fmt(assets)} assets − ${fmt(liabilities)} liabilities → ${fmt(assets - liabilities)}`; } },
+  { title: "CAGR Calculator", desc: "The compound annual growth rate between two values.", route: "/cagr-calculator", example: ({ inr, fmt }) => { const p = inr(100000); return `${fmt(p)} → ${fmt(p * 2)} in 5 yrs → 14.9% CAGR`; } },
+  { title: "Fixed Deposit Calculator", desc: "Maturity value and interest earned on an FD.", route: "/fd-calculator", example: ({ inr, fmt }) => { const p = inr(200000); return `${fmt(p)} at 7% for 5 yrs → ${fmt(Math.round(p * 1.415))}`; }, category: "loan" },
 ];
 
 export default function CalculatorsSection() {
   const { settings } = useSettings();
   const fmt = (v) => formatCurrency(v, settings.currency, settings.compactNumbers);
+  const exampleRate = USD_CONVERSION_RATES[settings.currency] ?? 1;
+  const inr = (rupees) => Math.round((rupees * USD_CONVERSION_RATES.INR) / exampleRate);
   const { ref: sipRef, style: sipStyle, onPointerMove: onSipMove, onPointerLeave: onSipLeave } = useTilt();
   const { ref: emiRef, style: emiStyle, onPointerMove: onEmiMove, onPointerLeave: onEmiLeave } = useTilt();
   const loan = CATEGORY_COLORS.loan;
@@ -161,7 +170,7 @@ export default function CalculatorsSection() {
                 <p className="mt-1 max-w-[42ch] text-[13px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/55">{calc.desc}</p>
               </div>
               <div className="min-w-0 sm:text-right">
-                <p className="font-mono-tech text-[13px] tabular-nums text-[#111814]/70 dark:text-[#eef1ec]/70">{calc.example}</p>
+                <p className="font-mono-tech text-[13px] tabular-nums text-[#111814]/70 dark:text-[#eef1ec]/70">{calc.example({ inr, fmt })}</p>
               </div>
             </Link>
           );

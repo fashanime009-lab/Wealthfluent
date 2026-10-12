@@ -18,7 +18,7 @@ const FAQ_ITEMS = [
   { q: "When should I start retirement planning?", a: "Starting early allows investments more time to grow through the power of compounding. The earlier you start, the smaller the monthly investments needed." },
   { q: "How much retirement corpus is enough?", a: "Retirement corpus depends on lifestyle goals, inflation, expenses, and expected retirement age. A common rule is to have 20-30 times your annual expenses." },
   { q: "What is the 4% rule in retirement?", a: "The 4% rule suggests withdrawing 4% of your retirement corpus annually to ensure funds last for 30 years." },
-  { q: "Does this calculator account for inflation?", a: "No — the projected corpus is in nominal (today's rupee) terms. Use the Inflation Calculator alongside this one to see what that corpus is actually worth in real purchasing power by the time you retire." },
+  { q: "Does this calculator account for inflation?", a: "No — the projected corpus is in nominal (today's money) terms. Use the Inflation Calculator alongside this one to see what that corpus is actually worth in real purchasing power by the time you retire." },
   { q: "Should my SIP amount stay fixed until retirement?", a: "Not necessarily — a step-up SIP that increases with your income each year typically reaches a larger corpus than a flat SIP of the same starting amount, since later increases still get years of compounding before retirement." },
 ];
 
@@ -39,6 +39,8 @@ export default function RetirementCalculatorPage() {
 
   // Shared, currency-aware formatter (lakh/crore grouping for INR).
   const fmt = (v) => formatCurrency(v, settings.currency);
+
+  const exampleCorpus = Math.round(sipFutureValue(15000, 25, 12));
 
   return (
     <>
@@ -117,8 +119,8 @@ export default function RetirementCalculatorPage() {
                 Here <strong className="text-[#111814] dark:text-[#eef1ec]">SIP</strong> is your monthly
                 investment, <strong className="text-[#111814] dark:text-[#eef1ec]">r</strong> is the monthly
                 expected return, and <strong className="text-[#111814] dark:text-[#eef1ec]">n</strong> is the total
-                number of months until retirement. A ₹15,000 monthly SIP at 12% annual return over 25 years grows
-                to a corpus well beyond ₹2 crore — most of which comes from compounding on earlier contributions,
+                number of months until retirement. A {fmt(15000)} monthly SIP at 12% annual return over 25 years grows
+                to about {fmt(exampleCorpus)} — most of which comes from compounding on earlier contributions,
                 not the contributions themselves, which is why starting a decade earlier matters more than
                 investing a larger amount later.
               </p>

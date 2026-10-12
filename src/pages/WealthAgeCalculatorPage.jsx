@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { formatCurrency } from "../utils/currency";
+import { USD_CONVERSION_RATES } from "@/services/calculators/globalWealthPercentile";
 import AdSlot from "../components/ads/AdSlot";
 import { useSettings } from "../context/SettingsContext";
 import CalcHeader from "@/components/calculators/CalcHeader";
@@ -11,14 +12,23 @@ import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
-const FIELDS = [
-  { name: "age", label: "Current Age", min: 18, max: 70, step: 1, isAge: true },
-  { name: "monthlyIncome", label: "Monthly Income", min: 5000, max: 1000000, step: 1000 },
-  { name: "monthlySavings", label: "Monthly Savings", min: 0, max: 500000, step: 500 },
-  { name: "investments", label: "Investments", min: 0, max: 10000000, step: 5000 },
-  { name: "debt", label: "Debt", min: 0, max: 10000000, step: 5000 },
-  { name: "monthlyExpenses", label: "Monthly Expenses", min: 0, max: 500000, step: 500 },
-];
+// Field bounds and the scoring thresholds below were originally fixed INR
+// amounts (a hardcoded 1,000,000 net-worth bonus threshold meant "₹10
+// lakh", regardless of what currency was selected) — wrong for anyone not
+// using INR, since e.g. $1,000,000 is a vastly different bar than ₹10 lakh.
+// `inr(rupees)` converts the original rupee figure through its real USD
+// value into the selected currency's own scale, same approach used by the
+// calculators listing page.
+function buildFields(inr) {
+  return [
+    { name: "age", label: "Current Age", min: 18, max: 70, step: 1, isAge: true },
+    { name: "monthlyIncome", label: "Monthly Income", min: inr(5000), max: inr(1000000), step: Math.max(1, inr(1000)) },
+    { name: "monthlySavings", label: "Monthly Savings", min: 0, max: inr(500000), step: Math.max(1, inr(500)) },
+    { name: "investments", label: "Investments", min: 0, max: inr(10000000), step: Math.max(1, inr(5000)) },
+    { name: "debt", label: "Debt", min: 0, max: inr(10000000), step: Math.max(1, inr(5000)) },
+    { name: "monthlyExpenses", label: "Monthly Expenses", min: 0, max: inr(500000), step: Math.max(1, inr(500)) },
+  ];
+}
 
 const FAQ_ITEMS = [
   { q: "What's a good wealth age?", a: "Anything below your real age means your current habits are outpacing what your age alone would predict. There's no universal target — the number is most useful tracked over time against your own past results." },
@@ -31,14 +41,21 @@ export default function WealthAgeCalculatorPage() {
   const currency = settings.currency;
   const fmt = (v) => formatCurrency(v, currency);
 
-  const [formData, setFormData] = useState({
+  const rate = USD_CONVERSION_RATES[currency] ?? 1;
+  const inr = (rupees) => Math.round((rupees * USD_CONVERSION_RATES.INR) / rate);
+  // inr() is a fresh closure each render but is purely a function of
+  // `currency` (via `rate`), so depending on `currency` alone is correct.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const FIELDS = useMemo(() => buildFields(inr), [currency]);
+
+  const [formData, setFormData] = useState(() => ({
     age: 25,
-    monthlyIncome: 50000,
-    monthlySavings: 15000,
-    investments: 300000,
-    debt: 100000,
-    monthlyExpenses: 25000,
-  });
+    monthlyIncome: inr(50000),
+    monthlySavings: inr(15000),
+    investments: inr(300000),
+    debt: inr(100000),
+    monthlyExpenses: inr(25000),
+  }));
 
   const handleChange = (name, rawValue, fallback) => {
     const value = Number(rawValue);
@@ -63,14 +80,14 @@ export default function WealthAgeCalculatorPage() {
     else if (savingsRate >= 20) wealthAge -= 2;
     else wealthAge += 3;
 
-    if (netWorth > 1000000) wealthAge -= 5;
+    if (netWorth > inr(1000000)) wealthAge -= 5;
     if (netWorth < 0) wealthAge += 5;
 
     wealthAge = Math.max(1, wealthAge);
 
     const wealthScore = Math.max(
       1,
-      Math.min(100, Math.round(savingsRate + netWorth / 100000))
+      Math.min(100, Math.round(savingsRate + netWorth / inr(100000)))
     );
 
     let personality;
@@ -84,7 +101,8 @@ export default function WealthAgeCalculatorPage() {
     if (wealthAge > formData.age) status = "Needs Improvement";
 
     return { savingsRate, netWorth, wealthAge, wealthScore, personality, status };
-  }, [formData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData, currency]);
 
   return (
     <>
@@ -253,7 +271,7 @@ export default function WealthAgeCalculatorPage() {
               <p>
                 It isn't a precise actuarial measure — it's a motivational
                 snapshot meant to make savings rate and net worth tangible in a
-                way a raw percentage or rupee figure often doesn't.
+                way a raw percentage or currency figure often doesn't.
               </p>
             </CalcSection>
 
@@ -263,7 +281,7 @@ export default function WealthAgeCalculatorPage() {
                 (monthly savings ÷ monthly income) and your net worth (investments
                 minus debt). A savings rate of 40%+ subtracts 8 years; 30-39%
                 subtracts 5; 20-29% subtracts 2; below 20% adds 3 years. A net
-                worth above ₹10 lakh subtracts a further 5 years, while a negative
+                worth above {fmt(inr(1000000))} subtracts a further 5 years, while a negative
                 net worth adds 5 years. The two adjustments combine, so someone
                 saving aggressively with a strong net worth can show a wealth age
                 well below their real age — and the reverse is true for a high

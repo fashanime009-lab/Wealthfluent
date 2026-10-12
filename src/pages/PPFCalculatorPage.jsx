@@ -19,13 +19,26 @@ import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 const DEFAULT_RATE = 7.1;
 const ANNUAL_LIMIT = 150000;
 
-const FAQ_ITEMS = [
-  { q: "How is PPF interest calculated?", a: "PPF interest is actually computed monthly on the lowest balance between the 5th and the last day of the month, then credited to the account once a year. This calculator simplifies that to annual compounding on your yearly contribution, which is accurate enough for planning but won't match your passbook to the rupee — deposit before the 5th of the month to earn interest on that month's contribution for real." },
-  { q: "What is the PPF contribution limit?", a: "₹1,50,000 per financial year is the current maximum that earns interest and qualifies for an 80C deduction; depositing more doesn't earn additional interest and may be refunded without interest. The minimum is ₹500 a year to keep the account active." },
-  { q: "Can I withdraw from PPF before 15 years?", a: "Partial withdrawal is allowed from the 7th financial year onward, up to a limit tied to the balance a few years prior. The account can also be extended in blocks of 5 years after maturity, either with or without further contributions." },
-  { q: "Is PPF really fully tax-free?", a: "Yes — PPF is one of the few Indian instruments with exempt-exempt-exempt (EEE) tax status: the contribution qualifies for an 80C deduction, the interest earned is tax-free, and the maturity withdrawal is tax-free too. No other common deduction-eligible instrument matches this on all three stages." },
-  { q: "Can I have more than one PPF account?", a: "No — only one PPF account per person is allowed (a separate account can be opened for a minor child, with a combined ₹1.5 lakh limit across both if you're the guardian). Opening a second account in your own name is against the rules and can forfeit the interest on it." },
-];
+// Shared by the worked example in the body copy below, mirroring the live
+// calculator's own year-by-year compounding loop so the figures render in
+// whichever currency formatCurrency() is given.
+function ppfMaturityOf(annualContribution, rate, years) {
+  let balance = 0;
+  for (let i = 0; i < years; i++) {
+    balance = (balance + annualContribution) * (1 + rate / 100);
+  }
+  return Math.round(balance);
+}
+
+function buildFaqItems(fmt) {
+  return [
+    { q: "How is PPF interest calculated?", a: "PPF interest is actually computed monthly on the lowest balance between the 5th and the last day of the month, then credited to the account once a year. This calculator simplifies that to annual compounding on your yearly contribution, which is accurate enough for planning but won't match your passbook exactly — deposit before the 5th of the month to earn interest on that month's contribution for real." },
+    { q: "What is the PPF contribution limit?", a: `${fmt(150000)} per financial year is the current maximum that earns interest and qualifies for an 80C deduction; depositing more doesn't earn additional interest and may be refunded without interest. The minimum is ${fmt(500)} a year to keep the account active.` },
+    { q: "Can I withdraw from PPF before 15 years?", a: "Partial withdrawal is allowed from the 7th financial year onward, up to a limit tied to the balance a few years prior. The account can also be extended in blocks of 5 years after maturity, either with or without further contributions." },
+    { q: "Is PPF really fully tax-free?", a: "Yes — PPF is one of the few Indian instruments with exempt-exempt-exempt (EEE) tax status: the contribution qualifies for an 80C deduction, the interest earned is tax-free, and the maturity withdrawal is tax-free too. No other common deduction-eligible instrument matches this on all three stages." },
+    { q: "Can I have more than one PPF account?", a: `No — only one PPF account per person is allowed (a separate account can be opened for a minor child, with a combined ${fmt(150000)} limit across both if you're the guardian). Opening a second account in your own name is against the rules and can forfeit the interest on it.` },
+  ];
+}
 
 export default function PPFCalculatorPage() {
   const [annualContribution, setAnnualContribution] = useState(150000);
@@ -42,6 +55,11 @@ export default function PPFCalculatorPage() {
   const interestEarned = maturityAmount - totalInvested;
 
   const fmt = (v) => formatCurrency(v, settings.currency);
+  const FAQ_ITEMS = buildFaqItems(fmt);
+
+  const example15yr = ppfMaturityOf(150000, 7.1, 15);
+  const example15yrInvested = 150000 * 15;
+  const example20yr = ppfMaturityOf(150000, 7.1, 20);
 
   return (
     <>
@@ -118,9 +136,9 @@ export default function PPFCalculatorPage() {
                 Each year: Balance = (Balance + Contribution) × (1 + Rate)
               </p>
               <p>
-                Contributing the full ₹1,50,000 a year for 15 years at 7.1% grows to roughly ₹40.68 lakh, from
-                ₹22.5 lakh actually deposited — about ₹18.18 lakh in interest, all of it tax-free. Extending the
-                same contribution for a further 5-year block (20 years total) grows it to roughly ₹66.58 lakh,
+                Contributing the full {fmt(150000)} a year for 15 years at 7.1% grows to roughly {fmt(example15yr)}, from
+                {" "}{fmt(example15yrInvested)} actually deposited — about {fmt(example15yr - example15yrInvested)} in interest, all of it tax-free. Extending the
+                same contribution for a further 5-year block (20 years total) grows it to roughly {fmt(example20yr)},
                 showing how much of PPF's real value comes from staying in past the initial 15-year lock-in rather
                 than withdrawing at the earliest date.
               </p>

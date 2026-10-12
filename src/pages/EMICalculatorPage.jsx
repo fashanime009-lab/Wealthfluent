@@ -13,6 +13,15 @@ import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
+// Shared by the worked examples in the body copy below, mirroring the live
+// calculator's own reducing-balance formula so the figures render in
+// whichever currency formatCurrency() is given.
+function emiOf(principal, annualRate, years) {
+  const r = annualRate / 12 / 100;
+  const n = years * 12;
+  return Math.round(r === 0 ? principal / n : (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
+}
+
 const FAQ_ITEMS = [
   { q: "How is EMI calculated?", a: "EMI depends on loan amount, interest rate, and repayment duration using standard amortization formulas." },
   { q: "What is the difference between a flat rate and a reducing-balance rate?", a: "A flat rate charges interest on the original loan amount for the whole tenure, while a reducing-balance rate charges it only on what you still owe. A flat rate therefore costs much more than the same number quoted as a reducing rate — often close to double once converted. This calculator uses the reducing-balance method that home and most bank loans use, so ask a lender to state its rate on that basis before you compare offers." },
@@ -47,6 +56,18 @@ export default function EMICalculatorPage() {
   const totalInterest = totalPayment - loanAmount;
   const principalShare = totalPayment > 0 ? (loanAmount / totalPayment) * 100 : 0;
   const interestShare = totalPayment > 0 ? (totalInterest / totalPayment) * 100 : 0;
+
+  // Fixed worked examples for the body copy below — a 5 lakh-equivalent
+  // loan at 10%, independent of the live inputs above, but currency-aware.
+  const examplePrincipal = 500000;
+  const exampleEmi5yr = emiOf(examplePrincipal, 10, 5);
+  const exampleEmi3yr = emiOf(examplePrincipal, 10, 3);
+  const exampleEmi7yr = emiOf(examplePrincipal, 10, 7);
+  const exampleEmi10yr = emiOf(examplePrincipal, 10, 10);
+  const exampleInterest3yr = exampleEmi3yr * 36 - examplePrincipal;
+  const exampleInterest5yr = exampleEmi5yr * 60 - examplePrincipal;
+  const exampleInterest7yr = exampleEmi7yr * 84 - examplePrincipal;
+  const exampleInterest10yr = exampleEmi10yr * 120 - examplePrincipal;
 
   return (
     <>
@@ -122,17 +143,17 @@ export default function EMICalculatorPage() {
                 amount, <strong className="text-[#111814] dark:text-[#eef1ec]">R</strong> is the monthly interest
                 rate (annual rate divided by 12, then by 100), and{" "}
                 <strong className="text-[#111814] dark:text-[#eef1ec]">N</strong> is the total number of monthly
-                installments (loan tenure in years × 12). For example, a ₹5,00,000 loan at 10% annual interest over
-                5 years has R = 0.008333 and N = 60, which works out to an EMI of roughly ₹10,624/month — the same
+                installments (loan tenure in years × 12). For example, a {fmt(examplePrincipal)} loan at 10% annual interest over
+                5 years has R = 0.008333 and N = 60, which works out to an EMI of roughly {fmt(exampleEmi5yr)}/month — the same
                 figure the calculator above produces for those inputs.
               </p>
             </CalcSection>
 
             <CalcSection title="EMI example: how tenure changes what you pay">
               <p>
-                On a ₹5,00,000 loan at 10%, the EMI is about ₹16,134 over 3 years, ₹10,624 over 5 years, ₹8,301
-                over 7 years and ₹6,608 over 10 years. The total interest paid moves the other way: roughly
-                ₹80,809, ₹1,37,411, ₹1,97,250 and ₹2,92,904. Stretching a loan from 5 to 10 years lowers the monthly
+                On a {fmt(examplePrincipal)} loan at 10%, the EMI is about {fmt(exampleEmi3yr)} over 3 years, {fmt(exampleEmi5yr)} over 5 years, {fmt(exampleEmi7yr)}
+                over 7 years and {fmt(exampleEmi10yr)} over 10 years. The total interest paid moves the other way: roughly
+                {" "}{fmt(exampleInterest3yr)}, {fmt(exampleInterest5yr)}, {fmt(exampleInterest7yr)} and {fmt(exampleInterest10yr)}. Stretching a loan from 5 to 10 years lowers the monthly
                 burden by about 38% but more than doubles the interest.
               </p>
               <p>

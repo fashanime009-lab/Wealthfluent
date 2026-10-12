@@ -17,9 +17,20 @@ import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 const linkClass =
   "font-semibold text-[#111814] underline decoration-[#111814]/25 underline-offset-4 dark:text-[#eef1ec] dark:decoration-[#eef1ec]/25";
 
+// Shared by the worked examples in the body copy below, mirroring the live
+// calculator's own monthly-compounding formula (and a matching SIP future-
+// value formula for the comparison section) so the figures render in
+// whichever currency formatCurrency() is given.
+const lumpFVOf = (p, annualReturn, years) => Math.round(p * Math.pow(1 + annualReturn / 12 / 100, years * 12));
+const sipFVOf = (monthly, annualReturn, years) => {
+  const r = annualReturn / 12 / 100;
+  const n = years * 12;
+  return Math.round(monthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r));
+};
+
 const FAQ_ITEMS = [
   { q: "What is a lumpsum investment?", a: "A lumpsum investment is a single, one-time investment of a large amount — a bonus, maturity proceeds, or savings — rather than smaller amounts invested regularly. The whole amount starts compounding from day one." },
-  { q: "Is lumpsum better than SIP?", a: "If the money is already available, a steady-return calculation always favours investing it all at once, since every rupee starts earning sooner. A SIP's real advantage isn't a higher return — it's spreading your entry points so you're not investing everything right before a downturn, which a fixed-return calculator like this one can't show." },
+  { q: "Is lumpsum better than SIP?", a: "If the money is already available, a steady-return calculation always favours investing it all at once, since every unit starts earning sooner. A SIP's real advantage isn't a higher return — it's spreading your entry points so you're not investing everything right before a downturn, which a fixed-return calculator like this one can't show." },
   { q: "How is compounding frequency assumed here?", a: "Monthly, to match the convention used by this site's SIP Calculator — so a lumpsum and a SIP result are directly comparable on the same assumption. Some calculators assume annual compounding instead, which gives a slightly different number for the same inputs; always check which convention you're comparing against." },
   { q: "Is lumpsum investment taxed differently from SIP?", a: "No — a lumpsum investment in mutual funds is taxed the same way as SIP units: as capital gains, short or long-term depending on the holding period, not as income. The tax treatment doesn't change based on whether you invested all at once or in installments." },
   { q: "What's a realistic return rate to assume?", a: "That depends entirely on where the lumpsum goes — equity, debt, or a mix. There's no single 'correct' rate; run the calculator at a conservative and an optimistic rate to see the range, rather than trusting one number." },
@@ -42,6 +53,10 @@ export default function LumpsumCalculatorPage() {
   }, [lumpsum, annualReturn, years]);
 
   const fmt = (v) => formatCurrency(v, settings.currency);
+
+  const example1FV = lumpFVOf(100000, 12, 10);
+  const lumpExample = lumpFVOf(600000, 12, 5);
+  const sipExample = sipFVOf(10000, 12, 5);
 
   return (
     <>
@@ -138,8 +153,8 @@ export default function LumpsumCalculatorPage() {
                 12).
               </p>
               <p>
-                For ₹1,00,000 invested at 12% for 10 years: r = 12 ÷ 12 ÷ 100 = 0.01, n = 120 months, so
-                (1.01)^120 ≈ 3.30039 — multiplying by ₹1,00,000 gives about ₹3,30,039, the same figure the
+                For {fmt(100000)} invested at 12% for 10 years: r = 12 ÷ 12 ÷ 100 = 0.01, n = 120 months, so
+                (1.01)^120 ≈ 3.30039 — multiplying by {fmt(100000)} gives about {fmt(example1FV)}, the same figure the
                 calculator above produces for those defaults.
               </p>
               <p>
@@ -154,10 +169,10 @@ export default function LumpsumCalculatorPage() {
 
             <CalcSection title="Lumpsum vs SIP — which is better?">
               <p>
-                With a steady, assumed return, a lumpsum always wins on paper — every rupee starts earning sooner
-                than it would in a SIP's spread-out installments. Investing ₹6,00,000 as a lumpsum for 5 years at
-                12% grows to about ₹10,90,018; the same amount as a ₹10,000 monthly SIP over those 5 years grows to
-                about ₹8,24,864, because most of the money hasn't started earning yet in the early months.
+                With a steady, assumed return, a lumpsum always wins on paper — every unit starts earning sooner
+                than it would in a SIP's spread-out installments. Investing {fmt(600000)} as a lumpsum for 5 years at
+                12% grows to about {fmt(lumpExample)}; the same amount as a {fmt(10000)} monthly SIP over those 5 years grows to
+                about {fmt(sipExample)}, because most of the money hasn't started earning yet in the early months.
               </p>
               <p>
                 But that gap is a property of assuming a smooth, constant return — real markets fall as well as

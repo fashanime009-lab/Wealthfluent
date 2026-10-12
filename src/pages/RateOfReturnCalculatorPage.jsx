@@ -144,7 +144,7 @@ export default function RateOfReturnCalculatorPage() {
                 Rate = [(Future Value / Present Value)^(1/Years) − 1] × 100
               </p>
               <p>
-                For example, ₹10,000 growing to ₹50,000 over 5 years works out to an annualized return of about
+                For example, {fmt(10000)} growing to {fmt(50000)} over 5 years works out to an annualized return of about
                 37.97% — a single number that describes the average annual growth needed to turn the first figure
                 into the second, regardless of how bumpy the actual year-by-year path was.
               </p>

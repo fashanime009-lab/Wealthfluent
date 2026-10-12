@@ -15,7 +15,7 @@ import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const FAQ_ITEMS = [
   { q: "How is RD maturity calculated?", a: "Each monthly deposit compounds from the month it's made until maturity, the same way a SIP does — so the first deposit earns interest for the longest and the last deposit earns almost none. The total maturity value is the sum of all deposits plus all the interest they've individually earned." },
-  { q: "Is RD interest compounded quarterly or monthly?", a: "Most Indian banks compound RD interest quarterly, which gives a very slightly different result from the monthly-compounding figure this calculator shows — usually within a few hundred rupees on a typical RD. Check your bank's specific compounding frequency for an exact figure; this calculator is accurate enough for comparing RD against other options." },
+  { q: "Is RD interest compounded quarterly or monthly?", a: "Most Indian banks compound RD interest quarterly, which gives a very slightly different result from the monthly-compounding figure this calculator shows — usually a small difference on a typical RD. Check your bank's specific compounding frequency for an exact figure; this calculator is accurate enough for comparing RD against other options." },
   { q: "Is RD interest taxable?", a: "Yes — RD interest is added to your taxable income and taxed at your slab rate, the same as FD interest. Banks deduct TDS once interest crosses the threshold set for the year, but tax is owed on the full interest regardless of TDS." },
   { q: "RD or FD — which is better?", a: "An FD suits a lump sum you already have; an RD suits building one up through monthly savings you don't yet have in hand. For the same total amount invested over the same period, FD generally earns slightly more, since the full sum compounds from day one rather than arriving gradually." },
   { q: "What happens if I miss an RD installment?", a: "Most banks charge a small penalty per missed installment, and missing several can lead to the account being closed early on some banks' terms. Check your specific bank's policy before committing to a monthly amount you might not sustain." },
@@ -44,6 +44,14 @@ export default function RDCalculatorPage() {
   const interestEarned = maturityAmount - totalDeposited;
 
   const fmt = (v) => formatCurrency(v, settings.currency);
+
+  const rdMaturityOf = (monthly, annualRate, yrs) => {
+    const n = yrs * 12;
+    const r = annualRate / 1200;
+    return Math.round(r === 0 ? monthly * n : monthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r));
+  };
+  const exampleDeposited = 5000 * 60;
+  const exampleMaturity = rdMaturityOf(5000, 7, 5);
 
   return (
     <>
@@ -117,8 +125,8 @@ export default function RDCalculatorPage() {
                 Here <strong className="text-[#111814] dark:text-[#eef1ec]">R</strong> is the monthly deposit,{" "}
                 <strong className="text-[#111814] dark:text-[#eef1ec]">i</strong> is the monthly interest rate (annual
                 rate ÷ 12), and <strong className="text-[#111814] dark:text-[#eef1ec]">n</strong> is the number of
-                months. A ₹5,000 monthly deposit at 7% for 5 years (60 months) matures at about ₹3,60,053 — ₹3,00,000
-                deposited and about ₹60,053 earned in interest.
+                months. A {fmt(5000)} monthly deposit at 7% for 5 years (60 months) matures at about {fmt(exampleMaturity)} — {fmt(exampleDeposited)}
+                deposited and about {fmt(exampleMaturity - exampleDeposited)} earned in interest.
               </p>
               <p>
                 This calculator compounds monthly for simplicity; most Indian banks actually compound RD interest

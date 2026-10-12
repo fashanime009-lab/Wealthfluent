@@ -13,14 +13,16 @@ import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
-const FAQ_ITEMS = [
-  { q: "How is HRA exemption calculated?", a: "It's the lowest of three figures: the actual HRA you receive, your rent paid minus 10% of basic salary, or 50% of basic salary in a metro city (40% elsewhere) — not simply the rent you pay or the HRA you receive. Whichever of the three is smallest is what you can actually claim." },
-  { q: "Which cities count as metro for HRA?", a: "Delhi, Mumbai, Kolkata and Chennai are treated as metro (50% of basic); every other city, including Bengaluru, Hyderabad and Pune, uses the 40% figure, regardless of local rent levels or cost of living." },
-  { q: "Do I need rent receipts to claim HRA?", a: "Yes — your employer will usually ask for rent receipts, and for rent above ₹1 lakh a year (about ₹8,333/month) your landlord's PAN is also required. Without this documentation, your employer may not apply the exemption when deducting TDS, even if you're genuinely entitled to it." },
-  { q: "Can I claim HRA and a home loan deduction at the same time?", a: "Yes, if you're renting in one city while owning a home (empty, rented out, or occupied by family) elsewhere, or if your own home isn't ready for possession yet. You generally can't claim HRA for rent paid on a home you also live in and claim a home loan deduction for." },
-  { q: "What if I pay rent to a parent or relative?", a: "It's allowed, provided it's genuine — a real rental agreement, actual rent transfers (not just a paper trail), and the relative declares the rent as income on their own return. Tax authorities scrutinise these arrangements more closely than rent paid to an unrelated landlord." },
-  { q: "Does the new tax regime allow HRA exemption?", a: "No — HRA exemption is only available under the old tax regime. Under the new regime, HRA received is fully taxable as salary, which is one of the specific trade-offs to weigh when comparing the two regimes if you pay significant rent." },
-];
+function buildFaqItems(fmt) {
+  return [
+    { q: "How is HRA exemption calculated?", a: "It's the lowest of three figures: the actual HRA you receive, your rent paid minus 10% of basic salary, or 50% of basic salary in a metro city (40% elsewhere) — not simply the rent you pay or the HRA you receive. Whichever of the three is smallest is what you can actually claim." },
+    { q: "Which cities count as metro for HRA?", a: "Delhi, Mumbai, Kolkata and Chennai are treated as metro (50% of basic); every other city, including Bengaluru, Hyderabad and Pune, uses the 40% figure, regardless of local rent levels or cost of living." },
+    { q: "Do I need rent receipts to claim HRA?", a: `Yes — your employer will usually ask for rent receipts, and for rent above ${fmt(100000)} a year (about ${fmt(8333)}/month) your landlord's PAN is also required. Without this documentation, your employer may not apply the exemption when deducting TDS, even if you're genuinely entitled to it.` },
+    { q: "Can I claim HRA and a home loan deduction at the same time?", a: "Yes, if you're renting in one city while owning a home (empty, rented out, or occupied by family) elsewhere, or if your own home isn't ready for possession yet. You generally can't claim HRA for rent paid on a home you also live in and claim a home loan deduction for." },
+    { q: "What if I pay rent to a parent or relative?", a: "It's allowed, provided it's genuine — a real rental agreement, actual rent transfers (not just a paper trail), and the relative declares the rent as income on their own return. Tax authorities scrutinise these arrangements more closely than rent paid to an unrelated landlord." },
+    { q: "Does the new tax regime allow HRA exemption?", a: "No — HRA exemption is only available under the old tax regime. Under the new regime, HRA received is fully taxable as salary, which is one of the specific trade-offs to weigh when comparing the two regimes if you pay significant rent." },
+  ];
+}
 
 export default function HRACalculatorPage() {
   const [basicSalary, setBasicSalary] = useState(40000);
@@ -37,6 +39,14 @@ export default function HRACalculatorPage() {
   const taxableHRA = Math.max(0, hraReceived - exemptHRA);
 
   const fmt = (v) => formatCurrency(v, settings.currency);
+  const FAQ_ITEMS = buildFaqItems(fmt);
+
+  const exampleBasic = 40000;
+  const exampleHra = 20000;
+  const exampleRent = 18000;
+  const exampleOptB = Math.max(0, exampleRent - 0.1 * exampleBasic);
+  const exampleOptC = exampleBasic * 0.5;
+  const exampleExempt = Math.min(exampleHra, exampleOptB, exampleOptC);
 
   return (
     <>
@@ -129,10 +139,10 @@ export default function HRACalculatorPage() {
                 Exempt HRA = min(HRA received, Rent paid − 10% of basic, 50% or 40% of basic)
               </p>
               <p>
-                For example, a ₹40,000 monthly basic salary with ₹20,000 HRA received and ₹18,000 rent paid, in a
-                metro city: HRA received is ₹20,000; rent minus 10% of basic is ₹18,000 − ₹4,000 = ₹14,000; and 50%
-                of basic is ₹20,000. The lowest of the three is ₹14,000 — not the full ₹20,000 HRA received, even
-                though it might look that way at first glance. The remaining ₹6,000 of HRA is taxed as regular
+                For example, a {fmt(exampleBasic)} monthly basic salary with {fmt(exampleHra)} HRA received and {fmt(exampleRent)} rent paid, in a
+                metro city: HRA received is {fmt(exampleHra)}; rent minus 10% of basic is {fmt(exampleRent)} − {fmt(exampleBasic * 0.1)} = {fmt(exampleOptB)}; and 50%
+                of basic is {fmt(exampleOptC)}. The lowest of the three is {fmt(exampleExempt)} — not the full {fmt(exampleHra)} HRA received, even
+                though it might look that way at first glance. The remaining {fmt(exampleHra - exampleExempt)} of HRA is taxed as regular
                 salary.
               </p>
             </CalcSection>
