@@ -17,6 +17,7 @@ export default function RentVsBuyPage() {
   const { settings } = useSettings();
   const currency = settings.currency;
   const fmt = (v) => formatCurrency(v, currency);
+  const content = useMemo(() => RENT_VS_BUY(currency), [currency]);
 
   const [homePrice, setHomePrice] = useState(8000000);
   const [downPaymentPct, setDownPaymentPct] = useState(20);
@@ -60,7 +61,7 @@ export default function RentVsBuyPage() {
           { name: "Verdict", path: "/verdict" },
           { name: "Rent vs Buy Calculator", path: "/verdict/rent-vs-buy" },
         ]),
-        faqSchema(RENT_VS_BUY.faqs.map((f) => ({ question: f.q, answer: f.a }))),
+        faqSchema(content.faqs.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
@@ -114,7 +115,7 @@ export default function RentVsBuyPage() {
         </div>
       </div>
 
-      <VerdictContent content={RENT_VS_BUY} />
+      <VerdictContent content={content} />
     </div>
     </div>
   );

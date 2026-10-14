@@ -16,6 +16,7 @@ export default function LeaseVsBuyPage() {
   const { settings } = useSettings();
   const currency = settings.currency;
   const fmt = (v) => formatCurrency(v, currency);
+  const content = useMemo(() => LEASE_VS_BUY(currency), [currency]);
 
   const [carPrice, setCarPrice] = useState(1200000);
   const [downPaymentPct, setDownPaymentPct] = useState(20);
@@ -55,7 +56,7 @@ export default function LeaseVsBuyPage() {
           { name: "Verdict", path: "/verdict" },
           { name: "Lease vs Buy a Car Calculator", path: "/verdict/lease-vs-buy-car" },
         ]),
-        faqSchema(LEASE_VS_BUY.faqs.map((f) => ({ question: f.q, answer: f.a }))),
+        faqSchema(content.faqs.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
@@ -101,7 +102,7 @@ export default function LeaseVsBuyPage() {
           <AdSlot slotId="verdict_lease_vs_buy_result" />
         </div>
       </div>
-      <VerdictContent content={LEASE_VS_BUY} />
+      <VerdictContent content={content} />
     </div>
     </div>
   );

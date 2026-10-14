@@ -14,6 +14,7 @@ export default function InsuranceNeedPage() {
   const { settings } = useSettings();
   const currency = settings.currency;
   const fmt = (v) => formatCurrency(v, currency);
+  const content = useMemo(() => INSURANCE_NEED(currency), [currency]);
 
   const [annualIncome, setAnnualIncome] = useState(1200000);
   const [incomeReplacementYears, setIncomeReplacementYears] = useState(15);
@@ -45,7 +46,7 @@ export default function InsuranceNeedPage() {
           { name: "Verdict", path: "/verdict" },
           { name: "How Much Term Life Insurance Do You Need?", path: "/verdict/insurance-need" },
         ]),
-        faqSchema(INSURANCE_NEED.faqs.map((f) => ({ question: f.q, answer: f.a }))),
+        faqSchema(content.faqs.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
@@ -78,7 +79,7 @@ export default function InsuranceNeedPage() {
           <AdSlot slotId="verdict_insurance_need_result" />
         </div>
       </div>
-      <VerdictContent content={INSURANCE_NEED} />
+      <VerdictContent content={content} />
     </div>
     </div>
   );

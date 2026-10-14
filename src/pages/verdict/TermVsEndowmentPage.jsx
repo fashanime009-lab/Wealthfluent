@@ -15,6 +15,7 @@ export default function TermVsEndowmentPage() {
   const { settings } = useSettings();
   const currency = settings.currency;
   const fmt = (v) => formatCurrency(v, currency);
+  const content = useMemo(() => TERM_VS_ENDOWMENT(currency), [currency]);
 
   const [annualPremiumBudget, setAnnualPremiumBudget] = useState(40000);
   const [termPremium, setTermPremium] = useState(12000);
@@ -50,7 +51,7 @@ export default function TermVsEndowmentPage() {
           { name: "Verdict", path: "/verdict" },
           { name: "Term Insurance vs Endowment/ULIP", path: "/verdict/term-vs-endowment" },
         ]),
-        faqSchema(TERM_VS_ENDOWMENT.faqs.map((f) => ({ question: f.q, answer: f.a }))),
+        faqSchema(content.faqs.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
@@ -89,7 +90,7 @@ export default function TermVsEndowmentPage() {
           <AdSlot slotId="verdict_term_vs_endowment_result" />
         </div>
       </div>
-      <VerdictContent content={TERM_VS_ENDOWMENT} />
+      <VerdictContent content={content} />
     </div>
     </div>
   );

@@ -17,6 +17,7 @@ export default function DebtVsInvestPage() {
   const { settings } = useSettings();
   const currency = settings.currency;
   const fmt = (v) => formatCurrency(v, currency);
+  const content = useMemo(() => DEBT_VS_INVEST(currency), [currency]);
 
   const [debtBalance, setDebtBalance] = useState(500000);
   const [debtRate, setDebtRate] = useState(16);
@@ -53,7 +54,7 @@ export default function DebtVsInvestPage() {
           { name: "Verdict", path: "/verdict" },
           { name: "Pay Off Debt vs Invest Calculator", path: "/verdict/debt-vs-invest" },
         ]),
-        faqSchema(DEBT_VS_INVEST.faqs.map((f) => ({ question: f.q, answer: f.a }))),
+        faqSchema(content.faqs.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
@@ -103,7 +104,7 @@ export default function DebtVsInvestPage() {
           <AdSlot slotId="verdict_debt_vs_invest_result" />
         </div>
       </div>
-      <VerdictContent content={DEBT_VS_INVEST} />
+      <VerdictContent content={content} />
     </div>
     </div>
   );
