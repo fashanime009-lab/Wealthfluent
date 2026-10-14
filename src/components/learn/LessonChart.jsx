@@ -1,17 +1,41 @@
 import { generateSeries } from "@/utils/chartMath";
 import { formatCurrency } from "@/utils/currency";
+import { useSettings } from "@/context/SettingsContext";
+import { USD_CONVERSION_RATES } from "@/services/calculators/globalWealthPercentile";
 
 const WIDTH = 640;
 const HEIGHT = 240;
 const PAD = { top: 16, right: 16, bottom: 32, left: 54 };
 
-function formatValue(value, unit) {
+function formatValue(value, unit, currency) {
   if (unit === "years") return `${Math.round(value)}y`;
-  return formatCurrency(value, "INR", true);
+  return formatCurrency(value, currency, true);
+}
+
+// Every lesson chart's underlying numbers (gen.principal, bar.value, etc.)
+// were written in INR, same as the lesson prose right next to it. `inr()`
+// converts each one through its real USD value into the viewer's selected
+// currency before the chart is generated/rendered, the same approach used
+// for calculator worked examples (see useExampleCurrency) — otherwise the
+// chart kept showing ₹ regardless of the currency picked in Settings.
+function useChartCurrency() {
+  const { settings } = useSettings();
+  const rate = USD_CONVERSION_RATES[settings.currency] ?? 1;
+  const inr = (rupees) => Math.round((rupees * USD_CONVERSION_RATES.INR) / rate);
+  return { currency: settings.currency, inr };
 }
 
 function GrowthChart({ chart }) {
-  const series = chart.series.map((s) => ({ ...s, points: generateSeries(s.gen) }));
+  const { currency, inr } = useChartCurrency();
+  const convertGen = (gen) => {
+    if (chart.unit !== "INR") return gen;
+    const converted = { ...gen };
+    if (converted.monthly != null) converted.monthly = inr(converted.monthly);
+    if (converted.principal != null) converted.principal = inr(converted.principal);
+    if (converted.annualAmount != null) converted.annualAmount = inr(converted.annualAmount);
+    return converted;
+  };
+  const series = chart.series.map((s) => ({ ...s, points: generateSeries(convertGen(s.gen)) }));
   const allPoints = series.flatMap((s) => s.points);
   const maxX = Math.max(...allPoints.map((p) => p.x));
   const maxY = Math.max(...allPoints.map((p) => p.y)) * 1.08;
@@ -45,7 +69,7 @@ function GrowthChart({ chart }) {
             fontSize="10.5"
             fontFamily="var(--font-mono-tech, monospace)"
           >
-            {formatValue(t, chart.unit)}
+            {formatValue(t, chart.unit, currency)}
           </text>
         </g>
       ))}
@@ -81,7 +105,9 @@ function GrowthChart({ chart }) {
 }
 
 function BarChart({ chart }) {
-  const maxY = Math.max(...chart.bars.map((b) => b.value)) * 1.15;
+  const { currency, inr } = useChartCurrency();
+  const bars = chart.unit === "INR" ? chart.bars.map((b) => ({ ...b, value: inr(b.value) })) : chart.bars;
+  const maxY = Math.max(...bars.map((b) => b.value)) * 1.15;
   const innerW = WIDTH - PAD.left - PAD.right;
   const innerH = HEIGHT - PAD.top - PAD.bottom;
   const gap = innerW / chart.bars.length;
@@ -98,7 +124,7 @@ function BarChart({ chart }) {
         className="stroke-[#111814]/15 dark:stroke-[#eef1ec]/15"
         strokeWidth="1"
       />
-      {chart.bars.map((b, i) => {
+      {bars.map((b, i) => {
         const cx = PAD.left + gap * i + gap / 2;
         const top = sy(b.value);
         return (
@@ -110,7 +136,7 @@ function BarChart({ chart }) {
               height={sy(0) - top}
               rx="2"
               className="fill-[#047857] dark:fill-[#34d399]"
-              opacity={i === 0 ? 1 : 0.55 + (0.45 * (chart.bars.length - 1 - i)) / Math.max(1, chart.bars.length - 1)}
+              opacity={i === 0 ? 1 : 0.55 + (0.45 * (bars.length - 1 - i)) / Math.max(1, bars.length - 1)}
             />
             <text
               x={cx}
@@ -121,7 +147,7 @@ function BarChart({ chart }) {
               fontWeight="600"
               fontFamily="var(--font-mono-tech, monospace)"
             >
-              {formatValue(b.value, chart.unit)}
+              {formatValue(b.value, chart.unit, currency)}
             </text>
             <text
               x={cx}
