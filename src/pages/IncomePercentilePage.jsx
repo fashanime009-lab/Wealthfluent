@@ -40,6 +40,11 @@ export default function IncomePercentilePage() {
   // reasoning as the net worth percentile page's own slider scaling.
   const rate = USD_CONVERSION_RATES[currency] ?? 1;
   const scale = (usd) => Math.round(usd / rate);
+  // The World Inequality Report / IMF reference figures quoted in the
+  // methodology copy below were originally written in USD; usdFmt converts
+  // each one into the selected currency the same way the live calculator's
+  // own numbers do.
+  const usdFmt = (usd) => fmt(scale(usd));
 
   const [income, setIncome] = useState(() => scale(30000));
 
@@ -191,10 +196,10 @@ export default function IncomePercentilePage() {
                 right-skewed data) shaped to match the headline figures in the{" "}
                 <strong className="text-[#111814] dark:text-[#eef1ec]">World Inequality Report 2026</strong>: the
                 poorest half of the world's adults receive about 8% of global income, while the richest 10% receive
-                about 53%. The curve's dollar scale is then anchored using world GDP (PPP) — about $209 trillion,
+                about 53%. The curve's dollar scale is then anchored using world GDP (PPP) — about {formatCurrency(scale(209000000000000), currency, true)},
                 per the IMF's October 2025 World Economic Outlook — divided by roughly 5.6 billion adults worldwide,
-                giving a mean income of about $37,300 a year. Fitting the curve to those figures implies a world
-                median adult income of roughly $13,900 a year — itself an estimate, not a figure either report
+                giving a mean income of about {usdFmt(37300)} a year. Fitting the curve to those figures implies a world
+                median adult income of roughly {usdFmt(13900)} a year — itself an estimate, not a figure either report
                 quotes directly.
               </p>
               <p>

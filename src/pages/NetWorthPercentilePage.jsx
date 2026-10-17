@@ -22,16 +22,18 @@ import ShareResult from "@/components/share/ShareResult";
 import useShareLanding from "@/hooks/useShareLanding";
 import { drawNetWorthShareCard } from "@/components/share/drawNetWorthShareCard";
 
-const FAQ_ITEMS = [
-  { q: "Where do the $15,000 median and $1,000,000 top-1% figures come from?", a: "Both come from the UBS Global Wealth Report 2026, the most current major global wealth-distribution study. It states that just over 41% of the world's adults held under $10,000 in net worth in 2025 — fitting a statistical curve to that (41% below $10,000) and the world's ~57.5 million-strong dollar-millionaire population (almost exactly 1% of all adults) implies a global median net worth of roughly $15,000, with about $1,000,000 still marking the entry point to the wealthiest 1%. Everything in between is estimated from that same curve — not a precise, per-person ranking, since no dataset like that exists." },
-  { q: "Why does so little net worth put me ahead of half the world?", a: "Global wealth is heavily concentrated — a large share of the world's adults have little to no savings or own no property, especially outside high-income countries, while a relatively small share holds a large share of total wealth. Someone with $15,000 in net worth — a modest used car and some savings, say — is already at the world median, which surprises a lot of people in wealthier countries." },
-  { q: "My net worth is negative — what does that mean here?", a: "It means your debts exceed your assets, which this model can't place on the curve (it's mathematically undefined at zero and below). It's also extremely common early in life or career in wealthy countries — student loans, a new mortgage — and says more about life stage and country than lifetime financial trajectory." },
-  { q: "Is this the same as income percentile?", a: "No — this measures net worth (what you own minus what you owe), not annual income. The two are related but genuinely different: a retiree with a paid-off home and modest income can rank far higher on wealth than a high-earning 25-year-old who hasn't had time to accumulate assets yet." },
-  { q: "How is my currency converted for this?", a: "Using a fixed, approximate conversion to US dollars (since the reference data is USD-denominated) — not a live exchange rate. It's accurate enough to place your number on the right part of the global curve, not precise enough to treat as today's actual rate." },
-  { q: "Is this calculator based on the UBS Global Wealth Report?", a: "Yes. The UBS Global Wealth Report 2026 is the source for both reference points this calculator is calibrated against: that just over 41% of the world's adults held under $10,000 in net worth in 2025, and that the world's roughly 57.5 million dollar-millionaires make up almost exactly 1% of all adults. Every percentile in between is a statistical estimate fitted to those two UBS figures, not a number UBS itself publishes." },
-  { q: "What net worth do I need to be in the global top 1%?", a: "Roughly $1,000,000 in net worth — assets minus debts — puts you at the entry point of the world's wealthiest 1% of adults, based on the UBS Global Wealth Report's count of roughly 57.5 million dollar-millionaires worldwide. That threshold is far lower than what's needed to rank in the top 1% within a wealthy country, because the comparison here is against every adult on Earth, most of whom live in lower-income countries." },
-  { q: "How does this compare to a global rich list?", a: "A rich list (like the various billionaire rankings) only names a few thousand people at the extreme top. This calculator instead estimates where an ordinary net worth — $15,000, $100,000, $500,000 — falls among all ~5.5 billion adults worldwide, which is a far more useful comparison for most people than a billionaire list." },
-];
+function buildFaqItems(usdFmt) {
+  return [
+    { q: `Where do the ${usdFmt(15000)} median and ${usdFmt(1000000)} top-1% figures come from?`, a: `Both come from the UBS Global Wealth Report 2026, the most current major global wealth-distribution study. It states that just over 41% of the world's adults held under ${usdFmt(10000)} in net worth in 2025 — fitting a statistical curve to that (41% below ${usdFmt(10000)}) and the world's ~57.5 million-strong dollar-millionaire population (almost exactly 1% of all adults) implies a global median net worth of roughly ${usdFmt(15000)}, with about ${usdFmt(1000000)} still marking the entry point to the wealthiest 1%. Everything in between is estimated from that same curve — not a precise, per-person ranking, since no dataset like that exists.` },
+    { q: "Why does so little net worth put me ahead of half the world?", a: `Global wealth is heavily concentrated — a large share of the world's adults have little to no savings or own no property, especially outside high-income countries, while a relatively small share holds a large share of total wealth. Someone with ${usdFmt(15000)} in net worth — a modest used car and some savings, say — is already at the world median, which surprises a lot of people in wealthier countries.` },
+    { q: "My net worth is negative — what does that mean here?", a: "It means your debts exceed your assets, which this model can't place on the curve (it's mathematically undefined at zero and below). It's also extremely common early in life or career in wealthy countries — student loans, a new mortgage — and says more about life stage and country than lifetime financial trajectory." },
+    { q: "Is this the same as income percentile?", a: "No — this measures net worth (what you own minus what you owe), not annual income. The two are related but genuinely different: a retiree with a paid-off home and modest income can rank far higher on wealth than a high-earning 25-year-old who hasn't had time to accumulate assets yet." },
+    { q: "How is my currency converted for this?", a: "Using a fixed, approximate conversion between currencies (since the reference data is USD-denominated) — not a live exchange rate. It's accurate enough to place your number on the right part of the global curve, not precise enough to treat as today's actual rate." },
+    { q: "Is this calculator based on the UBS Global Wealth Report?", a: `Yes. The UBS Global Wealth Report 2026 is the source for both reference points this calculator is calibrated against: that just over 41% of the world's adults held under ${usdFmt(10000)} in net worth in 2025, and that the world's roughly 57.5 million dollar-millionaires make up almost exactly 1% of all adults. Every percentile in between is a statistical estimate fitted to those two UBS figures, not a number UBS itself publishes.` },
+    { q: "What net worth do I need to be in the global top 1%?", a: `Roughly ${usdFmt(1000000)} in net worth — assets minus debts — puts you at the entry point of the world's wealthiest 1% of adults, based on the UBS Global Wealth Report's count of roughly 57.5 million dollar-millionaires worldwide. That threshold is far lower than what's needed to rank in the top 1% within a wealthy country, because the comparison here is against every adult on Earth, most of whom live in lower-income countries.` },
+    { q: "How does this compare to a global rich list?", a: `A rich list (like the various billionaire rankings) only names a few thousand people at the extreme top. This calculator instead estimates where an ordinary net worth — ${usdFmt(15000)}, ${usdFmt(100000)}, ${usdFmt(500000)} — falls among all ~5.5 billion adults worldwide, which is a far more useful comparison for most people than a billionaire list.` },
+  ];
+}
 
 export default function NetWorthPercentilePage() {
   const { settings } = useSettings();
@@ -45,6 +47,11 @@ export default function NetWorthPercentilePage() {
   // than on a typical single-currency calculator.
   const rate = USD_CONVERSION_RATES[currency] ?? 1;
   const scale = (usd) => Math.round(usd / rate);
+  // The UBS reference figures quoted in the FAQ and methodology copy below
+  // were originally written in USD; usdFmt converts each one into the
+  // selected currency the same way the live calculator's own numbers do.
+  const usdFmt = (usd) => fmt(scale(usd));
+  const FAQ_ITEMS = buildFaqItems(usdFmt);
 
   const [netWorth, setNetWorth] = useState(() => scale(45000));
 
@@ -203,10 +210,10 @@ export default function NetWorthPercentilePage() {
                 uses a statistical curve (a log-normal distribution, the standard model for this kind of
                 right-skewed data) calibrated against two figures from the{" "}
                 <strong className="text-[#111814] dark:text-[#eef1ec]">UBS Global Wealth Report 2026</strong>: just
-                over 41% of the world's adults held under $10,000 in net worth in 2025, and the world's roughly 57.5
-                million dollar-millionaires are almost exactly 1% of all adults, keeping $1,000,000 as the entry
+                over 41% of the world's adults held under {usdFmt(10000)} in net worth in 2025, and the world's roughly 57.5
+                million dollar-millionaires are almost exactly 1% of all adults, keeping {usdFmt(1000000)} as the entry
                 point to the world's wealthiest 1%. Fitting a curve to those two points implies a worldwide median
-                adult net worth of roughly $15,000 — itself an estimate, not a UBS-quoted figure.
+                adult net worth of roughly {usdFmt(15000)} — itself an estimate, not a UBS-quoted figure.
               </p>
               <p>
                 Global wealth is heavily concentrated — a large share of adults worldwide have little to no net

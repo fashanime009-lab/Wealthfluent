@@ -11,6 +11,16 @@ import {
   Wallet,
   Receipt,
 } from "lucide-react";
+import { getReferenceThresholdsUSD } from "@/services/calculators/globalWealthPercentile";
+import { getIncomeReferenceThresholdsUSD } from "@/services/calculators/globalIncomePercentile";
+
+// The net worth / income percentile examples below cite a "top 10%"
+// threshold computed live from the same calibrated model the calculators
+// themselves use, instead of a hand-typed figure that can drift out of
+// sync with the model (it already had — a stale $117,000 sat here while
+// the model's own top-10% threshold had moved to roughly $152,000).
+const NET_WORTH_TOP_10_USD = getReferenceThresholdsUSD().find((t) => t.label === "Top 10%").netWorthUSD;
+const INCOME_TOP_10_USD = getIncomeReferenceThresholdsUSD().find((t) => t.label === "Top 10%").incomeUSD;
 
 // Category metadata shared across the homepage spotlight and the full
 // /calculators listing page so both surfaces stay visually consistent.
@@ -106,8 +116,8 @@ export const CATEGORY_DATA = {
       { title: "Retirement Corpus Planner", desc: "A savings plan for a target amount with variable allocation.", route: "/goal-planner", example: ({ inr, fmt }) => { const target = inr(5500000); return `${fmt(target)} goal in 12 yrs at 11% → ${fmt(Math.round(target * 0.00334545))}/mo`; } },
       { title: "Emergency Fund Calculator", desc: "The safety net you need for unexpected expenses.", route: "/emergency-fund-calculator", example: ({ inr, fmt }) => { const p = inr(40000); return `${fmt(p)}/mo expenses × 6 mo → ${fmt(p * 6)}`; }, note: "New" },
       { title: "Wealth Age Calculator", desc: "How your net worth and savings rate compare to your age.", route: "/wealth-age-calculator", example: "Compares real age to financial age", note: "New" },
-      { title: "Global Net Worth Percentile", desc: "How your net worth compares to the whole world's adults.", route: "/net-worth-percentile", example: "$117,000 → top 10% globally", note: "New" },
-      { title: "Global Income Percentile", desc: "How your annual income compares to the whole world's adults.", route: "/income-percentile", example: "$84,000/yr → top 10% globally", note: "New" },
+      { title: "Global Net Worth Percentile", desc: "How your net worth compares to the whole world's adults.", route: "/net-worth-percentile", example: ({ usd, fmt }) => `${fmt(usd(NET_WORTH_TOP_10_USD))} → top 10% globally`, note: "New" },
+      { title: "Global Income Percentile", desc: "How your annual income compares to the whole world's adults.", route: "/income-percentile", example: ({ usd, fmt }) => `${fmt(usd(INCOME_TOP_10_USD))}/yr → top 10% globally`, note: "New" },
     ],
   },
   tax: {
