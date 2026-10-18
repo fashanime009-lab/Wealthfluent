@@ -178,6 +178,34 @@ export default function PrivacyPolicyPage() {
                 site works exactly the same.
               </p>
               <p>
+                Third-party vendors, including Google, use cookies to serve ads based on a
+                user's prior visits to this website or other websites. Google's use of
+                advertising cookies enables it and its partners to serve ads to our users
+                based on their visit to this site and/or other sites on the Internet.
+              </p>
+              <p>
+                You may opt out of personalized advertising by visiting{" "}
+                <a
+                  href="https://adssettings.google.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className={link}
+                >
+                  Google Ads Settings
+                </a>
+                . Alternatively, you can opt out of a third-party vendor's use of cookies for
+                personalized advertising by visiting{" "}
+                <a
+                  href="https://www.aboutads.info/choices/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className={link}
+                >
+                  www.aboutads.info
+                </a>
+                .
+              </p>
+              <p>
                 You can change your choice at any time from "Cookie Preferences" in the
                 footer, or control cookies through your browser settings.
               </p>
