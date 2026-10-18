@@ -1,3 +1,21 @@
+import { formatCurrency } from "@/utils/currency";
+import { USD_CONVERSION_RATES } from "@/services/calculators/globalWealthPercentile";
+
+// Lesson bodies, chart titles and FAQ answers were originally written with
+// their worked examples in INR, same as every other calculator/verdict
+// example on this site. `currencyHelpers(currency)` converts each one
+// through its real USD value into the viewer's selected currency before
+// rendering — `inr(rupees)` does the conversion, `fmt` compact-formats the
+// result (see useExampleCurrency / verdictContent.js for the same pattern).
+// Lessons with no currency figures in their body just export a plain array
+// instead of a function — LessonPage resolves either shape.
+function currencyHelpers(currency) {
+  const rate = USD_CONVERSION_RATES[currency] ?? 1;
+  const inr = (rupees) => Math.round((rupees * USD_CONVERSION_RATES.INR) / rate);
+  const fmt = (v) => formatCurrency(v, currency, true);
+  return { inr, fmt };
+}
+
 export const LESSONS = [
   {
     slug: "compound-interest",
@@ -5,23 +23,29 @@ export const LESSONS = [
     category: "Core Skill",
     readTime: "6 min",
     summary: "Understand how time, consistency and returns interact — the single most important idea in personal finance.",
-    body: [
-      "Compound interest is what happens when the returns you earn start earning their own returns. Put ₹10,000 into an investment earning 10% a year, and after one year you have ₹11,000. But in year two, you're not earning 10% on ₹10,000 anymore — you're earning it on ₹11,000. The gap between simple and compound growth looks small at first and enormous later.",
-      "This is why the order of your investing decisions matters less than the number of years you stay invested. ₹5,000 invested monthly for 30 years at 12% annual return grows to roughly ₹1.76 crore. Wait just 10 years to start, and investing the same amount for 20 years only gets you to about ₹50 lakh — less than a third, despite investing for two-thirds as many years.",
-      "The practical takeaway: the biggest lever you control isn't picking the perfect investment — it's starting now instead of later. A mediocre investment started today usually beats a great investment started in five years.",
-      "Compounding cuts both ways, though. Debt compounds too. A credit card balance at 36% annual interest grows just as relentlessly as an investment, which is exactly why paying off high-interest debt is often the single highest-return move available to you — see the Pay Off Debt vs Invest tool for the real math on your own numbers.",
-      "Compounding frequency itself makes a measurable difference. ₹1 lakh at 8% for 10 years grows to about ₹2.16 lakh compounded annually, but about ₹2.22 lakh compounded monthly — the same quoted rate, a real difference just from how often interest is added, which is why comparing two products' 'effective annual rate' matters more than comparing their headline rates.",
-      "Debt compounds the same way, just working against you. A ₹50,000 credit card balance left untouched at a typical 36% annual rate (compounded monthly) grows to roughly ₹1,01,640 in two years — more than doubling — which is the clearest illustration of why carrying high-interest debt while also trying to invest rarely makes sense: the debt is compounding faster than most realistic investment returns.",
-      "None of this requires predicting markets or picking the right stock. The two inputs that matter most — starting early and staying consistent — are also the two most within your control, which is exactly why they're worth more attention than the search for a slightly better return.",
-    ],
-    chart: {
-      type: "growth",
-      title: "₹5,000/month at 12% — starting now vs waiting 10 years",
-      unit: "INR",
-      series: [
-        { label: "Start now", tone: "primary", gen: { kind: "sip", monthly: 5000, rate: 12, years: 30 } },
-        { label: "Wait 10 years", tone: "muted", gen: { kind: "sip", monthly: 5000, rate: 12, years: 30, delayYears: 10 } },
-      ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        `Compound interest is what happens when the returns you earn start earning their own returns. Put ${fmt(inr(10000))} into an investment earning 10% a year, and after one year you have ${fmt(inr(11000))}. But in year two, you're not earning 10% on ${fmt(inr(10000))} anymore — you're earning it on ${fmt(inr(11000))}. The gap between simple and compound growth looks small at first and enormous later.`,
+        `This is why the order of your investing decisions matters less than the number of years you stay invested. ${fmt(inr(5000))} invested monthly for 30 years at 12% annual return grows to roughly ${fmt(inr(17600000))}. Wait just 10 years to start, and investing the same amount for 20 years only gets you to about ${fmt(inr(5000000))} — less than a third, despite investing for two-thirds as many years.`,
+        "The practical takeaway: the biggest lever you control isn't picking the perfect investment — it's starting now instead of later. A mediocre investment started today usually beats a great investment started in five years.",
+        "Compounding cuts both ways, though. Debt compounds too. A credit card balance at 36% annual interest grows just as relentlessly as an investment, which is exactly why paying off high-interest debt is often the single highest-return move available to you — see the Pay Off Debt vs Invest tool for the real math on your own numbers.",
+        `Compounding frequency itself makes a measurable difference. ${fmt(inr(100000))} at 8% for 10 years grows to about ${fmt(inr(216000))} compounded annually, but about ${fmt(inr(222000))} compounded monthly — the same quoted rate, a real difference just from how often interest is added, which is why comparing two products' 'effective annual rate' matters more than comparing their headline rates.`,
+        `Debt compounds the same way, just working against you. A ${fmt(inr(50000))} credit card balance left untouched at a typical 36% annual rate (compounded monthly) grows to roughly ${fmt(inr(101640))} in two years — more than doubling — which is the clearest illustration of why carrying high-interest debt while also trying to invest rarely makes sense: the debt is compounding faster than most realistic investment returns.`,
+        "None of this requires predicting markets or picking the right stock. The two inputs that matter most — starting early and staying consistent — are also the two most within your control, which is exactly why they're worth more attention than the search for a slightly better return.",
+      ];
+    },
+    chart: (currency) => {
+      const { fmt } = currencyHelpers(currency);
+      return {
+        type: "growth",
+        title: `${fmt(5000)}/month at 12% — starting now vs waiting 10 years`,
+        unit: "INR",
+        series: [
+          { label: "Start now", tone: "primary", gen: { kind: "sip", monthly: 5000, rate: 12, years: 30 } },
+          { label: "Wait 10 years", tone: "muted", gen: { kind: "sip", monthly: 5000, rate: 12, years: 30, delayYears: 10 } },
+        ],
+      };
     },
     relatedTool: { label: "Try the SIP Calculator", to: "/sip-calculator" },
   },
@@ -31,15 +55,18 @@ export const LESSONS = [
     category: "Beginner",
     readTime: "7 min",
     summary: "Learn the foundations before choosing financial products — what actually differentiates one investment from another.",
-    body: [
-      "Every investment can be understood along three dimensions: expected return, risk, and liquidity. Higher expected returns generally come with higher risk (the chance you lose money) or lower liquidity (how quickly you can access your cash without a penalty). There's no investment that maximizes all three — every choice is a trade-off.",
-      "Fixed deposits sit at one end: low risk, high liquidity (with some penalty for early withdrawal), but modest returns that often barely beat inflation after tax. Equity mutual funds sit further along: higher expected long-term returns, but real short-term volatility — a fund can drop 20-30% in a bad year, even if it averages 12% over a decade.",
-      "The mistake most new investors make isn't picking a 'bad' investment — it's mismatching the investment to the time horizon. Money you need in 12 months has no business in equities; a market downturn right before you need the cash can be devastating. Money you won't touch for 10+ years is often too conservative sitting only in fixed deposits, where inflation quietly erodes its real value.",
-      "A simple starting framework: money needed within 2 years goes in savings accounts or short-term fixed deposits. Money needed in 2-5 years goes in a mix of debt funds and conservative hybrid funds. Money you won't need for 5+ years can reasonably hold meaningful equity exposure, since you have time to ride out volatility.",
-      "To put the framework into rupees: someone with ₹6 lakh in total savings, a ₹1 lakh expense due next year, a ₹2 lakh goal three years out and the remaining ₹3 lakh earmarked for a goal seven years away might split it roughly ₹1 lakh in a savings account or short FD, ₹2 lakh in a debt or conservative hybrid fund, and ₹3 lakh in equity — each bucket sized and invested for when it's actually needed, not all lumped into one product because it's simplest.",
-      "It helps to see the spectrum in numbers rather than labels. A fixed deposit might pay a fairly certain 7% every year. A debt fund might average 7–8% but move a percentage point or two depending on interest rate changes. An equity fund might average 12% over a decade while swinging from -20% in a bad year to +30% in a good one. None of these numbers is guaranteed, but the shape — narrow and steady versus wide and volatile — is the real difference between the products, more than any single year's return.",
-      "A new investor doesn't need to master every product on day one. A reasonable starting point is one instrument per bucket: a savings account or short FD for near-term money, one diversified debt fund, and one broad equity index fund. Complexity can be added later, once the basic habit of matching money to its timeline is in place — starting simple and consistent beats starting with a portfolio too complicated to actually stick with.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "Every investment can be understood along three dimensions: expected return, risk, and liquidity. Higher expected returns generally come with higher risk (the chance you lose money) or lower liquidity (how quickly you can access your cash without a penalty). There's no investment that maximizes all three — every choice is a trade-off.",
+        "Fixed deposits sit at one end: low risk, high liquidity (with some penalty for early withdrawal), but modest returns that often barely beat inflation after tax. Equity mutual funds sit further along: higher expected long-term returns, but real short-term volatility — a fund can drop 20-30% in a bad year, even if it averages 12% over a decade.",
+        "The mistake most new investors make isn't picking a 'bad' investment — it's mismatching the investment to the time horizon. Money you need in 12 months has no business in equities; a market downturn right before you need the cash can be devastating. Money you won't touch for 10+ years is often too conservative sitting only in fixed deposits, where inflation quietly erodes its real value.",
+        "A simple starting framework: money needed within 2 years goes in savings accounts or short-term fixed deposits. Money needed in 2-5 years goes in a mix of debt funds and conservative hybrid funds. Money you won't need for 5+ years can reasonably hold meaningful equity exposure, since you have time to ride out volatility.",
+        `To put the framework into numbers: someone with ${fmt(inr(600000))} in total savings, a ${fmt(inr(100000))} expense due next year, a ${fmt(inr(200000))} goal three years out and the remaining ${fmt(inr(300000))} earmarked for a goal seven years away might split it roughly ${fmt(inr(100000))} in a savings account or short FD, ${fmt(inr(200000))} in a debt or conservative hybrid fund, and ${fmt(inr(300000))} in equity — each bucket sized and invested for when it's actually needed, not all lumped into one product because it's simplest.`,
+        "It helps to see the spectrum in numbers rather than labels. A fixed deposit might pay a fairly certain 7% every year. A debt fund might average 7–8% but move a percentage point or two depending on interest rate changes. An equity fund might average 12% over a decade while swinging from -20% in a bad year to +30% in a good one. None of these numbers is guaranteed, but the shape — narrow and steady versus wide and volatile — is the real difference between the products, more than any single year's return.",
+        "A new investor doesn't need to master every product on day one. A reasonable starting point is one instrument per bucket: a savings account or short FD for near-term money, one diversified debt fund, and one broad equity index fund. Complexity can be added later, once the basic habit of matching money to its timeline is in place — starting simple and consistent beats starting with a portfolio too complicated to actually stick with.",
+      ];
+    },
     relatedTool: { label: "Try the FD Calculator", to: "/fd-calculator" },
   },
   {
@@ -48,15 +75,18 @@ export const LESSONS = [
     category: "Planning",
     readTime: "7 min",
     summary: "Turn a distant, abstract goal into a practical, numbers-based savings system.",
-    body: [
-      "Retirement planning fails most often not because people invest badly, but because they never turn 'I should save for retirement' into an actual number. The first real step is estimating your future monthly expenses — not your current ones. If you spend ₹50,000/month today and retire in 25 years, at 6% inflation that same lifestyle costs roughly ₹2.15 lakh/month by the time you get there.",
-      "The second step is estimating how long retirement needs to last. With life expectancy rising, a 30-year retirement (say, retiring at 60, living to 90) is a realistic planning assumption, not a pessimistic one. That means your retirement corpus doesn't just need to cover your first year of expenses — it needs to keep growing enough to outpace inflation across three full decades of withdrawals.",
-      "Once you have a target corpus, work backward to a monthly SIP. This is where most people are surprised: reaching a ₹4-5 crore retirement corpus is very achievable starting in your late 20s or early 30s with a moderate monthly SIP, but the required monthly amount roughly doubles for every decade you delay starting.",
-      "One overlooked detail: your equity allocation should generally decrease as retirement approaches. Money you'll withdraw within the next 3-5 years shouldn't be sitting in volatile equity — a market downturn right before or during early retirement can permanently damage a retirement plan in a way it wouldn't for a 30-year-old with decades to recover.",
-      "A widely cited starting rule for how much you can withdraw each year is the 4% rule: a corpus roughly 25 times your annual retirement expenses. On the earlier example — ₹2.15 lakh a month, or about ₹25.8 lakh a year, once inflation has been applied — that points to a target corpus of roughly ₹6.45 crore. It's a rough guide from historical market data, not a guarantee, and many planners now suggest a more conservative 3–3.5% for a retirement that could last 30+ years.",
-      "Sequence-of-returns risk is the danger of a market downturn hitting in the first few years of retirement rather than in the middle of your working years. Withdrawing from a shrinking portfolio locks in losses in a way that withdrawing from a growing one doesn't — two retirees with the identical average return over 30 years can end up with very different outcomes purely based on which years the bad returns fell in. This is exactly why the equity share should come down as retirement nears, not just at the point of retiring.",
-      "A practical way to manage that risk in early retirement: keep 2–3 years of expenses in cash or short-term debt, so a market fall doesn't force you to sell equity at a loss to cover that year's spending. Refill that buffer from equity gains in the good years, and lean on it instead of selling in the bad ones — a simple rule that does a lot of the work sequence-of-returns risk would otherwise cause.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        `Retirement planning fails most often not because people invest badly, but because they never turn 'I should save for retirement' into an actual number. The first real step is estimating your future monthly expenses — not your current ones. If you spend ${fmt(inr(50000))}/month today and retire in 25 years, at 6% inflation that same lifestyle costs roughly ${fmt(inr(215000))}/month by the time you get there.`,
+        "The second step is estimating how long retirement needs to last. With life expectancy rising, a 30-year retirement (say, retiring at 60, living to 90) is a realistic planning assumption, not a pessimistic one. That means your retirement corpus doesn't just need to cover your first year of expenses — it needs to keep growing enough to outpace inflation across three full decades of withdrawals.",
+        `Once you have a target corpus, work backward to a monthly SIP. This is where most people are surprised: reaching a ${fmt(inr(40000000))}-${fmt(inr(50000000))} retirement corpus is very achievable starting in your late 20s or early 30s with a moderate monthly SIP, but the required monthly amount roughly doubles for every decade you delay starting.`,
+        "One overlooked detail: your equity allocation should generally decrease as retirement approaches. Money you'll withdraw within the next 3-5 years shouldn't be sitting in volatile equity — a market downturn right before or during early retirement can permanently damage a retirement plan in a way it wouldn't for a 30-year-old with decades to recover.",
+        `A widely cited starting rule for how much you can withdraw each year is the 4% rule: a corpus roughly 25 times your annual retirement expenses. On the earlier example — ${fmt(inr(215000))} a month, or about ${fmt(inr(2580000))} a year, once inflation has been applied — that points to a target corpus of roughly ${fmt(inr(64500000))}. It's a rough guide from historical market data, not a guarantee, and many planners now suggest a more conservative 3–3.5% for a retirement that could last 30+ years.`,
+        "Sequence-of-returns risk is the danger of a market downturn hitting in the first few years of retirement rather than in the middle of your working years. Withdrawing from a shrinking portfolio locks in losses in a way that withdrawing from a growing one doesn't — two retirees with the identical average return over 30 years can end up with very different outcomes purely based on which years the bad returns fell in. This is exactly why the equity share should come down as retirement nears, not just at the point of retiring.",
+        "A practical way to manage that risk in early retirement: keep 2–3 years of expenses in cash or short-term debt, so a market fall doesn't force you to sell equity at a loss to cover that year's spending. Refill that buffer from equity gains in the good years, and lean on it instead of selling in the bad ones — a simple rule that does a lot of the work sequence-of-returns risk would otherwise cause.",
+      ];
+    },
     relatedTool: { label: "Try the Retirement Calculator", to: "/retirement-calculator" },
   },
   {
@@ -88,7 +118,7 @@ export const LESSONS = [
       "This is why 'time in the market' reliably outperforms 'timing the market' for most people. Trying to guess short-term moves means competing with institutional traders who have better information and faster execution than you. Staying invested through cycles means simply capturing the long-term growth trend, which has historically been positive across every major market over sufficiently long periods.",
       "A useful habit: when you read alarming market headlines, ask whether the underlying event actually changes your investment's long-term earning power, or whether it's just short-term noise. Most headlines are noise. Genuine long-term shifts are rarer and usually more obvious in hindsight than they seemed at the time.",
       "It helps to know a few terms you'll see in headlines. An index such as the Nifty 50 or the Sensex tracks a basket of large companies and is used as a summary of the market. A bull market is a sustained rise, and a bear market is commonly defined as a fall of 20% or more from a recent high. A correction is a smaller fall, often around 10%, and these happen fairly regularly even during long-term uptrends, so a dip alone is not a sign that something is broken.",
-      "The price-to-earnings ratio (P/E) divides a share's price by the company's earnings per share, and shows how much investors are paying for each rupee of profit. A high P/E usually means investors expect strong growth, or that the shares are expensive; a low one can mean the opposite, or a business in trouble. It is useful for comparing companies and for seeing whether a market is expensive by its own history, but it is not a reliable tool for timing when to buy or sell.",
+      "The price-to-earnings ratio (P/E) divides a share's price by the company's earnings per share, and shows how much investors are paying for each unit of profit. A high P/E usually means investors expect strong growth, or that the shares are expensive; a low one can mean the opposite, or a business in trouble. It is useful for comparing companies and for seeing whether a market is expensive by its own history, but it is not a reliable tool for timing when to buy or sell.",
       "Two mistakes recur among new investors: buying after a long rally because it feels safe, and selling after a fall because it feels urgent. Both come from following recent price moves instead of a plan. Spreading money across large, mid and small companies, and across equity, debt and other assets, and investing regularly through cycles, reduces the damage from any one wrong decision. Markets reward patience, but only if you're still invested when the recovery comes.",
     ],
     relatedTool: { label: "Explore Calculators", to: "/calculators" },
@@ -99,15 +129,18 @@ export const LESSONS = [
     category: "Foundations",
     readTime: "5 min",
     summary: "The unglamorous first step that makes every other financial goal possible.",
-    body: [
-      "An emergency fund is cash set aside specifically to cover job loss, medical emergencies, or urgent repairs — kept separate from your investments, in something you can access within a day or two without penalty or market risk.",
-      "The standard guidance is 3-6 months of essential expenses, though the right number depends on your situation. Someone with a stable government job and no dependents can reasonably lean toward 3 months. A freelancer or single-income household with dependents should lean toward 6-9 months.",
-      "The most common mistake is treating investments as an emergency fund substitute. Mutual funds can be sold quickly, but if an emergency coincides with a market downturn — which is exactly when layoffs tend to spike — you're forced to sell at a loss precisely when you can least afford it.",
-      "Where to keep it: a high-yield savings account or a liquid/overnight mutual fund, not equity, and not locked in a long-tenure fixed deposit with a heavy early-withdrawal penalty. The goal isn't maximum return here — it's maximum reliability when you need it most.",
-      "To size the fund, add up only your essential monthly costs: rent or EMI, groceries, utilities, insurance premiums, minimum debt payments, school fees and transport to work. If that comes to ₹40,000 a month, six months of cover is ₹2.4 lakh. Leave out dining out, travel and shopping, since those are the first things you would cut in a real emergency.",
-      "That number can feel out of reach, so build it in steps. Aim for one month of expenses first, then three, then your full target, moving a fixed sum into a separate account on salary day. Setting aside ₹10,000 a month reaches ₹2.4 lakh in about two years, before any interest. A small fund you actually have is far more useful than a perfect one you keep postponing.",
-      "Decide in advance what counts as an emergency: a job loss, an unexpected medical bill your insurance doesn't cover, an urgent repair to something you depend on. A sale, a holiday or a new phone don't count. When you do use the fund, treat refilling it as your next financial priority, ahead of increasing investments. Good health insurance and a second household income both reduce how much you need, but they don't remove the need for a buffer.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "An emergency fund is cash set aside specifically to cover job loss, medical emergencies, or urgent repairs — kept separate from your investments, in something you can access within a day or two without penalty or market risk.",
+        "The standard guidance is 3-6 months of essential expenses, though the right number depends on your situation. Someone with a stable government job and no dependents can reasonably lean toward 3 months. A freelancer or single-income household with dependents should lean toward 6-9 months.",
+        "The most common mistake is treating investments as an emergency fund substitute. Mutual funds can be sold quickly, but if an emergency coincides with a market downturn — which is exactly when layoffs tend to spike — you're forced to sell at a loss precisely when you can least afford it.",
+        "Where to keep it: a high-yield savings account or a liquid/overnight mutual fund, not equity, and not locked in a long-tenure fixed deposit with a heavy early-withdrawal penalty. The goal isn't maximum return here — it's maximum reliability when you need it most.",
+        `To size the fund, add up only your essential monthly costs: rent or EMI, groceries, utilities, insurance premiums, minimum debt payments, school fees and transport to work. If that comes to ${fmt(inr(40000))} a month, six months of cover is ${fmt(inr(240000))}. Leave out dining out, travel and shopping, since those are the first things you would cut in a real emergency.`,
+        `That number can feel out of reach, so build it in steps. Aim for one month of expenses first, then three, then your full target, moving a fixed sum into a separate account on salary day. Setting aside ${fmt(inr(10000))} a month reaches ${fmt(inr(240000))} in about two years, before any interest. A small fund you actually have is far more useful than a perfect one you keep postponing.`,
+        "Decide in advance what counts as an emergency: a job loss, an unexpected medical bill your insurance doesn't cover, an urgent repair to something you depend on. A sale, a holiday or a new phone don't count. When you do use the fund, treat refilling it as your next financial priority, ahead of increasing investments. Good health insurance and a second household income both reduce how much you need, but they don't remove the need for a buffer.",
+      ];
+    },
     relatedTool: { label: "Try the Emergency Fund Calculator", to: "/emergency-fund-calculator" },
   },
   {
@@ -116,24 +149,30 @@ export const LESSONS = [
     category: "Foundations",
     readTime: "6 min",
     summary: "Not all debt is equal — how to think about which debt to attack first.",
-    body: [
-      "The single most useful question for any debt is: 'what's the interest rate, and could I reliably beat it by investing instead?' A home loan at 8-9% is often reasonable to pay down slowly while investing surplus cash, because long-term equity returns can realistically exceed that rate. A credit card at 30-40% almost never makes sense to carry while investing elsewhere — no investment reliably beats that.",
-      "When you have multiple debts, two common strategies are the avalanche method (pay off the highest interest rate first, mathematically optimal) and the snowball method (pay off the smallest balance first, for psychological momentum). The avalanche method saves more money; the snowball method is easier for many people to actually stick with. The best method is the one you'll actually follow through on.",
-      "A detail people miss: minimum payments on high-interest debt are structured so a large share goes to interest, not principal, especially early on. This is why minimum-payment-only credit card debt can take years to clear even on a moderate balance — the effective payoff timeline is often far longer than it looks.",
-      "Before taking on new debt, it's worth asking whether it's debt for an appreciating or productive asset (a home, an education with real earning potential) versus debt for a depreciating one (most consumer purchases). The first can be a reasonable tool; the second is usually worth avoiding or minimizing.",
-      "To see the avalanche method in numbers, take three debts: a ₹50,000 credit card at 36%, a ₹1 lakh personal loan at 14%, and a ₹2 lakh education loan at 9%. Avalanche sends every extra rupee to the credit card first — the most expensive debt by far — then the personal loan, then the education loan last, even though it's the largest balance. Because the credit card's rate is two to four times the others, clearing it first saves far more in interest than the order would suggest from the balances alone.",
-      "The snowball method would clear the credit card first too in this example, since it's also the smallest balance — but the two methods diverge when the highest-rate debt isn't the smallest one. If the ₹1 lakh personal loan carried the highest rate instead, avalanche would prioritize it over the smaller credit card balance, while snowball would still clear the smaller balance first for the quick win. Avalanche is mathematically cheaper whenever the highest-rate debt isn't already the smallest.",
-      "A rough gut-check for any debt: multiply the balance by its annual rate to see the yearly cost of carrying it. ₹50,000 at 36% costs about ₹18,000 a year just in interest — money that buys nothing and can't be recovered. Debts above roughly 15–18% are worth attacking aggressively before directing extra cash anywhere else, including investments, since few investments reliably clear that bar after risk and tax.",
-    ],
-    chart: {
-      type: "bar",
-      title: "Same debts, very different yearly cost just from the rate",
-      unit: "INR",
-      bars: [
-        { label: "₹50K card @36%", value: 18000 },
-        { label: "₹1L loan @14%", value: 14000 },
-        { label: "₹2L loan @9%", value: 18000 },
-      ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "The single most useful question for any debt is: 'what's the interest rate, and could I reliably beat it by investing instead?' A home loan at 8-9% is often reasonable to pay down slowly while investing surplus cash, because long-term equity returns can realistically exceed that rate. A credit card at 30-40% almost never makes sense to carry while investing elsewhere — no investment reliably beats that.",
+        "When you have multiple debts, two common strategies are the avalanche method (pay off the highest interest rate first, mathematically optimal) and the snowball method (pay off the smallest balance first, for psychological momentum). The avalanche method saves more money; the snowball method is easier for many people to actually stick with. The best method is the one you'll actually follow through on.",
+        "A detail people miss: minimum payments on high-interest debt are structured so a large share goes to interest, not principal, especially early on. This is why minimum-payment-only credit card debt can take years to clear even on a moderate balance — the effective payoff timeline is often far longer than it looks.",
+        "Before taking on new debt, it's worth asking whether it's debt for an appreciating or productive asset (a home, an education with real earning potential) versus debt for a depreciating one (most consumer purchases). The first can be a reasonable tool; the second is usually worth avoiding or minimizing.",
+        `To see the avalanche method in numbers, take three debts: a ${fmt(inr(50000))} credit card at 36%, a ${fmt(inr(100000))} personal loan at 14%, and a ${fmt(inr(200000))} education loan at 9%. Avalanche sends every extra unit of money to the credit card first — the most expensive debt by far — then the personal loan, then the education loan last, even though it's the largest balance. Because the credit card's rate is two to four times the others, clearing it first saves far more in interest than the order would suggest from the balances alone.`,
+        `The snowball method would clear the credit card first too in this example, since it's also the smallest balance — but the two methods diverge when the highest-rate debt isn't the smallest one. If the ${fmt(inr(100000))} personal loan carried the highest rate instead, avalanche would prioritize it over the smaller credit card balance, while snowball would still clear the smaller balance first for the quick win. Avalanche is mathematically cheaper whenever the highest-rate debt isn't already the smallest.`,
+        `A rough gut-check for any debt: multiply the balance by its annual rate to see the yearly cost of carrying it. ${fmt(inr(50000))} at 36% costs about ${fmt(inr(18000))} a year just in interest — money that buys nothing and can't be recovered. Debts above roughly 15–18% are worth attacking aggressively before directing extra cash anywhere else, including investments, since few investments reliably clear that bar after risk and tax.`,
+      ];
+    },
+    chart: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return {
+        type: "bar",
+        title: "Same debts, very different yearly cost just from the rate",
+        unit: "INR",
+        bars: [
+          { label: `${fmt(inr(50000))} card @36%`, value: 18000 },
+          { label: `${fmt(inr(100000))} loan @14%`, value: 14000 },
+          { label: `${fmt(inr(200000))} loan @9%`, value: 18000 },
+        ],
+      };
     },
     relatedTool: { label: "Try the Debt vs Invest Verdict", to: "/verdict/debt-vs-invest" },
   },
@@ -143,15 +182,18 @@ export const LESSONS = [
     category: "Foundations",
     readTime: "5 min",
     summary: "A simple, durable framework for where your money should go each month.",
-    body: [
-      "The 50/30/20 rule is a reasonable starting framework: roughly 50% of take-home income toward needs (rent, groceries, utilities, minimum debt payments), 30% toward wants (dining out, entertainment, subscriptions), and 20% toward savings and extra debt payoff. It's not a rigid law — high cost-of-living areas often push needs above 50% — but it's a useful sanity check.",
-      "The more durable habit than any specific ratio is paying yourself first: moving your savings/investment amount out of your account automatically, right when income arrives, rather than saving whatever happens to be left at the end of the month. What's 'left over' at month-end has a strong tendency to be very little, no matter how much you earn.",
-      "Tracking expenses for even one month — genuinely writing down or categorizing every rupee spent — is disproportionately useful. Most people significantly underestimate how much goes to a handful of small, frequent categories (food delivery, subscriptions, small impulse purchases) until they actually see the total.",
-      "Budgeting isn't about restriction for its own sake. It's about making sure your spending matches what you actually value, rather than drifting by default — and making sure your future goals get funded before your present wants absorb everything.",
-      "To see the 50/30/20 rule in numbers, take a monthly take-home income of ₹60,000. That suggests about ₹30,000 for needs, ₹18,000 for wants and ₹12,000 for savings and extra debt payments. If your rent and EMIs already take ₹36,000, your needs are 60%, and the honest response is to trim wants, or find a way to raise income, rather than to give up on saving altogether.",
-      "If your income is irregular, as it is for freelancers and commission earners, build the budget around your lowest typical month, not your average. Cover needs and savings from that baseline, and treat anything above it as a bonus that goes first to your emergency fund, then to goals. This stops a strong month from setting a lifestyle you can't sustain in a weak one.",
-      "Two habits make a budget last. First, a fifteen-minute review once a month: compare what you planned with what you spent, and adjust one category, not everything. Second, a waiting rule for non-essential purchases: put anything above an amount you choose on a list for 24 hours first. Many wants fade in that time, and the ones that don't were probably worth buying. Cancel subscriptions you haven't used in a month at the same review.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "The 50/30/20 rule is a reasonable starting framework: roughly 50% of take-home income toward needs (rent, groceries, utilities, minimum debt payments), 30% toward wants (dining out, entertainment, subscriptions), and 20% toward savings and extra debt payoff. It's not a rigid law — high cost-of-living areas often push needs above 50% — but it's a useful sanity check.",
+        "The more durable habit than any specific ratio is paying yourself first: moving your savings/investment amount out of your account automatically, right when income arrives, rather than saving whatever happens to be left at the end of the month. What's 'left over' at month-end has a strong tendency to be very little, no matter how much you earn.",
+        "Tracking expenses for even one month — genuinely writing down or categorizing every unit of money spent — is disproportionately useful. Most people significantly underestimate how much goes to a handful of small, frequent categories (food delivery, subscriptions, small impulse purchases) until they actually see the total.",
+        "Budgeting isn't about restriction for its own sake. It's about making sure your spending matches what you actually value, rather than drifting by default — and making sure your future goals get funded before your present wants absorb everything.",
+        `To see the 50/30/20 rule in numbers, take a monthly take-home income of ${fmt(inr(60000))}. That suggests about ${fmt(inr(30000))} for needs, ${fmt(inr(18000))} for wants and ${fmt(inr(12000))} for savings and extra debt payments. If your rent and EMIs already take ${fmt(inr(36000))}, your needs are 60%, and the honest response is to trim wants, or find a way to raise income, rather than to give up on saving altogether.`,
+        "If your income is irregular, as it is for freelancers and commission earners, build the budget around your lowest typical month, not your average. Cover needs and savings from that baseline, and treat anything above it as a bonus that goes first to your emergency fund, then to goals. This stops a strong month from setting a lifestyle you can't sustain in a weak one.",
+        "Two habits make a budget last. First, a fifteen-minute review once a month: compare what you planned with what you spent, and adjust one category, not everything. Second, a waiting rule for non-essential purchases: put anything above an amount you choose on a list for 24 hours first. Many wants fade in that time, and the ones that don't were probably worth buying. Cancel subscriptions you haven't used in a month at the same review.",
+      ];
+    },
     relatedTool: { label: "Try the SIP Calculator", to: "/sip-calculator" },
   },
   {
@@ -160,23 +202,29 @@ export const LESSONS = [
     category: "Core Skill",
     readTime: "6 min",
     summary: "Why the real enemy of long-term savings isn't market crashes — it's quietly rising prices.",
-    body: [
-      "Inflation is the rate at which prices rise and purchasing power falls. At a modest 6% average inflation, something that costs ₹100 today costs roughly ₹180 in 10 years and ₹320 in 20 years. This is why 'safe' money sitting in a savings account earning 3-4% is actually losing real value every single year — you're growing in rupee terms while shrinking in what those rupees can buy.",
-      "This is the entire argument for taking on some investment risk for long-term goals. Fixed deposits at 6-7% barely keep pace with inflation before tax; after tax, they often lose to it. Equity has historically outpaced inflation by a meaningful margin over long periods precisely because it carries real short-term risk that FDs don't — the extra return is compensation for that risk, not a free lunch.",
-      "Inflation isn't uniform either. Healthcare and education costs in India have historically risen faster than general inflation, often 8-10% a year. If your goals involve either — a child's college fund, a retirement corpus that must cover medical costs — using the general inflation rate to plan will systematically undershoot what you actually need.",
-      "The practical habit: whenever you set a savings target for something more than 5 years away, inflate the target first, then work out the required monthly investment. Planning with today's prices for a goal a decade away is one of the most common and costly mistakes in personal financial planning.",
-      "A quick way to feel inflation's pace is the rule of 72: divide 72 by the inflation rate to estimate how many years prices take to double. At 6% inflation, prices double in about 12 years; at 8% (closer to what healthcare and education have historically run at in India), they double in about 9. A retirement 30 years away, at 6% inflation, sees prices roughly six times over — which is why planning with today's costs badly understates what's actually needed.",
-      "Tax makes the gap worse than it looks. A fixed deposit paying 7% sounds close to keeping up with 6% inflation, but after 30% tax on the interest, the real return drops to about 4.9% nominal — a real loss of roughly 1.1% a year once inflation is accounted for. Money sitting in an FD for a long-term goal isn't just growing slowly; in after-tax, after-inflation terms, it's often shrinking.",
-      "To inflate a target correctly: take today's cost, then compound it forward at your assumed inflation rate for the years until you need it, not the number of years you'll be investing. A ₹20 lakh goal 15 years away, at 7% inflation, needs roughly ₹55 lakh by the time it arrives — treating it as a ₹20 lakh goal and investing accordingly would fall well short.",
-    ],
-    chart: {
-      type: "growth",
-      title: "What today's ₹100 costs later, at 6% vs 8% inflation",
-      unit: "INR",
-      series: [
-        { label: "6% inflation", tone: "primary", gen: { kind: "lumpsum", principal: 100, rate: 6, years: 20 } },
-        { label: "8% inflation", tone: "muted", gen: { kind: "lumpsum", principal: 100, rate: 8, years: 20 } },
-      ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        `Inflation is the rate at which prices rise and purchasing power falls. At a modest 6% average inflation, something that costs ${fmt(inr(100))} today costs roughly ${fmt(inr(180))} in 10 years and ${fmt(inr(320))} in 20 years. This is why 'safe' money sitting in a savings account earning 3-4% is actually losing real value every single year — you're growing in nominal terms while shrinking in what that money can actually buy.`,
+        "This is the entire argument for taking on some investment risk for long-term goals. Fixed deposits at 6-7% barely keep pace with inflation before tax; after tax, they often lose to it. Equity has historically outpaced inflation by a meaningful margin over long periods precisely because it carries real short-term risk that FDs don't — the extra return is compensation for that risk, not a free lunch.",
+        "Inflation isn't uniform either. Healthcare and education costs in India have historically risen faster than general inflation, often 8-10% a year. If your goals involve either — a child's college fund, a retirement corpus that must cover medical costs — using the general inflation rate to plan will systematically undershoot what you actually need.",
+        "The practical habit: whenever you set a savings target for something more than 5 years away, inflate the target first, then work out the required monthly investment. Planning with today's prices for a goal a decade away is one of the most common and costly mistakes in personal financial planning.",
+        "A quick way to feel inflation's pace is the rule of 72: divide 72 by the inflation rate to estimate how many years prices take to double. At 6% inflation, prices double in about 12 years; at 8% (closer to what healthcare and education have historically run at in India), they double in about 9. A retirement 30 years away, at 6% inflation, sees prices roughly six times over — which is why planning with today's costs badly understates what's actually needed.",
+        "Tax makes the gap worse than it looks. A fixed deposit paying 7% sounds close to keeping up with 6% inflation, but after 30% tax on the interest, the real return drops to about 4.9% nominal — a real loss of roughly 1.1% a year once inflation is accounted for. Money sitting in an FD for a long-term goal isn't just growing slowly; in after-tax, after-inflation terms, it's often shrinking.",
+        `To inflate a target correctly: take today's cost, then compound it forward at your assumed inflation rate for the years until you need it, not the number of years you'll be investing. A ${fmt(inr(2000000))} goal 15 years away, at 7% inflation, needs roughly ${fmt(inr(5500000))} by the time it arrives — treating it as a ${fmt(inr(2000000))} goal and investing accordingly would fall well short.`,
+      ];
+    },
+    chart: (currency) => {
+      const { fmt } = currencyHelpers(currency);
+      return {
+        type: "growth",
+        title: `What today's ${fmt(100)} costs later, at 6% vs 8% inflation`,
+        unit: "INR",
+        series: [
+          { label: "6% inflation", tone: "primary", gen: { kind: "lumpsum", principal: 100, rate: 6, years: 20 } },
+          { label: "8% inflation", tone: "muted", gen: { kind: "lumpsum", principal: 100, rate: 8, years: 20 } },
+        ],
+      };
     },
     relatedTool: { label: "Try the Inflation Calculator", to: "/inflation-calculator" },
   },
@@ -186,15 +234,18 @@ export const LESSONS = [
     category: "Foundations",
     readTime: "6 min",
     summary: "The three-digit number that quietly decides your loan rates — and how to actually move it.",
-    body: [
-      "Your credit score (CIBIL in India, typically 300-900) is a summary of how reliably you've repaid past debt. Lenders use it to decide not just whether to approve a loan, but what interest rate to offer — the gap between a 750+ score and a sub-650 score can easily mean 1-2% difference on a home loan, which compounds into lakhs over a 20-year tenure.",
-      "The single biggest factor is payment history: even one missed credit card payment or EMI can meaningfully dent a score, and the effect lingers for months. The second biggest factor is credit utilization — how much of your available credit limit you're actually using. Regularly maxing out a card, even if you pay it off in full every month, can hurt your score more than people expect.",
-      "A common misconception is that having no debt at all gives you a great score. In practice, a thin credit file (no credit cards, no loan history) often produces a mediocre score simply because there's no repayment track record to evaluate. Responsibly using one credit card and paying it in full monthly tends to build a stronger file than avoiding credit entirely.",
-      "Practical moves that actually shift the number: pay every EMI and credit card bill on time, keep utilization under roughly 30% of your limit, avoid applying for multiple loans or cards in a short window (each hard inquiry dings your score slightly), and check your report periodically for errors — incorrect entries from a lender are more common than most people assume.",
-      "The rate gap is easiest to see on a large, long loan. On a ₹50 lakh home loan over 20 years, an 8% rate gives an EMI of about ₹41,822; a 9.5% rate — plausible for a weaker credit score — gives about ₹46,607, or roughly ₹4,785 more every month. Over the full tenure that's about ₹11.5 lakh in extra interest paid, solely from the score being lower, with the same loan amount and the same lender.",
-      "Minimum payments deserve a specific warning. On a ₹50,000 credit card balance at a typical 36% annual rate, paying only the minimum (often 5% of the balance) takes over 9 years to clear and costs more than double the original balance in interest — while every missed or minimum-only month also keeps utilization high, which itself further dents the score. Carrying a credit card balance month to month is expensive in both interest and score terms at once.",
-      "Before a major loan application — a home or car loan especially — it's worth checking your report 2–3 months ahead, not the week before. That gives time to fix any incorrect entries, pay down utilization, and avoid applying for other credit in the meantime, all of which can meaningfully move the number a lender actually sees.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "Your credit score (CIBIL in India, typically 300-900) is a summary of how reliably you've repaid past debt. Lenders use it to decide not just whether to approve a loan, but what interest rate to offer — the gap between a 750+ score and a sub-650 score can easily mean 1-2% difference on a home loan, which compounds into a large sum over a 20-year tenure.",
+        "The single biggest factor is payment history: even one missed credit card payment or EMI can meaningfully dent a score, and the effect lingers for months. The second biggest factor is credit utilization — how much of your available credit limit you're actually using. Regularly maxing out a card, even if you pay it off in full every month, can hurt your score more than people expect.",
+        "A common misconception is that having no debt at all gives you a great score. In practice, a thin credit file (no credit cards, no loan history) often produces a mediocre score simply because there's no repayment track record to evaluate. Responsibly using one credit card and paying it in full monthly tends to build a stronger file than avoiding credit entirely.",
+        "Practical moves that actually shift the number: pay every EMI and credit card bill on time, keep utilization under roughly 30% of your limit, avoid applying for multiple loans or cards in a short window (each hard inquiry dings your score slightly), and check your report periodically for errors — incorrect entries from a lender are more common than most people assume.",
+        `The rate gap is easiest to see on a large, long loan. On a ${fmt(inr(5000000))} home loan over 20 years, an 8% rate gives an EMI of about ${fmt(inr(41822))}; a 9.5% rate — plausible for a weaker credit score — gives about ${fmt(inr(46607))}, or roughly ${fmt(inr(4785))} more every month. Over the full tenure that's about ${fmt(inr(1150000))} in extra interest paid, solely from the score being lower, with the same loan amount and the same lender.`,
+        `Minimum payments deserve a specific warning. On a ${fmt(inr(50000))} credit card balance at a typical 36% annual rate, paying only the minimum (often 5% of the balance) takes over 9 years to clear and costs more than double the original balance in interest — while every missed or minimum-only month also keeps utilization high, which itself further dents the score. Carrying a credit card balance month to month is expensive in both interest and score terms at once.`,
+        "Before a major loan application — a home or car loan especially — it's worth checking your report 2–3 months ahead, not the week before. That gives time to fix any incorrect entries, pay down utilization, and avoid applying for other credit in the meantime, all of which can meaningfully move the number a lender actually sees.",
+      ];
+    },
     relatedTool: { label: "Explore Calculators", to: "/calculators" },
   },
   {
@@ -203,15 +254,18 @@ export const LESSONS = [
     category: "Guide",
     readTime: "7 min",
     summary: "Why relying only on your employer's health cover is a riskier bet than it feels like.",
-    body: [
-      "Employer-provided health insurance is convenient but temporary by definition — it disappears the moment you change jobs, get laid off, or retire, often exactly when you're least prepared to arrange new cover quickly. A personal health policy, held independently of your job, is what actually protects you across career changes and into retirement.",
-      "Sum insured matters more than most people budget for. Metro-city hospitalization costs have risen sharply, and a ₹3-5 lakh cover that felt adequate a decade ago can be exhausted by a single serious hospitalization today. A common rule of thumb is a base cover of at least ₹5-10 lakh per person in a metro, topped up with a super top-up policy for a fraction of the cost of raising the base sum insured directly.",
-      "Waiting periods are the detail that catches people off guard: most policies exclude pre-existing conditions for 2-4 years and have initial waiting periods for specific illnesses. Buying health insurance while young and healthy — before a condition exists to be 'pre-existing' — is one of the few financial moves where waiting genuinely costs you, rather than helps you.",
-      "Before comparing premiums, compare claim settlement ratio, network hospital coverage in your city, and whether the policy covers modern treatment methods like day-care procedures. The cheapest policy that denies or delays a real claim is far more expensive than a slightly pricier one that pays out reliably.",
-      "To see why sum insured matters, consider a serious hospitalization costing ₹6 lakh in a metro city. A ₹3 lakh base policy covers half, leaving ₹3 lakh to pay out of pocket — exactly the gap a super top-up is designed to close. A ₹5 lakh base plus a ₹10 lakh super top-up (which typically activates once claims cross the base sum insured, called the deductible) covers the same ₹6 lakh bill in full, often for a fraction of what a ₹15 lakh base-only policy would cost.",
-      "Co-payment is a detail worth checking before you buy: some policies, especially employer group covers and senior-citizen plans, require you to pay a fixed percentage of every claim (commonly 10–20%) regardless of the sum insured. On a ₹4 lakh claim with a 20% co-pay, that's ₹80,000 out of pocket even with cover in place — a cost that's easy to miss until a real claim arrives.",
-      "A rule worth following literally: buy an independent policy in the same year you start earning, even a modest one, rather than waiting until you 'need' it more. Every year of waiting is a year where a new condition could turn into a pre-existing one, and the waiting-period clock only starts once you actually hold the policy.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "Employer-provided health insurance is convenient but temporary by definition — it disappears the moment you change jobs, get laid off, or retire, often exactly when you're least prepared to arrange new cover quickly. A personal health policy, held independently of your job, is what actually protects you across career changes and into retirement.",
+        `Sum insured matters more than most people budget for. Metro-city hospitalization costs have risen sharply, and a ${fmt(inr(300000))}-${fmt(inr(500000))} cover that felt adequate a decade ago can be exhausted by a single serious hospitalization today. A common rule of thumb is a base cover of at least ${fmt(inr(500000))}-${fmt(inr(1000000))} per person in a metro, topped up with a super top-up policy for a fraction of the cost of raising the base sum insured directly.`,
+        "Waiting periods are the detail that catches people off guard: most policies exclude pre-existing conditions for 2-4 years and have initial waiting periods for specific illnesses. Buying health insurance while young and healthy — before a condition exists to be 'pre-existing' — is one of the few financial moves where waiting genuinely costs you, rather than helps you.",
+        "Before comparing premiums, compare claim settlement ratio, network hospital coverage in your city, and whether the policy covers modern treatment methods like day-care procedures. The cheapest policy that denies or delays a real claim is far more expensive than a slightly pricier one that pays out reliably.",
+        `To see why sum insured matters, consider a serious hospitalization costing ${fmt(inr(600000))} in a metro city. A ${fmt(inr(300000))} base policy covers half, leaving ${fmt(inr(300000))} to pay out of pocket — exactly the gap a super top-up is designed to close. A ${fmt(inr(500000))} base plus a ${fmt(inr(1000000))} super top-up (which typically activates once claims cross the base sum insured, called the deductible) covers the same ${fmt(inr(600000))} bill in full, often for a fraction of what a ${fmt(inr(1500000))} base-only policy would cost.`,
+        `Co-payment is a detail worth checking before you buy: some policies, especially employer group covers and senior-citizen plans, require you to pay a fixed percentage of every claim (commonly 10–20%) regardless of the sum insured. On a ${fmt(inr(400000))} claim with a 20% co-pay, that's ${fmt(inr(80000))} out of pocket even with cover in place — a cost that's easy to miss until a real claim arrives.`,
+        "A rule worth following literally: buy an independent policy in the same year you start earning, even a modest one, rather than waiting until you 'need' it more. Every year of waiting is a year where a new condition could turn into a pre-existing one, and the waiting-period clock only starts once you actually hold the policy.",
+      ];
+    },
     relatedTool: { label: "Try the Term Insurance Verdict", to: "/verdict/insurance-need" },
   },
   {
@@ -220,15 +274,18 @@ export const LESSONS = [
     category: "Beginner",
     readTime: "7 min",
     summary: "Equity, debt, hybrid, index — a map of the mutual fund landscape before you pick one.",
-    body: [
-      "Equity mutual funds invest primarily in company shares and suit long-term goals (5+ years), given their volatility. Within equity, large-cap funds hold established, relatively stable companies; mid- and small-cap funds hold smaller, higher-growth-potential but more volatile companies. Most long-term portfolios are built primarily around large-cap and flexi-cap exposure, with smaller allocations to mid/small-cap for extra growth potential.",
-      "Debt mutual funds invest in bonds and money-market instruments, offering more stability and liquidity than equity but lower expected returns — generally used for short-to-medium-term goals (under 3-5 years) or as the stable portion of a portfolio. Hybrid funds blend both in varying proportions, aiming for a middle ground between growth and stability.",
-      "Index funds simply track a market index (like the Nifty 50) rather than having a manager pick stocks. They charge much lower fees than actively managed funds, and over long periods, a large share of actively managed funds fail to beat their benchmark index after fees — which is why index funds have become a popular 'default' core holding, especially for large-cap exposure.",
-      "The practical filter before choosing any fund: match the fund category to your time horizon and risk tolerance first, then compare expense ratio and long-term (5-10 year) performance within that category — not the best 1-year return, which says very little about a fund's actual quality or repeatability.",
-      "A fund's price is called its NAV (Net Asset Value) — what one unit is worth that day. Investing ₹10,000 at a NAV of ₹50 buys 200 units; if the NAV later rises to ₹65, those 200 units are worth ₹13,000. The NAV itself going up or down by a large or small number means nothing on its own — a fund at NAV ₹1,000 isn't 'expensive' compared to one at NAV ₹20; only the percentage change and the underlying holdings matter.",
-      "Every fund also comes in a direct and a regular plan, holding identical underlying investments but charging different fees — the regular plan pays a distributor commission baked into a higher expense ratio, typically 0.5–1% more a year. On a long-term SIP, that gap compounds into a real sum over decades, which is why a direct plan is usually the better default for anyone comfortable choosing funds without an advisor's ongoing guidance.",
-      "Reading a fund's category name correctly avoids a common mistake: 'large-cap fund' and 'large & mid-cap fund' sound similar but carry different volatility, and a 'hybrid aggressive' fund holds far more equity than a 'hybrid conservative' one despite both being labelled hybrid. The category name is a starting filter, not a substitute for checking what the fund actually holds.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "Equity mutual funds invest primarily in company shares and suit long-term goals (5+ years), given their volatility. Within equity, large-cap funds hold established, relatively stable companies; mid- and small-cap funds hold smaller, higher-growth-potential but more volatile companies. Most long-term portfolios are built primarily around large-cap and flexi-cap exposure, with smaller allocations to mid/small-cap for extra growth potential.",
+        "Debt mutual funds invest in bonds and money-market instruments, offering more stability and liquidity than equity but lower expected returns — generally used for short-to-medium-term goals (under 3-5 years) or as the stable portion of a portfolio. Hybrid funds blend both in varying proportions, aiming for a middle ground between growth and stability.",
+        "Index funds simply track a market index (like the Nifty 50) rather than having a manager pick stocks. They charge much lower fees than actively managed funds, and over long periods, a large share of actively managed funds fail to beat their benchmark index after fees — which is why index funds have become a popular 'default' core holding, especially for large-cap exposure.",
+        "The practical filter before choosing any fund: match the fund category to your time horizon and risk tolerance first, then compare expense ratio and long-term (5-10 year) performance within that category — not the best 1-year return, which says very little about a fund's actual quality or repeatability.",
+        `A fund's price is called its NAV (Net Asset Value) — what one unit is worth that day. Investing ${fmt(inr(10000))} at a NAV of ${fmt(inr(50))} buys 200 units; if the NAV later rises to ${fmt(inr(65))}, those 200 units are worth ${fmt(inr(13000))}. The NAV itself going up or down by a large or small number means nothing on its own — a fund at NAV ${fmt(inr(1000))} isn't 'expensive' compared to one at NAV ${fmt(inr(20))}; only the percentage change and the underlying holdings matter.`,
+        "Every fund also comes in a direct and a regular plan, holding identical underlying investments but charging different fees — the regular plan pays a distributor commission baked into a higher expense ratio, typically 0.5–1% more a year. On a long-term SIP, that gap compounds into a real sum over decades, which is why a direct plan is usually the better default for anyone comfortable choosing funds without an advisor's ongoing guidance.",
+        "Reading a fund's category name correctly avoids a common mistake: 'large-cap fund' and 'large & mid-cap fund' sound similar but carry different volatility, and a 'hybrid aggressive' fund holds far more equity than a 'hybrid conservative' one despite both being labelled hybrid. The category name is a starting filter, not a substitute for checking what the fund actually holds.",
+      ];
+    },
     table: {
       columns: ["Fund type", "Typical risk", "Typical horizon", "Primary role in a portfolio"],
       rows: [
@@ -289,23 +346,29 @@ export const LESSONS = [
     category: "Planning",
     readTime: "7 min",
     summary: "The EMI is only the headline number — here's what actually determines the total cost.",
-    body: [
-      "A home loan EMI is calculated from three inputs: principal, interest rate, and tenure. Extending tenure lowers the EMI but sharply increases total interest paid — stretching a loan from 15 to 25 years might cut the EMI by roughly a third, while nearly doubling the total interest paid over the loan's life. Tenure should be chosen based on genuine affordability, not just to minimize the monthly number.",
-      "Floating rate loans move with the broader interest rate environment (linked to an external benchmark like the repo rate in India), while fixed rates stay constant for a period but are usually set higher upfront to compensate the lender for that certainty. Most long-tenure home loans in India are floating rate, since a fixed rate over 15-20 years is rare and typically comes at a real premium.",
-      "Prepayment — paying extra toward principal beyond the scheduled EMI — is one of the highest-value moves available on a home loan, especially in the early years when most of each EMI goes to interest rather than principal. Even a modest annual lump-sum prepayment (like a bonus) can meaningfully cut both total interest paid and the effective loan tenure.",
-      "Before signing, look past the headline interest rate to the processing fee, prepayment/foreclosure charges (many loans now waive these for floating-rate loans by regulation, but it's worth confirming), and whether the rate is linked transparently to an external benchmark rather than an opaque internal one that the lender can adjust with less visibility.",
-      "The tenure trade-off is easy to underestimate until it's in rupees. A ₹40 lakh loan at 8.5% over 15 years has an EMI of about ₹39,390 and total interest of roughly ₹30.9 lakh; the same loan over 25 years drops the EMI to about ₹32,209 but total interest rises to roughly ₹56.6 lakh — a longer tenure saves about ₹7,000 a month while costing an extra ₹25.7 lakh over the loan's life.",
-      "Because early EMIs are mostly interest, prepaying in the first few years has outsized impact. A lump sum applied in year 2 of a 20-year loan reduces principal while nearly two decades of interest on that amount are still ahead — the same prepayment made in year 18 saves far less, since most of the interest on that portion has already been paid. This is why 'prepay early, even in small amounts' beats 'save up a bigger prepayment for later.'",
-      "Two structurally similar-sounding options are actually very different: reducing the EMI while keeping the tenure the same after a prepayment saves comparatively little interest, while reducing the tenure while keeping the EMI the same saves substantially more — most lenders default to the EMI-reduction option unless you specifically request the tenure-reduction one.",
-    ],
-    chart: {
-      type: "bar",
-      title: "₹40L loan at 8.5% — total interest paid, by tenure",
-      unit: "INR",
-      bars: [
-        { label: "15 years", value: 3090000 },
-        { label: "25 years", value: 5660000 },
-      ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "A home loan EMI is calculated from three inputs: principal, interest rate, and tenure. Extending tenure lowers the EMI but sharply increases total interest paid — stretching a loan from 15 to 25 years might cut the EMI by roughly a third, while nearly doubling the total interest paid over the loan's life. Tenure should be chosen based on genuine affordability, not just to minimize the monthly number.",
+        "Floating rate loans move with the broader interest rate environment (linked to an external benchmark like the repo rate in India), while fixed rates stay constant for a period but are usually set higher upfront to compensate the lender for that certainty. Most long-tenure home loans in India are floating rate, since a fixed rate over 15-20 years is rare and typically comes at a real premium.",
+        "Prepayment — paying extra toward principal beyond the scheduled EMI — is one of the highest-value moves available on a home loan, especially in the early years when most of each EMI goes to interest rather than principal. Even a modest annual lump-sum prepayment (like a bonus) can meaningfully cut both total interest paid and the effective loan tenure.",
+        "Before signing, look past the headline interest rate to the processing fee, prepayment/foreclosure charges (many loans now waive these for floating-rate loans by regulation, but it's worth confirming), and whether the rate is linked transparently to an external benchmark rather than an opaque internal one that the lender can adjust with less visibility.",
+        `The tenure trade-off is easy to underestimate until it's in real numbers. A ${fmt(inr(4000000))} loan at 8.5% over 15 years has an EMI of about ${fmt(inr(39390))} and total interest of roughly ${fmt(inr(3090000))}; the same loan over 25 years drops the EMI to about ${fmt(inr(32209))} but total interest rises to roughly ${fmt(inr(5660000))} — a longer tenure saves about ${fmt(inr(7000))} a month while costing an extra ${fmt(inr(2570000))} over the loan's life.`,
+        "Because early EMIs are mostly interest, prepaying in the first few years has outsized impact. A lump sum applied in year 2 of a 20-year loan reduces principal while nearly two decades of interest on that amount are still ahead — the same prepayment made in year 18 saves far less, since most of the interest on that portion has already been paid. This is why 'prepay early, even in small amounts' beats 'save up a bigger prepayment for later.'",
+        "Two structurally similar-sounding options are actually very different: reducing the EMI while keeping the tenure the same after a prepayment saves comparatively little interest, while reducing the tenure while keeping the EMI the same saves substantially more — most lenders default to the EMI-reduction option unless you specifically request the tenure-reduction one.",
+      ];
+    },
+    chart: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return {
+        type: "bar",
+        title: `${fmt(inr(4000000))} loan at 8.5% — total interest paid, by tenure`,
+        unit: "INR",
+        bars: [
+          { label: "15 years", value: 3090000 },
+          { label: "25 years", value: 5660000 },
+        ],
+      };
     },
     relatedTool: { label: "Try the EMI Calculator", to: "/emi-calculator" },
   },
@@ -315,24 +378,30 @@ export const LESSONS = [
     category: "Beginner",
     readTime: "6 min",
     summary: "Low-cost tracking beats stock-picking more often than most investors expect — but not always.",
-    body: [
-      "An index fund simply buys every company in an index (like the Nifty 50) in proportion to its weight, with no manager trying to pick winners. An actively managed fund pays a manager to select stocks aiming to beat that same index — and charges a meaningfully higher expense ratio for the attempt, often 1-1.5% more per year.",
-      "That fee gap compounds. On a ₹10 lakh investment held for 20 years, a 1.5% higher expense ratio can quietly cost several lakh rupees in reduced final value, even before asking whether the fund actually beat its benchmark. Over long periods, a large share of actively managed large-cap funds fail to beat their benchmark index after fees — which is exactly why index funds have become a popular default core holding.",
-      "This isn't true everywhere, though. In less-tracked, less-efficient corners of the market — small-cap and mid-cap segments in India, for instance — skilled active managers have more historically demonstrated room to add value, since there's more mispricing for research to uncover. The efficient-market argument for indexing is strongest at the large-cap level.",
-      "A reasonable middle path many investors use: index funds or ETFs for large-cap/flexi-cap exposure where beating the benchmark is hardest, and selectively active funds for mid-cap, small-cap, or thematic exposure where genuine skill has more room to show up — rather than treating it as an all-or-nothing choice.",
-      "Index funds aren't identical to the index they follow. The gap between the fund's return and the index's return is called tracking difference, and it's roughly the fund's expense ratio plus small frictions; tracking error measures how much that gap wobbles from month to month. Both are on the factsheet, and among funds tracking the same index, the one with the lower expense ratio and tighter tracking is the better product — the returns are otherwise the same by design.",
-      "To see how much the fee gap matters, assume both funds earn 12% a year before costs and the active fund charges 1.5% more. On ₹10 lakh for 20 years, the index fund grows to roughly ₹96 lakh and the active fund to roughly ₹74 lakh — about ₹23 lakh less, purely from cost. The active fund has to beat the index by that margin every year, after fees, just to break even with it.",
-      "When judging an active fund, compare it with the index fund for its own benchmark over 5 to 10 years, net of fees — not with other active funds, which only tells you who was best among the ones trying. A single strong year is weak evidence, since past outperformance often doesn't repeat. And check that you're comparing the same plan type: direct plans narrow the fee gap by removing distributor commission.",
-      "A workable way to decide: choose index funds if you want low cost and little monitoring, especially for large-cap exposure; consider an active fund only where you can name why the manager should win — a less efficient segment, a long consistent record against the benchmark, a reasonable expense ratio — and review it regularly. Neither choice is a mistake in itself; paying active fees for a fund that just tracks the index quietly, is.",
-    ],
-    chart: {
-      type: "growth",
-      title: "₹10L for 20 years — index fund (12%) vs active fund (10.5% after fees)",
-      unit: "INR",
-      series: [
-        { label: "Index fund", tone: "primary", gen: { kind: "lumpsum", principal: 1000000, rate: 12, years: 20 } },
-        { label: "Active fund", tone: "muted", gen: { kind: "lumpsum", principal: 1000000, rate: 10.5, years: 20 } },
-      ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "An index fund simply buys every company in an index (like the Nifty 50) in proportion to its weight, with no manager trying to pick winners. An actively managed fund pays a manager to select stocks aiming to beat that same index — and charges a meaningfully higher expense ratio for the attempt, often 1-1.5% more per year.",
+        `That fee gap compounds. On a ${fmt(inr(1000000))} investment held for 20 years, a 1.5% higher expense ratio can quietly cost a large share of the reduced final value, even before asking whether the fund actually beat its benchmark. Over long periods, a large share of actively managed large-cap funds fail to beat their benchmark index after fees — which is exactly why index funds have become a popular default core holding.`,
+        "This isn't true everywhere, though. In less-tracked, less-efficient corners of the market — small-cap and mid-cap segments in India, for instance — skilled active managers have more historically demonstrated room to add value, since there's more mispricing for research to uncover. The efficient-market argument for indexing is strongest at the large-cap level.",
+        "A reasonable middle path many investors use: index funds or ETFs for large-cap/flexi-cap exposure where beating the benchmark is hardest, and selectively active funds for mid-cap, small-cap, or thematic exposure where genuine skill has more room to show up — rather than treating it as an all-or-nothing choice.",
+        "Index funds aren't identical to the index they follow. The gap between the fund's return and the index's return is called tracking difference, and it's roughly the fund's expense ratio plus small frictions; tracking error measures how much that gap wobbles from month to month. Both are on the factsheet, and among funds tracking the same index, the one with the lower expense ratio and tighter tracking is the better product — the returns are otherwise the same by design.",
+        `To see how much the fee gap matters, assume both funds earn 12% a year before costs and the active fund charges 1.5% more. On ${fmt(inr(1000000))} for 20 years, the index fund grows to roughly ${fmt(inr(9600000))} and the active fund to roughly ${fmt(inr(7400000))} — about ${fmt(inr(2300000))} less, purely from cost. The active fund has to beat the index by that margin every year, after fees, just to break even with it.`,
+        "When judging an active fund, compare it with the index fund for its own benchmark over 5 to 10 years, net of fees — not with other active funds, which only tells you who was best among the ones trying. A single strong year is weak evidence, since past outperformance often doesn't repeat. And check that you're comparing the same plan type: direct plans narrow the fee gap by removing distributor commission.",
+        "A workable way to decide: choose index funds if you want low cost and little monitoring, especially for large-cap exposure; consider an active fund only where you can name why the manager should win — a less efficient segment, a long consistent record against the benchmark, a reasonable expense ratio — and review it regularly. Neither choice is a mistake in itself; paying active fees for a fund that just tracks the index quietly, is.",
+      ];
+    },
+    chart: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return {
+        type: "growth",
+        title: `${fmt(inr(1000000))} for 20 years — index fund (12%) vs active fund (10.5% after fees)`,
+        unit: "INR",
+        series: [
+          { label: "Index fund", tone: "primary", gen: { kind: "lumpsum", principal: 1000000, rate: 12, years: 20 } },
+          { label: "Active fund", tone: "muted", gen: { kind: "lumpsum", principal: 1000000, rate: 10.5, years: 20 } },
+        ],
+      };
     },
     relatedTool: { label: "Try the SIP Calculator", to: "/sip-calculator" },
   },
@@ -342,15 +411,18 @@ export const LESSONS = [
     category: "Guide",
     readTime: "6 min",
     summary: "Pure protection, no savings component — why term insurance beats endowment plans for most people.",
-    body: [
-      "Term insurance pays a lump sum to your family if you die during the policy period — nothing else. No maturity payout if you survive the term, which is exactly why it's so cheap: a healthy 30-year-old can often get ₹1 crore of cover for roughly ₹10,000-15,000 a year, a fraction of what an endowment or money-back plan charges for similar cover.",
-      "Endowment and money-back plans bundle insurance with a savings component, and the bundling is the problem: the investment portion inside these plans typically returns far less than what you'd earn investing the premium difference yourself in mutual funds or PPF, while the insurance portion still costs you real money. You end up with mediocre insurance and mediocre investing, instead of good versions of either.",
-      "The right cover amount is typically framed as a multiple of income needed to replace your earnings for your dependents — commonly 10-15x annual income, adjusted for existing loans (a term plan large enough to also clear an outstanding home loan protects your family from inheriting that liability) and how many years of expenses your family would need covered.",
-      "Buy term insurance while young and healthy: premiums are locked in at issue based on your age and health then, and a health condition that develops later can make cover far more expensive or harder to get at all. This is one of the few financial products where 'I'll get to it later' has a real, compounding cost.",
-      "The needs-based method — income to replace, plus loans and goals, minus savings and existing cover — usually lands on a much larger number than the common '10x income' rule of thumb. On this site's own How Much Term Insurance Do You Need? tool, a ₹12 lakh income replaced for 15 years, plus ₹30 lakh in loans and ₹20 lakh of future goals, comes to a ₹2.3 crore need; against ₹20 lakh already saved and covered, the actual gap is ₹2.1 crore — well above the ₹1.2 crore that '10x income' alone would suggest, because a flat multiple can't see the specific loans or goals.",
-      "A healthy 30-year-old buying ₹2 crore of term cover for roughly ₹10,000–15,000 a year is paying a premium calculated almost entirely on mortality risk — the insurer's cost of the small chance of paying out early. An endowment plan offering similar cover charges many times that, because most of the premium funds a savings component with a modest, often single-digit return, not because the insurance itself is meaningfully more expensive to provide.",
-      "Riders — optional add-ons like critical illness or accidental death cover — can extend a term policy usefully, but each one adds cost and its own conditions and exclusions. It's worth pricing the base cover and each rider separately, and buying only the riders that fill a real gap (such as no separate health cover) rather than the full bundle by default.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        `Term insurance pays a lump sum to your family if you die during the policy period — nothing else. No maturity payout if you survive the term, which is exactly why it's so cheap: a healthy 30-year-old can often get ${fmt(inr(10000000))} of cover for roughly ${fmt(inr(10000))}-${fmt(inr(15000))} a year, a fraction of what an endowment or money-back plan charges for similar cover.`,
+        "Endowment and money-back plans bundle insurance with a savings component, and the bundling is the problem: the investment portion inside these plans typically returns far less than what you'd earn investing the premium difference yourself in mutual funds or PPF, while the insurance portion still costs you real money. You end up with mediocre insurance and mediocre investing, instead of good versions of either.",
+        "The right cover amount is typically framed as a multiple of income needed to replace your earnings for your dependents — commonly 10-15x annual income, adjusted for existing loans (a term plan large enough to also clear an outstanding home loan protects your family from inheriting that liability) and how many years of expenses your family would need covered.",
+        "Buy term insurance while young and healthy: premiums are locked in at issue based on your age and health then, and a health condition that develops later can make cover far more expensive or harder to get at all. This is one of the few financial products where 'I'll get to it later' has a real, compounding cost.",
+        `The needs-based method — income to replace, plus loans and goals, minus savings and existing cover — usually lands on a much larger number than the common '10x income' rule of thumb. On this site's own How Much Term Insurance Do You Need? tool, a ${fmt(inr(1200000))} income replaced for 15 years, plus ${fmt(inr(3000000))} in loans and ${fmt(inr(2000000))} of future goals, comes to a ${fmt(inr(23000000))} need; against ${fmt(inr(2000000))} already saved and covered, the actual gap is ${fmt(inr(21000000))} — well above the ${fmt(inr(12000000))} that '10x income' alone would suggest, because a flat multiple can't see the specific loans or goals.`,
+        `A healthy 30-year-old buying ${fmt(inr(20000000))} of term cover for roughly ${fmt(inr(10000))}–${fmt(inr(15000))} a year is paying a premium calculated almost entirely on mortality risk — the insurer's cost of the small chance of paying out early. An endowment plan offering similar cover charges many times that, because most of the premium funds a savings component with a modest, often single-digit return, not because the insurance itself is meaningfully more expensive to provide.`,
+        "Riders — optional add-ons like critical illness or accidental death cover — can extend a term policy usefully, but each one adds cost and its own conditions and exclusions. It's worth pricing the base cover and each rider separately, and buying only the riders that fill a real gap (such as no separate health cover) rather than the full bundle by default.",
+      ];
+    },
     relatedTools: [
       { label: "How Much Term Insurance Do You Need?", to: "/verdict/insurance-need" },
       { label: "Term Insurance vs Endowment/ULIP", to: "/verdict/term-vs-endowment" },
@@ -362,20 +434,26 @@ export const LESSONS = [
     category: "Planning",
     readTime: "7 min",
     summary: "India's three big retirement vehicles, and how their lock-ins and tax treatment actually differ.",
-    body: [
-      "EPF (Employees' Provident Fund) is the mandatory retirement scheme for salaried employees, with both employer and employee contributing a fixed percentage of basic salary. It earns a government-declared interest rate, is fully employer-linked, and is largely illiquid until retirement or specific permitted withdrawals (home purchase, medical emergencies, unemployment).",
-      "PPF (Public Provident Fund) is open to anyone, salaried or not, with a 15-year lock-in (extendable in 5-year blocks) and a government-declared interest rate that resets quarterly. It's one of the few instruments in India that's fully tax-exempt at all three stages: contribution, interest earned, and withdrawal — genuinely rare, and worth using even by people who also have EPF.",
-      "NPS (National Pension System) is market-linked, letting you choose an allocation between equity, corporate bonds and government securities, generally giving it higher long-term return potential than EPF or PPF, but with real market risk attached. It also carries an additional ₹50,000 tax deduction beyond the standard 80C limit, making it a common way to reduce taxable income further once 80C is maxed out elsewhere.",
-      "A common approach: use EPF as the mandatory base (no choice involved for salaried employees), max out PPF for a genuinely risk-free, fully tax-exempt long-term component, and use NPS for the extra deduction plus some market-linked growth — while noting NPS requires compulsorily annuitizing a portion of the corpus at retirement, which reduces its overall flexibility compared to the other two.",
-      "The tax-saving stack is worth laying out in order: the standard 80C limit (₹1.5 lakh) can be filled by EPF and PPF contributions together with other 80C instruments, and NPS then offers an additional ₹50,000 deduction under 80CCD(1B) on top of that — meaning a taxpayer in the 30% bracket who uses the full NPS addition saves roughly ₹15,600 in tax a year (30% of ₹50,000, plus cess) beyond what 80C alone provides.",
-      "PPF's compounding is worth seeing in numbers: contributing the full ₹1.5 lakh a year for 15 years at a 7.1% rate grows to roughly ₹40.7 lakh from ₹22.5 lakh invested — and because the interest and the final withdrawal are both tax-free, that ₹40.7 lakh is the actual amount received, not a pre-tax figure to be reduced further.",
-      "NPS's annuitization rule is the detail that catches people off guard at retirement: at least 40% of the NPS corpus must be used to buy an annuity (a regular pension), which is itself taxable as income when received, while up to 60% can be withdrawn as a lump sum. EPF and PPF have no such requirement — the full amount is available to withdraw. This locked-in portion is the direct cost of NPS's extra deduction and higher return potential.",
-    ],
-    chart: {
-      type: "growth",
-      title: "₹1.5L/year into PPF at 7.1%, over 15 years",
-      unit: "INR",
-      series: [{ label: "PPF corpus", tone: "primary", gen: { kind: "annual", annualAmount: 150000, rate: 7.1, years: 15 } }],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "EPF (Employees' Provident Fund) is the mandatory retirement scheme for salaried employees, with both employer and employee contributing a fixed percentage of basic salary. It earns a government-declared interest rate, is fully employer-linked, and is largely illiquid until retirement or specific permitted withdrawals (home purchase, medical emergencies, unemployment).",
+        "PPF (Public Provident Fund) is open to anyone, salaried or not, with a 15-year lock-in (extendable in 5-year blocks) and a government-declared interest rate that resets quarterly. It's one of the few instruments in India that's fully tax-exempt at all three stages: contribution, interest earned, and withdrawal — genuinely rare, and worth using even by people who also have EPF.",
+        `NPS (National Pension System) is market-linked, letting you choose an allocation between equity, corporate bonds and government securities, generally giving it higher long-term return potential than EPF or PPF, but with real market risk attached. It also carries an additional ${fmt(inr(50000))} tax deduction beyond the standard 80C limit, making it a common way to reduce taxable income further once 80C is maxed out elsewhere.`,
+        "A common approach: use EPF as the mandatory base (no choice involved for salaried employees), max out PPF for a genuinely risk-free, fully tax-exempt long-term component, and use NPS for the extra deduction plus some market-linked growth — while noting NPS requires compulsorily annuitizing a portion of the corpus at retirement, which reduces its overall flexibility compared to the other two.",
+        `The tax-saving stack is worth laying out in order: the standard 80C limit (${fmt(inr(150000))}) can be filled by EPF and PPF contributions together with other 80C instruments, and NPS then offers an additional ${fmt(inr(50000))} deduction under 80CCD(1B) on top of that — meaning a taxpayer in the 30% bracket who uses the full NPS addition saves roughly ${fmt(inr(15600))} in tax a year (30% of ${fmt(inr(50000))}, plus cess) beyond what 80C alone provides.`,
+        `PPF's compounding is worth seeing in numbers: contributing the full ${fmt(inr(150000))} a year for 15 years at a 7.1% rate grows to roughly ${fmt(inr(4070000))} from ${fmt(inr(2250000))} invested — and because the interest and the final withdrawal are both tax-free, that ${fmt(inr(4070000))} is the actual amount received, not a pre-tax figure to be reduced further.`,
+        "NPS's annuitization rule is the detail that catches people off guard at retirement: at least 40% of the NPS corpus must be used to buy an annuity (a regular pension), which is itself taxable as income when received, while up to 60% can be withdrawn as a lump sum. EPF and PPF have no such requirement — the full amount is available to withdraw. This locked-in portion is the direct cost of NPS's extra deduction and higher return potential.",
+      ];
+    },
+    chart: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return {
+        type: "growth",
+        title: `${fmt(inr(150000))}/year into PPF at 7.1%, over 15 years`,
+        unit: "INR",
+        series: [{ label: "PPF corpus", tone: "primary", gen: { kind: "annual", annualAmount: 150000, rate: 7.1, years: 15 } }],
+      };
     },
     relatedTool: { label: "Try the PPF Calculator", to: "/ppf-calculator" },
   },
@@ -385,15 +463,18 @@ export const LESSONS = [
     category: "Core Skill",
     readTime: "6 min",
     summary: "The mechanical habit that forces you to sell high and buy low, without needing to predict anything.",
-    body: [
-      "Say you start with a 70% equity / 30% debt allocation. After a strong equity year, that might drift to 80/20 — you're now carrying more risk than originally intended, simply because equity grew faster. Rebalancing means selling enough equity (and buying debt) to bring the mix back to 70/30, which mechanically means selling some of what just went up.",
-      "This is valuable precisely because it removes emotion from a genuinely hard decision. Selling part of a rising asset feels wrong in the moment — most people want to let winners run — but disciplined rebalancing does exactly what a 'buy low, sell high' strategy requires, on a schedule, without needing to predict where markets go next.",
-      "A common approach is calendar rebalancing (once or twice a year, regardless of drift) or threshold rebalancing (whenever an allocation drifts more than roughly 5 percentage points from target). Threshold rebalancing reacts faster to large moves; calendar rebalancing is simpler to maintain and generates fewer unnecessary transactions.",
-      "One practical detail in taxable accounts: rebalancing by selling triggers capital gains tax. Where possible, rebalancing by directing new contributions toward the underweight asset class — rather than selling the overweight one — achieves a similar effect with less tax drag, though it works more slowly and needs ongoing new money to be effective.",
-      "Here is the arithmetic. Start with ₹10 lakh split ₹7 lakh equity and ₹3 lakh debt. If equity gains 30% and debt gains 6% in a year, you hold ₹9.1 lakh of equity and ₹3.18 lakh of debt, a total of ₹12.28 lakh, and equity is now about 74% of the portfolio instead of 70%. To return to 70/30 you would move about ₹50,000 from equity to debt, or direct future contributions to debt until the gap closes.",
-      "Before you sell anything, check the costs: exit loads on funds bought recently, capital gains tax on the units you sell, and any transaction charges. If the gap between your actual and target mix is small, doing nothing this year is usually cheaper than trading. Rebalancing too often does more harm than good, and for most people a yearly review, or a review when an allocation drifts about 5 percentage points, is enough.",
-      "Your target mix should itself change over time: it should shift toward safer assets as your goals approach or as you get older, which is why rebalancing pairs naturally with a life-stage plan. Write your rules down in one or two lines, such as the target percentages, the review date and the drift limit that triggers action. A written rule is much easier to follow when the market is making you nervous, because you're following a decision you made calmly earlier.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "Say you start with a 70% equity / 30% debt allocation. After a strong equity year, that might drift to 80/20 — you're now carrying more risk than originally intended, simply because equity grew faster. Rebalancing means selling enough equity (and buying debt) to bring the mix back to 70/30, which mechanically means selling some of what just went up.",
+        "This is valuable precisely because it removes emotion from a genuinely hard decision. Selling part of a rising asset feels wrong in the moment — most people want to let winners run — but disciplined rebalancing does exactly what a 'buy low, sell high' strategy requires, on a schedule, without needing to predict where markets go next.",
+        "A common approach is calendar rebalancing (once or twice a year, regardless of drift) or threshold rebalancing (whenever an allocation drifts more than roughly 5 percentage points from target). Threshold rebalancing reacts faster to large moves; calendar rebalancing is simpler to maintain and generates fewer unnecessary transactions.",
+        "One practical detail in taxable accounts: rebalancing by selling triggers capital gains tax. Where possible, rebalancing by directing new contributions toward the underweight asset class — rather than selling the overweight one — achieves a similar effect with less tax drag, though it works more slowly and needs ongoing new money to be effective.",
+        `Here is the arithmetic. Start with ${fmt(inr(1000000))} split ${fmt(inr(700000))} equity and ${fmt(inr(300000))} debt. If equity gains 30% and debt gains 6% in a year, you hold ${fmt(inr(910000))} of equity and ${fmt(inr(318000))} of debt, a total of ${fmt(inr(1228000))}, and equity is now about 74% of the portfolio instead of 70%. To return to 70/30 you would move about ${fmt(inr(50000))} from equity to debt, or direct future contributions to debt until the gap closes.`,
+        "Before you sell anything, check the costs: exit loads on funds bought recently, capital gains tax on the units you sell, and any transaction charges. If the gap between your actual and target mix is small, doing nothing this year is usually cheaper than trading. Rebalancing too often does more harm than good, and for most people a yearly review, or a review when an allocation drifts about 5 percentage points, is enough.",
+        "Your target mix should itself change over time: it should shift toward safer assets as your goals approach or as you get older, which is why rebalancing pairs naturally with a life-stage plan. Write your rules down in one or two lines, such as the target percentages, the review date and the drift limit that triggers action. A written rule is much easier to follow when the market is making you nervous, because you're following a decision you made calmly earlier.",
+      ];
+    },
     relatedTool: { label: "Explore Calculators", to: "/calculators" },
   },
   {
@@ -402,15 +483,18 @@ export const LESSONS = [
     category: "Markets",
     readTime: "6 min",
     summary: "The single smoothed number that makes messy year-to-year returns comparable — and where it can mislead.",
-    body: [
-      "CAGR (Compound Annual Growth Rate) answers 'what steady annual return, compounded, would have produced this same total result?' An investment that grew from ₹1 lakh to ₹2 lakh over 6 years has a CAGR of about 12.2% — even if the actual path was bumpy: up 40% one year, down 10% another, and so on.",
-      "This smoothing is exactly what makes CAGR useful for comparing two very different investments over the same period — a fund, a fixed deposit, gold — on a like-for-like basis, without needing to eyeball a year-by-year table of returns.",
-      "It's also exactly what can mislead. Two funds can have identical CAGR over 5 years while having wildly different volatility along the way — one might have swung 30% both directions, the other stayed within a narrow 8% band. CAGR alone tells you nothing about that ride, which matters enormously if you might need the money before the full period is up.",
-      "CAGR is also sensitive to the exact start and end dates chosen. A CAGR calculated from a market bottom to a market peak will look far better than the same fund's CAGR measured from peak to peak — always check what period is being used before comparing CAGR figures across sources.",
-      "A quick way to feel what a CAGR means is the rule of 72: divide 72 by the annual rate to estimate the years needed to double your money. At 12% that is about 6 years, which matches the ₹1 lakh to ₹2 lakh example above. At 7%, like many fixed deposits, doubling takes roughly 10 years. It's an approximation, not an exact figure, but it makes rates easy to compare mentally.",
-      "CAGR also helps you compare investments held for different lengths of time. A fund that turned ₹1 lakh into ₹1.8 lakh in 5 years has a CAGR of about 12.5%. One that turned ₹1 lakh into ₹2.2 lakh in 8 years sounds better, but its CAGR is only about 10.4%. The bigger total came from more time, not a better rate. Whenever a total gain is quoted without a period, ask for the CAGR before drawing conclusions.",
-      "Use CAGR for a single lump-sum investment held untouched. For monthly SIPs, where money goes in at different dates, the correct measure is XIRR, which weights each instalment by how long it was invested. And because CAGR compares only two points, look at rolling returns as well: the CAGR for every possible 3- or 5-year window. If a fund's rolling returns stay steady across many windows, its record is far more convincing than one impressive start-to-end figure.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        `CAGR (Compound Annual Growth Rate) answers 'what steady annual return, compounded, would have produced this same total result?' An investment that grew from ${fmt(inr(100000))} to ${fmt(inr(200000))} over 6 years has a CAGR of about 12.2% — even if the actual path was bumpy: up 40% one year, down 10% another, and so on.`,
+        "This smoothing is exactly what makes CAGR useful for comparing two very different investments over the same period — a fund, a fixed deposit, gold — on a like-for-like basis, without needing to eyeball a year-by-year table of returns.",
+        "It's also exactly what can mislead. Two funds can have identical CAGR over 5 years while having wildly different volatility along the way — one might have swung 30% both directions, the other stayed within a narrow 8% band. CAGR alone tells you nothing about that ride, which matters enormously if you might need the money before the full period is up.",
+        "CAGR is also sensitive to the exact start and end dates chosen. A CAGR calculated from a market bottom to a market peak will look far better than the same fund's CAGR measured from peak to peak — always check what period is being used before comparing CAGR figures across sources.",
+        `A quick way to feel what a CAGR means is the rule of 72: divide 72 by the annual rate to estimate the years needed to double your money. At 12% that is about 6 years, which matches the ${fmt(inr(100000))} to ${fmt(inr(200000))} example above. At 7%, like many fixed deposits, doubling takes roughly 10 years. It's an approximation, not an exact figure, but it makes rates easy to compare mentally.`,
+        `CAGR also helps you compare investments held for different lengths of time. A fund that turned ${fmt(inr(100000))} into ${fmt(inr(180000))} in 5 years has a CAGR of about 12.5%. One that turned ${fmt(inr(100000))} into ${fmt(inr(220000))} in 8 years sounds better, but its CAGR is only about 10.4%. The bigger total came from more time, not a better rate. Whenever a total gain is quoted without a period, ask for the CAGR before drawing conclusions.`,
+        "Use CAGR for a single lump-sum investment held untouched. For monthly SIPs, where money goes in at different dates, the correct measure is XIRR, which weights each instalment by how long it was invested. And because CAGR compares only two points, look at rolling returns as well: the CAGR for every possible 3- or 5-year window. If a fund's rolling returns stay steady across many windows, its record is far more convincing than one impressive start-to-end figure.",
+      ];
+    },
     relatedTool: { label: "Try the CAGR Calculator", to: "/cagr-calculator" },
   },
   {
@@ -419,15 +503,18 @@ export const LESSONS = [
     category: "Foundations",
     readTime: "5 min",
     summary: "The underused technique for expenses you can see coming, so they never feel like an emergency.",
-    body: [
-      "A sinking fund is money set aside gradually, in advance, for a specific known future expense — an annual insurance premium, a festival season, a friend's wedding gift, an appliance replacement. Unlike an emergency fund (for the unexpected), a sinking fund is for the entirely expected, just not immediate.",
-      "The mechanism is simple: divide the expected cost by the number of months until you need it, and set that amount aside automatically each month in a separate account or sub-account. A ₹24,000 annual insurance premium becomes a painless ₹2,000/month set-aside, rather than a jarring lump-sum hit once a year.",
-      "Without sinking funds, predictable annual expenses tend to get paid for out of whatever cash is on hand when they arrive — often meaning a dip into the emergency fund, a credit card balance carried forward, or a delayed SIP that month. None of these are dramatic individually, but they quietly undermine the rest of a financial plan.",
-      "A practical starting list: insurance premiums (health, term, vehicle), annual subscriptions, festival/gifting season, vehicle maintenance, and any known irregular expense that repeats yearly. Naming them and setting aside monthly turns 'surprise' expenses that aren't actually surprises into a routine, budgeted line item.",
-      "Here is how the pieces add up. Suppose your yearly known costs are a ₹24,000 insurance premium, ₹18,000 for the festival season, ₹12,000 for vehicle servicing and ₹6,000 in annual subscriptions. That is ₹60,000 a year, or ₹5,000 a month. Split across separate labelled pots or tracked in a simple sheet, each expense arrives with the money already waiting for it.",
-      "Where you keep a sinking fund matters, because the money is needed on a known date within a year or two. A savings account, a liquid fund or a short recurring deposit suits that. Equity doesn't, since a market fall just before the due date leaves you short. Round each monthly amount up slightly, and top up from a bonus or refund when you get one, so a small price rise doesn't leave a gap.",
-      "Review the list once a year. Premiums and prices change, some items drop off and new ones appear, and this is also the moment to add larger goals you can see coming, like a laptop replacement or a course fee. A sinking fund and an emergency fund do different jobs: one absorbs costs you know about, the other protects you from ones you don't. Keeping them separate means the first never quietly drains the second.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "A sinking fund is money set aside gradually, in advance, for a specific known future expense — an annual insurance premium, a festival season, a friend's wedding gift, an appliance replacement. Unlike an emergency fund (for the unexpected), a sinking fund is for the entirely expected, just not immediate.",
+        `The mechanism is simple: divide the expected cost by the number of months until you need it, and set that amount aside automatically each month in a separate account or sub-account. A ${fmt(inr(24000))} annual insurance premium becomes a painless ${fmt(inr(2000))}/month set-aside, rather than a jarring lump-sum hit once a year.`,
+        "Without sinking funds, predictable annual expenses tend to get paid for out of whatever cash is on hand when they arrive — often meaning a dip into the emergency fund, a credit card balance carried forward, or a delayed SIP that month. None of these are dramatic individually, but they quietly undermine the rest of a financial plan.",
+        "A practical starting list: insurance premiums (health, term, vehicle), annual subscriptions, festival/gifting season, vehicle maintenance, and any known irregular expense that repeats yearly. Naming them and setting aside monthly turns 'surprise' expenses that aren't actually surprises into a routine, budgeted line item.",
+        `Here is how the pieces add up. Suppose your yearly known costs are a ${fmt(inr(24000))} insurance premium, ${fmt(inr(18000))} for the festival season, ${fmt(inr(12000))} for vehicle servicing and ${fmt(inr(6000))} in annual subscriptions. That is ${fmt(inr(60000))} a year, or ${fmt(inr(5000))} a month. Split across separate labelled pots or tracked in a simple sheet, each expense arrives with the money already waiting for it.`,
+        "Where you keep a sinking fund matters, because the money is needed on a known date within a year or two. A savings account, a liquid fund or a short recurring deposit suits that. Equity doesn't, since a market fall just before the due date leaves you short. Round each monthly amount up slightly, and top up from a bonus or refund when you get one, so a small price rise doesn't leave a gap.",
+        "Review the list once a year. Premiums and prices change, some items drop off and new ones appear, and this is also the moment to add larger goals you can see coming, like a laptop replacement or a course fee. A sinking fund and an emergency fund do different jobs: one absorbs costs you know about, the other protects you from ones you don't. Keeping them separate means the first never quietly drains the second.",
+      ];
+    },
     relatedTool: { label: "Try the Emergency Fund Calculator", to: "/emergency-fund-calculator" },
   },
   {
@@ -436,15 +523,18 @@ export const LESSONS = [
     category: "Planning",
     readTime: "7 min",
     summary: "How to actually read a CTC breakup, and what in it genuinely changes your take-home pay.",
-    body: [
-      "A CTC (Cost to Company) figure bundles your base salary with components that don't reach your bank account as cash: employer's EPF contribution, gratuity provision, and sometimes insurance premiums the company pays on your behalf. A ₹12 lakh CTC offer can easily translate to a noticeably lower actual take-home, and comparing two job offers purely by CTC without checking the breakup is a common, costly mistake.",
-      "Within the breakup, certain allowances are more tax-efficient than others if structured well: HRA (House Rent Allowance) can be significantly tax-exempt if you pay rent and submit proof, and reimbursement-based components (like meal cards or telephone bills, where offered) are typically tax-free up to a limit against actual bills, rather than being taxed as regular salary.",
-      "India now runs two parallel tax regimes — the older one with various deductions and exemptions (80C, HRA, etc.) and a newer default regime with lower slab rates but few deductions. Which one results in lower tax depends heavily on how much you actually invest in 80C-eligible instruments and how much HRA you can claim — there's no universally correct choice, and it's worth calculating both ways each year.",
-      "A practical habit: whenever CTC changes (a new offer, an appraisal), don't just look at the headline number — ask for the fixed take-home component specifically, and separately check which tax regime results in lower tax for your specific deduction profile that year, since the better regime can change as your deductions change.",
-      "A quick way to see the take-home gap: a ₹12 lakh CTC with ₹80,000 of employer EPF contribution, ₹40,000 of gratuity provision and ₹30,000 of insurance premiums paid by the employer leaves a fixed cash component of about ₹10.5 lakh before any tax — and that's before HRA exemption, standard deduction or 80C investments are applied to work out what's actually taxable.",
-      "HRA exemption is calculated as the lowest of three numbers: actual HRA received, rent paid minus 10% of basic salary, or 50% of basic salary in a metro (40% elsewhere) — not simply 'rent paid.' Someone with ₹40,000 monthly basic pay and ₹20,000 monthly HRA who pays ₹18,000 rent gets an exemption based on whichever of those three figures is smallest, which is often well below the full HRA received.",
-      "Because which regime wins depends entirely on your own deductions, run the comparison with your actual numbers each year rather than reusing last year's answer — a year with a new home loan, higher 80C investments, or a jump in HRA-eligible rent can flip which regime comes out ahead, even if your income barely changed.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        `A CTC (Cost to Company) figure bundles your base salary with components that don't reach your bank account as cash: employer's EPF contribution, gratuity provision, and sometimes insurance premiums the company pays on your behalf. A ${fmt(inr(1200000))} CTC offer can easily translate to a noticeably lower actual take-home, and comparing two job offers purely by CTC without checking the breakup is a common, costly mistake.`,
+        "Within the breakup, certain allowances are more tax-efficient than others if structured well: HRA (House Rent Allowance) can be significantly tax-exempt if you pay rent and submit proof, and reimbursement-based components (like meal cards or telephone bills, where offered) are typically tax-free up to a limit against actual bills, rather than being taxed as regular salary.",
+        "India now runs two parallel tax regimes — the older one with various deductions and exemptions (80C, HRA, etc.) and a newer default regime with lower slab rates but few deductions. Which one results in lower tax depends heavily on how much you actually invest in 80C-eligible instruments and how much HRA you can claim — there's no universally correct choice, and it's worth calculating both ways each year.",
+        "A practical habit: whenever CTC changes (a new offer, an appraisal), don't just look at the headline number — ask for the fixed take-home component specifically, and separately check which tax regime results in lower tax for your specific deduction profile that year, since the better regime can change as your deductions change.",
+        `A quick way to see the take-home gap: a ${fmt(inr(1200000))} CTC with ${fmt(inr(80000))} of employer EPF contribution, ${fmt(inr(40000))} of gratuity provision and ${fmt(inr(30000))} of insurance premiums paid by the employer leaves a fixed cash component of about ${fmt(inr(1050000))} before any tax — and that's before HRA exemption, standard deduction or 80C investments are applied to work out what's actually taxable.`,
+        `HRA exemption is calculated as the lowest of three numbers: actual HRA received, rent paid minus 10% of basic salary, or 50% of basic salary in a metro (40% elsewhere) — not simply 'rent paid.' Someone with ${fmt(inr(40000))} monthly basic pay and ${fmt(inr(20000))} monthly HRA who pays ${fmt(inr(18000))} rent gets an exemption based on whichever of those three figures is smallest, which is often well below the full HRA received.`,
+        "Because which regime wins depends entirely on your own deductions, run the comparison with your actual numbers each year rather than reusing last year's answer — a year with a new home loan, higher 80C investments, or a jump in HRA-eligible rent can flip which regime comes out ahead, even if your income barely changed.",
+      ];
+    },
     relatedTools: [
       { label: "Try the HRA Calculator", to: "/hra-calculator" },
       { label: "See Your Global Income Percentile", to: "/income-percentile" },
@@ -456,23 +546,29 @@ export const LESSONS = [
     category: "Beginner",
     readTime: "6 min",
     summary: "Averaging in beats investing all at once more often than intuition suggests — but not universally.",
-    body: [
-      "A SIP (Systematic Investment Plan) invests a fixed amount at regular intervals, buying more units when prices are low and fewer when prices are high — a mechanism called rupee-cost averaging. A lump sum invests everything at once, fully exposed to whatever the market does immediately afterward.",
-      "When markets are volatile or you're unsure of the near-term direction, SIPs reduce the risk of catastrophically bad timing — investing a large lump sum right before a downturn is a specific, painful scenario that SIPs largely avoid by spreading entry points across time.",
-      "However, if you genuinely have a lump sum sitting idle (a bonus, an inheritance, maturity proceeds) and markets are reasonably valued, historical data across most long periods shows lump-sum investing outperforms SIP-ing the same amount in on average — simply because markets rise more often than they fall, and money invested earlier has more time compounding.",
-      "A practical middle ground many people use for a large lump sum: invest a portion immediately and stagger the rest via SIP into a liquid or debt fund over 3-6 months, deploying gradually into equity. This balances the 'time in market beats timing the market' argument for immediate investing against the real discomfort of a lump sum landing right before a downturn.",
-      "Most people compare the two as if they chose between them freely, but the more common situation is that only one is available. Salary arrives monthly, so a SIP is how you invest without waiting to accumulate a lump sum. ₹10,000 a month for 10 years at an assumed 12% a year grows to about ₹23 lakh from ₹12 lakh invested. Those returns aren't guaranteed, but the example shows why steady monthly investing matters more than the choice of method.",
-      "The largest risk with SIPs is behavioural, not mathematical. Investors often stop their SIPs when markets fall, exactly when the same amount buys more units at lower prices. Automating the SIP from your bank account and leaving it alone through a downturn is what makes rupee-cost averaging work. A SIP doesn't guarantee a profit or protect against a loss, and it works best over long periods, ideally five years or more.",
-      "For a large windfall, a systematic transfer plan (STP) is a middle path: park the money in a liquid or debt fund and move a fixed amount into an equity fund every month over several months. Match the method to your situation. Choose SIP for regular income and a long horizon, and consider a lump sum, or a partial one, only for money you truly won't need for many years. Whichever you pick, the amount you invest and the number of years you stay invested count for far more than the entry method.",
-    ],
-    chart: {
-      type: "bar",
-      title: "₹10,000/month for 10 years at 12%",
-      unit: "INR",
-      bars: [
-        { label: "Invested", value: 1200000 },
-        { label: "Grows to", value: 2300000 },
-      ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "A SIP (Systematic Investment Plan) invests a fixed amount at regular intervals, buying more units when prices are low and fewer when prices are high — a mechanism called rupee-cost averaging. A lump sum invests everything at once, fully exposed to whatever the market does immediately afterward.",
+        "When markets are volatile or you're unsure of the near-term direction, SIPs reduce the risk of catastrophically bad timing — investing a large lump sum right before a downturn is a specific, painful scenario that SIPs largely avoid by spreading entry points across time.",
+        "However, if you genuinely have a lump sum sitting idle (a bonus, an inheritance, maturity proceeds) and markets are reasonably valued, historical data across most long periods shows lump-sum investing outperforms SIP-ing the same amount in on average — simply because markets rise more often than they fall, and money invested earlier has more time compounding.",
+        "A practical middle ground many people use for a large lump sum: invest a portion immediately and stagger the rest via SIP into a liquid or debt fund over 3-6 months, deploying gradually into equity. This balances the 'time in market beats timing the market' argument for immediate investing against the real discomfort of a lump sum landing right before a downturn.",
+        `Most people compare the two as if they chose between them freely, but the more common situation is that only one is available. Salary arrives monthly, so a SIP is how you invest without waiting to accumulate a lump sum. ${fmt(inr(10000))} a month for 10 years at an assumed 12% a year grows to about ${fmt(inr(2300000))} from ${fmt(inr(1200000))} invested. Those returns aren't guaranteed, but the example shows why steady monthly investing matters more than the choice of method.`,
+        "The largest risk with SIPs is behavioural, not mathematical. Investors often stop their SIPs when markets fall, exactly when the same amount buys more units at lower prices. Automating the SIP from your bank account and leaving it alone through a downturn is what makes rupee-cost averaging work. A SIP doesn't guarantee a profit or protect against a loss, and it works best over long periods, ideally five years or more.",
+        "For a large windfall, a systematic transfer plan (STP) is a middle path: park the money in a liquid or debt fund and move a fixed amount into an equity fund every month over several months. Match the method to your situation. Choose SIP for regular income and a long horizon, and consider a lump sum, or a partial one, only for money you truly won't need for many years. Whichever you pick, the amount you invest and the number of years you stay invested count for far more than the entry method.",
+      ];
+    },
+    chart: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return {
+        type: "bar",
+        title: `${fmt(inr(10000))}/month for 10 years at 12%`,
+        unit: "INR",
+        bars: [
+          { label: "Invested", value: 1200000 },
+          { label: "Grows to", value: 2300000 },
+        ],
+      };
     },
     relatedTool: { label: "Try the SIP Calculator", to: "/sip-calculator" },
   },
@@ -482,16 +578,19 @@ export const LESSONS = [
     category: "Guide",
     readTime: "6 min",
     summary: "The handful of numbers on a dense factsheet that actually matter for your decision.",
-    body: [
-      "Expense ratio is the annual fee, expressed as a percentage of your investment, charged whether the fund gains or loses. On a ₹5 lakh investment, the difference between a 0.3% index fund and a 1.5% active fund is ₹6,000 a year, every year, regardless of performance — a fixed cost worth checking before anything else.",
-      "Look at 5-year and 10-year returns, not 1-year returns. A fund's 1-year number is heavily influenced by short-term market conditions and says very little about manager skill or repeatability; longer periods smooth this out and reveal whether outperformance (if any) has actually been consistent, not a lucky recent stretch.",
-      "Portfolio turnover ratio shows how frequently the fund buys and sells holdings. High turnover generally means higher transaction costs and, in taxable contexts, more frequent capital gains realization — a fund with 150%+ annual turnover is trading far more actively than one with 20-30%, with cost implications beyond the headline expense ratio.",
-      "Standard deviation and Sharpe ratio, when available, describe volatility and risk-adjusted return respectively. A fund with a higher return but also a much higher standard deviation than a peer isn't necessarily 'better' — it may simply have taken more risk to get there, which the Sharpe ratio (return per unit of risk taken) helps make comparable.",
-      "A factsheet is the one- or two-page monthly summary a fund house publishes for each scheme, usually on the fund house's own website. It's the quickest way to see what a fund actually holds, what it costs and how it has performed — and a much more reliable source than an advertisement or a star rating, which show the flattering parts of a story.",
-      "Check the returns against the fund's benchmark, which sits right beside them. A fund that returned 13% over five years isn't impressive if its benchmark index returned 14% — it took the risk and the fees and still fell behind. Also check which plan the numbers belong to: direct plans carry a lower expense ratio than regular plans because there is no distributor commission, so the same fund can show two different sets of returns.",
-      "Look at the top holdings and the sector split to see what you're really buying. A fund described as diversified but with more than half its money in its ten largest holdings, or in a single sector, behaves very differently from one that spreads across many. The factsheet also lists the exit load (the fee for redeeming within a set period), the fund's size and how long the current manager has run it.",
-      "A five-minute checklist when comparing two funds: does the category fit your time horizon, is the expense ratio in line with similar funds, how do the 5- and 10-year returns compare with the benchmark, what do the top holdings and sectors look like, and what are the exit load and minimum SIP. If you can answer those five, you've read the factsheet better than most investors do.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        `Expense ratio is the annual fee, expressed as a percentage of your investment, charged whether the fund gains or loses. On a ${fmt(inr(500000))} investment, the difference between a 0.3% index fund and a 1.5% active fund is ${fmt(inr(6000))} a year, every year, regardless of performance — a fixed cost worth checking before anything else.`,
+        "Look at 5-year and 10-year returns, not 1-year returns. A fund's 1-year number is heavily influenced by short-term market conditions and says very little about manager skill or repeatability; longer periods smooth this out and reveal whether outperformance (if any) has actually been consistent, not a lucky recent stretch.",
+        "Portfolio turnover ratio shows how frequently the fund buys and sells holdings. High turnover generally means higher transaction costs and, in taxable contexts, more frequent capital gains realization — a fund with 150%+ annual turnover is trading far more actively than one with 20-30%, with cost implications beyond the headline expense ratio.",
+        "Standard deviation and Sharpe ratio, when available, describe volatility and risk-adjusted return respectively. A fund with a higher return but also a much higher standard deviation than a peer isn't necessarily 'better' — it may simply have taken more risk to get there, which the Sharpe ratio (return per unit of risk taken) helps make comparable.",
+        "A factsheet is the one- or two-page monthly summary a fund house publishes for each scheme, usually on the fund house's own website. It's the quickest way to see what a fund actually holds, what it costs and how it has performed — and a much more reliable source than an advertisement or a star rating, which show the flattering parts of a story.",
+        "Check the returns against the fund's benchmark, which sits right beside them. A fund that returned 13% over five years isn't impressive if its benchmark index returned 14% — it took the risk and the fees and still fell behind. Also check which plan the numbers belong to: direct plans carry a lower expense ratio than regular plans because there is no distributor commission, so the same fund can show two different sets of returns.",
+        "Look at the top holdings and the sector split to see what you're really buying. A fund described as diversified but with more than half its money in its ten largest holdings, or in a single sector, behaves very differently from one that spreads across many. The factsheet also lists the exit load (the fee for redeeming within a set period), the fund's size and how long the current manager has run it.",
+        "A five-minute checklist when comparing two funds: does the category fit your time horizon, is the expense ratio in line with similar funds, how do the 5- and 10-year returns compare with the benchmark, what do the top holdings and sectors look like, and what are the exit load and minimum SIP. If you can answer those five, you've read the factsheet better than most investors do.",
+      ];
+    },
     table: {
       columns: ["What to check", "What it tells you", "Red flag"],
       rows: [
@@ -503,14 +602,17 @@ export const LESSONS = [
         ["Exit load & plan type", "The cost of redeeming early, and whether you're seeing direct or regular-plan returns", "Comparing a regular plan's returns against a direct plan's, or missing the exit load window"],
       ],
     },
-    faq: [
-      { q: "What is a mutual fund factsheet?", a: "A one- or two-page monthly summary a fund house publishes for each scheme, usually on its own website. It's the quickest reliable way to see what a fund holds, what it costs and how it has performed — more reliable than an advertisement or a star rating alone." },
-      { q: "How often is a factsheet updated?", a: "Monthly, for almost all funds. The holdings, returns and ratios shown are as of the factsheet's stated date, so always check that date — a factsheet even a few months old can be showing a portfolio that's already changed." },
-      { q: "What is the single most important number on a factsheet?", a: "There isn't one number that matters alone, but expense ratio and the 5- or 10-year return versus benchmark are the two worth checking first — one tells you the guaranteed cost, the other tells you whether the fund has actually earned that cost back." },
-      { q: "What does expense ratio mean on a factsheet?", a: "The annual fee, as a percentage of your investment, that's deducted whether the fund gains or loses that year. It's charged continuously, not just once — the difference between a 0.3% and a 1.5% expense ratio on ₹5 lakh is ₹6,000 a year, every year." },
-      { q: "Why do the same fund's returns sometimes differ between two sources?", a: "Almost always a direct-plan-vs-regular-plan mismatch. Direct plans skip the distributor commission baked into regular plans, so they carry a lower expense ratio and show a higher net return for an identical underlying portfolio — always confirm which plan a quoted return belongs to." },
-      { q: "Where can I find a fund's official factsheet?", a: "On the asset management company's own website, usually under a \"downloads\" or \"factsheets\" section for that scheme, and often through fund-comparison platforms and your broker's app as well." },
-    ],
+    faq: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        { q: "What is a mutual fund factsheet?", a: "A one- or two-page monthly summary a fund house publishes for each scheme, usually on its own website. It's the quickest reliable way to see what a fund holds, what it costs and how it has performed — more reliable than an advertisement or a star rating alone." },
+        { q: "How often is a factsheet updated?", a: "Monthly, for almost all funds. The holdings, returns and ratios shown are as of the factsheet's stated date, so always check that date — a factsheet even a few months old can be showing a portfolio that's already changed." },
+        { q: "What is the single most important number on a factsheet?", a: "There isn't one number that matters alone, but expense ratio and the 5- or 10-year return versus benchmark are the two worth checking first — one tells you the guaranteed cost, the other tells you whether the fund has actually earned that cost back." },
+        { q: "What does expense ratio mean on a factsheet?", a: `The annual fee, as a percentage of your investment, that's deducted whether the fund gains or loses that year. It's charged continuously, not just once — the difference between a 0.3% and a 1.5% expense ratio on ${fmt(inr(500000))} is ${fmt(inr(6000))} a year, every year.` },
+        { q: "Why do the same fund's returns sometimes differ between two sources?", a: "Almost always a direct-plan-vs-regular-plan mismatch. Direct plans skip the distributor commission baked into regular plans, so they carry a lower expense ratio and show a higher net return for an identical underlying portfolio — always confirm which plan a quoted return belongs to." },
+        { q: "Where can I find a fund's official factsheet?", a: "On the asset management company's own website, usually under a \"downloads\" or \"factsheets\" section for that scheme, and often through fund-comparison platforms and your broker's app as well." },
+      ];
+    },
     relatedTool: { label: "Explore Calculators", to: "/calculators" },
   },
   {
@@ -537,15 +639,18 @@ export const LESSONS = [
     category: "Core Skill",
     readTime: "6 min",
     summary: "The single number that tells you whether you're actually getting wealthier, not just earning more.",
-    body: [
-      "Net worth is everything you own minus everything you owe: savings, investments, property, and other assets, minus loans, credit card balances, and other liabilities. It's a far better health check than income alone — a high earner with heavy debt and no savings can have a lower net worth than a modest earner who's saved consistently for a decade.",
-      "The number itself matters less than its trend. A negative net worth in your 20s (common with education loans) isn't alarming on its own; what matters is whether it's reliably improving quarter over quarter. A single snapshot tells you where you stand; a tracked trend tells you whether your habits are actually working.",
-      "Most people underestimate liabilities and overestimate illiquid assets when they do this informally. A car depreciates the moment you drive it out of the showroom, so listing it at purchase price overstates net worth — use a realistic current resale value instead. Similarly, jewelry and collectibles are worth what someone would actually pay, not a sentimental or insured value.",
-      "A practical habit: recalculate net worth on a fixed schedule — monthly or quarterly — rather than whenever you feel like it, which tends to mean only checking after good news. Consistent tracking, especially through a bad month, is what turns this from a vanity number into a genuine steering instrument for your financial decisions.",
-      "A simple net worth statement makes the idea concrete: ₹3 lakh in a savings account, ₹8 lakh in mutual funds, a car worth ₹4 lakh at realistic resale (not purchase price), and ₹2 lakh in PPF totals ₹17 lakh in assets. Against a ₹6 lakh remaining car loan and a ₹1 lakh credit card balance, net worth comes to ₹10 lakh — a single number built from the same figures already sitting in bank apps and loan statements, just never added up together before.",
-      "Depreciation is the most commonly overstated part of this exercise. A car bought for ₹8 lakh is typically worth 15–20% less the moment it leaves the showroom, and continues losing value every year after — listing it at its original price can overstate net worth by lakhs on a single asset. The same caution applies to electronics and furniture, which are usually worth including only if the total is genuinely meaningful, given how quickly they lose resale value.",
-      "A quarterly check is enough to see the trend without becoming a source of anxiety — checking daily mostly captures market noise in the investment portion, not any real change in financial position. What matters is the direction over several quarters: net worth that's reliably climbing, even slowly, means the underlying habits are working.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "Net worth is everything you own minus everything you owe: savings, investments, property, and other assets, minus loans, credit card balances, and other liabilities. It's a far better health check than income alone — a high earner with heavy debt and no savings can have a lower net worth than a modest earner who's saved consistently for a decade.",
+        "The number itself matters less than its trend. A negative net worth in your 20s (common with education loans) isn't alarming on its own; what matters is whether it's reliably improving quarter over quarter. A single snapshot tells you where you stand; a tracked trend tells you whether your habits are actually working.",
+        "Most people underestimate liabilities and overestimate illiquid assets when they do this informally. A car depreciates the moment you drive it out of the showroom, so listing it at purchase price overstates net worth — use a realistic current resale value instead. Similarly, jewelry and collectibles are worth what someone would actually pay, not a sentimental or insured value.",
+        "A practical habit: recalculate net worth on a fixed schedule — monthly or quarterly — rather than whenever you feel like it, which tends to mean only checking after good news. Consistent tracking, especially through a bad month, is what turns this from a vanity number into a genuine steering instrument for your financial decisions.",
+        `A simple net worth statement makes the idea concrete: ${fmt(inr(300000))} in a savings account, ${fmt(inr(800000))} in mutual funds, a car worth ${fmt(inr(400000))} at realistic resale (not purchase price), and ${fmt(inr(200000))} in PPF totals ${fmt(inr(1700000))} in assets. Against a ${fmt(inr(600000))} remaining car loan and a ${fmt(inr(100000))} credit card balance, net worth comes to ${fmt(inr(1000000))} — a single number built from the same figures already sitting in bank apps and loan statements, just never added up together before.`,
+        `Depreciation is the most commonly overstated part of this exercise. A car bought for ${fmt(inr(800000))} is typically worth 15–20% less the moment it leaves the showroom, and continues losing value every year after — listing it at its original price can overstate net worth substantially on a single asset. The same caution applies to electronics and furniture, which are usually worth including only if the total is genuinely meaningful, given how quickly they lose resale value.`,
+        "A quarterly check is enough to see the trend without becoming a source of anxiety — checking daily mostly captures market noise in the investment portion, not any real change in financial position. What matters is the direction over several quarters: net worth that's reliably climbing, even slowly, means the underlying habits are working.",
+      ];
+    },
     relatedTools: [
       { label: "Try the Net Worth Calculator", to: "/networth-calculator" },
       { label: "See Your Global Net Worth Percentile", to: "/net-worth-percentile" },
@@ -557,15 +662,18 @@ export const LESSONS = [
     category: "Planning",
     readTime: "7 min",
     summary: "The math behind retiring decades early — and why the real lever is your savings rate, not your salary.",
-    body: [
-      "FIRE (Financial Independence, Retire Early) is built on one core idea: once your investments can reliably generate enough income to cover your expenses indefinitely, work becomes optional. The commonly cited benchmark is a corpus of 25x your annual expenses, based on a 4% annual withdrawal rate that historically preserves a portfolio over a long retirement.",
-      "The counterintuitive part is that your savings rate matters far more than your income. Someone earning ₹15 lakh a year but spending ₹14 lakh needs decades to reach financial independence. Someone earning ₹8 lakh but spending ₹4 lakh reaches it much faster — not because they earn more, but because every rupee not spent is a rupee that's both growing your corpus and shrinking the expense number you're working toward.",
-      "This is also why FIRE and lifestyle inflation are in direct tension. A raise spent entirely on upgrading your lifestyle raises the target corpus (since expenses went up) without meaningfully accelerating progress toward it. Keeping expenses roughly flat as income grows is the single biggest accelerant available to most people pursuing this path.",
-      "FIRE isn't a single destination either — variants like 'Lean FIRE' (a minimal corpus covering a frugal lifestyle) and 'Fat FIRE' (a larger corpus preserving a comfortable one) suit different goals. And the 4% rule is a historical guideline, not a guarantee — sequencing risk (a market downturn early in retirement) and India-specific inflation on healthcare mean most practitioners build in a real margin of safety rather than targeting the bare minimum.",
-      "The savings rate's effect on timeline is large enough to see clearly in a rough table (assuming a 5% return after inflation and a 25x-expenses target): saving 10% of income points to roughly 52 years to financial independence, 30% to about 28 years, 50% to about 17 years, and 70% to about 9 years. These are illustrative, not a guarantee — real markets don't return a smooth 5% every year — but the shape is the real lesson: each jump in savings rate cuts the timeline far more than the same jump in income would.",
-      "This is why FIRE calculations focus on the gap between income and spending rather than on income alone. Two households earning the same salary but saving 20% versus 50% aren't on similar paths that differ slightly — they're on fundamentally different timelines, because the saver's target corpus is also smaller (built from lower expenses) while their yearly contribution toward it is larger.",
-      "A practical middle ground many people use, short of full early retirement: 'Coast FIRE' — reaching a corpus early enough that it will grow to a full retirement target by a normal retirement age on its own, without further contributions, even if you keep working and spending your full income in the meantime. It captures much of the psychological benefit of financial independence without requiring the more extreme savings rate that early retirement itself demands.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "FIRE (Financial Independence, Retire Early) is built on one core idea: once your investments can reliably generate enough income to cover your expenses indefinitely, work becomes optional. The commonly cited benchmark is a corpus of 25x your annual expenses, based on a 4% annual withdrawal rate that historically preserves a portfolio over a long retirement.",
+        `The counterintuitive part is that your savings rate matters far more than your income. Someone earning ${fmt(inr(1500000))} a year but spending ${fmt(inr(1400000))} needs decades to reach financial independence. Someone earning ${fmt(inr(800000))} but spending ${fmt(inr(400000))} reaches it much faster — not because they earn more, but because every unit of money not spent is both growing your corpus and shrinking the expense number you're working toward.`,
+        "This is also why FIRE and lifestyle inflation are in direct tension. A raise spent entirely on upgrading your lifestyle raises the target corpus (since expenses went up) without meaningfully accelerating progress toward it. Keeping expenses roughly flat as income grows is the single biggest accelerant available to most people pursuing this path.",
+        "FIRE isn't a single destination either — variants like 'Lean FIRE' (a minimal corpus covering a frugal lifestyle) and 'Fat FIRE' (a larger corpus preserving a comfortable one) suit different goals. And the 4% rule is a historical guideline, not a guarantee — sequencing risk (a market downturn early in retirement) and India-specific inflation on healthcare mean most practitioners build in a real margin of safety rather than targeting the bare minimum.",
+        "The savings rate's effect on timeline is large enough to see clearly in a rough table (assuming a 5% return after inflation and a 25x-expenses target): saving 10% of income points to roughly 52 years to financial independence, 30% to about 28 years, 50% to about 17 years, and 70% to about 9 years. These are illustrative, not a guarantee — real markets don't return a smooth 5% every year — but the shape is the real lesson: each jump in savings rate cuts the timeline far more than the same jump in income would.",
+        "This is why FIRE calculations focus on the gap between income and spending rather than on income alone. Two households earning the same salary but saving 20% versus 50% aren't on similar paths that differ slightly — they're on fundamentally different timelines, because the saver's target corpus is also smaller (built from lower expenses) while their yearly contribution toward it is larger.",
+        "A practical middle ground many people use, short of full early retirement: 'Coast FIRE' — reaching a corpus early enough that it will grow to a full retirement target by a normal retirement age on its own, without further contributions, even if you keep working and spending your full income in the meantime. It captures much of the psychological benefit of financial independence without requiring the more extreme savings rate that early retirement itself demands.",
+      ];
+    },
     chart: {
       type: "bar",
       title: "Savings rate vs years to financial independence",
@@ -585,15 +693,18 @@ export const LESSONS = [
     category: "Guide",
     readTime: "7 min",
     summary: "Why 'rent is throwing money away' is the most misleading piece of financial folk wisdom in housing.",
-    body: [
-      "Buying a home bundles two separate decisions that are worth pulling apart: a consumption decision (where you live) and an investment decision (putting a large chunk of net worth into one illiquid, undiversified asset). Renting isn't 'wasted money' any more than buying is — you're paying for a place to live either way; the question is which arrangement fits your finances and life plans better.",
-      "The full cost of owning goes well beyond the EMI: registration and stamp duty (often 5-7% of property value, gone the moment you buy), property tax, maintenance, and the opportunity cost of the down payment — money that could otherwise have been invested. Renting the equivalent home and investing the difference between rent and the total ownership cost can outperform buying over long periods, depending on local property appreciation and rent levels.",
-      "Time horizon is usually the deciding factor in practice. Buying involves high upfront transaction costs (both buying and eventually selling), so it generally only makes financial sense if you'll stay put for 7-10+ years, long enough for those upfront costs to be amortized against the benefit of not paying rent. Moving cities every few years for work makes renting the more flexible and often cheaper choice, regardless of the 'building equity' argument.",
-      "There's a real non-financial side too: stability for a family, freedom to renovate, and protection from rent increases are genuine reasons to buy that don't show up in a spreadsheet. The point isn't that buying is wrong — it's that 'renting is wasting money' skips the actual math, which depends heavily on your specific city, timeline, and the gap between local rent and property prices.",
-      "Upfront costs alone can be a large number most rent-vs-buy comparisons undercount. Stamp duty and registration on an ₹80 lakh home, at a typical 6% in many states, comes to ₹4.8 lakh — gone immediately, before accounting for brokerage, interior work, or the first year of maintenance. That cost has to be earned back through years of 'not paying rent' before buying is even at par with renting, let alone ahead.",
-      "The down payment itself has an opportunity cost worth pricing explicitly: a ₹16 lakh down payment, if invested instead at a realistic 10% return, grows to roughly ₹41.5 lakh over 10 years. A rent-vs-buy comparison that only looks at EMI versus rent, and ignores what the down payment could have earned elsewhere, is missing one of the larger numbers in the whole decision — which is exactly what the Rent vs Buy verdict tool accounts for.",
-      "A useful gut-check before signing anything: if the total ownership cost (EMI, tax, maintenance, minus the down payment's opportunity cost) isn't clearly cheaper than rent within your realistic timeline in that city, the decision to buy is being made for non-financial reasons — which can be a perfectly good reason, as long as it's made knowingly rather than under the belief that renting is simply money lost.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "Buying a home bundles two separate decisions that are worth pulling apart: a consumption decision (where you live) and an investment decision (putting a large chunk of net worth into one illiquid, undiversified asset). Renting isn't 'wasted money' any more than buying is — you're paying for a place to live either way; the question is which arrangement fits your finances and life plans better.",
+        "The full cost of owning goes well beyond the EMI: registration and stamp duty (often 5-7% of property value, gone the moment you buy), property tax, maintenance, and the opportunity cost of the down payment — money that could otherwise have been invested. Renting the equivalent home and investing the difference between rent and the total ownership cost can outperform buying over long periods, depending on local property appreciation and rent levels.",
+        "Time horizon is usually the deciding factor in practice. Buying involves high upfront transaction costs (both buying and eventually selling), so it generally only makes financial sense if you'll stay put for 7-10+ years, long enough for those upfront costs to be amortized against the benefit of not paying rent. Moving cities every few years for work makes renting the more flexible and often cheaper choice, regardless of the 'building equity' argument.",
+        "There's a real non-financial side too: stability for a family, freedom to renovate, and protection from rent increases are genuine reasons to buy that don't show up in a spreadsheet. The point isn't that buying is wrong — it's that 'renting is wasting money' skips the actual math, which depends heavily on your specific city, timeline, and the gap between local rent and property prices.",
+        `Upfront costs alone can be a large number most rent-vs-buy comparisons undercount. Stamp duty and registration on an ${fmt(inr(8000000))} home, at a typical 6% in many states, comes to ${fmt(inr(480000))} — gone immediately, before accounting for brokerage, interior work, or the first year of maintenance. That cost has to be earned back through years of 'not paying rent' before buying is even at par with renting, let alone ahead.`,
+        `The down payment itself has an opportunity cost worth pricing explicitly: a ${fmt(inr(1600000))} down payment, if invested instead at a realistic 10% return, grows to roughly ${fmt(inr(4150000))} over 10 years. A rent-vs-buy comparison that only looks at EMI versus rent, and ignores what the down payment could have earned elsewhere, is missing one of the larger numbers in the whole decision — which is exactly what the Rent vs Buy verdict tool accounts for.`,
+        "A useful gut-check before signing anything: if the total ownership cost (EMI, tax, maintenance, minus the down payment's opportunity cost) isn't clearly cheaper than rent within your realistic timeline in that city, the decision to buy is being made for non-financial reasons — which can be a perfectly good reason, as long as it's made knowingly rather than under the belief that renting is simply money lost.",
+      ];
+    },
     relatedTool: { label: "Try the Rent vs Buy Verdict", to: "/verdict/rent-vs-buy" },
   },
   {
@@ -602,15 +713,18 @@ export const LESSONS = [
     category: "Foundations",
     readTime: "5 min",
     summary: "How the tax quietly baked into nearly everything you buy actually works.",
-    body: [
-      "GST (Goods and Services Tax) replaced a tangle of earlier indirect taxes in India with a single tax applied at each stage of the supply chain, ultimately borne by the end consumer. It's why a price tag might say '₹1,000 + GST' or simply include tax already — GST is charged as a percentage of the price, and different goods and services fall into different rate slabs (commonly 5%, 12%, 18%, and 28%, alongside a 0% category for essentials).",
-      "For everyday budgeting, the practical effect is that the sticker price rarely equals what you pay. An ₹1,000 service at 18% GST costs ₹1,180 — an easy detail to forget when comparing a quoted price against your budget, especially for larger purchases like electronics, furniture, or professional services where the gap in absolute rupees is significant.",
-      "Reverse-calculating GST from a total is a common need: if a final amount already includes 18% GST, the pre-tax value isn't simply the total minus 18% — it's the total divided by 1.18. Getting this wrong is a frequent source of confusion when comparing an inclusive quote from one vendor against an exclusive quote from another.",
-      "For anyone running a small business or freelancing, GST registration becomes mandatory past certain turnover thresholds, and input tax credit (offsetting GST paid on business purchases against GST collected on sales) is a genuine cash-flow consideration — worth understanding early rather than as a surprise at tax filing time.",
-      "Input tax credit is what stops GST from stacking at every stage of a supply chain. A manufacturer who pays ₹1,800 of GST on raw materials and collects ₹3,600 of GST on the finished goods sold doesn't hand over the full ₹3,600 — they claim the ₹1,800 already paid as a credit and remit only the ₹1,800 difference. Without this mechanism, tax would compound at every stage the product passed through, inflating the final price far beyond the intended rate.",
-      "A single shopping bill often mixes rates, which is why the total on a receipt rarely matches a single flat percentage: groceries at 5%, a packaged snack at 12%, and a restaurant meal at 18% would each be taxed separately even paid for together, and adding them as if one rate applied to everything gives the wrong total. Reading the GST breakdown line on a bill, rather than assuming one rate, avoids that mistake.",
-      "For a freelancer or small business, GST registration becomes compulsory once turnover crosses ₹20 lakh a year for services (₹40 lakh for goods, in most states) — but registering earlier can still make sense if most clients are GST-registered businesses themselves, since they can claim input credit on what they pay, effectively making the freelancer's GST-inclusive price look identical to their GST-exclusive one from the client's side.",
-    ],
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        `GST (Goods and Services Tax) replaced a tangle of earlier indirect taxes in India with a single tax applied at each stage of the supply chain, ultimately borne by the end consumer. It's why a price tag might say '${fmt(inr(1000))} + GST' or simply include tax already — GST is charged as a percentage of the price, and different goods and services fall into different rate slabs (commonly 5%, 12%, 18%, and 28%, alongside a 0% category for essentials).`,
+        `For everyday budgeting, the practical effect is that the sticker price rarely equals what you pay. A ${fmt(inr(1000))} service at 18% GST costs ${fmt(inr(1180))} — an easy detail to forget when comparing a quoted price against your budget, especially for larger purchases like electronics, furniture, or professional services where the gap in absolute terms is significant.`,
+        "Reverse-calculating GST from a total is a common need: if a final amount already includes 18% GST, the pre-tax value isn't simply the total minus 18% — it's the total divided by 1.18. Getting this wrong is a frequent source of confusion when comparing an inclusive quote from one vendor against an exclusive quote from another.",
+        "For anyone running a small business or freelancing, GST registration becomes mandatory past certain turnover thresholds, and input tax credit (offsetting GST paid on business purchases against GST collected on sales) is a genuine cash-flow consideration — worth understanding early rather than as a surprise at tax filing time.",
+        `Input tax credit is what stops GST from stacking at every stage of a supply chain. A manufacturer who pays ${fmt(inr(1800))} of GST on raw materials and collects ${fmt(inr(3600))} of GST on the finished goods sold doesn't hand over the full ${fmt(inr(3600))} — they claim the ${fmt(inr(1800))} already paid as a credit and remit only the ${fmt(inr(1800))} difference. Without this mechanism, tax would compound at every stage the product passed through, inflating the final price far beyond the intended rate.`,
+        "A single shopping bill often mixes rates, which is why the total on a receipt rarely matches a single flat percentage: groceries at 5%, a packaged snack at 12%, and a restaurant meal at 18% would each be taxed separately even paid for together, and adding them as if one rate applied to everything gives the wrong total. Reading the GST breakdown line on a bill, rather than assuming one rate, avoids that mistake.",
+        `For a freelancer or small business, GST registration becomes compulsory once turnover crosses ${fmt(inr(2000000))} a year for services (${fmt(inr(4000000))} for goods, in most states) — but registering earlier can still make sense if most clients are GST-registered businesses themselves, since they can claim input credit on what they pay, effectively making the freelancer's GST-inclusive price look identical to their GST-exclusive one from the client's side.`,
+      ];
+    },
     relatedTool: { label: "Try the GST Calculator", to: "/gst-calculator" },
   },
   {
@@ -618,16 +732,19 @@ export const LESSONS = [
     title: "Time Value of Money",
     category: "Core Skill",
     readTime: "6 min",
-    summary: "Why ₹1 lakh today is worth more than ₹1 lakh in five years — and how to actually compare the two.",
-    body: [
-      "The time value of money is the idea that a rupee available today is worth more than the same rupee received later, because today's rupee can be invested and start growing immediately. This single idea underlies nearly every financial calculation that involves a future amount: loans, retirement targets, and comparing a lump sum today against a series of payments later.",
-      "Future value answers 'what does this amount today grow to by a future date, at a given return?' Present value asks the reverse: 'what is a future amount actually worth in today's terms?' A promise of ₹10 lakh in 10 years sounds impressive, but discounted back at a realistic 8% return, it's worth roughly ₹4.6 lakh today — a very different number, and the correct one to compare against an equivalent lump sum offered now.",
-      "This is why 'would you rather have ₹5 lakh now or ₹8 lakh in 5 years' isn't a trick question with an obvious answer — it depends entirely on what return you could realistically earn on the ₹5 lakh in the meantime. At a 10% return, ₹5 lakh grows to roughly ₹8.05 lakh in 5 years, making the two offers roughly equivalent; at a lower achievable return, taking the money now and investing it falls short of the delayed ₹8 lakh.",
-      "The practical use of this concept shows up constantly: comparing a lump-sum settlement against an annuity, evaluating whether a 0%-interest EMI offer is genuinely free (it often isn't, once you account for a cash-discount you're giving up), and deciding between a smaller salary with immediate equity versus a larger one with deferred bonuses. Any time money arrives at different points in time, the amounts aren't directly comparable until one is converted into the other's terms.",
-      "The 0%-EMI offer is the clearest everyday test of this idea. A ₹1,20,000 purchase with a 5% cash discount costs ₹1,14,000 paid now; the same purchase on a 12-month 0% EMI costs ₹1,20,000 spread across the year. Working out what interest rate would make ₹1,14,000 today equivalent to those twelve ₹10,000 payments gives an implied rate of roughly 10% a year — meaning the '0% EMI' isn't actually free once the cash discount you gave up is counted; you're effectively paying about 10% for the convenience of spreading the cost.",
-      "This is also the correct way to judge a settlement offer or a structured payout: a court settlement offering ₹10 lakh now or ₹1 lakh a year for 12 years isn't a simple choice between ₹10 lakh and ₹12 lakh. At a realistic 8% return, that stream of ₹1 lakh payments is worth about ₹7.5 lakh in today's terms — meaning the lump sum is actually the better deal once time value is accounted for, despite its smaller headline total.",
-      "Whenever a decision involves money at more than one point in time — a loan, a salary structure, a settlement, an EMI offer — converting every option into the same point in time (usually today's value) before comparing is what actually makes the comparison fair. Comparing raw totals without doing that is a version of the same mistake as comparing a five-year and a twenty-year CAGR without adjusting for the different time periods.",
-    ],
+    summary: "Why money today is worth more than the same amount in five years — and how to actually compare the two.",
+    body: (currency) => {
+      const { inr, fmt } = currencyHelpers(currency);
+      return [
+        "The time value of money is the idea that money available today is worth more than the same amount received later, because today's money can be invested and start growing immediately. This single idea underlies nearly every financial calculation that involves a future amount: loans, retirement targets, and comparing a lump sum today against a series of payments later.",
+        `Future value answers 'what does this amount today grow to by a future date, at a given return?' Present value asks the reverse: 'what is a future amount actually worth in today's terms?' A promise of ${fmt(inr(1000000))} in 10 years sounds impressive, but discounted back at a realistic 8% return, it's worth roughly ${fmt(inr(460000))} today — a very different number, and the correct one to compare against an equivalent lump sum offered now.`,
+        `This is why 'would you rather have ${fmt(inr(500000))} now or ${fmt(inr(800000))} in 5 years' isn't a trick question with an obvious answer — it depends entirely on what return you could realistically earn on the ${fmt(inr(500000))} in the meantime. At a 10% return, ${fmt(inr(500000))} grows to roughly ${fmt(inr(805000))} in 5 years, making the two offers roughly equivalent; at a lower achievable return, taking the money now and investing it falls short of the delayed ${fmt(inr(800000))}.`,
+        "The practical use of this concept shows up constantly: comparing a lump-sum settlement against an annuity, evaluating whether a 0%-interest EMI offer is genuinely free (it often isn't, once you account for a cash-discount you're giving up), and deciding between a smaller salary with immediate equity versus a larger one with deferred bonuses. Any time money arrives at different points in time, the amounts aren't directly comparable until one is converted into the other's terms.",
+        `The 0%-EMI offer is the clearest everyday test of this idea. A ${fmt(inr(120000))} purchase with a 5% cash discount costs ${fmt(inr(114000))} paid now; the same purchase on a 12-month 0% EMI costs ${fmt(inr(120000))} spread across the year. Working out what interest rate would make ${fmt(inr(114000))} today equivalent to those twelve ${fmt(inr(10000))} payments gives an implied rate of roughly 10% a year — meaning the '0% EMI' isn't actually free once the cash discount you gave up is counted; you're effectively paying about 10% for the convenience of spreading the cost.`,
+        `This is also the correct way to judge a settlement offer or a structured payout: a court settlement offering ${fmt(inr(1000000))} now or ${fmt(inr(100000))} a year for 12 years isn't a simple choice between ${fmt(inr(1000000))} and ${fmt(inr(1200000))}. At a realistic 8% return, that stream of ${fmt(inr(100000))} payments is worth about ${fmt(inr(750000))} in today's terms — meaning the lump sum is actually the better deal once time value is accounted for, despite its smaller headline total.`,
+        "Whenever a decision involves money at more than one point in time — a loan, a salary structure, a settlement, an EMI offer — converting every option into the same point in time (usually today's value) before comparing is what actually makes the comparison fair. Comparing raw totals without doing that is a version of the same mistake as comparing a five-year and a twenty-year CAGR without adjusting for the different time periods.",
+      ];
+    },
     relatedTool: { label: "Try the Future Value Calculator", to: "/future-value-calculator" },
   },
 ];

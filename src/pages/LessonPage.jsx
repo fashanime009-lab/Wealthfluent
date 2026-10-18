@@ -9,6 +9,15 @@ import LessonChart from "@/components/learn/LessonChart";
 import Seo from "@/components/seo/Seo";
 import { articleSchema, breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
+import { useSettings } from "@/context/SettingsContext";
+
+// A lesson's body/chart/faq is a plain value for lessons with no currency
+// figures, or a function of the selected currency for lessons that have
+// worked examples in them (see src/data/lessons.js) — this resolves either
+// shape the same way.
+function resolve(field, currency) {
+  return typeof field === "function" ? field(currency) : field;
+}
 
 // Outer component just re-keys the real content by slug, so navigating
 // between lessons (via the "Next" link) gets a genuine fresh mount instead
@@ -36,6 +45,7 @@ function Highlighted({ text }) {
 
 function LessonContent({ slug }) {
   const lesson = getLessonBySlug(slug);
+  const { settings } = useSettings();
   const [done, setDone] = useState(() => (lesson ? isLessonComplete(lesson.slug) : false));
   const [streak, setStreak] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
@@ -80,7 +90,10 @@ function LessonContent({ slug }) {
   const index = LESSONS.findIndex((l) => l.slug === lesson.slug);
   const next = LESSONS[(index + 1) % LESSONS.length];
   const related = getLessonRelated(lesson.slug);
-  const keyNumbers = extractKeyNumbers(lesson.body);
+  const body = resolve(lesson.body, settings.currency);
+  const chart = resolve(lesson.chart, settings.currency);
+  const faq = resolve(lesson.faq, settings.currency);
+  const keyNumbers = extractKeyNumbers(body);
   const newCompletedCount = completedCount + (done ? 0 : 1);
 
   const handleComplete = () => {
@@ -122,7 +135,7 @@ function LessonContent({ slug }) {
               { name: "Learn", path: "/learn" },
               { name: lesson.title, path: `/learn/${lesson.slug}` },
             ]),
-            ...(lesson.faq ? [faqSchema(lesson.faq.map((f) => ({ question: f.q, answer: f.a })))] : []),
+            ...(faq ? [faqSchema(faq.map((f) => ({ question: f.q, answer: f.a })))] : []),
           ]}
         />
 
@@ -158,7 +171,7 @@ function LessonContent({ slug }) {
         </div>
 
         <div className="mt-9 space-y-5 text-[15px] leading-7 text-[#111814]/75 dark:text-[#eef1ec]/75">
-          {lesson.body.map((para, i) => (
+          {body.map((para, i) => (
             <p
               key={i}
               className={
@@ -172,7 +185,7 @@ function LessonContent({ slug }) {
           ))}
         </div>
 
-        <LessonChart chart={lesson.chart} />
+        <LessonChart chart={chart} />
 
         {lesson.table && (
           <div className="mt-10 overflow-x-auto">
@@ -258,7 +271,7 @@ function LessonContent({ slug }) {
           </section>
         )}
 
-        {lesson.faq && <VerdictFAQ items={lesson.faq} className="mt-12 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />}
+        {faq && <VerdictFAQ items={faq} className="mt-12 border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />}
 
         <div className="mt-12 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10">
           <button
