@@ -1,5 +1,6 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
+import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { sipFutureValue } from "@/utils/projections";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
@@ -39,8 +40,10 @@ export default function RetirementCalculatorPage() {
 
   // Shared, currency-aware formatter (lakh/crore grouping for INR).
   const fmt = (v) => formatCurrency(v, settings.currency);
+  const { inr } = useExampleCurrency();
 
-  const exampleCorpus = Math.round(sipFutureValue(15000, 25, 12));
+  const exampleMonthly = inr(15000);
+  const exampleCorpus = Math.round(sipFutureValue(exampleMonthly, 25, 12));
 
   return (
     <>
@@ -119,7 +122,7 @@ export default function RetirementCalculatorPage() {
                 Here <strong className="text-[#111814] dark:text-[#eef1ec]">SIP</strong> is your monthly
                 investment, <strong className="text-[#111814] dark:text-[#eef1ec]">r</strong> is the monthly
                 expected return, and <strong className="text-[#111814] dark:text-[#eef1ec]">n</strong> is the total
-                number of months until retirement. A {fmt(15000)} monthly SIP at 12% annual return over 25 years grows
+                number of months until retirement. A {fmt(exampleMonthly)} monthly SIP at 12% annual return over 25 years grows
                 to about {fmt(exampleCorpus)} — most of which comes from compounding on earlier contributions,
                 not the contributions themselves, which is why starting a decade earlier matters more than
                 investing a larger amount later.

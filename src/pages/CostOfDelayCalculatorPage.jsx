@@ -1,5 +1,6 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
+import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -41,9 +42,11 @@ export default function CostOfDelayCalculatorPage() {
   const costOfDelay = noDelayValue - delayedValue;
 
   const fmt = (v) => formatCurrency(v, settings.currency);
+  const { inr } = useExampleCurrency();
 
-  const exampleNoDelay = Math.round(sipFutureValue(10000, 25, 12));
-  const exampleDelayed = Math.round(sipFutureValue(10000, 20, 12));
+  const exampleMonthly = inr(10000);
+  const exampleNoDelay = Math.round(sipFutureValue(exampleMonthly, 25, 12));
+  const exampleDelayed = Math.round(sipFutureValue(exampleMonthly, 20, 12));
   const exampleCost = exampleNoDelay - exampleDelayed;
 
   return (
@@ -114,10 +117,10 @@ export default function CostOfDelayCalculatorPage() {
                 Cost of delay = FV(monthly, full horizon) − FV(monthly, horizon − delay)
               </p>
               <p>
-                {fmt(10000)} a month at 12% for 25 years reaches about {fmt(exampleNoDelay)}. Delay the start by 5 years — so the
-                same {fmt(10000)} a month is invested for only 20 years, reaching the same end date — and the total
+                {fmt(exampleMonthly)} a month at 12% for 25 years reaches about {fmt(exampleNoDelay)}. Delay the start by 5 years — so the
+                same {fmt(exampleMonthly)} a month is invested for only 20 years, reaching the same end date — and the total
                 drops to about {fmt(exampleDelayed)}. The 5-year delay costs roughly {fmt(exampleCost)}, which is more than the
-                entire amount that would have been invested over those 5 years ({fmt(10000 * 60)}) many times over — almost
+                entire amount that would have been invested over those 5 years ({fmt(exampleMonthly * 60)}) many times over — almost
                 all of that cost is lost compounding time, not lost contributions.
               </p>
             </CalcSection>

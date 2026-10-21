@@ -13,11 +13,11 @@ import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const FAQ_ITEMS = [
-  { q: "What are common GST rates in India?", a: "Common GST slabs include 5%, 12%, 18%, and 28% depending on product and service category. Some essential goods are taxed at 0% or 5%." },
+  { q: "What are common GST rates in India?", a: "Following the September 2025 GST reform, the core slabs are 0%, 5%, 18%, and 40%. The earlier 12% slab was removed, and most goods that were taxed at 28% moved to 18%. A 28% rate still applies narrowly to a small number of items, such as pan masala and gutka, until their related cess obligations are cleared. The 40% rate is reserved for sin and luxury goods — tobacco products, sugar-sweetened beverages, gambling, and high-end vehicles." },
   { q: "How is GST calculated?", a: "GST is calculated by multiplying the taxable amount by the applicable GST percentage. The total amount is the sum of the base amount and the GST amount." },
   { q: "Can this calculator be used for all GST types?", a: "This calculator works for both CGST+SGST (intra-state) and IGST (inter-state) by applying the combined rate. For detailed bifurcation, consult a tax advisor." },
   { q: "How do I remove GST from a total price?", a: "Divide the GST-inclusive total by (1 + GST rate/100) to get the base amount, then subtract that from the total to find the GST portion — the reverse of adding GST to a base amount." },
-  { q: "Is GST the same across all of India?", a: "The rate slabs (5%, 12%, 18%, 28%) are set nationally and apply uniformly across states — what changes state to state is only the CGST/SGST split, never the total rate a buyer pays." },
+  { q: "Is GST the same across all of India?", a: "The rate slabs (0%, 5%, 18%, 40%, plus a narrow legacy 28% band) are set nationally and apply uniformly across states — what changes state to state is only the CGST/SGST split, never the total rate a buyer pays." },
 ];
 
 export default function GSTCalculatorPage() {
@@ -43,37 +43,16 @@ export default function GSTCalculatorPage() {
     <>
       <Seo
         title="GST Calculator India – Add or Remove GST"
-        description="Add or remove GST from any amount instantly — see the tax breakdown and final invoice value for India's GST slabs (5%, 12%, 18%, 28%)."
+        description="Add or remove GST from any amount instantly — see the tax breakdown and final invoice value for India's GST slabs (0%, 5%, 18%, 40%)."
         path="/gst-calculator"
         keywords="GST calculator, goods and services tax, GST calculation, tax calculator"
         jsonLd={[
         calculatorSchema({
           name: "GST Calculator India",
-          description: "Add or remove GST from any amount instantly — see the tax breakdown and final invoice value for India's GST slabs (5%, 12%, 18%, 28%).",
+          description: "Add or remove GST from any amount instantly — see the tax breakdown and final invoice value for India's GST slabs (0%, 5%, 18%, 40%).",
           path: "/gst-calculator",
         }),
-        faqSchema([
-          {
-            "question": "What are common GST rates in India?",
-            "answer": "Common GST slabs include 5%, 12%, 18%, and 28% depending on product and service category. Some essential goods are taxed at 0% or 5%."
-          },
-          {
-            "question": "How is GST calculated?",
-            "answer": "GST is calculated by multiplying the taxable amount by the applicable GST percentage. The total amount is the sum of the base amount and the GST amount."
-          },
-          {
-            "question": "Can this calculator be used for all GST types?",
-            "answer": "This calculator works for both CGST+SGST (intra-state) and IGST (inter-state) by applying the combined rate. For detailed bifurcation, consult a tax advisor."
-          },
-          {
-            "question": "How do I remove GST from a total price?",
-            "answer": "Divide the GST-inclusive total by (1 + GST rate/100) to get the base amount, then subtract that from the total to find the GST portion — the reverse of adding GST to a base amount."
-          },
-          {
-            "question": "Is GST the same across all of India?",
-            "answer": "The rate slabs (5%, 12%, 18%, 28%) are set nationally and apply uniformly across states — what changes state to state is only the CGST/SGST split, never the total rate a buyer pays."
-          }
-        ]),
+        faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
       ]}
       />
 
@@ -120,7 +99,7 @@ export default function GSTCalculatorPage() {
                 step={100}
                 format={fmt}
               />
-              <CalcField label="GST rate (%)" value={gstRate} onChange={setGstRate} min={1} max={28} step={1} suffix="%" />
+              <CalcField label="GST rate (%)" value={gstRate} onChange={setGstRate} min={0} max={40} step={1} suffix="%" />
             </div>
 
             <div className="space-y-6">

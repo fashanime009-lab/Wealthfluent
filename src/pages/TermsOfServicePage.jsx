@@ -20,8 +20,6 @@ function Section({ n, title, children }) {
 }
 
 export default function TermsOfServicePage() {
-  const currentYear = new Date().getFullYear();
-
   return (
     <>
       <Seo
@@ -44,7 +42,7 @@ export default function TermsOfServicePage() {
             Terms of Service
           </h1>
           <p className="mt-3 font-mono-tech text-[13px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
-            Last updated: September 6, {currentYear}
+            Last updated: September 6, 2026
           </p>
 
           <div className="mt-10 space-y-3 text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">

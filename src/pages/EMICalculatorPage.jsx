@@ -4,6 +4,7 @@ import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { formatCurrency } from "../utils/currency";
 import AdSlot from "../components/ads/AdSlot";
 import { useSettings } from "../context/SettingsContext";
+import useExampleCurrency from "@/hooks/useExampleCurrency";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
@@ -39,6 +40,7 @@ export default function EMICalculatorPage() {
   const { settings } = useSettings();
   const currency = settings.currency;
   const fmt = (v) => formatCurrency(v, currency);
+  const { inr } = useExampleCurrency();
 
   const monthlyRate = interestRate / 12 / 100;
   const months = loanYears * 12;
@@ -59,7 +61,7 @@ export default function EMICalculatorPage() {
 
   // Fixed worked examples for the body copy below — a 5 lakh-equivalent
   // loan at 10%, independent of the live inputs above, but currency-aware.
-  const examplePrincipal = 500000;
+  const examplePrincipal = inr(500000);
   const exampleEmi5yr = emiOf(examplePrincipal, 10, 5);
   const exampleEmi3yr = emiOf(examplePrincipal, 10, 3);
   const exampleEmi7yr = emiOf(examplePrincipal, 10, 7);

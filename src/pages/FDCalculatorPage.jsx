@@ -1,5 +1,6 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
+import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -18,13 +19,14 @@ import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 // renders in whichever currency formatCurrency() is given.
 const maturityOf = (p, r, n, m) => Math.round(p * Math.pow(1 + r / 100 / m, m * n));
 
-function buildFaqItems(fmt) {
-  const quarterly5yr = maturityOf(100000, 7, 5, 4);
-  const monthlyPayout = Math.round((100000 * 7) / 100 / 12);
+function buildFaqItems(fmt, inr) {
+  const p = inr(100000);
+  const quarterly5yr = maturityOf(p, 7, 5, 4);
+  const monthlyPayout = Math.round((p * 7) / 100 / 12);
 
   return [
-    { q: "How is FD maturity amount calculated?", a: `Maturity value = P × (1 + R / (100 × m))^(m × N), where P is the deposit, R the annual rate, N the years and m the number of times interest compounds a year. A ${fmt(100000)} deposit at 7% for 5 years, compounded quarterly, matures at about ${fmt(quarterly5yr)} — ${fmt(quarterly5yr - 100000)} of interest.` },
-    { q: "How do I calculate FD interest for a monthly payout?", a: `With a monthly-payout FD the interest is paid out instead of reinvested, so it doesn't compound: monthly interest ≈ deposit × annual rate ÷ 12. On ${fmt(100000)} at 7% that's roughly ${fmt(monthlyPayout)} a month, and the ${fmt(100000)} comes back at maturity. Banks often quote a slightly lower rate for payout FDs than for cumulative ones, so use your bank's actual payout rate. This calculator shows the cumulative (reinvested) case.` },
+    { q: "How is FD maturity amount calculated?", a: `Maturity value = P × (1 + R / (100 × m))^(m × N), where P is the deposit, R the annual rate, N the years and m the number of times interest compounds a year. A ${fmt(p)} deposit at 7% for 5 years, compounded quarterly, matures at about ${fmt(quarterly5yr)} — ${fmt(quarterly5yr - p)} of interest.` },
+    { q: "How do I calculate FD interest for a monthly payout?", a: `With a monthly-payout FD the interest is paid out instead of reinvested, so it doesn't compound: monthly interest ≈ deposit × annual rate ÷ 12. On ${fmt(p)} at 7% that's roughly ${fmt(monthlyPayout)} a month, and the ${fmt(p)} comes back at maturity. Banks often quote a slightly lower rate for payout FDs than for cumulative ones, so use your bank's actual payout rate. This calculator shows the cumulative (reinvested) case.` },
     { q: "How much should I invest in a fixed deposit?", a: "There's no single right amount. A common way to decide: first build an emergency fund, then put money you'll need within the next 1–5 years — a house down payment, tuition, a wedding — into FDs, because they don't fall in value. Money you won't need for 5+ years often earns more elsewhere, but only you can weigh that against your risk comfort. Try the deposit amount and tenure above to see what different sums earn." },
     { q: "Is a term deposit the same as a fixed deposit?", a: "Yes. \"Fixed deposit\" is the usual name in India; \"term deposit\" is the same product in the UK, Australia and elsewhere — a lump sum locked for a fixed tenure at a fixed rate. This calculator works for either; just enter your bank's rate, tenure and compounding frequency." },
     { q: "Are fixed deposits risk-free?", a: "Fixed deposits are generally considered low-risk investments, especially when offered by regulated banks and institutions." },
@@ -63,15 +65,17 @@ export default function FDCalculatorPage() {
   // currency's own convention otherwise) — this page used to hardcode
   // en-US grouping with just the symbol, unlike the rest of the site.
   const fmt = (v) => formatCurrency(v, settings.currency);
-  const FAQ_ITEMS = buildFaqItems(fmt);
+  const { inr } = useExampleCurrency();
+  const FAQ_ITEMS = buildFaqItems(fmt, inr);
 
-  const exampleAnnual = maturityOf(100000, 7, 5, 1);
-  const exampleHalfYearly = maturityOf(100000, 7, 5, 2);
-  const exampleQuarterly = maturityOf(100000, 7, 5, 4);
-  const exampleMonthly = maturityOf(100000, 7, 5, 12);
-  const examplePayoutMonthly = Math.round((100000 * 7) / 100 / 12);
-  const examplePayoutAnnual = Math.round((100000 * 7) / 100);
-  const exampleOneYearQuarterly = maturityOf(100000, 7, 1, 4);
+  const examplePrincipal = inr(100000);
+  const exampleAnnual = maturityOf(examplePrincipal, 7, 5, 1);
+  const exampleHalfYearly = maturityOf(examplePrincipal, 7, 5, 2);
+  const exampleQuarterly = maturityOf(examplePrincipal, 7, 5, 4);
+  const exampleMonthly = maturityOf(examplePrincipal, 7, 5, 12);
+  const examplePayoutMonthly = Math.round((examplePrincipal * 7) / 100 / 12);
+  const examplePayoutAnnual = Math.round((examplePrincipal * 7) / 100);
+  const exampleOneYearQuarterly = maturityOf(examplePrincipal, 7, 1, 4);
 
   return (
     <>
@@ -172,7 +176,7 @@ export default function FDCalculatorPage() {
                 defaults to quarterly, the convention many banks use for fixed deposits.
               </p>
               <p>
-                The same quoted rate produces different maturity values depending on the frequency. A {fmt(100000)}
+                The same quoted rate produces different maturity values depending on the frequency. A {fmt(examplePrincipal)}
                 deposit at 7% for 5 years grows to {fmt(exampleAnnual)} with annual compounding, {fmt(exampleHalfYearly)} half-yearly,
                 {" "}{fmt(exampleQuarterly)} quarterly and {fmt(exampleMonthly)} monthly. The gap is small on a short deposit and widens with a
                 larger amount, a higher rate or a longer tenure, so check your bank's actual compounding frequency
@@ -190,7 +194,7 @@ export default function FDCalculatorPage() {
                 unchanged.
               </p>
               <p>
-                For a monthly payout, the interest is roughly deposit × annual rate ÷ 12: a {fmt(100000)} deposit at 7%
+                For a monthly payout, the interest is roughly deposit × annual rate ÷ 12: a {fmt(examplePrincipal)} deposit at 7%
                 pays about {fmt(examplePayoutMonthly)} a month, {fmt(examplePayoutAnnual)} a year. The same deposit compounded quarterly for a year would grow to
                 about {fmt(exampleOneYearQuarterly)} instead. Payout FDs suit people who need regular income, such as retirees covering
                 expenses; cumulative FDs suit a goal with a fixed date. Banks often quote a slightly lower rate for

@@ -1,5 +1,6 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
+import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -17,14 +18,14 @@ import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 // worked examples render in whichever currency formatCurrency() is given.
 const cagrOf = (start, end, n) => ((Math.pow(end / start, 1 / n) - 1) * 100);
 
-function buildFaqItems(fmt) {
+function buildFaqItems(fmt, inr) {
   const dropCagr = cagrOf(100, 75, 2).toFixed(1);
 
   return [
     { q: "What is a good CAGR?", a: "It depends on the investment type, market conditions, and level of risk. Historically, stock markets have delivered strong long-term returns, while fixed-income investments generally provide lower but more stable returns." },
     { q: "What does CAGR mean?", a: "CAGR stands for Compound Annual Growth Rate: the single, constant yearly growth rate that would take an investment from its starting value to its ending value over a set number of years, with growth compounding each year. It smooths out the ups and downs — an investment that doubled in 5 years has a CAGR of about 14.87%, whether it grew evenly or in bursts." },
     { q: "How do I calculate CAGR for a stock or mutual fund?", a: "Take the value at the end divided by the value at the start, raise it to the power of 1 divided by the number of years, subtract 1, and multiply by 100. Or enter the three numbers above. This works for a stock, fund NAV or portfolio bought once and held. If you added money at different times, as with a monthly SIP, CAGR isn't accurate — use XIRR, which weights each cash flow by its date." },
-    { q: "What is the difference between CAGR and average annual return?", a: `An average adds up yearly returns and divides by the number of years, ignoring compounding, so it overstates growth when returns swing. If an investment gains 50% one year and loses 50% the next, the average return is 0%, but ${fmt(100)} becomes ${fmt(75)} — a CAGR of about ${dropCagr}% a year. CAGR is the figure that matches what your money actually did.` },
+    { q: "What is the difference between CAGR and average annual return?", a: `An average adds up yearly returns and divides by the number of years, ignoring compounding, so it overstates growth when returns swing. If an investment gains 50% one year and loses 50% the next, the average return is 0%, but ${fmt(inr(100))} becomes ${fmt(inr(75))} — a CAGR of about ${dropCagr}% a year. CAGR is the figure that matches what your money actually did.` },
     { q: "Why is CAGR important?", a: "CAGR provides a smoothed annual growth rate that removes volatility, making it easier to compare investments with different time horizons and evaluate long-term performance." },
     { q: "What is the difference between CAGR and absolute return?", a: "Absolute return measures total growth over the entire period, while CAGR expresses it as an annualised rate, making comparisons across different timeframes more meaningful." },
     { q: "Does CAGR account for volatility or risk?", a: "No. CAGR only looks at the start and end values, so it can't tell you how bumpy the path was. Two investments with the same CAGR can have very different volatility — pair it with standard deviation or a year-by-year return chart for the full picture." },
@@ -50,7 +51,8 @@ export default function CAGRCalculatorPage() {
   // currency's own convention otherwise) — this page used to hardcode
   // en-US grouping with just the symbol, unlike the rest of the site.
   const fmt = (v) => formatCurrency(v, settings.currency);
-  const FAQ_ITEMS = buildFaqItems(fmt);
+  const { inr } = useExampleCurrency();
+  const FAQ_ITEMS = buildFaqItems(fmt, inr);
 
   const example6yr = cagrOf(100000, 200000, 6).toFixed(1);
   const example5yr = cagrOf(50000, 100000, 5).toFixed(2);
@@ -143,7 +145,7 @@ export default function CAGRCalculatorPage() {
               </p>
               <p>
                 Here <strong className="text-[#111814] dark:text-[#eef1ec]">N</strong> is the number of years between the two values.
-                An investment that grew from {fmt(100000)} to {fmt(200000)} over 6 years has
+                An investment that grew from {fmt(inr(100000))} to {fmt(inr(200000))} over 6 years has
                 a CAGR of about {example6yr}% — even though the actual year-by-year path
                 could have included both sharp gains and losing years along the way.
                 Always check what start and end dates a CAGR figure uses before
@@ -155,8 +157,8 @@ export default function CAGRCalculatorPage() {
 
             <CalcSection title="CAGR example: what a return really means">
               <p>
-                Suppose you bought a stock or fund for {fmt(50000)} and it's worth {fmt(100000)} five years later. The total
-                gain is 100%, but the more useful number is the yearly rate: (100,000 ÷ 50,000)^(1/5) − 1 = {example5yr}%
+                Suppose you bought a stock or fund for {fmt(inr(50000))} and it's worth {fmt(inr(100000))} five years later. The total
+                gain is 100%, but the more useful number is the yearly rate: ({fmt(inr(100000))} ÷ {fmt(inr(50000))})^(1/5) − 1 = {example5yr}%
                 a year. That's the figure to compare against a fixed deposit at 7% or an index fund's long-run
                 return — the 100% total alone can't be compared with anything held for a different length of time.
               </p>

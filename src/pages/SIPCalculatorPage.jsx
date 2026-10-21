@@ -7,6 +7,7 @@ import { useSettings } from "../context/SettingsContext";
 
 import AdSlot from "../components/ads/AdSlot";
 import { formatCurrency } from "../utils/currency";
+import useExampleCurrency from "@/hooks/useExampleCurrency";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
@@ -52,6 +53,7 @@ export default function SIPCalculatorPage() {
 
   const currency = settings.currency;
   const fmt = (v) => formatCurrency(v, currency);
+  const { inr } = useExampleCurrency();
   const [monthlyInvestment, setMonthlyInvestment] = useState(5000);
   const [annualReturn, setAnnualReturn] = useState(12);
   const [years, setYears] = useState(15);
@@ -74,12 +76,15 @@ export default function SIPCalculatorPage() {
   // Fixed worked examples for the body copy below — independent of the live
   // inputs above so the prose stays stable while someone plays with the
   // calculator, but still currency-aware via fmt().
-  const example1FV = sipFV(5000, 12, 15);
-  const example1Invested = 5000 * 15 * 12;
+  const exampleMonthly = inr(5000);
+  const example1FV = sipFV(exampleMonthly, 12, 15);
+  const example1Invested = exampleMonthly * 15 * 12;
   const example1Returns = example1FV - example1Invested;
-  const example1First5yrInvested = 5000 * 5 * 12;
-  const lumpExample = lumpFV(600000, 12, 5);
-  const sipExample = sipFV(10000, 12, 5);
+  const example1First5yrInvested = exampleMonthly * 5 * 12;
+  const exampleLumpPrincipal = inr(600000);
+  const lumpExample = lumpFV(exampleLumpPrincipal, 12, 5);
+  const exampleSipMonthly = inr(10000);
+  const sipExample = sipFV(exampleSipMonthly, 12, 5);
 
   // Update context
   useEffect(() => {
@@ -185,7 +190,7 @@ export default function SIPCalculatorPage() {
                 turns investing into a habit: you don't have to decide when to invest, because the schedule does.
               </p>
               <p>
-                For example, investing {fmt(5000)} a month for 15 years means putting in {fmt(example1Invested)} in total. At an assumed
+                For example, investing {fmt(exampleMonthly)} a month for 15 years means putting in {fmt(example1Invested)} in total. At an assumed
                 12% a year, this calculator estimates it grows to about {fmt(example1FV)} — roughly {fmt(example1Returns)} of that from
                 returns. The 12% is an assumption you can change, not a promise: real fund returns vary from year to
                 year and can be negative.
@@ -216,9 +221,9 @@ export default function SIPCalculatorPage() {
                 (years × 12).
               </p>
               <p>
-                For the defaults above, P = {fmt(5000)}. A 12% annual return gives r = 12 ÷ 12 ÷ 100 = 0.01, and 15 years
-                gives n = 180. Then (1.01)^180 = 5.9958, so [(1.01)^180 − 1] / 0.01 = 499.58. Multiplying by {fmt(5000)}
-                gives about {fmt(Math.round(5000 * 499.58))}, and the final × 1.01 gives {fmt(example1FV)} — the same figure the calculator above
+                For the defaults above, P = {fmt(exampleMonthly)}. A 12% annual return gives r = 12 ÷ 12 ÷ 100 = 0.01, and 15 years
+                gives n = 180. Then (1.01)^180 = 5.9958, so [(1.01)^180 − 1] / 0.01 = 499.58. Multiplying by {fmt(exampleMonthly)}
+                gives about {fmt(Math.round(exampleMonthly * 499.58))}, and the final × 1.01 gives {fmt(example1FV)} — the same figure the calculator above
                 produces for those inputs.
               </p>
               <p>
@@ -247,8 +252,8 @@ export default function SIPCalculatorPage() {
               </p>
               <p>
                 If the money is there today, a calculation with a steady return always favours investing it all at
-                once, because every unit starts earning sooner. {fmt(600000)} invested as a lump sum for 5 years at 12%
-                grows to about {fmt(lumpExample)}; the same {fmt(600000)} invested as {fmt(10000)} a month over those 5 years (with the
+                once, because every unit starts earning sooner. {fmt(exampleLumpPrincipal)} invested as a lump sum for 5 years at 12%
+                grows to about {fmt(lumpExample)}; the same {fmt(exampleLumpPrincipal)} invested as {fmt(exampleSipMonthly)} a month over those 5 years (with the
                 not-yet-invested part earning nothing) grows to about {fmt(sipExample)}. But that gap comes from assuming a
                 smooth 12%. Real markets fall as well as rise, and a SIP's real benefit — spreading your entry points so
                 you don't invest everything just before a downturn — is exactly what a fixed-return calculator can't

@@ -36,10 +36,10 @@ export const LESSONS = [
       ];
     },
     chart: (currency) => {
-      const { fmt } = currencyHelpers(currency);
+      const { inr, fmt } = currencyHelpers(currency);
       return {
         type: "growth",
-        title: `${fmt(5000)}/month at 12% — starting now vs waiting 10 years`,
+        title: `${fmt(inr(5000))}/month at 12% — starting now vs waiting 10 years`,
         unit: "INR",
         series: [
           { label: "Start now", tone: "primary", gen: { kind: "sip", monthly: 5000, rate: 12, years: 30 } },
@@ -215,10 +215,10 @@ export const LESSONS = [
       ];
     },
     chart: (currency) => {
-      const { fmt } = currencyHelpers(currency);
+      const { inr, fmt } = currencyHelpers(currency);
       return {
         type: "growth",
-        title: `What today's ${fmt(100)} costs later, at 6% vs 8% inflation`,
+        title: `What today's ${fmt(inr(100))} costs later, at 6% vs 8% inflation`,
         unit: "INR",
         series: [
           { label: "6% inflation", tone: "primary", gen: { kind: "lumpsum", principal: 100, rate: 6, years: 20 } },

@@ -1,5 +1,6 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
+import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useState, useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -60,9 +61,12 @@ export default function SWPCalculatorPage() {
   }, [corpus, monthlyWithdrawal, rate]);
 
   const fmt = (v) => formatCurrency(v, settings.currency);
+  const { inr } = useExampleCurrency();
 
-  const exampleCorpus = 5000000;
-  const exampleResult = swpSimulate(exampleCorpus, 35000, 8);
+  const exampleCorpus = inr(5000000);
+  const exampleWithdrawal = inr(35000);
+  const exampleSafeWithdrawal = inr(30000);
+  const exampleResult = swpSimulate(exampleCorpus, exampleWithdrawal, 8);
 
   return (
     <>
@@ -151,10 +155,10 @@ export default function SWPCalculatorPage() {
                 Balance = Balance × (1 + monthly rate) − Withdrawal
               </p>
               <p>
-                On a {fmt(exampleCorpus)} corpus with a {fmt(35000)} monthly withdrawal at 8%, the balance lasts about {exampleResult.years} years and
+                On a {fmt(exampleCorpus)} corpus with a {fmt(exampleWithdrawal)} monthly withdrawal at 8%, the balance lasts about {exampleResult.years} years and
                 {" "}{exampleResult.remMonths} months — over that time {fmt(Math.round(exampleResult.totalWithdrawn))} is withdrawn in total, of which {fmt(Math.round(exampleResult.interestEarned))} comes from
-                interest and only the original {fmt(exampleCorpus)} from the corpus itself. Drop the withdrawal to {fmt(30000)} a
-                month on the same corpus and rate, and it becomes sustainable indefinitely — {fmt(30000)} is below what
+                interest and only the original {fmt(exampleCorpus)} from the corpus itself. Drop the withdrawal to {fmt(exampleSafeWithdrawal)} a
+                month on the same corpus and rate, and it becomes sustainable indefinitely — {fmt(exampleSafeWithdrawal)} is below what
                 the corpus earns in an average month, so the balance never trends toward zero.
               </p>
               <p>

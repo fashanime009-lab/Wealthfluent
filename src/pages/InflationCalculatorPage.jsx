@@ -1,5 +1,6 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
+import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useState, useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -37,6 +38,7 @@ export default function InflationCalculatorPage() {
   // currency's own convention otherwise) — this page used to hardcode
   // en-US grouping with just the symbol, unlike the rest of the site.
   const fmt = (v) => formatCurrency(v, settings.currency, false, 2);
+  const { inr } = useExampleCurrency();
 
   // Calculate purchasing power loss
   const purchasingPowerLoss = useMemo(() => {
@@ -46,8 +48,9 @@ export default function InflationCalculatorPage() {
     return 0;
   }, [futureCost, currentExpenses]);
 
-  const example10yr = Math.round(10000 * Math.pow(1.06, 10));
-  const example20yr = Math.round(10000 * Math.pow(1.06, 20));
+  const exampleToday = inr(10000);
+  const example10yr = Math.round(exampleToday * Math.pow(1.06, 10));
+  const example20yr = Math.round(exampleToday * Math.pow(1.06, 20));
 
   return (
     <>
@@ -159,7 +162,7 @@ export default function InflationCalculatorPage() {
                 Future Cost = Current Cost × (1 + Inflation Rate/100)^Years
               </p>
               <p>
-                At just 6% annual inflation, something costing {fmt(10000)} today costs
+                At just 6% annual inflation, something costing {fmt(exampleToday)} today costs
                 roughly {fmt(example10yr)} in 10 years and {fmt(example20yr)} in 20 years — which is why
                 a "safe" savings account earning 3-4% is actually losing real value
                 every year, even while the account balance keeps growing. Healthcare

@@ -1,5 +1,6 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
+import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useState, useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -38,6 +39,9 @@ export default function RateOfReturnCalculatorPage() {
   // currency's own convention otherwise) — this page used to hardcode
   // en-US grouping with just the symbol, unlike the rest of the site.
   const fmt = (v) => formatCurrency(v, settings.currency);
+  const { inr } = useExampleCurrency();
+  const examplePresent = inr(10000);
+  const exampleFuture = inr(50000);
 
   // ─── Format percentage ──────────────────────────────────────────
   const formatPercentage = (value) => {
@@ -144,7 +148,7 @@ export default function RateOfReturnCalculatorPage() {
                 Rate = [(Future Value / Present Value)^(1/Years) − 1] × 100
               </p>
               <p>
-                For example, {fmt(10000)} growing to {fmt(50000)} over 5 years works out to an annualized return of about
+                For example, {fmt(examplePresent)} growing to {fmt(exampleFuture)} over 5 years works out to an annualized return of about
                 37.97% — a single number that describes the average annual growth needed to turn the first figure
                 into the second, regardless of how bumpy the actual year-by-year path was.
               </p>

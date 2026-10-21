@@ -15,7 +15,7 @@ import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 function buildFaqItems(fmt) {
   return [
     { q: "How is HRA exemption calculated?", a: "It's the lowest of three figures: the actual HRA you receive, your rent paid minus 10% of basic salary, or 50% of basic salary in a metro city (40% elsewhere) — not simply the rent you pay or the HRA you receive. Whichever of the three is smallest is what you can actually claim." },
-    { q: "Which cities count as metro for HRA?", a: "Delhi, Mumbai, Kolkata and Chennai are treated as metro (50% of basic); every other city, including Bengaluru, Hyderabad and Pune, uses the 40% figure, regardless of local rent levels or cost of living." },
+    { q: "Which cities count as metro for HRA?", a: "From FY 2026-27, Delhi, Mumbai, Kolkata, Chennai, Bengaluru, Hyderabad, Pune and Ahmedabad are all treated as metro (50% of basic) — the list was expanded from the original four cities under the new Income Tax Act. Every other city uses the 40% figure, regardless of local rent levels or cost of living. Confirm which year's rules apply to your filing, since earlier years used only the original four-city list." },
     { q: "Do I need rent receipts to claim HRA?", a: `Yes — your employer will usually ask for rent receipts, and for rent above ${fmt(100000)} a year (about ${fmt(8333)}/month) your landlord's PAN is also required. Without this documentation, your employer may not apply the exemption when deducting TDS, even if you're genuinely entitled to it.` },
     { q: "Can I claim HRA and a home loan deduction at the same time?", a: "Yes, if you're renting in one city while owning a home (empty, rented out, or occupied by family) elsewhere, or if your own home isn't ready for possession yet. You generally can't claim HRA for rent paid on a home you also live in and claim a home loan deduction for." },
     { q: "What if I pay rent to a parent or relative?", a: "It's allowed, provided it's genuine — a real rental agreement, actual rent transfers (not just a paper trail), and the relative declares the rent as income on their own return. Tax authorities scrutinise these arrangements more closely than rent paid to an unrelated landlord." },
@@ -83,7 +83,7 @@ export default function HRACalculatorPage() {
               <div>
                 <p className="text-[13px] font-medium text-[#111814]/70 dark:text-[#eef1ec]/70">City type</p>
                 <div className="mt-3 grid grid-cols-2 gap-2">
-                  {[{ label: "Metro (Delhi, Mumbai, Kolkata, Chennai)", val: true }, { label: "Non-metro", val: false }].map((opt) => (
+                  {[{ label: "Metro (Delhi, Mumbai, Kolkata, Chennai, Bengaluru, Hyderabad, Pune, Ahmedabad)", val: true }, { label: "Non-metro", val: false }].map((opt) => (
                     <button
                       key={opt.label}
                       type="button"

@@ -1,5 +1,6 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
+import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
@@ -40,13 +41,14 @@ const flatSipOf = (monthly, annualReturn, years) => {
   return Math.round(monthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r));
 };
 
-function buildFaqItems(fmt) {
-  const example = stepUpSipOf(5000, 10, 12, 15);
-  const flatExample = flatSipOf(5000, 12, 15);
+function buildFaqItems(fmt, inr) {
+  const exampleMonthly = inr(5000);
+  const example = stepUpSipOf(exampleMonthly, 10, 12, 15);
+  const flatExample = flatSipOf(exampleMonthly, 12, 15);
 
   return [
     { q: "What is a step-up SIP?", a: "A step-up (or top-up) SIP increases your monthly investment by a fixed percentage every year, instead of keeping it flat for the whole duration — usually timed to a yearly salary increment." },
-    { q: "How much difference does stepping up actually make?", a: `A large one. At the defaults on this page — ${fmt(5000)}/month, 12% return, 15 years — a flat SIP invests ${fmt(5000 * 180)} in total and grows to about ${fmt(flatExample)}. The same starting amount with a 10% annual step-up invests roughly ${fmt(example.invested)} and grows to about ${fmt(example.futureValue)} — more than double, because later (larger) installments arrive while the corpus is already big, so their added contribution compounds alongside it.` },
+    { q: "How much difference does stepping up actually make?", a: `A large one. At the defaults on this page — ${fmt(exampleMonthly)}/month, 12% return, 15 years — a flat SIP invests ${fmt(exampleMonthly * 180)} in total and grows to about ${fmt(flatExample)}. The same starting amount with a 10% annual step-up invests roughly ${fmt(example.invested)} and grows to about ${fmt(example.futureValue)} — more than double, because later (larger) installments arrive while the corpus is already big, so their added contribution compounds alongside it.` },
     { q: "What step-up percentage should I use?", a: "A common starting point is matching your expected annual salary increment — often 8-12% in many careers — so the step-up tracks your actual rising capacity to invest rather than becoming a stretch." },
     { q: "Does the calculator assume the step-up happens every year without fail?", a: "Yes — it assumes the increase is applied consistently, every 12 months, for the full duration. In practice, missing a step-up in a lean year and resuming the next is a minor change against the overall arithmetic, not something that needs its own calculation." },
     { q: "How is this different from a flat SIP calculator?", a: "A flat SIP keeps the monthly amount constant for the entire period. This one recalculates the monthly amount at the start of every year — year 1 at your starting amount, year 2 at that amount plus your step-up percentage, and so on — then compounds each year's installments for whatever time remains." },
@@ -73,10 +75,12 @@ export default function StepUpSIPCalculatorPage() {
   }, [initialSip, stepUpPercent, annualReturn, years]);
 
   const fmt = (v) => formatCurrency(v, settings.currency);
-  const FAQ_ITEMS = buildFaqItems(fmt);
+  const { inr } = useExampleCurrency();
+  const FAQ_ITEMS = buildFaqItems(fmt, inr);
 
-  const bodyExample = stepUpSipOf(5000, 10, 12, 15);
-  const bodyFlatExample = flatSipOf(5000, 12, 15);
+  const bodyExampleMonthly = inr(5000);
+  const bodyExample = stepUpSipOf(bodyExampleMonthly, 10, 12, 15);
+  const bodyFlatExample = flatSipOf(bodyExampleMonthly, 12, 15);
 
   return (
     <>
@@ -171,8 +175,8 @@ export default function StepUpSIPCalculatorPage() {
                 just with a monthly amount that resets higher at the start of every year instead of staying fixed.
               </p>
               <p>
-                At this page's defaults — {fmt(5000)} starting monthly SIP, 10% annual step-up, 12% return, 15 years —
-                total investment comes to about {fmt(bodyExample.invested)} (against {fmt(5000 * 180)} for a flat SIP of the same starting
+                At this page's defaults — {fmt(bodyExampleMonthly)} starting monthly SIP, 10% annual step-up, 12% return, 15 years —
+                total investment comes to about {fmt(bodyExample.invested)} (against {fmt(bodyExampleMonthly * 180)} for a flat SIP of the same starting
                 amount) and the corpus grows to about {fmt(bodyExample.futureValue)}, against{" "}
                 <Link to="/sip-calculator" className={linkClass}>
                   roughly {fmt(bodyFlatExample)} for the flat SIP

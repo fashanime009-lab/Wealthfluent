@@ -1,5 +1,6 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
+import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
@@ -53,10 +54,14 @@ export default function LumpsumCalculatorPage() {
   }, [lumpsum, annualReturn, years]);
 
   const fmt = (v) => formatCurrency(v, settings.currency);
+  const { inr } = useExampleCurrency();
 
-  const example1FV = lumpFVOf(100000, 12, 10);
-  const lumpExample = lumpFVOf(600000, 12, 5);
-  const sipExample = sipFVOf(10000, 12, 5);
+  const examplePrincipal = inr(100000);
+  const example1FV = lumpFVOf(examplePrincipal, 12, 10);
+  const exampleLumpPrincipal = inr(600000);
+  const lumpExample = lumpFVOf(exampleLumpPrincipal, 12, 5);
+  const exampleSipMonthly = inr(10000);
+  const sipExample = sipFVOf(exampleSipMonthly, 12, 5);
 
   return (
     <>
@@ -153,8 +158,8 @@ export default function LumpsumCalculatorPage() {
                 12).
               </p>
               <p>
-                For {fmt(100000)} invested at 12% for 10 years: r = 12 ÷ 12 ÷ 100 = 0.01, n = 120 months, so
-                (1.01)^120 ≈ 3.30039 — multiplying by {fmt(100000)} gives about {fmt(example1FV)}, the same figure the
+                For {fmt(examplePrincipal)} invested at 12% for 10 years: r = 12 ÷ 12 ÷ 100 = 0.01, n = 120 months, so
+                (1.01)^120 ≈ 3.30039 — multiplying by {fmt(examplePrincipal)} gives about {fmt(example1FV)}, the same figure the
                 calculator above produces for those defaults.
               </p>
               <p>
@@ -170,8 +175,8 @@ export default function LumpsumCalculatorPage() {
             <CalcSection title="Lumpsum vs SIP — which is better?">
               <p>
                 With a steady, assumed return, a lumpsum always wins on paper — every unit starts earning sooner
-                than it would in a SIP's spread-out installments. Investing {fmt(600000)} as a lumpsum for 5 years at
-                12% grows to about {fmt(lumpExample)}; the same amount as a {fmt(10000)} monthly SIP over those 5 years grows to
+                than it would in a SIP's spread-out installments. Investing {fmt(exampleLumpPrincipal)} as a lumpsum for 5 years at
+                12% grows to about {fmt(lumpExample)}; the same amount as a {fmt(exampleSipMonthly)} monthly SIP over those 5 years grows to
                 about {fmt(sipExample)}, because most of the money hasn't started earning yet in the early months.
               </p>
               <p>

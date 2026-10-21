@@ -1,5 +1,6 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
+import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -32,15 +33,17 @@ export default function PowerOfCompoundingPage() {
   const compoundingGain = compoundValue - simpleValue;
 
   const fmt = (v) => formatCurrency(v, settings.currency);
+  const { inr } = useExampleCurrency();
 
   // Fixed worked examples for the body copy below, independent of the live
-  // inputs above but currency-aware via fmt().
+  // inputs above but currency-aware via inr().
   const simpleOf = (p, r, t) => Math.round(p + (p * r * t) / 100);
   const compoundOf = (p, r, t) => Math.round(p * Math.pow(1 + r / 100, t));
-  const example1Simple = simpleOf(100000, 10, 20);
-  const example1Compound = compoundOf(100000, 10, 20);
-  const example2Simple = simpleOf(100000, 12, 30);
-  const example2Compound = compoundOf(100000, 12, 30);
+  const examplePrincipal = inr(100000);
+  const example1Simple = simpleOf(examplePrincipal, 10, 20);
+  const example1Compound = compoundOf(examplePrincipal, 10, 20);
+  const example2Simple = simpleOf(examplePrincipal, 12, 30);
+  const example2Compound = compoundOf(examplePrincipal, 12, 30);
 
   return (
     <>
@@ -107,14 +110,14 @@ export default function PowerOfCompoundingPage() {
                 Simple = P + (P × R × T) / 100 &nbsp;·&nbsp; Compound = P × (1 + R/100)^T
               </p>
               <p>
-                {fmt(100000)} at 10% for 20 years reaches {fmt(example1Simple)} under simple interest — a steady {fmt(10000)} a year, 20
+                {fmt(examplePrincipal)} at 10% for 20 years reaches {fmt(example1Simple)} under simple interest — a steady {fmt(examplePrincipal / 10)} a year, 20
                 times over. Under compound interest, the same inputs reach about {fmt(example1Compound)} — more than double the
                 simple-interest figure, from the exact same rate and time. That extra {fmt(example1Compound - example1Simple)} is money earned
                 purely because each year's interest went on to earn its own interest.
               </p>
               <p>
                 The gap isn't linear either: at 10 years the compound figure is only modestly ahead of simple; by
-                30 years, compound interest on the same {fmt(100000)} at 12% reaches roughly {fmt(example2Compound)} against simple
+                30 years, compound interest on the same {fmt(examplePrincipal)} at 12% reaches roughly {fmt(example2Compound)} against simple
                 interest's {fmt(example2Simple)} — a gap that keeps widening the longer the money is left alone.
               </p>
             </CalcSection>

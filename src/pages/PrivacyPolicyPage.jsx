@@ -20,8 +20,6 @@ function Section({ n, title, children }) {
 }
 
 export default function PrivacyPolicyPage() {
-  const currentYear = new Date().getFullYear();
-
   return (
     <>
       <Seo
@@ -44,7 +42,7 @@ export default function PrivacyPolicyPage() {
             Privacy Policy
           </h1>
           <p className="mt-3 font-mono-tech text-[13px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
-            Last updated: June 26, {currentYear}
+            Last updated: October 21, 2026
           </p>
 
           <div className="mt-10 space-y-3 text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
@@ -57,8 +55,12 @@ export default function PrivacyPolicyPage() {
               FINAIW is operated from India and complies with the Information Technology
               (Reasonable Security Practices and Procedures and Sensitive Personal Data
               or Information) Rules, 2011, and other applicable Indian data protection laws.
-              However, our services are designed for a global audience, and we are committed
-              to protecting your privacy wherever you are.
+              India's Digital Personal Data Protection Act, 2023 ("DPDPA") has also been
+              notified and is being brought into force in phases, with most substantive
+              obligations taking effect by 2027 — we are monitoring this rollout and will
+              update this policy as the DPDPA's requirements take effect. However, our
+              services are designed for a global audience, and we are committed to
+              protecting your privacy wherever you are.
             </p>
           </div>
 
