@@ -1,4 +1,3 @@
-import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
@@ -32,13 +31,18 @@ function buildFaqItems(fmt) {
 export default function GratuityCalculatorPage() {
   const [lastSalary, setLastSalary] = useState(50000);
   const [years, setYears] = useState(8);
-  const { settings } = useSettings();
 
   const gratuityAmount = Math.round((lastSalary * 15 * years) / 26);
   const taxableAmount = Math.max(0, gratuityAmount - EXEMPTION_LIMIT);
   const isEligible = years >= 5;
 
-  const fmt = (v) => formatCurrency(v, settings.currency);
+  // This is an India-specific statutory calculation under the Payment of
+  // Gratuity Act — the formula, inputs and the exemption limit are all
+  // fixed in rupees by Indian law, not a figure that means anything
+  // converted to another currency. Unlike every other calculator on this
+  // site, this one intentionally ignores the global currency setting and
+  // always displays INR.
+  const fmt = (v) => formatCurrency(v, "INR");
   const FAQ_ITEMS = buildFaqItems(fmt);
 
   const exampleSalary = 50000;
