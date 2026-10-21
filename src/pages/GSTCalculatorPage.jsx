@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
-import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
@@ -29,14 +28,16 @@ export default function GSTCalculatorPage() {
   // meta description, search-index entry and sitemap all promise "Add or
   // Remove GST", but only adding was ever implemented.
   const [mode, setMode] = useState("add");
-  const { settings } = useSettings();
 
   const rateFactor = 1 + gstRate / 100;
   const baseAmount = mode === "add" ? amount : amount / rateFactor;
   const totalAmount = mode === "add" ? amount * rateFactor : amount;
   const gstAmount = totalAmount - baseAmount;
 
-  const fmt = (value) => formatCurrency(value, settings.currency);
+  // GST is India's own tax system — a GST amount paid in another currency
+  // isn't a real-world scenario, so this always displays INR regardless of
+  // the global currency setting.
+  const fmt = (value) => formatCurrency(value, "INR");
 
   return (
     <>

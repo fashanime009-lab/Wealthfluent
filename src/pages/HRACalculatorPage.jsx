@@ -1,4 +1,3 @@
-import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
@@ -29,7 +28,6 @@ export default function HRACalculatorPage() {
   const [hraReceived, setHraReceived] = useState(20000);
   const [rentPaid, setRentPaid] = useState(18000);
   const [isMetro, setIsMetro] = useState(true);
-  const { settings } = useSettings();
 
   const metroPct = isMetro ? 0.5 : 0.4;
   const optA = hraReceived;
@@ -38,7 +36,10 @@ export default function HRACalculatorPage() {
   const exemptHRA = Math.min(optA, optB, optC);
   const taxableHRA = Math.max(0, hraReceived - exemptHRA);
 
-  const fmt = (v) => formatCurrency(v, settings.currency);
+  // HRA exemption is a specific Indian Income Tax Act calculation (metro
+  // city percentages, the ₹1L/year PAN threshold, etc.) — always displays
+  // INR regardless of the global currency setting.
+  const fmt = (v) => formatCurrency(v, "INR");
   const FAQ_ITEMS = buildFaqItems(fmt);
 
   const exampleBasic = 40000;

@@ -1,4 +1,3 @@
-import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
@@ -25,7 +24,6 @@ export default function RDCalculatorPage() {
   const [monthlyDeposit, setMonthlyDeposit] = useState(5000);
   const [rate, setRate] = useState(7);
   const [years, setYears] = useState(5);
-  const { settings } = useSettings();
 
   // Same future-value-of-an-annuity formula the SIP calculator uses —
   // an RD is mechanically identical to a SIP (a fixed deposit made every
@@ -43,7 +41,10 @@ export default function RDCalculatorPage() {
   const totalDeposited = monthlyDeposit * months;
   const interestEarned = maturityAmount - totalDeposited;
 
-  const fmt = (v) => formatCurrency(v, settings.currency);
+  // RD (Recurring Deposit) is a specifically Indian banking product — unlike
+  // the general calculators on this site, this one intentionally ignores
+  // the global currency setting and always displays INR.
+  const fmt = (v) => formatCurrency(v, "INR");
 
   const rdMaturityOf = (monthly, annualRate, yrs) => {
     const n = yrs * 12;

@@ -1,4 +1,3 @@
-import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
@@ -20,8 +19,7 @@ const DEFAULT_RATE = 7.1;
 const ANNUAL_LIMIT = 150000;
 
 // Shared by the worked example in the body copy below, mirroring the live
-// calculator's own year-by-year compounding loop so the figures render in
-// whichever currency formatCurrency() is given.
+// calculator's own year-by-year compounding loop.
 function ppfMaturityOf(annualContribution, rate, years) {
   let balance = 0;
   for (let i = 0; i < years; i++) {
@@ -44,7 +42,6 @@ export default function PPFCalculatorPage() {
   const [annualContribution, setAnnualContribution] = useState(150000);
   const [rate, setRate] = useState(DEFAULT_RATE);
   const [years, setYears] = useState(15);
-  const { settings } = useSettings();
 
   let balance = 0;
   for (let i = 0; i < years; i++) {
@@ -54,7 +51,10 @@ export default function PPFCalculatorPage() {
   const totalInvested = annualContribution * years;
   const interestEarned = maturityAmount - totalInvested;
 
-  const fmt = (v) => formatCurrency(v, settings.currency);
+  // PPF is a specific Indian government savings scheme with a statutory
+  // ₹1.5L/year contribution limit — not a figure that means anything
+  // converted to another currency. Always displays INR.
+  const fmt = (v) => formatCurrency(v, "INR");
   const FAQ_ITEMS = buildFaqItems(fmt);
 
   const example15yr = ppfMaturityOf(150000, 7.1, 15);
