@@ -48,6 +48,24 @@ const ROUTES = [
 
 const BAD_TOKEN = /\bNaN\b|\bInfinity\b|\bundefined\b|\bnull\b/;
 
+// Wealth Age-specific edge cases (see src/pages/WealthAgeCalculatorPage.jsx):
+// 0 income must not divide-by-zero into NaN/Infinity under the flagged
+// income-relative scoring, and a very high net worth against a near-zero
+// income must stay a finite, clamped score rather than overflow. Exercised
+// under BOTH scoring modes — the current FX-based formula (override=false)
+// and the flagged income-relative one (override=true, via the window
+// override WealthAgeCalculatorPage.jsx reads only for this script) — since
+// neither should ever produce a bad token, flag on or off.
+const WEALTH_AGE_FIELD_LABELS = {
+  monthlyIncome: "Monthly Income",
+  investments: "Investments",
+  debt: "Debt",
+};
+const WEALTH_AGE_EDGE_CASES = [
+  { label: "zero income", values: { monthlyIncome: 0 } },
+  { label: "very high net worth, near-zero income", values: { monthlyIncome: 1, investments: 999999999, debt: 0 } },
+];
+
 function waitForServer(url, timeoutMs = 30000) {
   const start = Date.now();
   return new Promise((resolve, reject) => {
@@ -63,6 +81,60 @@ function waitForServer(url, timeoutMs = 30000) {
     };
     attempt();
   });
+}
+
+async function runWealthAgeEdgeCases(browser, problems) {
+  let checked = 0;
+
+  for (const scoringOverride of [false, true]) {
+    for (const currency of CURRENCIES) {
+      for (const edgeCase of WEALTH_AGE_EDGE_CASES) {
+        checked += 1;
+        const page = await browser.newPage();
+        const label = `wealth-age [${currency}] income-relative=${scoringOverride} (${edgeCase.label})`;
+
+        try {
+          await page.evaluateOnNewDocument(
+            (cur, override) => {
+              window.__PRERENDER__ = true;
+              window.__WEALTH_AGE_SCORING_OVERRIDE__ = override;
+              localStorage.setItem(
+                "finaiw-settings",
+                JSON.stringify({ currency: cur, region: "manual", compactNumbers: false })
+              );
+            },
+            currency,
+            scoringOverride
+          );
+
+          await page.goto(`${BASE_URL}/wealth-age-calculator`, { waitUntil: "networkidle0", timeout: 20000 });
+          await page.waitForSelector("input[type=range]", { timeout: 10000 });
+
+          for (const [field, value] of Object.entries(edgeCase.values)) {
+            const fieldLabel = WEALTH_AGE_FIELD_LABELS[field];
+            const input = await page.$(`input[aria-label^="${fieldLabel}"]`);
+            if (!input) throw new Error(`could not find input for "${fieldLabel}"`);
+            await input.click({ clickCount: 3 });
+            await input.type(String(value));
+            // Blur so the final onChange commits before we read the DOM.
+            await page.keyboard.press("Tab");
+          }
+
+          const bodyText = await page.evaluate(() => document.body.innerText);
+          const bodyMatch = bodyText.match(BAD_TOKEN);
+          if (bodyMatch) {
+            problems.push(`${label}: page text contains "${bodyMatch[0]}"`);
+          }
+        } catch (err) {
+          problems.push(`${label}: failed to load/evaluate — ${err.message}`);
+        } finally {
+          await page.close();
+        }
+      }
+    }
+  }
+
+  return checked;
 }
 
 async function main() {
@@ -137,13 +209,15 @@ async function main() {
       await page.close();
     }
 
+    checked += await runWealthAgeEdgeCases(browser, problems);
+
     await browser.close();
   } finally {
     server.kill();
     if (serverErr && problems.length > 0) console.error(serverErr);
   }
 
-  console.log(`Checked ${checked} (route x currency) combinations across ${ROUTES.length} calculators x ${CURRENCIES.length} currencies.\n`);
+  console.log(`Checked ${checked} (route x currency) combinations across ${ROUTES.length} calculators x ${CURRENCIES.length} currencies, plus Wealth Age edge cases.\n`);
 
   if (problems.length > 0) {
     console.warn(`${problems.length} problem(s) found:\n`);

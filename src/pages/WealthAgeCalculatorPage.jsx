@@ -14,6 +14,22 @@ import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
+// Feature flag — OFF until Nishit approves the proposed income-relative
+// scoring rules (see chat for the full writeup and per-currency numbers).
+// While false, the scoring below behaves exactly as it did before: the
+// FX-based inr() helper drives both the net-worth bonus threshold and the
+// wealth-score divisor. Flip the default below to true only when told to.
+//
+// The window override exists only so scripts/check-calculator-nan.mjs can
+// exercise the new formula's edge cases (0 income, very high net worth vs
+// low income) in a real browser without editing this file — no real visitor
+// ever sets that global, so production behavior is controlled by the
+// default below alone.
+const USE_INCOME_RELATIVE_SCORING =
+  typeof window !== "undefined" && window.__WEALTH_AGE_SCORING_OVERRIDE__ !== undefined
+    ? window.__WEALTH_AGE_SCORING_OVERRIDE__
+    : false;
+
 const FAQ_ITEMS = [
   { q: "What's a good wealth age?", a: "Anything below your real age means your current habits are outpacing what your age alone would predict. There's no universal target — the number is most useful tracked over time against your own past results." },
   { q: "Why did my wealth age go up instead of down?", a: "Usually a savings rate under 20% and/or a negative or low net worth (debt exceeding investments). Increasing monthly savings or paying down high-interest debt are the two most direct levers to bring it back down." },
@@ -80,6 +96,7 @@ export default function WealthAgeCalculatorPage() {
         : 0;
 
     const netWorth = formData.investments - formData.debt;
+    const annualIncome = formData.monthlyIncome * 12;
 
     let wealthAge = formData.age;
 
@@ -88,15 +105,40 @@ export default function WealthAgeCalculatorPage() {
     else if (savingsRate >= 20) wealthAge -= 2;
     else wealthAge += 3;
 
-    if (netWorth > inr(1000000)) wealthAge -= 5;
+    // Net-worth bonus: either the proposed income-relative rule (net worth
+    // at least 1x annual income) or the current FX-based ₹10L-equivalent
+    // threshold. The income-relative check is guarded against a 0 annual
+    // income — without it, any non-negative net worth would trivially
+    // clear a threshold of 0, which isn't a meaningful "ahead" signal.
+    if (USE_INCOME_RELATIVE_SCORING) {
+      if (annualIncome > 0 && netWorth >= annualIncome) wealthAge -= 5;
+    } else if (netWorth > inr(1000000)) {
+      wealthAge -= 5;
+    }
     if (netWorth < 0) wealthAge += 5;
 
     wealthAge = Math.max(1, wealthAge);
 
-    const wealthScore = Math.max(
-      1,
-      Math.min(100, Math.round(savingsRate + netWorth / inr(100000)))
-    );
+    // Wealth score's net-worth term: either netWorth as a share of annual
+    // income (capped at +20, so it can't dominate the score on its own)
+    // or the current FX-based ₹1L-per-point divisor. Guarded the same way
+    // as the bonus above — with 0 annual income there's nothing to divide
+    // by, so the term is skipped entirely (not treated as 0 or Infinity)
+    // and a short note explains why.
+    let incomeRelativeNote = null;
+    let netWorthScoreTerm;
+    if (USE_INCOME_RELATIVE_SCORING) {
+      if (annualIncome > 0) {
+        netWorthScoreTerm = Math.min(20, (netWorth / annualIncome) * 20);
+      } else {
+        netWorthScoreTerm = 0;
+        incomeRelativeNote = "Enter a monthly income to include net worth in your wealth score.";
+      }
+    } else {
+      netWorthScoreTerm = netWorth / inr(100000);
+    }
+
+    const wealthScore = Math.max(1, Math.min(100, Math.round(savingsRate + netWorthScoreTerm)));
 
     let personality;
     if (wealthScore >= 80) personality = "Wealth Accelerator";
@@ -108,7 +150,7 @@ export default function WealthAgeCalculatorPage() {
     if (wealthAge < formData.age) status = "Ahead For Your Age";
     if (wealthAge > formData.age) status = "Needs Improvement";
 
-    return { savingsRate, netWorth, wealthAge, wealthScore, personality, status };
+    return { savingsRate, netWorth, wealthAge, wealthScore, personality, status, incomeRelativeNote };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData, currency]);
 
@@ -211,6 +253,12 @@ export default function WealthAgeCalculatorPage() {
                   </p>
                 </div>
               </div>
+
+              {results.incomeRelativeNote && (
+                <p className="text-[12.5px] text-[#111814]/60 dark:text-[#eef1ec]/50">
+                  {results.incomeRelativeNote}
+                </p>
+              )}
 
               {/* Main insight card */}
               <div className="border border-[#111814]/12 bg-[#ffffff] p-6 dark:border-[#eef1ec]/12 dark:bg-[#0b1210] md:p-8">
