@@ -2,7 +2,7 @@ import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useMemo } from "react";
-import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
+import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -54,6 +54,9 @@ export default function SWPCalculatorPage() {
   const [corpus, setCorpus] = useDefaultableField("swp", "corpus");
   const [monthlyWithdrawal, setMonthlyWithdrawal] = useDefaultableField("swp", "withdrawal");
   const [rate, setRate] = useAssumptionField("retirementReturn");
+  const corpusBounds = useFieldBounds("swp", "corpus");
+  const withdrawalBounds = useFieldBounds("swp", "withdrawal");
+  const rateBounds = useFieldBounds("swp", "rate");
   const { settings } = useSettings();
 
   const result = useMemo(() => {
@@ -96,9 +99,9 @@ export default function SWPCalculatorPage() {
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-              <CalcField label="Starting corpus" value={corpus} onChange={setCorpus} min={100000} max={50000000} step={100000} format={fmt} />
-              <CalcField label="Monthly withdrawal" value={monthlyWithdrawal} onChange={setMonthlyWithdrawal} min={1000} max={500000} step={1000} format={fmt} />
-              <CalcField label="Expected return (p.a.) %" value={rate} onChange={setRate} min={1} max={15} step={0.5} suffix="%" />
+              <CalcField label="Starting corpus" value={corpus} onChange={setCorpus} {...corpusBounds} format={fmt} />
+              <CalcField label="Monthly withdrawal" value={monthlyWithdrawal} onChange={setMonthlyWithdrawal} {...withdrawalBounds} format={fmt} />
+              <CalcField label="Expected return (p.a.) %" value={rate} onChange={setRate} {...rateBounds} suffix="%" />
             </div>
 
             <div className="space-y-6">

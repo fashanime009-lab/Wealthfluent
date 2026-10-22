@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useSettings } from "@/context/SettingsContext";
 import { defaultFor, assumptionsFor } from "@/data/calculatorDefaults";
+import { boundsFor } from "@/data/calculatorFieldBounds";
 
 // Returns [value, setValue] like useState, except the value starts at
 // resolve(currency) and keeps tracking the current currency's value for as
@@ -66,4 +67,16 @@ export function useDefaultableObject(calculatorKey, fields) {
 // to for that calculator.
 export function useDefaultableObjectCustom(resolveObject) {
   return useDefaultableValue(resolveObject);
+}
+
+// A field's slider/typed-input bounds for the current currency. Unlike the
+// hooks above, this always tracks the current currency — a range is a
+// property of the currency itself, not something a user "touches" and
+// locks in, so there's no touched-ref here. `context` carries any already-
+// resolved sibling field values a dynamic bound needs (e.g. Home
+// Affordability's down payment is capped by that currency's own
+// property-price value) — see calculatorFieldBounds.js.
+export function useFieldBounds(calculatorKey, field, context) {
+  const { settings } = useSettings();
+  return boundsFor(calculatorKey, field, settings.currency, context);
 }

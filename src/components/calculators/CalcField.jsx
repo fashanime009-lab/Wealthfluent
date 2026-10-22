@@ -2,10 +2,29 @@ import { useId } from "react";
 
 // Dual slider + direct-entry number control used on every calculator page.
 // The slider is for quick exploration; the number input is for a precise
-// value someone already knows (their actual loan amount, income, etc.).
-export default function CalcField({ label, value, onChange, min, max, step = 1, suffix = "", format }) {
+// value someone already knows (their actual loan amount, income, etc.),
+// which can legitimately sit above the slider's own max (a large net worth
+// or loan) — the slider just clamps visually in that case, same as any
+// native range input whose value exceeds its max. The number input only
+// enforces `min` (still blocking nonsense like a negative loan amount) and
+// a generous typedMax well beyond the slider's range, not the slider's own
+// max, so a real-world value never gets silently capped to the slider's
+// exploratory range.
+export default function CalcField({ label, value, onChange, min, max, step = 1, suffix = "", format, typedMax }) {
   const id = useId();
   const display = format ? format(value) : `${value}${suffix}`;
+  const effectiveTypedMax = typedMax ?? max * 100;
+
+  const handleTypedChange = (e) => {
+    const raw = e.target.value;
+    if (raw === "") {
+      onChange(min);
+      return;
+    }
+    const parsed = Number(raw);
+    if (!Number.isFinite(parsed)) return;
+    onChange(Math.min(Math.max(parsed, min), effectiveTypedMax));
+  };
 
   return (
     <div>
@@ -31,10 +50,10 @@ export default function CalcField({ label, value, onChange, min, max, step = 1, 
         type="number"
         aria-label={`${label}, exact value`}
         min={min}
-        max={max}
+        max={effectiveTypedMax}
         step={step}
         value={value}
-        onChange={(e) => onChange(Number(e.target.value) || 0)}
+        onChange={handleTypedChange}
         className="mt-3 w-full border border-[#111814]/15 bg-transparent px-3 py-2 font-mono-tech text-[13.5px] tabular-nums text-[#111814] outline-none focus:border-[#047857] dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:focus:border-[#34d399]"
       />
     </div>

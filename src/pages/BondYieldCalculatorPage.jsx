@@ -1,7 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import { useMemo } from "react";
-import useDefaultableField from "@/hooks/useDefaultableField";
+import useDefaultableField, { useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -27,6 +27,10 @@ export default function BondYieldCalculatorPage() {
   const [parValue, setParValue] = useDefaultableField("bondYield", "faceValue");
   const [couponRate, setCouponRate] = useDefaultableField("bondYield", "coupon");
   const [yearsToMaturity, setYearsToMaturity] = useDefaultableField("bondYield", "years");
+  const priceBounds = useFieldBounds("bondYield", "price");
+  const faceValueBounds = useFieldBounds("bondYield", "faceValue");
+  const couponBounds = useFieldBounds("bondYield", "coupon");
+  const yearsBounds = useFieldBounds("bondYield", "years");
   const { settings } = useSettings();
 
   // ─── Calculations ──────────────────────────────────────────────
@@ -107,10 +111,10 @@ export default function BondYieldCalculatorPage() {
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-              <CalcField label="Current price" value={currentPrice} onChange={setCurrentPrice} min={100} max={10000} step={5} format={fmt} />
-              <CalcField label="Par value" value={parValue} onChange={setParValue} min={100} max={10000} step={100} format={fmt} />
-              <CalcField label="Coupon rate (%)" value={couponRate} onChange={setCouponRate} min={0} max={20} step={0.5} suffix="%" />
-              <CalcField label="Years to maturity" value={yearsToMaturity} onChange={setYearsToMaturity} min={1} max={50} step={1} suffix=" Years" />
+              <CalcField label="Current price" value={currentPrice} onChange={setCurrentPrice} {...priceBounds} format={fmt} />
+              <CalcField label="Par value" value={parValue} onChange={setParValue} {...faceValueBounds} format={fmt} />
+              <CalcField label="Coupon rate (%)" value={couponRate} onChange={setCouponRate} {...couponBounds} suffix="%" />
+              <CalcField label="Years to maturity" value={yearsToMaturity} onChange={setYearsToMaturity} {...yearsBounds} suffix=" Years" />
             </div>
 
             <div className="space-y-6">

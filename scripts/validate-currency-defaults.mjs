@@ -1,16 +1,17 @@
-// Two checks, run on every build (via the "prebuild" npm script):
+// Two checks, run on every build (via the "prebuild" npm script), both
+// FATAL — a currency-coverage gap or a default that falls outside its own
+// field's slider range/step is a real bug a visitor would hit, not a
+// style nit, so neither is allowed to regress silently.
 //
-// 1. Currency coverage — fails the build if any currency Settings offers
-//    is missing an entry in ASSUMPTIONS or DEFAULTS, so a newly added
-//    currency can't silently start falling back to FALLBACK without
-//    anyone noticing.
+// 1. Currency coverage — every currency Settings offers must have an
+//    entry in ASSUMPTIONS and DEFAULTS, so a newly added currency can't
+//    silently start falling back to FALLBACK without anyone noticing.
 //
-// 2. Slider-bounds coverage — REPORTS (does not fail the build) every
-//    hand-picked default that falls outside the min/max/step of the
-//    slider it actually loads into (see src/data/calculatorFieldBounds.js).
-//    Kept non-fatal for now: these are real bugs, but whether to fix the
-//    default or the slider's own range is a per-field judgment call, not
-//    something this script should force blind.
+// 2. Slider-bounds coverage — every hand-picked default must sit inside
+//    the min/max and land exactly on the step of the field it actually
+//    renders into (src/data/calculatorFieldBounds.js, which the live
+//    <CalcField> props are also built from — not a shadow copy, so this
+//    can never validate against a stale copy of the real bounds).
 import { validateCurrencyCoverage, defaultFor, assumptionsFor } from "../src/data/calculatorDefaults.js";
 import { FIELD_BOUNDS } from "../src/data/calculatorFieldBounds.js";
 import { currencies } from "../src/data/currencies.js";
@@ -60,8 +61,10 @@ for (const [calcKey, fields] of Object.entries(FIELD_BOUNDS)) {
 }
 
 if (boundsProblems.length > 0) {
-  console.warn(`\nSlider-bounds check — ${boundsProblems.length} default(s) fall outside their field's own slider range or step:\n`);
-  for (const p of boundsProblems) console.warn(`  - ${p}`);
-} else {
-  console.log("Slider-bounds check passed — every default fits its field's slider range and step.");
+  console.error(`\nSlider-bounds validation failed — ${boundsProblems.length} default(s) fall outside their field's own slider range or step:\n`);
+  for (const p of boundsProblems) console.error(`  - ${p}`);
+  console.error("\nFix src/data/calculatorDefaults.js or src/data/calculatorFieldBounds.js before building.");
+  process.exit(1);
 }
+
+console.log("Slider-bounds validation passed — every default fits its field's slider range and step.");

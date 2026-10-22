@@ -1,7 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import { useMemo } from "react";
-import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
+import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -25,6 +25,9 @@ export default function GoalSIPCalculatorPage() {
   const [goalAmount, setGoalAmount] = useDefaultableField("goalSip", "target");
   const [investmentDuration, setInvestmentDuration] = useDefaultableField("goalSip", "years");
   const [expectedReturn, setExpectedReturn] = useAssumptionField("equityReturn");
+  const targetBounds = useFieldBounds("goalSip", "target");
+  const yearsBounds = useFieldBounds("goalSip", "years");
+  const expectedReturnBounds = useFieldBounds("goalSip", "expectedReturn");
   const { settings } = useSettings();
 
   // ─── Calculations ──────────────────────────────────────────────
@@ -90,9 +93,9 @@ export default function GoalSIPCalculatorPage() {
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             {/* Left Panel – Inputs */}
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-              <CalcField label="Goal Amount" value={goalAmount} onChange={setGoalAmount} min={10000} max={10000000} step={5000} format={fmt} />
-              <CalcField label="Investment Duration (In Years)" value={investmentDuration} onChange={setInvestmentDuration} min={1} max={50} suffix=" Years" />
-              <CalcField label="Expected Rate of Return (p.a.) %" value={expectedReturn} onChange={setExpectedReturn} min={1} max={30} step={0.5} suffix="%" />
+              <CalcField label="Goal Amount" value={goalAmount} onChange={setGoalAmount} {...targetBounds} format={fmt} />
+              <CalcField label="Investment Duration (In Years)" value={investmentDuration} onChange={setInvestmentDuration} {...yearsBounds} suffix=" Years" />
+              <CalcField label="Expected Rate of Return (p.a.) %" value={expectedReturn} onChange={setExpectedReturn} {...expectedReturnBounds} suffix="%" />
             </div>
 
             {/* Right Panel – Results */}

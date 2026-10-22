@@ -1,7 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import { useMemo } from "react";
-import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
+import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -27,6 +27,10 @@ export default function FutureValueCalculatorPage() {
   const [annualAddition, setAnnualAddition] = useDefaultableField("futureValue", "annualAddition");
   const [yearsToGrow, setYearsToGrow] = useDefaultableField("futureValue", "years");
   const [growthRate, setGrowthRate] = useAssumptionField("equityReturn");
+  const principalBounds = useFieldBounds("futureValue", "principal");
+  const annualAdditionBounds = useFieldBounds("futureValue", "annualAddition");
+  const yearsBounds = useFieldBounds("futureValue", "years");
+  const growthRateBounds = useFieldBounds("futureValue", "growthRate");
   const { settings } = useSettings();
 
   // ─── Calculations ──────────────────────────────────────────────
@@ -111,10 +115,10 @@ export default function FutureValueCalculatorPage() {
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-              <CalcField label="Current principal" value={currentPrincipal} onChange={setCurrentPrincipal} min={0} max={10000000} step={1000} format={fmt} />
-              <CalcField label="Annual addition" value={annualAddition} onChange={setAnnualAddition} min={0} max={1000000} step={500} format={fmt} />
-              <CalcField label="Years to grow" value={yearsToGrow} onChange={setYearsToGrow} min={1} max={50} step={1} suffix=" Years" />
-              <CalcField label="Growth rate (%)" value={growthRate} onChange={setGrowthRate} min={0} max={30} step={0.5} suffix="%" />
+              <CalcField label="Current principal" value={currentPrincipal} onChange={setCurrentPrincipal} {...principalBounds} format={fmt} />
+              <CalcField label="Annual addition" value={annualAddition} onChange={setAnnualAddition} {...annualAdditionBounds} format={fmt} />
+              <CalcField label="Years to grow" value={yearsToGrow} onChange={setYearsToGrow} {...yearsBounds} suffix=" Years" />
+              <CalcField label="Growth rate (%)" value={growthRate} onChange={setGrowthRate} {...growthRateBounds} suffix="%" />
             </div>
 
             <div className="space-y-6">

@@ -2,7 +2,7 @@ import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useMemo } from "react";
-import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
+import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -26,6 +26,9 @@ export default function InflationCalculatorPage() {
   const [currentExpenses, setCurrentExpenses] = useDefaultableField("inflation", "cost");
   const [inflationRate, setInflationRate] = useAssumptionField("inflation");
   const [timePeriod, setTimePeriod] = useDefaultableField("inflation", "years");
+  const costBounds = useFieldBounds("inflation", "cost");
+  const inflationRateBounds = useFieldBounds("inflation", "inflationRate");
+  const yearsBounds = useFieldBounds("inflation", "years");
   const { settings } = useSettings();
 
   // ─── Calculations ──────────────────────────────────────────────
@@ -81,9 +84,9 @@ export default function InflationCalculatorPage() {
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             {/* Left Panel – Inputs */}
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-              <CalcField label="Current Expense Amount" value={currentExpenses} onChange={setCurrentExpenses} min={100} max={1000000} step={100} format={fmt} />
-              <CalcField label="Annual Inflation Rate (%)" value={inflationRate} onChange={setInflationRate} min={1} max={20} step={0.5} suffix="%" />
-              <CalcField label="Time Period (In Years)" value={timePeriod} onChange={setTimePeriod} min={1} max={50} suffix=" Years" />
+              <CalcField label="Current Expense Amount" value={currentExpenses} onChange={setCurrentExpenses} {...costBounds} format={fmt} />
+              <CalcField label="Annual Inflation Rate (%)" value={inflationRate} onChange={setInflationRate} {...inflationRateBounds} suffix="%" />
+              <CalcField label="Time Period (In Years)" value={timePeriod} onChange={setTimePeriod} {...yearsBounds} suffix=" Years" />
             </div>
 
             {/* Right Panel – Results */}

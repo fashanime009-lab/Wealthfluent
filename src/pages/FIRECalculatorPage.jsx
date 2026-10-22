@@ -2,7 +2,7 @@ import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import { sipFutureValue } from "@/utils/projections";
 import { useMemo } from "react";
-import { useDefaultableObjectCustom } from "@/hooks/useDefaultableField";
+import { useDefaultableObjectCustom, useFieldBounds } from "@/hooks/useDefaultableField";
 import { defaultFor, assumptionsFor } from "@/data/calculatorDefaults";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -85,14 +85,22 @@ export default function FIRECalculatorPage() {
   // hardcoded en-US grouping this page used to apply after a bare symbol.
   const fmt = (v) => formatCurrency(v, settings.currency);
 
+  const currentAgeBounds = useFieldBounds("fire", "currentAge");
+  const retirementAgeBounds = useFieldBounds("fire", "retirementAge");
+  const monthlyExpensesBounds = useFieldBounds("fire", "monthlyExpenses");
+  const currentSavingsBounds = useFieldBounds("fire", "currentSavings");
+  const monthlyInvestmentBounds = useFieldBounds("fire", "monthlyInvestment");
+  const expectedReturnBounds = useFieldBounds("fire", "expectedReturn");
+  const inflationRateBounds = useFieldBounds("fire", "inflationRate");
+
   const FIELDS = [
-    { label: "Current age", name: "currentAge", min: 18, max: 80, step: 1, suffix: "" },
-    { label: "Retirement age", name: "retirementAge", min: 20, max: 80, step: 1, suffix: "" },
-    { label: "Monthly expenses", name: "monthlyExpenses", min: 1000, max: 500000, step: 1000, format: fmt },
-    { label: "Current savings", name: "currentSavings", min: 0, max: 10000000, step: 1000, format: fmt },
-    { label: "Monthly investment", name: "monthlyInvestment", min: 0, max: 500000, step: 1000, format: fmt },
-    { label: "Expected return (p.a.)", name: "expectedReturn", min: 0, max: 30, step: 0.5, suffix: "%" },
-    { label: "Inflation rate (p.a.)", name: "inflationRate", min: 0, max: 15, step: 0.5, suffix: "%" },
+    { label: "Current age", name: "currentAge", ...currentAgeBounds, suffix: "" },
+    { label: "Retirement age", name: "retirementAge", ...retirementAgeBounds, suffix: "" },
+    { label: "Monthly expenses", name: "monthlyExpenses", ...monthlyExpensesBounds, format: fmt },
+    { label: "Current savings", name: "currentSavings", ...currentSavingsBounds, format: fmt },
+    { label: "Monthly investment", name: "monthlyInvestment", ...monthlyInvestmentBounds, format: fmt },
+    { label: "Expected return (p.a.)", name: "expectedReturn", ...expectedReturnBounds, suffix: "%" },
+    { label: "Inflation rate (p.a.)", name: "inflationRate", ...inflationRateBounds, suffix: "%" },
   ];
 
   return (

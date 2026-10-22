@@ -1,7 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import { useMemo } from "react";
-import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
+import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -31,6 +31,12 @@ export default function AnnualRetirementIncomePage() {
   const [preRetGrowthRate, setPreRetGrowthRate] = useAssumptionField("equityReturn");
   const [yearsToPayOut, setYearsToPayOut] = useDefaultableField("annualRetirementIncome", "yearsToPayOut");
   const [postRetGrowthRate, setPostRetGrowthRate] = useAssumptionField("retirementReturn");
+  const principalBounds = useFieldBounds("annualRetirementIncome", "principal");
+  const annualAdditionBounds = useFieldBounds("annualRetirementIncome", "annualAddition");
+  const yearsToGrowBounds = useFieldBounds("annualRetirementIncome", "yearsToGrow");
+  const preRetGrowthRateBounds = useFieldBounds("annualRetirementIncome", "preRetGrowthRate");
+  const yearsToPayOutBounds = useFieldBounds("annualRetirementIncome", "yearsToPayOut");
+  const postRetGrowthRateBounds = useFieldBounds("annualRetirementIncome", "postRetGrowthRate");
   const { settings } = useSettings();
 
   // ─── Calculations ──────────────────────────────────────────────
@@ -108,16 +114,16 @@ export default function AnnualRetirementIncomePage() {
             <div className="space-y-8 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
               <div className="space-y-7 border-b border-[#111814]/10 pb-8 dark:border-[#eef1ec]/10">
                 <p className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Pre-retirement</p>
-                <CalcField label="Current principal" value={currentPrincipal} onChange={setCurrentPrincipal} min={0} max={10000000} step={1000} format={fmt} />
-                <CalcField label="Annual addition" value={annualAddition} onChange={setAnnualAddition} min={0} max={1000000} step={500} format={fmt} />
-                <CalcField label="Years to grow" value={yearsToGrow} onChange={setYearsToGrow} min={1} max={50} suffix=" yrs" />
-                <CalcField label="Growth rate" value={preRetGrowthRate} onChange={setPreRetGrowthRate} min={0} max={30} step={0.5} suffix="%" />
+                <CalcField label="Current principal" value={currentPrincipal} onChange={setCurrentPrincipal} {...principalBounds} format={fmt} />
+                <CalcField label="Annual addition" value={annualAddition} onChange={setAnnualAddition} {...annualAdditionBounds} format={fmt} />
+                <CalcField label="Years to grow" value={yearsToGrow} onChange={setYearsToGrow} {...yearsToGrowBounds} suffix=" yrs" />
+                <CalcField label="Growth rate" value={preRetGrowthRate} onChange={setPreRetGrowthRate} {...preRetGrowthRateBounds} suffix="%" />
               </div>
 
               <div className="space-y-7">
                 <p className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">In retirement</p>
-                <CalcField label="Years to pay out" value={yearsToPayOut} onChange={setYearsToPayOut} min={1} max={50} suffix=" yrs" />
-                <CalcField label="Growth rate" value={postRetGrowthRate} onChange={setPostRetGrowthRate} min={0} max={15} step={0.5} suffix="%" />
+                <CalcField label="Years to pay out" value={yearsToPayOut} onChange={setYearsToPayOut} {...yearsToPayOutBounds} suffix=" yrs" />
+                <CalcField label="Growth rate" value={postRetGrowthRate} onChange={setPostRetGrowthRate} {...postRetGrowthRateBounds} suffix="%" />
               </div>
             </div>
 

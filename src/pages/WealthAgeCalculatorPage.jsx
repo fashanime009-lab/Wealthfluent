@@ -5,7 +5,7 @@ import { formatCurrency } from "../utils/currency";
 import { USD_CONVERSION_RATES } from "@/services/calculators/globalWealthPercentile";
 import AdSlot from "../components/ads/AdSlot";
 import { useSettings } from "../context/SettingsContext";
-import { useDefaultableObjectCustom } from "@/hooks/useDefaultableField";
+import { useDefaultableObjectCustom, useFieldBounds } from "@/hooks/useDefaultableField";
 import { defaultFor } from "@/data/calculatorDefaults";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -13,24 +13,6 @@ import CalcSection from "@/components/calculators/CalcSection";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
-
-// Field bounds and the scoring thresholds below were originally fixed INR
-// amounts (a hardcoded 1,000,000 net-worth bonus threshold meant "₹10
-// lakh", regardless of what currency was selected) — wrong for anyone not
-// using INR, since e.g. $1,000,000 is a vastly different bar than ₹10 lakh.
-// `inr(rupees)` converts the original rupee figure through its real USD
-// value into the selected currency's own scale, same approach used by the
-// calculators listing page.
-function buildFields(inr) {
-  return [
-    { name: "age", label: "Current Age", min: 18, max: 70, step: 1, isAge: true },
-    { name: "monthlyIncome", label: "Monthly Income", min: inr(5000), max: inr(1000000), step: Math.max(1, inr(1000)) },
-    { name: "monthlySavings", label: "Monthly Savings", min: 0, max: inr(500000), step: Math.max(1, inr(500)) },
-    { name: "investments", label: "Investments", min: 0, max: inr(10000000), step: Math.max(1, inr(5000)) },
-    { name: "debt", label: "Debt", min: 0, max: inr(10000000), step: Math.max(1, inr(5000)) },
-    { name: "monthlyExpenses", label: "Monthly Expenses", min: 0, max: inr(500000), step: Math.max(1, inr(500)) },
-  ];
-}
 
 const FAQ_ITEMS = [
   { q: "What's a good wealth age?", a: "Anything below your real age means your current habits are outpacing what your age alone would predict. There's no universal target — the number is most useful tracked over time against your own past results." },
@@ -43,12 +25,32 @@ export default function WealthAgeCalculatorPage() {
   const currency = settings.currency;
   const fmt = (v) => formatCurrency(v, currency);
 
+  // The scoring thresholds below (not the field bounds — see FIELDS) still
+  // use this FX-based inr() helper pending Nishit's sign-off on an income-
+  // relative replacement; it is intentionally scoped to just that one
+  // useMemo now, not the slider bounds.
   const rate = USD_CONVERSION_RATES[currency] ?? 1;
   const inr = (rupees) => Math.round((rupees * USD_CONVERSION_RATES.INR) / rate);
-  // inr() is a fresh closure each render but is purely a function of
-  // `currency` (via `rate`), so depending on `currency` alone is correct.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const FIELDS = useMemo(() => buildFields(inr), [currency]);
+
+  // Bounds are per-currency hand-picked values (calculatorFieldBounds.js),
+  // same as the DEFAULTS they contain — never FX-converted. A slider range
+  // is a property of the currency's own scale, same reasoning as the
+  // hand-picked JPY defaults elsewhere.
+  const ageBounds = useFieldBounds("wealthAge", "age");
+  const monthlyIncomeBounds = useFieldBounds("wealthAge", "monthlyIncome");
+  const monthlySavingsBounds = useFieldBounds("wealthAge", "monthlySavings");
+  const investmentsBounds = useFieldBounds("wealthAge", "investments");
+  const debtBounds = useFieldBounds("wealthAge", "debt");
+  const monthlyExpensesBounds = useFieldBounds("wealthAge", "monthlyExpenses");
+
+  const FIELDS = [
+    { name: "age", label: "Current Age", ...ageBounds, isAge: true },
+    { name: "monthlyIncome", label: "Monthly Income", ...monthlyIncomeBounds },
+    { name: "monthlySavings", label: "Monthly Savings", ...monthlySavingsBounds },
+    { name: "investments", label: "Investments", ...investmentsBounds },
+    { name: "debt", label: "Debt", ...debtBounds },
+    { name: "monthlyExpenses", label: "Monthly Expenses", ...monthlyExpensesBounds },
+  ];
 
   // Default starting values are hand-picked per currency (see
   // calculatorDefaults.js), not FX-converted like the slider bounds above —

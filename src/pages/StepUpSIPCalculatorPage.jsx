@@ -2,7 +2,7 @@ import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useMemo } from "react";
-import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
+import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -61,6 +61,10 @@ export default function StepUpSIPCalculatorPage() {
   const [stepUpPercent, setStepUpPercent] = useDefaultableField("stepUpSip", "stepUpPercent");
   const [annualReturn, setAnnualReturn] = useAssumptionField("equityReturn");
   const [years, setYears] = useDefaultableField("stepUpSip", "years");
+  const monthlyBounds = useFieldBounds("stepUpSip", "monthly");
+  const stepUpPercentBounds = useFieldBounds("stepUpSip", "stepUpPercent");
+  const annualReturnBounds = useFieldBounds("stepUpSip", "annualReturn");
+  const yearsBounds = useFieldBounds("stepUpSip", "years");
   const { settings } = useSettings();
 
   const result = useMemo(() => {
@@ -110,10 +114,10 @@ export default function StepUpSIPCalculatorPage() {
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-              <CalcField label="Starting monthly SIP" value={initialSip} onChange={setInitialSip} min={500} max={100000} step={500} format={fmt} />
-              <CalcField label="Annual step-up %" value={stepUpPercent} onChange={setStepUpPercent} min={0} max={50} step={1} suffix="%" />
-              <CalcField label="Expected Rate of Return (p.a.) %" value={annualReturn} onChange={setAnnualReturn} min={-15} max={30} step={0.5} suffix="%" />
-              <CalcField label="Investment Duration (In Years)" value={years} onChange={setYears} min={1} max={50} suffix=" Years" />
+              <CalcField label="Starting monthly SIP" value={initialSip} onChange={setInitialSip} {...monthlyBounds} format={fmt} />
+              <CalcField label="Annual step-up %" value={stepUpPercent} onChange={setStepUpPercent} {...stepUpPercentBounds} suffix="%" />
+              <CalcField label="Expected Rate of Return (p.a.) %" value={annualReturn} onChange={setAnnualReturn} {...annualReturnBounds} suffix="%" />
+              <CalcField label="Investment Duration (In Years)" value={years} onChange={setYears} {...yearsBounds} suffix=" Years" />
             </div>
 
             <div className="space-y-6">

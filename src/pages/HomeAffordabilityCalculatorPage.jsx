@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { useSettings } from "../context/SettingsContext";
-import { useDefaultableObject } from "@/hooks/useDefaultableField";
+import { useDefaultableObject, useFieldBounds } from "@/hooks/useDefaultableField";
 import { formatCurrency } from "../utils/currency";
 import { calculateHomeAffordability } from "../services/calculators/homeAffordability";
 import AdSlot from "../components/ads/AdSlot";
@@ -42,6 +42,14 @@ export default function HomeAffordabilityCalculatorPage() {
   const handleChange = (key, value) => {
     setInputs((prev) => ({ ...prev, [key]: Number(value) || 0 }));
   };
+
+  const propertyPriceBounds = useFieldBounds("homeAffordability", "propertyPrice");
+  const downPaymentBounds = useFieldBounds("homeAffordability", "downPayment", { propertyPrice: inputs.propertyPrice });
+  const monthlyIncomeBounds = useFieldBounds("homeAffordability", "monthlyIncome");
+  const monthlyExpensesBounds = useFieldBounds("homeAffordability", "monthlyExpenses");
+  const existingEMIBounds = useFieldBounds("homeAffordability", "existingEMI");
+  const loanTenureBounds = useFieldBounds("homeAffordability", "loanTenure");
+  const interestRateBounds = useFieldBounds("homeAffordability", "interestRate");
 
   // ─── Calculations ──────────────────────────────────────────────
   const results = useMemo(() => calculateHomeAffordability(inputs), [inputs]);
@@ -100,27 +108,21 @@ export default function HomeAffordabilityCalculatorPage() {
                 label="Property Price"
                 value={inputs.propertyPrice}
                 onChange={(v) => handleChange("propertyPrice", v)}
-                min={500000}
-                max={30000000}
-                step={100000}
+                {...propertyPriceBounds}
                 format={fmt}
               />
               <CalcField
                 label="Down Payment"
                 value={inputs.downPayment}
                 onChange={(v) => handleChange("downPayment", v)}
-                min={0}
-                max={inputs.propertyPrice}
-                step={50000}
+                {...downPaymentBounds}
                 format={fmt}
               />
               <CalcField
                 label="Monthly Income (take-home)"
                 value={inputs.monthlyIncome}
                 onChange={(v) => handleChange("monthlyIncome", v)}
-                min={10000}
-                max={1000000}
-                step={1000}
+                {...monthlyIncomeBounds}
                 format={fmt}
               />
               <div>
@@ -128,9 +130,7 @@ export default function HomeAffordabilityCalculatorPage() {
                   label="Other Monthly Expenses"
                   value={inputs.monthlyExpenses}
                   onChange={(v) => handleChange("monthlyExpenses", v)}
-                  min={0}
-                  max={500000}
-                  step={1000}
+                  {...monthlyExpensesBounds}
                   format={fmt}
                 />
                 <p className="mt-2 text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
@@ -141,27 +141,21 @@ export default function HomeAffordabilityCalculatorPage() {
                 label="Existing EMI (other loans)"
                 value={inputs.existingEMI}
                 onChange={(v) => handleChange("existingEMI", v)}
-                min={0}
-                max={200000}
-                step={500}
+                {...existingEMIBounds}
                 format={fmt}
               />
               <CalcField
                 label="Loan Tenure"
                 value={inputs.loanTenure}
                 onChange={(v) => handleChange("loanTenure", v)}
-                min={5}
-                max={30}
-                step={1}
+                {...loanTenureBounds}
                 suffix=" yrs"
               />
               <CalcField
                 label="Interest Rate"
                 value={inputs.interestRate}
                 onChange={(v) => handleChange("interestRate", v)}
-                min={6}
-                max={15}
-                step={0.1}
+                {...interestRateBounds}
                 suffix="%"
               />
             </div>

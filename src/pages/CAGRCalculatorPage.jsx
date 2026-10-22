@@ -1,7 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
-import useDefaultableField from "@/hooks/useDefaultableField";
+import useDefaultableField, { useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -37,6 +37,9 @@ export default function CAGRCalculatorPage() {
   const [initialValue, setInitialValue] = useDefaultableField("cagr", "start");
   const [finalValue, setFinalValue] = useDefaultableField("cagr", "end");
   const [years, setYears] = useDefaultableField("cagr", "years");
+  const startBounds = useFieldBounds("cagr", "start");
+  const endBounds = useFieldBounds("cagr", "end");
+  const yearsBounds = useFieldBounds("cagr", "years");
   const { settings } = useSettings();
 
   // CAGR is undefined for a starting value of 0 or a 0-year period — both
@@ -85,9 +88,9 @@ export default function CAGRCalculatorPage() {
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             {/* Left Panel – Inputs */}
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-              <CalcField label="Initial Investment" value={initialValue} onChange={setInitialValue} min={1000} max={1000000} step={1000} format={fmt} />
-              <CalcField label="Final Value" value={finalValue} onChange={setFinalValue} min={1000} max={5000000} step={1000} format={fmt} />
-              <CalcField label="Investment Duration (Years)" value={years} onChange={setYears} min={1} max={30} suffix=" Years" />
+              <CalcField label="Initial Investment" value={initialValue} onChange={setInitialValue} {...startBounds} format={fmt} />
+              <CalcField label="Final Value" value={finalValue} onChange={setFinalValue} {...endBounds} format={fmt} />
+              <CalcField label="Investment Duration (Years)" value={years} onChange={setYears} {...yearsBounds} suffix=" Years" />
             </div>
 
             {/* Right Panel – Results */}

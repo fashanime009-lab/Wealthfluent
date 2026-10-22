@@ -8,7 +8,7 @@ import { useSettings } from "../context/SettingsContext";
 import AdSlot from "../components/ads/AdSlot";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
-import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
+import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
@@ -58,6 +58,9 @@ export default function SIPCalculatorPage() {
   const [monthlyInvestment, setMonthlyInvestment] = useDefaultableField("sip", "monthly");
   const [annualReturn, setAnnualReturn] = useAssumptionField("equityReturn");
   const [years, setYears] = useDefaultableField("sip", "years");
+  const monthlyBounds = useFieldBounds("sip", "monthly");
+  const annualReturnBounds = useFieldBounds("sip", "annualReturn");
+  const yearsBounds = useFieldBounds("sip", "years");
   const [showInvestModal, setShowInvestModal] = useState(false);
 
   // Calculations
@@ -124,9 +127,9 @@ export default function SIPCalculatorPage() {
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-              <CalcField label="SIP Amount" value={monthlyInvestment} onChange={setMonthlyInvestment} min={500} max={100000} step={500} format={fmt} />
-              <CalcField label="Expected Rate of Return (p.a.) %" value={annualReturn} onChange={setAnnualReturn} min={-15} max={30} step={0.5} suffix="%" />
-              <CalcField label="Investment Duration (In Years)" value={years} onChange={setYears} min={1} max={50} suffix=" Years" />
+              <CalcField label="SIP Amount" value={monthlyInvestment} onChange={setMonthlyInvestment} {...monthlyBounds} format={fmt} />
+              <CalcField label="Expected Rate of Return (p.a.) %" value={annualReturn} onChange={setAnnualReturn} {...annualReturnBounds} suffix="%" />
+              <CalcField label="Investment Duration (In Years)" value={years} onChange={setYears} {...yearsBounds} suffix=" Years" />
             </div>
 
             <div className="space-y-6">

@@ -1,7 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
-import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
+import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -34,6 +34,10 @@ export default function CostOfDelayCalculatorPage() {
   const [rate, setRate] = useAssumptionField("equityReturn");
   const [horizon, setHorizon] = useDefaultableField("costOfDelay", "horizon");
   const [delay, setDelay] = useDefaultableField("costOfDelay", "delay");
+  const monthlyBounds = useFieldBounds("costOfDelay", "monthly");
+  const rateBounds = useFieldBounds("costOfDelay", "rate");
+  const horizonBounds = useFieldBounds("costOfDelay", "horizon");
+  const delayBounds = useFieldBounds("costOfDelay", "delay", { horizon });
   const { settings } = useSettings();
 
   const investedYears = Math.max(0, horizon - delay);
@@ -76,10 +80,10 @@ export default function CostOfDelayCalculatorPage() {
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-              <CalcField label="Monthly investment" value={monthly} onChange={setMonthly} min={500} max={200000} step={500} format={fmt} />
-              <CalcField label="Expected return (p.a.) %" value={rate} onChange={setRate} min={1} max={20} step={0.5} suffix="%" />
-              <CalcField label="Total horizon (Years)" value={horizon} onChange={setHorizon} min={5} max={40} step={1} suffix=" Years" />
-              <CalcField label="Years you'd delay starting" value={delay} onChange={setDelay} min={0} max={horizon - 1} step={1} suffix=" Years" />
+              <CalcField label="Monthly investment" value={monthly} onChange={setMonthly} {...monthlyBounds} format={fmt} />
+              <CalcField label="Expected return (p.a.) %" value={rate} onChange={setRate} {...rateBounds} suffix="%" />
+              <CalcField label="Total horizon (Years)" value={horizon} onChange={setHorizon} {...horizonBounds} suffix=" Years" />
+              <CalcField label="Years you'd delay starting" value={delay} onChange={setDelay} {...delayBounds} suffix=" Years" />
             </div>
 
             <div className="space-y-6">

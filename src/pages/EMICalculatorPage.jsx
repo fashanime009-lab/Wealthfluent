@@ -3,7 +3,7 @@ import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { formatCurrency } from "../utils/currency";
 import AdSlot from "../components/ads/AdSlot";
 import { useSettings } from "../context/SettingsContext";
-import useDefaultableField from "@/hooks/useDefaultableField";
+import useDefaultableField, { useFieldBounds } from "@/hooks/useDefaultableField";
 import { defaultFor } from "@/data/calculatorDefaults";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -36,6 +36,9 @@ export default function EMICalculatorPage() {
   const [loanAmount, setLoanAmount] = useDefaultableField("emi", "loan");
   const [interestRate, setInterestRate] = useDefaultableField("emi", "rate");
   const [loanYears, setLoanYears] = useDefaultableField("emi", "years");
+  const loanBounds = useFieldBounds("emi", "loan");
+  const rateBounds = useFieldBounds("emi", "rate");
+  const yearsBounds = useFieldBounds("emi", "years");
 
   const { settings } = useSettings();
   const currency = settings.currency;
@@ -101,9 +104,9 @@ export default function EMICalculatorPage() {
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-              <CalcField label="Loan amount" value={loanAmount} onChange={setLoanAmount} min={10000} max={10000000} step={10000} format={fmt} />
-              <CalcField label="Interest rate (p.a.)" value={interestRate} onChange={setInterestRate} min={1} max={30} step={0.1} suffix="%" />
-              <CalcField label="Loan duration" value={loanYears} onChange={setLoanYears} min={1} max={30} suffix=" yrs" />
+              <CalcField label="Loan amount" value={loanAmount} onChange={setLoanAmount} {...loanBounds} format={fmt} />
+              <CalcField label="Interest rate (p.a.)" value={interestRate} onChange={setInterestRate} {...rateBounds} suffix="%" />
+              <CalcField label="Loan duration" value={loanYears} onChange={setLoanYears} {...yearsBounds} suffix=" yrs" />
             </div>
 
             <div className="space-y-6">

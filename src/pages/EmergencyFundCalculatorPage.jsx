@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { useSettings } from "../context/SettingsContext";
-import { useDefaultableObject } from "@/hooks/useDefaultableField";
+import { useDefaultableObject, useFieldBounds } from "@/hooks/useDefaultableField";
 import { formatCurrency } from "../utils/currency";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
@@ -38,6 +38,11 @@ export default function EmergencyFundCalculatorPage() {
   const handleChange = (key, value) => {
     setInputs((prev) => ({ ...prev, [key]: Number(value) || 0 }));
   };
+
+  const monthlyExpensesBounds = useFieldBounds("emergencyFund", "monthlyExpenses");
+  const recommendedMonthsBounds = useFieldBounds("emergencyFund", "recommendedMonths");
+  const currentSavingsBounds = useFieldBounds("emergencyFund", "currentSavings");
+  const additionalIncomeBounds = useFieldBounds("emergencyFund", "additionalIncome");
 
   // ─── Calculations ──────────────────────────────────────────────
   const results = useMemo(() => {
@@ -103,9 +108,7 @@ export default function EmergencyFundCalculatorPage() {
                 label="Monthly Living Expenses"
                 value={inputs.monthlyExpenses}
                 onChange={(v) => handleChange("monthlyExpenses", v)}
-                min={1000}
-                max={500000}
-                step={1000}
+                {...monthlyExpensesBounds}
                 format={fmt}
               />
 
@@ -114,9 +117,7 @@ export default function EmergencyFundCalculatorPage() {
                   label="Months of Expenses to Cover"
                   value={inputs.recommendedMonths}
                   onChange={(v) => handleChange("recommendedMonths", v)}
-                  min={1}
-                  max={24}
-                  step={1}
+                  {...recommendedMonthsBounds}
                   suffix=" months"
                 />
                 <p className="mt-2 text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
@@ -128,9 +129,7 @@ export default function EmergencyFundCalculatorPage() {
                 label="Current Savings"
                 value={inputs.currentSavings}
                 onChange={(v) => handleChange("currentSavings", v)}
-                min={0}
-                max={5000000}
-                step={1000}
+                {...currentSavingsBounds}
                 format={fmt}
               />
 
@@ -139,9 +138,7 @@ export default function EmergencyFundCalculatorPage() {
                   label="Additional Income Source"
                   value={inputs.additionalIncome}
                   onChange={(v) => handleChange("additionalIncome", v)}
-                  min={0}
-                  max={500000}
-                  step={1000}
+                  {...additionalIncomeBounds}
                   format={fmt}
                 />
                 <p className="mt-2 text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
