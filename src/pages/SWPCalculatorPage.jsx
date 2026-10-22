@@ -1,7 +1,8 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -50,9 +51,9 @@ const FAQ_ITEMS = [
 ];
 
 export default function SWPCalculatorPage() {
-  const [corpus, setCorpus] = useState(5000000);
-  const [monthlyWithdrawal, setMonthlyWithdrawal] = useState(35000);
-  const [rate, setRate] = useState(8);
+  const [corpus, setCorpus] = useDefaultableField("swp", "corpus");
+  const [monthlyWithdrawal, setMonthlyWithdrawal] = useDefaultableField("swp", "withdrawal");
+  const [rate, setRate] = useAssumptionField("retirementReturn");
   const { settings } = useSettings();
 
   const result = useMemo(() => {

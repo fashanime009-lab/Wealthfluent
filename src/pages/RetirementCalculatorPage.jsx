@@ -2,7 +2,7 @@ import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { sipFutureValue } from "@/utils/projections";
-import { useState } from "react";
+import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -24,9 +24,9 @@ const FAQ_ITEMS = [
 ];
 
 export default function RetirementCalculatorPage() {
-  const [monthlyInvestment, setMonthlyInvestment] = useState(15000);
-  const [annualReturn, setAnnualReturn] = useState(12);
-  const [years, setYears] = useState(25);
+  const [monthlyInvestment, setMonthlyInvestment] = useDefaultableField("retirement", "monthly");
+  const [annualReturn, setAnnualReturn] = useAssumptionField("equityReturn");
+  const [years, setYears] = useDefaultableField("retirement", "years");
   const { settings } = useSettings();
 
   const months = years * 12;

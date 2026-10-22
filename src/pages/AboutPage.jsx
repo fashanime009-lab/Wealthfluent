@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema } from "@/components/seo/schema";
+import { TOTAL_CALCULATORS } from "@/data/calculators";
 
 const offerings = [
   {
@@ -25,7 +26,7 @@ const whyPoints = [
 ];
 
 const stats = [
-  { value: "20+", label: "tools to explore" },
+  { value: `${TOTAL_CALCULATORS}+`, label: "tools to explore" },
   { value: "100%", label: "free, always" },
   { value: "0", label: "data leaves your device" },
 ];

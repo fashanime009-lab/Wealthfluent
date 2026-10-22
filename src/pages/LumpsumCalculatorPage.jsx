@@ -1,7 +1,8 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
-import { useState, useMemo } from "react";
+import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -38,9 +39,9 @@ const FAQ_ITEMS = [
 ];
 
 export default function LumpsumCalculatorPage() {
-  const [lumpsum, setLumpsum] = useState(100000);
-  const [annualReturn, setAnnualReturn] = useState(12);
-  const [years, setYears] = useState(10);
+  const [lumpsum, setLumpsum] = useDefaultableField("lumpsum", "principal");
+  const [annualReturn, setAnnualReturn] = useAssumptionField("equityReturn");
+  const [years, setYears] = useDefaultableField("lumpsum", "years");
   const { settings } = useSettings();
 
   const result = useMemo(() => {

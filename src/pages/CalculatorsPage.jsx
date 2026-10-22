@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema } from "@/components/seo/schema";
-import { calculatorCategories, CATEGORY_DATA } from "@/data/calculators";
+import { calculatorCategories, CATEGORY_DATA, TOTAL_CALCULATORS } from "@/data/calculators";
 import MostPopularRow from "@/components/calculators/MostPopularRow";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
 
@@ -63,7 +63,7 @@ export default function CalculatorsPage() {
     <>
       <Seo
         title="Financial Calculators – SIP, EMI, Retirement, FIRE & More"
-        description="Explore 20+ free financial calculators for investments, loans, retirement planning, bond yields, net worth, inflation, and more. Make smarter financial decisions with FINAIW."
+        description={`Explore ${TOTAL_CALCULATORS}+ free financial calculators for investments, loans, retirement planning, bond yields, net worth, inflation, and more. Make smarter financial decisions with FINAIW.`}
         path="/calculators"
         keywords="financial calculators, investment calculator, loan calculator, retirement calculator, bond yield calculator, net worth calculator, inflation calculator"
         jsonLd={breadcrumbSchema([

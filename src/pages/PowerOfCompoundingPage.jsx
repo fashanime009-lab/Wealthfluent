@@ -1,7 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
-import { useState } from "react";
+import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -23,9 +23,9 @@ const FAQ_ITEMS = [
 ];
 
 export default function PowerOfCompoundingPage() {
-  const [principal, setPrincipal] = useState(100000);
-  const [rate, setRate] = useState(10);
-  const [years, setYears] = useState(20);
+  const [principal, setPrincipal] = useDefaultableField("powerOfCompounding", "principal");
+  const [rate, setRate] = useAssumptionField("equityReturn");
+  const [years, setYears] = useDefaultableField("powerOfCompounding", "years");
   const { settings } = useSettings();
 
   const simpleValue = Math.round(principal + (principal * rate * years) / 100);

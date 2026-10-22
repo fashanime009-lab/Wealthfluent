@@ -1,7 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
-import { useState } from "react";
+import useDefaultableField from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -34,9 +34,9 @@ function buildFaqItems(fmt, inr) {
 }
 
 export default function CAGRCalculatorPage() {
-  const [initialValue, setInitialValue] = useState(10000);
-  const [finalValue, setFinalValue] = useState(50000);
-  const [years, setYears] = useState(5);
+  const [initialValue, setInitialValue] = useDefaultableField("cagr", "start");
+  const [finalValue, setFinalValue] = useDefaultableField("cagr", "end");
+  const [years, setYears] = useDefaultableField("cagr", "years");
   const { settings } = useSettings();
 
   // CAGR is undefined for a starting value of 0 or a 0-year period — both

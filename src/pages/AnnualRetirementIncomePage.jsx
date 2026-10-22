@@ -1,6 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -24,12 +25,12 @@ const FAQ_ITEMS = [
 export default function AnnualRetirementIncomePage() {
   const { ref: corpusRef, style: corpusStyle, onPointerMove: onCorpusMove, onPointerLeave: onCorpusLeave } = useTilt();
   // ─── State ──────────────────────────────────────────────────────
-  const [currentPrincipal, setCurrentPrincipal] = useState(100000);
-  const [annualAddition, setAnnualAddition] = useState(12000);
-  const [yearsToGrow, setYearsToGrow] = useState(20);
-  const [preRetGrowthRate, setPreRetGrowthRate] = useState(12);
-  const [yearsToPayOut, setYearsToPayOut] = useState(25);
-  const [postRetGrowthRate, setPostRetGrowthRate] = useState(8);
+  const [currentPrincipal, setCurrentPrincipal] = useDefaultableField("annualRetirementIncome", "principal");
+  const [annualAddition, setAnnualAddition] = useDefaultableField("annualRetirementIncome", "annualAddition");
+  const [yearsToGrow, setYearsToGrow] = useDefaultableField("annualRetirementIncome", "yearsToGrow");
+  const [preRetGrowthRate, setPreRetGrowthRate] = useAssumptionField("equityReturn");
+  const [yearsToPayOut, setYearsToPayOut] = useDefaultableField("annualRetirementIncome", "yearsToPayOut");
+  const [postRetGrowthRate, setPostRetGrowthRate] = useAssumptionField("retirementReturn");
   const { settings } = useSettings();
 
   // ─── Calculations ──────────────────────────────────────────────

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { X } from "lucide-react";
+import { TOTAL_CALCULATORS } from "@/data/calculators";
 
 // A real, structured walkthrough of the site — not a chatbot. Every
 // section here is a clickable answer to "what is this and where do I go",
@@ -11,7 +12,7 @@ const SECTIONS = [
     n: "01",
     title: "Calculators",
     to: "/calculators",
-    desc: "20+ free tools — SIP, EMI, FD, retirement, FIRE and more. Enter your numbers, get an instant answer.",
+    desc: `${TOTAL_CALCULATORS}+ free tools — SIP, EMI, FD, retirement, FIRE and more. Enter your numbers, get an instant answer.`,
   },
   {
     n: "02",

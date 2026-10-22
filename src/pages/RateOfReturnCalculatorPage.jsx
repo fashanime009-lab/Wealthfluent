@@ -1,7 +1,8 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
-import { useState, useMemo } from "react";
+import useDefaultableField from "@/hooks/useDefaultableField";
+import { useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -23,9 +24,9 @@ const FAQ_ITEMS = [
 
 export default function RateOfReturnCalculatorPage() {
   // ─── State ──────────────────────────────────────────────────────
-  const [presentValue, setPresentValue] = useState(10000);
-  const [futureValue, setFutureValue] = useState(50000);
-  const [yearsToGrow, setYearsToGrow] = useState(5);
+  const [presentValue, setPresentValue] = useDefaultableField("rateOfReturn", "present");
+  const [futureValue, setFutureValue] = useDefaultableField("rateOfReturn", "future");
+  const [yearsToGrow, setYearsToGrow] = useDefaultableField("rateOfReturn", "years");
   const { settings } = useSettings();
 
   // ─── Calculations ──────────────────────────────────────────────
@@ -41,7 +42,7 @@ export default function RateOfReturnCalculatorPage() {
   const fmt = (v) => formatCurrency(v, settings.currency);
   const { inr } = useExampleCurrency();
   const examplePresent = inr(10000);
-  const exampleFuture = inr(50000);
+  const exampleFuture = inr(20000);
 
   // ─── Format percentage ──────────────────────────────────────────
   const formatPercentage = (value) => {
@@ -149,7 +150,7 @@ export default function RateOfReturnCalculatorPage() {
               </p>
               <p>
                 For example, {fmt(examplePresent)} growing to {fmt(exampleFuture)} over 5 years works out to an annualized return of about
-                37.97% — a single number that describes the average annual growth needed to turn the first figure
+                14.87% — a single number that describes the average annual growth needed to turn the first figure
                 into the second, regardless of how bumpy the actual year-by-year path was.
               </p>
             </CalcSection>

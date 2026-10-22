@@ -1,10 +1,12 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { formatCurrency } from "../utils/currency";
 import { USD_CONVERSION_RATES } from "@/services/calculators/globalWealthPercentile";
 import AdSlot from "../components/ads/AdSlot";
 import { useSettings } from "../context/SettingsContext";
+import { useDefaultableObjectCustom } from "@/hooks/useDefaultableField";
+import { defaultFor } from "@/data/calculatorDefaults";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcSection from "@/components/calculators/CalcSection";
@@ -48,13 +50,17 @@ export default function WealthAgeCalculatorPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const FIELDS = useMemo(() => buildFields(inr), [currency]);
 
-  const [formData, setFormData] = useState(() => ({
-    age: 25,
-    monthlyIncome: inr(50000),
-    monthlySavings: inr(15000),
-    investments: inr(300000),
-    debt: inr(100000),
-    monthlyExpenses: inr(25000),
+  // Default starting values are hand-picked per currency (see
+  // calculatorDefaults.js), not FX-converted like the slider bounds above —
+  // a converted "typical income" reads as unrealistic for a market like
+  // Japan, where nominal figures don't scale with the exchange rate.
+  const [formData, setFormData] = useDefaultableObjectCustom((curr) => ({
+    age: defaultFor("wealthAge", "age", curr),
+    monthlyIncome: defaultFor("wealthAge", "monthlyIncome", curr),
+    monthlySavings: defaultFor("wealthAge", "monthlySavings", curr),
+    investments: defaultFor("wealthAge", "investments", curr),
+    debt: defaultFor("wealthAge", "debt", curr),
+    monthlyExpenses: defaultFor("wealthAge", "monthlyExpenses", curr),
   }));
 
   const handleChange = (name, rawValue, fallback) => {

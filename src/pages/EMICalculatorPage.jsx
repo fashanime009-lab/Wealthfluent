@@ -1,10 +1,10 @@
-import { useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { formatCurrency } from "../utils/currency";
 import AdSlot from "../components/ads/AdSlot";
 import { useSettings } from "../context/SettingsContext";
-import useExampleCurrency from "@/hooks/useExampleCurrency";
+import useDefaultableField from "@/hooks/useDefaultableField";
+import { defaultFor } from "@/data/calculatorDefaults";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
@@ -33,14 +33,13 @@ const FAQ_ITEMS = [
 ];
 
 export default function EMICalculatorPage() {
-  const [loanAmount, setLoanAmount] = useState(500000);
-  const [interestRate, setInterestRate] = useState(10);
-  const [loanYears, setLoanYears] = useState(5);
+  const [loanAmount, setLoanAmount] = useDefaultableField("emi", "loan");
+  const [interestRate, setInterestRate] = useDefaultableField("emi", "rate");
+  const [loanYears, setLoanYears] = useDefaultableField("emi", "years");
 
   const { settings } = useSettings();
   const currency = settings.currency;
   const fmt = (v) => formatCurrency(v, currency);
-  const { inr } = useExampleCurrency();
 
   const monthlyRate = interestRate / 12 / 100;
   const months = loanYears * 12;
@@ -59,17 +58,21 @@ export default function EMICalculatorPage() {
   const principalShare = totalPayment > 0 ? (loanAmount / totalPayment) * 100 : 0;
   const interestShare = totalPayment > 0 ? (totalInterest / totalPayment) * 100 : 0;
 
-  // Fixed worked examples for the body copy below — a 5 lakh-equivalent
-  // loan at 10%, independent of the live inputs above, but currency-aware.
-  const examplePrincipal = inr(500000);
-  const exampleEmi5yr = emiOf(examplePrincipal, 10, 5);
-  const exampleEmi3yr = emiOf(examplePrincipal, 10, 3);
-  const exampleEmi7yr = emiOf(examplePrincipal, 10, 7);
-  const exampleEmi10yr = emiOf(examplePrincipal, 10, 10);
+  // Fixed worked examples for the body copy below, independent of the live
+  // inputs above — but using the same mortgage-scale default and rate as
+  // this page's own currency-aware starting values, so the written example
+  // always matches what's actually prefilled above it.
+  const examplePrincipal = defaultFor("emi", "loan", currency);
+  const exampleRate = defaultFor("emi", "rate", currency);
+  const exampleEmi5yr = emiOf(examplePrincipal, exampleRate, 5);
+  const exampleEmi3yr = emiOf(examplePrincipal, exampleRate, 3);
+  const exampleEmi7yr = emiOf(examplePrincipal, exampleRate, 7);
+  const exampleEmi10yr = emiOf(examplePrincipal, exampleRate, 10);
   const exampleInterest3yr = exampleEmi3yr * 36 - examplePrincipal;
   const exampleInterest5yr = exampleEmi5yr * 60 - examplePrincipal;
   const exampleInterest7yr = exampleEmi7yr * 84 - examplePrincipal;
   const exampleInterest10yr = exampleEmi10yr * 120 - examplePrincipal;
+  const exampleMonthlyR = (exampleRate / 12 / 100).toFixed(6);
 
   return (
     <>
@@ -145,15 +148,15 @@ export default function EMICalculatorPage() {
                 amount, <strong className="text-[#111814] dark:text-[#eef1ec]">R</strong> is the monthly interest
                 rate (annual rate divided by 12, then by 100), and{" "}
                 <strong className="text-[#111814] dark:text-[#eef1ec]">N</strong> is the total number of monthly
-                installments (loan tenure in years × 12). For example, a {fmt(examplePrincipal)} loan at 10% annual interest over
-                5 years has R = 0.008333 and N = 60, which works out to an EMI of roughly {fmt(exampleEmi5yr)}/month — the same
+                installments (loan tenure in years × 12). For example, a {fmt(examplePrincipal)} loan at {exampleRate}% annual interest over
+                5 years has R = {exampleMonthlyR} and N = 60, which works out to an EMI of roughly {fmt(exampleEmi5yr)}/month — the same
                 figure the calculator above produces for those inputs.
               </p>
             </CalcSection>
 
             <CalcSection title="EMI example: how tenure changes what you pay">
               <p>
-                On a {fmt(examplePrincipal)} loan at 10%, the EMI is about {fmt(exampleEmi3yr)} over 3 years, {fmt(exampleEmi5yr)} over 5 years, {fmt(exampleEmi7yr)}
+                On a {fmt(examplePrincipal)} loan at {exampleRate}%, the EMI is about {fmt(exampleEmi3yr)} over 3 years, {fmt(exampleEmi5yr)} over 5 years, {fmt(exampleEmi7yr)}
                 over 7 years and {fmt(exampleEmi10yr)} over 10 years. The total interest paid moves the other way: roughly
                 {" "}{fmt(exampleInterest3yr)}, {fmt(exampleInterest5yr)}, {fmt(exampleInterest7yr)} and {fmt(exampleInterest10yr)}. Stretching a loan from 5 to 10 years lowers the monthly
                 burden by about 38% but more than doubles the interest.

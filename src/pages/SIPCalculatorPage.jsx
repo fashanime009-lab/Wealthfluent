@@ -8,6 +8,7 @@ import { useSettings } from "../context/SettingsContext";
 import AdSlot from "../components/ads/AdSlot";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
+import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
@@ -54,9 +55,9 @@ export default function SIPCalculatorPage() {
   const currency = settings.currency;
   const fmt = (v) => formatCurrency(v, currency);
   const { inr } = useExampleCurrency();
-  const [monthlyInvestment, setMonthlyInvestment] = useState(5000);
-  const [annualReturn, setAnnualReturn] = useState(12);
-  const [years, setYears] = useState(15);
+  const [monthlyInvestment, setMonthlyInvestment] = useDefaultableField("sip", "monthly");
+  const [annualReturn, setAnnualReturn] = useAssumptionField("equityReturn");
+  const [years, setYears] = useDefaultableField("sip", "years");
   const [showInvestModal, setShowInvestModal] = useState(false);
 
   // Calculations

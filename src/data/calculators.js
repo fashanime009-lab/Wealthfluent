@@ -78,10 +78,15 @@ export const calculatorCategories = [
 export const CATEGORY_DATA = {
   loan: {
     calculators: [
-      { title: "EMI Calculator", desc: "Monthly payments for a home, car, or personal loan.", route: "/emi-calculator", example: ({ inr, fmt }) => { const p = inr(3000000); return `${fmt(p)} at 8.5% for 20 yrs → ${fmt(Math.round(p * 0.00867833))}/mo`; } },
+      { title: "EMI Calculator", desc: "Monthly payments for a home, car, or personal loan.", route: "/emi-calculator", example: ({ inr, fmt }) => { const p = inr(5000000); return `${fmt(p)} at 8.5% for 20 yrs → ${fmt(Math.round(p * 0.00867833))}/mo`; } },
       { title: "Future Value Calculator", desc: "What a lump sum grows to with compound interest.", route: "/future-value-calculator", example: ({ inr, fmt }) => { const p = inr(100000); return `${fmt(p)} at 10% for 10 yrs → ${fmt(Math.round(p * 2.59))}`; } },
       { title: "Rate of Return Calculator", desc: "The annualized return between two values.", route: "/rate-of-return-calculator", example: ({ inr, fmt }) => { const p = inr(100000); return `${fmt(p)} → ${fmt(Math.round(p * 2.5))} in 8 yrs → 12.1%/yr`; } },
-      { title: "Bond Yield Calculator", desc: "Current yield and yield to maturity on a bond.", route: "/bond-yield-calculator", example: ({ inr, fmt }) => `${fmt(inr(100000))} face, 8% coupon, ${fmt(inr(95000))} price → 8.4%` },
+      // Face value is a round, real denomination (not FX-converted) on the
+      // calculator page itself — this preview card keeps a simple 1,000/950
+      // pair in whatever currency's selected, same as CAGR/Rate of Return's
+      // cards, rather than threading the per-currency JPY/GBP conventions
+      // through here too.
+      { title: "Bond Yield Calculator", desc: "Current yield and yield to maturity on a bond.", route: "/bond-yield-calculator", example: ({ fmt }) => `${fmt(1000)} face, 8% coupon, ${fmt(950)} price → 8.4%` },
       { title: "Fixed Deposit Calculator", desc: "Maturity value and interest earned on an FD.", route: "/fd-calculator", example: ({ inr, fmt }) => { const p = inr(200000); return `${fmt(p)} at 7% for 5 yrs → ${fmt(Math.round(p * 1.415))}`; } },
       { title: "RD Calculator", desc: "Maturity value and interest earned on a recurring deposit, India.", route: "/rd-calculator", example: "₹5K/mo at 7% for 5 yrs → ₹3.6L", note: "New" },
       { title: "Home Affordability Calculator", desc: "Check whether a property actually fits your income.", route: "/home-affordability-calculator", example: ({ inr, fmt }) => `${fmt(inr(5000000))} home, ${fmt(inr(100000))}/mo income → Good fit`, note: "New" },

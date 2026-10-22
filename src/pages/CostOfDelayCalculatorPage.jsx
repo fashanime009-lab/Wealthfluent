@@ -1,7 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
-import { useState } from "react";
+import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -30,10 +30,10 @@ const FAQ_ITEMS = [
 ];
 
 export default function CostOfDelayCalculatorPage() {
-  const [monthly, setMonthly] = useState(10000);
-  const [rate, setRate] = useState(12);
-  const [horizon, setHorizon] = useState(25);
-  const [delay, setDelay] = useState(5);
+  const [monthly, setMonthly] = useDefaultableField("costOfDelay", "monthly");
+  const [rate, setRate] = useAssumptionField("equityReturn");
+  const [horizon, setHorizon] = useDefaultableField("costOfDelay", "horizon");
+  const [delay, setDelay] = useDefaultableField("costOfDelay", "delay");
   const { settings } = useSettings();
 
   const investedYears = Math.max(0, horizon - delay);

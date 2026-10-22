@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { useSettings } from "../context/SettingsContext";
+import { useDefaultableObject } from "@/hooks/useDefaultableField";
 import { formatCurrency } from "../utils/currency";
 import { calculateHomeAffordability } from "../services/calculators/homeAffordability";
 import AdSlot from "../components/ads/AdSlot";
@@ -27,15 +28,15 @@ export default function HomeAffordabilityCalculatorPage() {
   const fmt = (v) => formatCurrency(v, currency);
 
   // ─── State ──────────────────────────────────────────────────────
-  const [inputs, setInputs] = useState({
-    propertyPrice: 6000000,
-    downPayment: 1200000,
-    monthlyIncome: 100000,
-    monthlyExpenses: 30000,
-    existingEMI: 0,
-    loanTenure: 20,
-    interestRate: 8.5,
-  });
+  const [inputs, setInputs] = useDefaultableObject("homeAffordability", [
+    "propertyPrice",
+    "downPayment",
+    "monthlyIncome",
+    "monthlyExpenses",
+    "existingEMI",
+    "loanTenure",
+    "interestRate",
+  ]);
 
   // ─── Update handler ──────────────────────────────────────────────
   const handleChange = (key, value) => {

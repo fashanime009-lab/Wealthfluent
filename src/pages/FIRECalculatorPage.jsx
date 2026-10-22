@@ -1,7 +1,9 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import { sipFutureValue } from "@/utils/projections";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useDefaultableObjectCustom } from "@/hooks/useDefaultableField";
+import { defaultFor, assumptionsFor } from "@/data/calculatorDefaults";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -22,15 +24,15 @@ const FAQ_ITEMS = [
 
 export default function FIRECalculatorPage() {
   const { settings } = useSettings();
-  const [formData, setFormData] = useState({
-    currentAge: 25,
-    retirementAge: 45,
-    monthlyExpenses: 50000,
-    currentSavings: 300000,
-    monthlyInvestment: 25000,
-    expectedReturn: 12,
-    inflationRate: 6,
-  });
+  const [formData, setFormData] = useDefaultableObjectCustom((currency) => ({
+    currentAge: defaultFor("fire", "currentAge", currency),
+    retirementAge: defaultFor("fire", "retirementAge", currency),
+    monthlyExpenses: defaultFor("fire", "monthlyExpenses", currency),
+    currentSavings: defaultFor("fire", "currentSavings", currency),
+    monthlyInvestment: defaultFor("fire", "monthlyInvestment", currency),
+    expectedReturn: assumptionsFor(currency).equityReturn,
+    inflationRate: assumptionsFor(currency).inflation,
+  }));
 
   const results = useMemo(() => {
     const years = formData.retirementAge - formData.currentAge;

@@ -1,7 +1,8 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -56,10 +57,10 @@ function buildFaqItems(fmt, inr) {
 }
 
 export default function StepUpSIPCalculatorPage() {
-  const [initialSip, setInitialSip] = useState(5000);
-  const [stepUpPercent, setStepUpPercent] = useState(10);
-  const [annualReturn, setAnnualReturn] = useState(12);
-  const [years, setYears] = useState(15);
+  const [initialSip, setInitialSip] = useDefaultableField("stepUpSip", "monthly");
+  const [stepUpPercent, setStepUpPercent] = useDefaultableField("stepUpSip", "stepUpPercent");
+  const [annualReturn, setAnnualReturn] = useAssumptionField("equityReturn");
+  const [years, setYears] = useDefaultableField("stepUpSip", "years");
   const { settings } = useSettings();
 
   const result = useMemo(() => {

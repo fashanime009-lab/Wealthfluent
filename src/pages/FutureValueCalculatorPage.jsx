@@ -1,6 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -22,10 +23,10 @@ const FAQ_ITEMS = [
 
 export default function FutureValueCalculatorPage() {
   // ─── State ──────────────────────────────────────────────────────
-  const [currentPrincipal, setCurrentPrincipal] = useState(100000);
-  const [annualAddition, setAnnualAddition] = useState(12000);
-  const [yearsToGrow, setYearsToGrow] = useState(20);
-  const [growthRate, setGrowthRate] = useState(12);
+  const [currentPrincipal, setCurrentPrincipal] = useDefaultableField("futureValue", "principal");
+  const [annualAddition, setAnnualAddition] = useDefaultableField("futureValue", "annualAddition");
+  const [yearsToGrow, setYearsToGrow] = useDefaultableField("futureValue", "years");
+  const [growthRate, setGrowthRate] = useAssumptionField("equityReturn");
   const { settings } = useSettings();
 
   // ─── Calculations ──────────────────────────────────────────────

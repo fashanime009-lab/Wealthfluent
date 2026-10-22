@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { useSettings } from "../context/SettingsContext";
+import { useDefaultableObject } from "@/hooks/useDefaultableField";
 import { formatCurrency } from "../utils/currency";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
@@ -26,12 +27,12 @@ export default function EmergencyFundCalculatorPage() {
   const fmt = (v) => formatCurrency(v, currency);
 
   // ─── State ──────────────────────────────────────────────────────
-  const [inputs, setInputs] = useState({
-    monthlyExpenses: 30000,
-    recommendedMonths: 6,
-    currentSavings: 100000,
-    additionalIncome: 0,
-  });
+  const [inputs, setInputs] = useDefaultableObject("emergencyFund", [
+    "monthlyExpenses",
+    "recommendedMonths",
+    "currentSavings",
+    "additionalIncome",
+  ]);
 
   // ─── Update handler ──────────────────────────────────────────────
   const handleChange = (key, value) => {

@@ -1,4 +1,4 @@
-import { currencies } from "../data/currencies";
+import { currencies } from "../data/currencies.js";
 
 // fractionDigits: decimals to show. Whole units by default; pass 2 where the
 // cents matter (a bond's price against its face value, a monthly SIP amount).

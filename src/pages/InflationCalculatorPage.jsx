@@ -1,7 +1,8 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -22,9 +23,9 @@ const FAQ_ITEMS = [
 
 export default function InflationCalculatorPage() {
   // ─── State ──────────────────────────────────────────────────────
-  const [currentExpenses, setCurrentExpenses] = useState(10000);
-  const [inflationRate, setInflationRate] = useState(7);
-  const [timePeriod, setTimePeriod] = useState(30);
+  const [currentExpenses, setCurrentExpenses] = useDefaultableField("inflation", "cost");
+  const [inflationRate, setInflationRate] = useAssumptionField("inflation");
+  const [timePeriod, setTimePeriod] = useDefaultableField("inflation", "years");
   const { settings } = useSettings();
 
   // ─── Calculations ──────────────────────────────────────────────

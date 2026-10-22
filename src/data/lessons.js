@@ -1,5 +1,5 @@
-import { formatCurrency } from "@/utils/currency";
-import { USD_CONVERSION_RATES } from "@/services/calculators/globalWealthPercentile";
+import { formatCurrency } from "../utils/currency.js";
+import { USD_CONVERSION_RATES } from "../services/calculators/globalWealthPercentile.js";
 
 // Lesson bodies, chart titles and FAQ answers were originally written with
 // their worked examples in INR, same as every other calculator/verdict

@@ -1,6 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import useDefaultableField from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -22,10 +23,10 @@ const FAQ_ITEMS = [
 
 export default function BondYieldCalculatorPage() {
   // ─── State ──────────────────────────────────────────────────────
-  const [currentPrice, setCurrentPrice] = useState(950);
-  const [parValue, setParValue] = useState(1000);
-  const [couponRate, setCouponRate] = useState(8);
-  const [yearsToMaturity, setYearsToMaturity] = useState(10);
+  const [currentPrice, setCurrentPrice] = useDefaultableField("bondYield", "price");
+  const [parValue, setParValue] = useDefaultableField("bondYield", "faceValue");
+  const [couponRate, setCouponRate] = useDefaultableField("bondYield", "coupon");
+  const [yearsToMaturity, setYearsToMaturity] = useDefaultableField("bondYield", "years");
   const { settings } = useSettings();
 
   // ─── Calculations ──────────────────────────────────────────────

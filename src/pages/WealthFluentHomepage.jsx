@@ -14,13 +14,14 @@ import HomeFAQ from "../components/home/HomeFAQ";
 import Seo from "@/components/seo/Seo";
 import { organizationSchema, websiteSchema, faqSchema } from "@/components/seo/schema";
 import { HOME_FAQ_ITEMS } from "@/data/homeFaq";
+import { TOTAL_CALCULATORS } from "@/data/calculators";
 
 export default function WealthFluentHomepage() {
   return (
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <Seo
         title="Free Financial Calculators, Verdicts & Tools | FINAIW"
-        description="20+ free finance calculators (SIP, EMI, FD, CAGR, retirement, FIRE), real rent-vs-buy and debt-vs-invest verdicts, and goal tracking — no account, no paywall."
+        description={`${TOTAL_CALCULATORS}+ free finance calculators (SIP, EMI, FD, CAGR, retirement, FIRE), real rent-vs-buy and debt-vs-invest verdicts, and goal tracking — no account, no paywall.`}
         path="/"
         keywords="financial calculators, SIP calculator, EMI calculator, retirement calculator, FIRE calculator, personal finance, investment planning"
         jsonLd={[

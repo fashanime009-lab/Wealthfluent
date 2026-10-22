@@ -1,6 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import useDefaultableField, { useAssumptionField } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
@@ -21,9 +22,9 @@ const FAQ_ITEMS = [
 
 export default function GoalSIPCalculatorPage() {
   // ─── State ──────────────────────────────────────────────────────
-  const [goalAmount, setGoalAmount] = useState(500000);
-  const [investmentDuration, setInvestmentDuration] = useState(15);
-  const [expectedReturn, setExpectedReturn] = useState(12);
+  const [goalAmount, setGoalAmount] = useDefaultableField("goalSip", "target");
+  const [investmentDuration, setInvestmentDuration] = useDefaultableField("goalSip", "years");
+  const [expectedReturn, setExpectedReturn] = useAssumptionField("equityReturn");
   const { settings } = useSettings();
 
   // ─── Calculations ──────────────────────────────────────────────
