@@ -82,6 +82,17 @@ const sitemapSections = [
     ],
   },
   {
+    title: "Blog",
+    pages: [
+      { name: "Blog", path: "/blog", description: "Real numbers on investing, saving and planning" },
+      {
+        name: "How Much Do You Need to Invest Each Month to Become a Millionaire?",
+        path: "/blog/how-much-to-invest-to-become-a-millionaire",
+        description: "Monthly investment needed to reach 1 million in 10 to 40 years",
+      },
+    ],
+  },
+  {
     title: "Legal",
     pages: [
       { name: "Privacy Policy", path: "/privacy-policy", description: "How we protect your data" },
