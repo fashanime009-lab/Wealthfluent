@@ -6,7 +6,7 @@ import MostPopularRow from "@/components/calculators/MostPopularRow";
 // Every tool listed here is live — nothing under construction. A "coming
 // soon" placeholder is exactly the kind of thing an AdSense content
 // review flags as an unfinished/under-construction page, and this page
-// is publicly indexed (see public/sitemap.xml), so it's worth keeping
+// is publicly indexed (see scripts/lib/routes.mjs), so it's worth keeping
 // this list honest rather than aspirational.
 const tools = [
   {

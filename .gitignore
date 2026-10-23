@@ -31,3 +31,8 @@ dist-ssr
 *.sw?
 .vercel
 .env*
+
+# Generated at build time only (scripts/generate-sitemap.js writes
+# dist/sitemap.xml) — never hand-edited or meant to be committed; keeping
+# a second copy here risked exactly the staleness bug it was meant to fix.
+public/sitemap.xml

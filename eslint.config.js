@@ -19,11 +19,15 @@ export default defineConfig([
     },
   },
   {
-    // Vercel serverless functions and the Vite config itself run under
-    // Node, not in a browser — they need process/require/__dirname/module,
-    // not window/document. Without this, eslint flags every one of those
-    // as undefined, which drowns out any real issue in these files.
-    files: ['api/**/*.js', 'vite.config.js'],
+    // Vercel serverless functions, the Vite config, and this project's
+    // build/audit scripts all run under Node, not in a browser — they
+    // need process/require/__dirname/module, not window/document.
+    // Without this, eslint flags every one of those as undefined, which
+    // drowns out any real issue in these files. scripts/**/*.mjs wasn't
+    // matched by any block before this — `**/*.{js,jsx}` only matches
+    // literal .js/.jsx extensions, so every .mjs script was silently
+    // skipped by eslint entirely rather than actually linted.
+    files: ['api/**/*.js', 'vite.config.js', 'scripts/**/*.{js,mjs}'],
     languageOptions: {
       globals: globals.node,
     },

@@ -16,8 +16,8 @@
  *
  * WHAT IT DOES
  * Runs after `vite build`. It serves the built `dist/` output locally,
- * visits every indexable route (read from public/sitemap.xml, minus
- * anything public/robots.txt disallows), lets React + Helmet finish
+ * visits every indexable route (scripts/lib/routes.mjs's ROUTE_DEFS,
+ * minus anything public/robots.txt disallows), lets React + Helmet finish
  * rendering, then overwrites dist/<route>/index.html with the fully
  * rendered HTML — real <title>/<meta>/OG tags baked in as static
  * markup other crawlers can read without executing anything.
@@ -75,6 +75,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import puppeteer from "puppeteer-core";
 import { findRuntimeOnlyContent, readAllowedScriptSrcs } from "./lib/runtimeOnlyContent.mjs";
+import { ROUTE_DEFS, getDisallowedPrefixes } from "./lib/routes.mjs";
 
 // Vercel sets VERCEL=1 during both build and runtime — that's the signal
 // to use the serverless-compatible Chromium instead of a local install.
@@ -177,31 +178,27 @@ function rewriteSiteUrls(html) {
 // Prerendered for real HTML/OG tags and so a cold load never flashes the
 // homepage (see the "/" ordering note below for why an unprerendered
 // route falls back to dist/index.html's fully-baked content rather than
-// a neutral shell), but deliberately kept OUT of public/sitemap.xml —
-// each already carries its own <Seo noindex /> or isn't meant to be
+// a neutral shell), but deliberately kept OUT of the sitemap — each
+// already carries its own <Seo noindex /> or isn't meant to be
 // discovered by crawling, and this project's convention (see robots.txt
 // below) is that non-indexable pages don't appear in the sitemap either.
 // Prerendering and "should Google index this" are separate questions;
 // this list is only about the former.
 const EXTRA_PRERENDER_ROUTES = ["/links"];
 
-// Reads the canonical route list straight from the files you already
-// maintain, so this script never drifts out of sync with them.
+// Shares ROUTE_DEFS with scripts/generate-sitemap.js (scripts/lib/routes.mjs)
+// instead of reading a previously-generated sitemap.xml — the sitemap is
+// no longer written anywhere this script could read it from before the
+// build finishes, and a shared list is the more direct source of truth
+// regardless.
 function getIndexableRoutes() {
-  const sitemapXml = readFileSync(path.join(ROOT, "public/sitemap.xml"), "utf-8");
-  const locs = [...sitemapXml.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => {
-    const url = new URL(m[1]);
-    return url.pathname || "/";
-  });
-
-  const robotsTxt = readFileSync(path.join(ROOT, "public/robots.txt"), "utf-8");
-  const disallowed = [...robotsTxt.matchAll(/^Disallow:\s*(\S+)/gm)].map((m) => m[1]);
+  const disallowed = getDisallowedPrefixes(ROOT);
 
   // Skip anything robots.txt says not to crawl — those are app-state
   // pages (e.g. /settings) that render generic/empty content anyway
   // outside of a logged-in session, so prerendering them wastes build
   // time and would just bake in a placeholder.
-  const routes = [...locs, ...EXTRA_PRERENDER_ROUTES].filter(
+  const routes = [...ROUTE_DEFS.map((r) => r.path), ...EXTRA_PRERENDER_ROUTES].filter(
     (route) => !disallowed.some((d) => route === d || route.startsWith(d + "/"))
   );
 
