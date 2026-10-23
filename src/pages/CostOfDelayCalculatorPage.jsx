@@ -81,7 +81,7 @@ export default function CostOfDelayCalculatorPage() {
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
               <CalcField label="Monthly investment" value={monthly} onChange={setMonthly} {...monthlyBounds} format={fmt} />
-              <CalcField label="Expected return (p.a.) %" value={rate} onChange={setRate} {...rateBounds} suffix="%" />
+              <CalcField label="Expected return (p.a.) %" value={rate} onChange={setRate} {...rateBounds} suffix="%" hint="Sample value. Enter your own." />
               <CalcField label="Total horizon (Years)" value={horizon} onChange={setHorizon} {...horizonBounds} suffix=" Years" />
               <CalcField label="Years you'd delay starting" value={delay} onChange={setDelay} {...delayBounds} suffix=" Years" />
             </div>

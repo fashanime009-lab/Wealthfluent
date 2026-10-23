@@ -99,8 +99,8 @@ export default function FIRECalculatorPage() {
     { label: "Monthly expenses", name: "monthlyExpenses", ...monthlyExpensesBounds, format: fmt },
     { label: "Current savings", name: "currentSavings", ...currentSavingsBounds, format: fmt },
     { label: "Monthly investment", name: "monthlyInvestment", ...monthlyInvestmentBounds, format: fmt },
-    { label: "Expected return (p.a.)", name: "expectedReturn", ...expectedReturnBounds, suffix: "%" },
-    { label: "Inflation rate (p.a.)", name: "inflationRate", ...inflationRateBounds, suffix: "%" },
+    { label: "Expected return (p.a.)", name: "expectedReturn", ...expectedReturnBounds, suffix: "%", hint: "Sample value. Enter your own." },
+    { label: "Inflation rate (p.a.)", name: "inflationRate", ...inflationRateBounds, suffix: "%", hint: "Sample value. Enter your own." },
   ];
 
   return (
@@ -141,6 +141,7 @@ export default function FIRECalculatorPage() {
                   step={field.step}
                   suffix={field.suffix}
                   format={field.format}
+                  hint={field.hint}
                 />
               ))}
             </div>

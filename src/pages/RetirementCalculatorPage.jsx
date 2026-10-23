@@ -76,7 +76,7 @@ export default function RetirementCalculatorPage() {
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
               <CalcField label="Monthly investment" value={monthlyInvestment} onChange={setMonthlyInvestment} {...monthlyBounds} format={fmt} />
-              <CalcField label="Expected annual return" value={annualReturn} onChange={setAnnualReturn} {...annualReturnBounds} suffix="%" />
+              <CalcField label="Expected annual return" value={annualReturn} onChange={setAnnualReturn} {...annualReturnBounds} suffix="%" hint="Sample value. Enter your own." />
               <CalcField label="Investment duration" value={years} onChange={setYears} {...yearsBounds} suffix=" yrs" />
             </div>
 

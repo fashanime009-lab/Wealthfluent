@@ -117,13 +117,13 @@ export default function AnnualRetirementIncomePage() {
                 <CalcField label="Current principal" value={currentPrincipal} onChange={setCurrentPrincipal} {...principalBounds} format={fmt} />
                 <CalcField label="Annual addition" value={annualAddition} onChange={setAnnualAddition} {...annualAdditionBounds} format={fmt} />
                 <CalcField label="Years to grow" value={yearsToGrow} onChange={setYearsToGrow} {...yearsToGrowBounds} suffix=" yrs" />
-                <CalcField label="Growth rate" value={preRetGrowthRate} onChange={setPreRetGrowthRate} {...preRetGrowthRateBounds} suffix="%" />
+                <CalcField label="Growth rate" value={preRetGrowthRate} onChange={setPreRetGrowthRate} {...preRetGrowthRateBounds} suffix="%" hint="Sample value. Enter your own." />
               </div>
 
               <div className="space-y-7">
                 <p className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">In retirement</p>
                 <CalcField label="Years to pay out" value={yearsToPayOut} onChange={setYearsToPayOut} {...yearsToPayOutBounds} suffix=" yrs" />
-                <CalcField label="Growth rate" value={postRetGrowthRate} onChange={setPostRetGrowthRate} {...postRetGrowthRateBounds} suffix="%" />
+                <CalcField label="Growth rate" value={postRetGrowthRate} onChange={setPostRetGrowthRate} {...postRetGrowthRateBounds} suffix="%" hint="Sample value. Enter your own." />
               </div>
             </div>
 

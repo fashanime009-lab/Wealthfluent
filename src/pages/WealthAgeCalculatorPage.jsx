@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { formatCurrency } from "../utils/currency";
-import { USD_CONVERSION_RATES } from "@/services/calculators/globalWealthPercentile";
 import AdSlot from "../components/ads/AdSlot";
 import { useSettings } from "../context/SettingsContext";
 import { useDefaultableObjectCustom, useFieldBounds } from "@/hooks/useDefaultableField";
@@ -14,22 +13,6 @@ import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
-// Feature flag — OFF until Nishit approves the proposed income-relative
-// scoring rules (see chat for the full writeup and per-currency numbers).
-// While false, the scoring below behaves exactly as it did before: the
-// FX-based inr() helper drives both the net-worth bonus threshold and the
-// wealth-score divisor. Flip the default below to true only when told to.
-//
-// The window override exists only so scripts/check-calculator-nan.mjs can
-// exercise the new formula's edge cases (0 income, very high net worth vs
-// low income) in a real browser without editing this file — no real visitor
-// ever sets that global, so production behavior is controlled by the
-// default below alone.
-const USE_INCOME_RELATIVE_SCORING =
-  typeof window !== "undefined" && window.__WEALTH_AGE_SCORING_OVERRIDE__ !== undefined
-    ? window.__WEALTH_AGE_SCORING_OVERRIDE__
-    : false;
-
 const FAQ_ITEMS = [
   { q: "What's a good wealth age?", a: "Anything below your real age means your current habits are outpacing what your age alone would predict. There's no universal target — the number is most useful tracked over time against your own past results." },
   { q: "Why did my wealth age go up instead of down?", a: "Usually a savings rate under 20% and/or a negative or low net worth (debt exceeding investments). Increasing monthly savings or paying down high-interest debt are the two most direct levers to bring it back down." },
@@ -40,13 +23,6 @@ export default function WealthAgeCalculatorPage() {
   const { settings } = useSettings();
   const currency = settings.currency;
   const fmt = (v) => formatCurrency(v, currency);
-
-  // The scoring thresholds below (not the field bounds — see FIELDS) still
-  // use this FX-based inr() helper pending Nishit's sign-off on an income-
-  // relative replacement; it is intentionally scoped to just that one
-  // useMemo now, not the slider bounds.
-  const rate = USD_CONVERSION_RATES[currency] ?? 1;
-  const inr = (rupees) => Math.round((rupees * USD_CONVERSION_RATES.INR) / rate);
 
   // Bounds are per-currency hand-picked values (calculatorFieldBounds.js),
   // same as the DEFAULTS they contain — never FX-converted. A slider range
@@ -97,6 +73,12 @@ export default function WealthAgeCalculatorPage() {
 
     const netWorth = formData.investments - formData.debt;
     const annualIncome = formData.monthlyIncome * 12;
+    const annualExpenses = formData.monthlyExpenses * 12;
+    // Falls back to annual expenses when there's no income to measure
+    // against — a retiree drawing down savings has 0 income but a very
+    // real annual spend, and "net worth covers a year of spending" is
+    // still a meaningful yardstick in that case.
+    const annualBasis = annualIncome > 0 ? annualIncome : annualExpenses;
 
     let wealthAge = formData.age;
 
@@ -105,37 +87,27 @@ export default function WealthAgeCalculatorPage() {
     else if (savingsRate >= 20) wealthAge -= 2;
     else wealthAge += 3;
 
-    // Net-worth bonus: either the proposed income-relative rule (net worth
-    // at least 1x annual income) or the current FX-based ₹10L-equivalent
-    // threshold. The income-relative check is guarded against a 0 annual
-    // income — without it, any non-negative net worth would trivially
-    // clear a threshold of 0, which isn't a meaningful "ahead" signal.
-    if (USE_INCOME_RELATIVE_SCORING) {
-      if (annualIncome > 0 && netWorth >= annualIncome) wealthAge -= 5;
-    } else if (netWorth > inr(1000000)) {
-      wealthAge -= 5;
-    }
+    // Net-worth bonus: net worth at least 1x the annual basis above.
+    // Guarded against a 0 basis — without it, any non-negative net worth
+    // would trivially clear a threshold of 0, which isn't a meaningful
+    // "ahead" signal.
+    if (annualBasis > 0 && netWorth >= annualBasis) wealthAge -= 5;
     if (netWorth < 0) wealthAge += 5;
 
     wealthAge = Math.max(1, wealthAge);
 
-    // Wealth score's net-worth term: either netWorth as a share of annual
-    // income (capped at +20, so it can't dominate the score on its own)
-    // or the current FX-based ₹1L-per-point divisor. Guarded the same way
-    // as the bonus above — with 0 annual income there's nothing to divide
-    // by, so the term is skipped entirely (not treated as 0 or Infinity)
-    // and a short note explains why.
+    // Wealth score's net-worth term: net worth as a share of the annual
+    // basis, capped at +20 so it can't dominate the score on its own. With
+    // both income and expenses at 0 there's nothing to measure net worth
+    // against, so the term is skipped entirely (not treated as 0 or
+    // Infinity) and a short note explains why.
     let incomeRelativeNote = null;
     let netWorthScoreTerm;
-    if (USE_INCOME_RELATIVE_SCORING) {
-      if (annualIncome > 0) {
-        netWorthScoreTerm = Math.min(20, (netWorth / annualIncome) * 20);
-      } else {
-        netWorthScoreTerm = 0;
-        incomeRelativeNote = "Enter a monthly income to include net worth in your wealth score.";
-      }
+    if (annualBasis > 0) {
+      netWorthScoreTerm = Math.min(20, (netWorth / annualBasis) * 20);
     } else {
-      netWorthScoreTerm = netWorth / inr(100000);
+      netWorthScoreTerm = 0;
+      incomeRelativeNote = "Enter your monthly income or expenses to include net worth in your wealth score.";
     }
 
     const wealthScore = Math.max(1, Math.min(100, Math.round(savingsRate + netWorthScoreTerm)));
@@ -151,8 +123,7 @@ export default function WealthAgeCalculatorPage() {
     if (wealthAge > formData.age) status = "Needs Improvement";
 
     return { savingsRate, netWorth, wealthAge, wealthScore, personality, status, incomeRelativeNote };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formData, currency]);
+  }, [formData]);
 
   return (
     <>
@@ -337,11 +308,13 @@ export default function WealthAgeCalculatorPage() {
                 (monthly savings ÷ monthly income) and your net worth (investments
                 minus debt). A savings rate of 40%+ subtracts 8 years; 30-39%
                 subtracts 5; 20-29% subtracts 2; below 20% adds 3 years. A net
-                worth above {fmt(inr(1000000))} subtracts a further 5 years, while a negative
-                net worth adds 5 years. The two adjustments combine, so someone
-                saving aggressively with a strong net worth can show a wealth age
-                well below their real age — and the reverse is true for a high
-                real age with a low savings rate and negative net worth.
+                worth at or above your annual income subtracts a further 5
+                years (annual expenses instead, if you haven't entered an
+                income), while a negative net worth adds 5 years. The two
+                adjustments combine, so someone saving aggressively with a
+                strong net worth can show a wealth age well below their real
+                age — and the reverse is true for a high real age with a low
+                savings rate and negative net worth.
               </p>
             </CalcSection>
 

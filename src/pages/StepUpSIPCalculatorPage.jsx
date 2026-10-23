@@ -116,7 +116,7 @@ export default function StepUpSIPCalculatorPage() {
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
               <CalcField label="Starting monthly SIP" value={initialSip} onChange={setInitialSip} {...monthlyBounds} format={fmt} />
               <CalcField label="Annual step-up %" value={stepUpPercent} onChange={setStepUpPercent} {...stepUpPercentBounds} suffix="%" />
-              <CalcField label="Expected Rate of Return (p.a.) %" value={annualReturn} onChange={setAnnualReturn} {...annualReturnBounds} suffix="%" />
+              <CalcField label="Expected Rate of Return (p.a.) %" value={annualReturn} onChange={setAnnualReturn} {...annualReturnBounds} suffix="%" hint="Sample value. Enter your own." />
               <CalcField label="Investment Duration (In Years)" value={years} onChange={setYears} {...yearsBounds} suffix=" Years" />
             </div>
 

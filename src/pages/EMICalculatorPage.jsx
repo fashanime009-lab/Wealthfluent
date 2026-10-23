@@ -105,7 +105,7 @@ export default function EMICalculatorPage() {
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
               <CalcField label="Loan amount" value={loanAmount} onChange={setLoanAmount} {...loanBounds} format={fmt} />
-              <CalcField label="Interest rate (p.a.)" value={interestRate} onChange={setInterestRate} {...rateBounds} suffix="%" />
+              <CalcField label="Interest rate (p.a.)" value={interestRate} onChange={setInterestRate} {...rateBounds} suffix="%" hint="Sample value. Enter your own." />
               <CalcField label="Loan duration" value={loanYears} onChange={setLoanYears} {...yearsBounds} suffix=" yrs" />
             </div>
 

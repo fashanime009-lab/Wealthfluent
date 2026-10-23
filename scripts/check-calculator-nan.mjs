@@ -17,6 +17,7 @@ import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import puppeteer from "puppeteer-core";
+import { defaultFor } from "../src/data/calculatorDefaults.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -49,22 +50,32 @@ const ROUTES = [
 const BAD_TOKEN = /\bNaN\b|\bInfinity\b|\bundefined\b|\bnull\b/;
 
 // Wealth Age-specific edge cases (see src/pages/WealthAgeCalculatorPage.jsx):
-// 0 income must not divide-by-zero into NaN/Infinity under the flagged
-// income-relative scoring, and a very high net worth against a near-zero
-// income must stay a finite, clamped score rather than overflow. Exercised
-// under BOTH scoring modes — the current FX-based formula (override=false)
-// and the flagged income-relative one (override=true, via the window
-// override WealthAgeCalculatorPage.jsx reads only for this script) — since
-// neither should ever produce a bad token, flag on or off.
+// the income-relative scoring falls back to annual expenses when there's
+// no income, and skips its net-worth term entirely (no divide-by-zero)
+// when both income and expenses are 0. The retiree profile (0 income,
+// large investments, normal expenses) is the realistic case that
+// motivated the expenses fallback, so its score is reported, not just
+// checked for bad tokens. "Large investments" is 20x that currency's own
+// default — proportional to its own scale rather than one flat number
+// that would be trivial for JPY and enormous for GBP.
 const WEALTH_AGE_FIELD_LABELS = {
   monthlyIncome: "Monthly Income",
+  monthlyExpenses: "Monthly Expenses",
   investments: "Investments",
-  debt: "Debt",
 };
-const WEALTH_AGE_EDGE_CASES = [
-  { label: "zero income", values: { monthlyIncome: 0 } },
-  { label: "very high net worth, near-zero income", values: { monthlyIncome: 1, investments: 999999999, debt: 0 } },
-];
+
+function wealthAgeEdgeCasesFor(currency) {
+  const normalInvestments = defaultFor("wealthAge", "investments", currency);
+  return [
+    { label: "zero income, expenses > 0 (default)", values: { monthlyIncome: 0 } },
+    { label: "both income and expenses zero", values: { monthlyIncome: 0, monthlyExpenses: 0 } },
+    {
+      label: "retiree profile: zero income, large investments, normal expenses",
+      values: { monthlyIncome: 0, investments: normalInvestments * 20 },
+      reportScore: true,
+    },
+  ];
+}
 
 function waitForServer(url, timeoutMs = 30000) {
   const start = Date.now();
@@ -83,53 +94,61 @@ function waitForServer(url, timeoutMs = 30000) {
   });
 }
 
-async function runWealthAgeEdgeCases(browser, problems) {
+async function runWealthAgeEdgeCases(browser, problems, retireeScores) {
   let checked = 0;
 
-  for (const scoringOverride of [false, true]) {
-    for (const currency of CURRENCIES) {
-      for (const edgeCase of WEALTH_AGE_EDGE_CASES) {
-        checked += 1;
-        const page = await browser.newPage();
-        const label = `wealth-age [${currency}] income-relative=${scoringOverride} (${edgeCase.label})`;
+  for (const currency of CURRENCIES) {
+    for (const edgeCase of wealthAgeEdgeCasesFor(currency)) {
+      checked += 1;
+      const page = await browser.newPage();
+      const label = `wealth-age [${currency}] (${edgeCase.label})`;
 
-        try {
-          await page.evaluateOnNewDocument(
-            (cur, override) => {
-              window.__PRERENDER__ = true;
-              window.__WEALTH_AGE_SCORING_OVERRIDE__ = override;
-              localStorage.setItem(
-                "finaiw-settings",
-                JSON.stringify({ currency: cur, region: "manual", compactNumbers: false })
-              );
-            },
-            currency,
-            scoringOverride
+      try {
+        await page.evaluateOnNewDocument((cur) => {
+          window.__PRERENDER__ = true;
+          localStorage.setItem(
+            "finaiw-settings",
+            JSON.stringify({ currency: cur, region: "manual", compactNumbers: false })
           );
+        }, currency);
 
-          await page.goto(`${BASE_URL}/wealth-age-calculator`, { waitUntil: "networkidle0", timeout: 20000 });
-          await page.waitForSelector("input[type=range]", { timeout: 10000 });
+        await page.goto(`${BASE_URL}/wealth-age-calculator`, { waitUntil: "networkidle0", timeout: 20000 });
+        await page.waitForSelector("input[type=range]", { timeout: 10000 });
 
-          for (const [field, value] of Object.entries(edgeCase.values)) {
-            const fieldLabel = WEALTH_AGE_FIELD_LABELS[field];
-            const input = await page.$(`input[aria-label^="${fieldLabel}"]`);
-            if (!input) throw new Error(`could not find input for "${fieldLabel}"`);
-            await input.click({ clickCount: 3 });
-            await input.type(String(value));
-            // Blur so the final onChange commits before we read the DOM.
-            await page.keyboard.press("Tab");
-          }
-
-          const bodyText = await page.evaluate(() => document.body.innerText);
-          const bodyMatch = bodyText.match(BAD_TOKEN);
-          if (bodyMatch) {
-            problems.push(`${label}: page text contains "${bodyMatch[0]}"`);
-          }
-        } catch (err) {
-          problems.push(`${label}: failed to load/evaluate — ${err.message}`);
-        } finally {
-          await page.close();
+        for (const [field, value] of Object.entries(edgeCase.values)) {
+          const fieldLabel = WEALTH_AGE_FIELD_LABELS[field];
+          const input = await page.$(`input[aria-label^="${fieldLabel}"]`);
+          if (!input) throw new Error(`could not find input for "${fieldLabel}"`);
+          // A synthetic triple-click doesn't reliably select existing text in
+          // a number input here — type() then appends to it instead of
+          // replacing it (50000 + typed "0" silently became 500000). Select
+          // via the DOM API directly instead, which is reliable.
+          await input.evaluate((el) => {
+            el.focus();
+            el.select();
+          });
+          await input.type(String(value));
+          // Blur so the final onChange commits before we read the DOM.
+          await page.keyboard.press("Tab");
         }
+
+        const bodyText = await page.evaluate(() => document.body.innerText);
+        const bodyMatch = bodyText.match(BAD_TOKEN);
+        if (bodyMatch) {
+          problems.push(`${label}: page text contains "${bodyMatch[0]}"`);
+        }
+
+        if (edgeCase.reportScore) {
+          const score = await page.evaluate(() => {
+            const el = Array.from(document.querySelectorAll("p")).find((p) => p.textContent === "Wealth Score");
+            return el?.nextElementSibling?.textContent ?? null;
+          });
+          retireeScores.push(`${currency}: wealth score = ${score}`);
+        }
+      } catch (err) {
+        problems.push(`${label}: failed to load/evaluate — ${err.message}`);
+      } finally {
+        await page.close();
       }
     }
   }
@@ -147,6 +166,7 @@ async function main() {
   server.stderr?.on("data", (d) => (serverErr += d.toString()));
 
   const problems = [];
+  const retireeScores = [];
   let checked = 0;
 
   try {
@@ -209,7 +229,7 @@ async function main() {
       await page.close();
     }
 
-    checked += await runWealthAgeEdgeCases(browser, problems);
+    checked += await runWealthAgeEdgeCases(browser, problems, retireeScores);
 
     await browser.close();
   } finally {
@@ -218,6 +238,10 @@ async function main() {
   }
 
   console.log(`Checked ${checked} (route x currency) combinations across ${ROUTES.length} calculators x ${CURRENCIES.length} currencies, plus Wealth Age edge cases.\n`);
+
+  console.log("Retiree profile (0 income, 20x default investments, normal expenses) — wealth score by currency:");
+  for (const line of retireeScores) console.log(`  - ${line}`);
+  console.log();
 
   if (problems.length > 0) {
     console.warn(`${problems.length} problem(s) found:\n`);

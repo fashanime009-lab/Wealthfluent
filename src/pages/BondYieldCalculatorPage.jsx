@@ -113,7 +113,7 @@ export default function BondYieldCalculatorPage() {
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
               <CalcField label="Current price" value={currentPrice} onChange={setCurrentPrice} {...priceBounds} format={fmt} />
               <CalcField label="Par value" value={parValue} onChange={setParValue} {...faceValueBounds} format={fmt} />
-              <CalcField label="Coupon rate (%)" value={couponRate} onChange={setCouponRate} {...couponBounds} suffix="%" />
+              <CalcField label="Coupon rate (%)" value={couponRate} onChange={setCouponRate} {...couponBounds} suffix="%" hint="Sample value. Enter your own." />
               <CalcField label="Years to maturity" value={yearsToMaturity} onChange={setYearsToMaturity} {...yearsBounds} suffix=" Years" />
             </div>
 

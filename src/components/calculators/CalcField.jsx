@@ -10,7 +10,7 @@ import { useId } from "react";
 // a generous typedMax well beyond the slider's range, not the slider's own
 // max, so a real-world value never gets silently capped to the slider's
 // exploratory range.
-export default function CalcField({ label, value, onChange, min, max, step = 1, suffix = "", format, typedMax }) {
+export default function CalcField({ label, value, onChange, min, max, step = 1, suffix = "", format, typedMax, hint }) {
   const id = useId();
   const display = format ? format(value) : `${value}${suffix}`;
   const effectiveTypedMax = typedMax ?? max * 100;
@@ -56,6 +56,7 @@ export default function CalcField({ label, value, onChange, min, max, step = 1, 
         onChange={handleTypedChange}
         className="mt-3 w-full border border-[#111814]/15 bg-transparent px-3 py-2 font-mono-tech text-[13.5px] tabular-nums text-[#111814] outline-none focus:border-[#047857] dark:border-[#eef1ec]/15 dark:text-[#eef1ec] dark:focus:border-[#34d399]"
       />
+      {hint && <p className="mt-1.5 text-[11.5px] text-[#111814]/50 dark:text-[#eef1ec]/45">{hint}</p>}
     </div>
   );
 }

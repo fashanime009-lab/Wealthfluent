@@ -11,8 +11,9 @@ import { currencies } from "./currencies.js";
 // yield, plus a modest equity tranche) rather than reusing the 4.5% used
 // for USD/GBP/EUR, since Japan's whole rate structure sits structurally
 // lower. equityReturn stays 8% even for JPY — that's a global diversified
-// equity assumption, not specific to the yen. Nishit should confirm this
-// pairing before it goes live.
+// equity assumption, not specific to the yen.
+//
+// Rates last reviewed: Oct 2026. Review every April and October (owner: Nishit).
 export const ASSUMPTIONS = {
   INR: { equityReturn: 12, inflation: 6, retirementReturn: 8 },
   USD: { equityReturn: 8, inflation: 3, retirementReturn: 4.5 },

@@ -101,7 +101,7 @@ export default function SWPCalculatorPage() {
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
               <CalcField label="Starting corpus" value={corpus} onChange={setCorpus} {...corpusBounds} format={fmt} />
               <CalcField label="Monthly withdrawal" value={monthlyWithdrawal} onChange={setMonthlyWithdrawal} {...withdrawalBounds} format={fmt} />
-              <CalcField label="Expected return (p.a.) %" value={rate} onChange={setRate} {...rateBounds} suffix="%" />
+              <CalcField label="Expected return (p.a.) %" value={rate} onChange={setRate} {...rateBounds} suffix="%" hint="Sample value. Enter your own." />
             </div>
 
             <div className="space-y-6">

@@ -118,7 +118,7 @@ export default function FutureValueCalculatorPage() {
               <CalcField label="Current principal" value={currentPrincipal} onChange={setCurrentPrincipal} {...principalBounds} format={fmt} />
               <CalcField label="Annual addition" value={annualAddition} onChange={setAnnualAddition} {...annualAdditionBounds} format={fmt} />
               <CalcField label="Years to grow" value={yearsToGrow} onChange={setYearsToGrow} {...yearsBounds} suffix=" Years" />
-              <CalcField label="Growth rate (%)" value={growthRate} onChange={setGrowthRate} {...growthRateBounds} suffix="%" />
+              <CalcField label="Growth rate (%)" value={growthRate} onChange={setGrowthRate} {...growthRateBounds} suffix="%" hint="Sample value. Enter your own." />
             </div>
 
             <div className="space-y-6">

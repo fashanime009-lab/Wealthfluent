@@ -157,6 +157,7 @@ export default function HomeAffordabilityCalculatorPage() {
                 onChange={(v) => handleChange("interestRate", v)}
                 {...interestRateBounds}
                 suffix="%"
+                hint="Sample value. Enter your own."
               />
             </div>
 

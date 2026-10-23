@@ -95,7 +95,7 @@ export default function GoalSIPCalculatorPage() {
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
               <CalcField label="Goal Amount" value={goalAmount} onChange={setGoalAmount} {...targetBounds} format={fmt} />
               <CalcField label="Investment Duration (In Years)" value={investmentDuration} onChange={setInvestmentDuration} {...yearsBounds} suffix=" Years" />
-              <CalcField label="Expected Rate of Return (p.a.) %" value={expectedReturn} onChange={setExpectedReturn} {...expectedReturnBounds} suffix="%" />
+              <CalcField label="Expected Rate of Return (p.a.) %" value={expectedReturn} onChange={setExpectedReturn} {...expectedReturnBounds} suffix="%" hint="Sample value. Enter your own." />
             </div>
 
             {/* Right Panel – Results */}

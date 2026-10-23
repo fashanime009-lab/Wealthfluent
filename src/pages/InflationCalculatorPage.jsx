@@ -85,7 +85,7 @@ export default function InflationCalculatorPage() {
             {/* Left Panel – Inputs */}
             <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
               <CalcField label="Current Expense Amount" value={currentExpenses} onChange={setCurrentExpenses} {...costBounds} format={fmt} />
-              <CalcField label="Annual Inflation Rate (%)" value={inflationRate} onChange={setInflationRate} {...inflationRateBounds} suffix="%" />
+              <CalcField label="Annual Inflation Rate (%)" value={inflationRate} onChange={setInflationRate} {...inflationRateBounds} suffix="%" hint="Sample value. Enter your own." />
               <CalcField label="Time Period (In Years)" value={timePeriod} onChange={setTimePeriod} {...yearsBounds} suffix=" Years" />
             </div>
 
