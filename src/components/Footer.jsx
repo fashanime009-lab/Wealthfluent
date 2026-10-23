@@ -19,6 +19,7 @@ const footerColumns = [
   {
     title: "Learn",
     links: [
+      { label: "Blog", to: "/blog" },
       { label: "Quizzes", to: "/quizzes" },
       { label: "Guides", to: "/learn" },
       { label: "FIRE Planning", to: "/fire-calculator" },

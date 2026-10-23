@@ -284,6 +284,13 @@ export default function SIPCalculatorPage() {
               />
             </CalcSection>
 
+            <p className="text-[13px]">
+              Read:{" "}
+              <Link to="/blog/how-much-to-invest-to-become-a-millionaire" className={linkClass}>
+                How much to invest to become a millionaire →
+              </Link>
+            </p>
+
             <RelatedLinks />
 
             <VerdictFAQ items={FAQ_ITEMS} className="border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />

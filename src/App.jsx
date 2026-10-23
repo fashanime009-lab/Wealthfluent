@@ -7,6 +7,8 @@ import ScrollToTop from "./components/ScrollToTop";
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const LearnPage = lazy(() => import("./pages/LearnPage"));
 const LessonPage = lazy(() => import("./pages/LessonPage"));
+const BlogIndexPage = lazy(() => import("./pages/BlogIndexPage"));
+const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
 const CAGRCalculatorPage = lazy(() => import("./pages/CAGRCalculatorPage"));
 const CalculatorsPage = lazy(() => import("./pages/CalculatorsPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
@@ -87,6 +89,8 @@ export default function App() {
             <Route path="/quizzes" element={<QuizzesPage />} />
             <Route path="/learn" element={<LearnPage />} />
             <Route path="/learn/:slug" element={<LessonPage />} />
+            <Route path="/blog" element={<BlogIndexPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
             <Route path="/emi-calculator" element={<EMICalculatorPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />

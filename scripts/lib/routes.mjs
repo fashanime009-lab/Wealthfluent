@@ -11,15 +11,15 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { LESSONS } from "../../src/data/lessons.js";
+import { getBlogPosts } from "./blogPosts.mjs";
 
 // `lastmod` is intentionally absent from every entry below. This project
 // has no page with a real, trustworthy "last substantively changed" date
 // available at build time without git history (which Vercel's build
-// container doesn't check out — see the bug this replaced). When Phase 4
-// blog posts land, each post's lastmod should come from its own
-// frontmatter ("updated", falling back to "date") instead of being added
-// here — draft posts excluded from the sitemap entirely — not from git or
-// any blanket "today" stamp.
+// container doesn't check out — see the bug this replaced). Blog posts
+// are the one exception — see blogPostRouteDefs() below, which reads each
+// post's own frontmatter ("dateModified", falling back to
+// "datePublished") instead.
 export const ROUTE_DEFS = [
   { path: "/", changefreq: "daily", priority: "1.0" },
   { path: "/about", changefreq: "monthly", priority: "0.8" },
@@ -105,7 +105,25 @@ export const ROUTE_DEFS = [
   { path: "/disclaimer", changefreq: "yearly", priority: "0.4" },
   { path: "/terms-of-service", changefreq: "yearly", priority: "0.4" },
   { path: "/sitemap", changefreq: "monthly", priority: "0.5" },
+
+  { path: "/blog", changefreq: "daily", priority: "0.8" },
+  // Individual posts aren't listed here — see blogPostRouteDefs() below,
+  // which reads content/blog/*.md at build time, the same pattern as
+  // LESSONS.map() above but with a real per-post lastmod.
 ];
+
+// Each post's own frontmatter is the one place in this project with a
+// genuinely trustworthy "last substantively changed" date — unlike every
+// other route, which gets none (see the comment on ROUTE_DEFS above).
+// Falls back to datePublished for a post that's never been updated.
+function blogPostRouteDefs(repoRoot) {
+  return getBlogPosts(repoRoot).map((post) => ({
+    path: `/blog/${post.slug}`,
+    changefreq: "monthly",
+    priority: "0.7",
+    lastmod: post.frontmatter.dateModified || post.frontmatter.datePublished || undefined,
+  }));
+}
 
 export function getDisallowedPrefixes(repoRoot) {
   const robotsTxt = readFileSync(path.join(repoRoot, "public/robots.txt"), "utf-8");
@@ -116,11 +134,14 @@ function isDisallowed(routePath, disallowedPrefixes) {
   return disallowedPrefixes.some((d) => routePath === d || routePath.startsWith(d + "/"));
 }
 
-// ROUTE_DEFS filtered against robots.txt — a safety net in case a route
-// is ever added here without also being kept out of robots.txt, or vice
-// versa. Returns the full route objects (path/changefreq/priority), not
-// just paths.
+// ROUTE_DEFS plus the dynamic blog post routes, filtered against
+// robots.txt — a safety net in case a route is ever added without also
+// being kept out of robots.txt, or vice versa. Returns the full route
+// objects (path/changefreq/priority/lastmod), not just paths. This is
+// the one function both generate-sitemap.js and prerender.mjs call —
+// neither reads ROUTE_DEFS directly anymore, so neither can miss a post.
 export function getIndexableRoutes(repoRoot) {
   const disallowed = getDisallowedPrefixes(repoRoot);
-  return ROUTE_DEFS.filter((route) => !isDisallowed(route.path, disallowed));
+  const allRoutes = [...ROUTE_DEFS, ...blogPostRouteDefs(repoRoot)];
+  return allRoutes.filter((route) => !isDisallowed(route.path, disallowed));
 }

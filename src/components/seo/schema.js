@@ -71,19 +71,22 @@ export function faqSchema(faqs) {
 }
 
 /** For blog/lesson content — eligible for Article rich results. */
-export function articleSchema({ title, description, path, publishedTime, modifiedTime, image }) {
+export function articleSchema({ title, description, path, publishedTime, modifiedTime, image, inLanguage = "en" }) {
   return {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: title,
     description,
     url: `${SITE_URL}${path}`,
+    mainEntityOfPage: `${SITE_URL}${path}`,
     datePublished: publishedTime,
     dateModified: modifiedTime || publishedTime,
+    inLanguage,
     image: image || `${SITE_URL}/og-image.png`,
     publisher: {
       "@type": "Organization",
       name: SITE_NAME,
+      url: SITE_URL,
       logo: {
         "@type": "ImageObject",
         url: `${SITE_URL}/logo.png`,

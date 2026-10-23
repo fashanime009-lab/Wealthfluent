@@ -16,8 +16,9 @@
  *
  * WHAT IT DOES
  * Runs after `vite build`. It serves the built `dist/` output locally,
- * visits every indexable route (scripts/lib/routes.mjs's ROUTE_DEFS,
- * minus anything public/robots.txt disallows), lets React + Helmet finish
+ * visits every indexable route (scripts/lib/routes.mjs's
+ * getIndexableRoutes(), minus anything public/robots.txt disallows), lets
+ * React + Helmet finish
  * rendering, then overwrites dist/<route>/index.html with the fully
  * rendered HTML — real <title>/<meta>/OG tags baked in as static
  * markup other crawlers can read without executing anything.
@@ -75,7 +76,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import puppeteer from "puppeteer-core";
 import { findRuntimeOnlyContent, readAllowedScriptSrcs } from "./lib/runtimeOnlyContent.mjs";
-import { ROUTE_DEFS, getDisallowedPrefixes } from "./lib/routes.mjs";
+import { getIndexableRoutes as getSitemapRoutes, getDisallowedPrefixes } from "./lib/routes.mjs";
 
 // Vercel sets VERCEL=1 during both build and runtime — that's the signal
 // to use the serverless-compatible Chromium instead of a local install.
@@ -186,11 +187,12 @@ function rewriteSiteUrls(html) {
 // this list is only about the former.
 const EXTRA_PRERENDER_ROUTES = ["/links"];
 
-// Shares ROUTE_DEFS with scripts/generate-sitemap.js (scripts/lib/routes.mjs)
-// instead of reading a previously-generated sitemap.xml — the sitemap is
-// no longer written anywhere this script could read it from before the
-// build finishes, and a shared list is the more direct source of truth
-// regardless.
+// Shares its route list with scripts/generate-sitemap.js
+// (scripts/lib/routes.mjs's getIndexableRoutes(), which includes the
+// dynamic blog post routes) instead of reading a previously-generated
+// sitemap.xml — the sitemap is no longer written anywhere this script
+// could read it from before the build finishes, and a shared list is the
+// more direct source of truth regardless.
 function getIndexableRoutes() {
   const disallowed = getDisallowedPrefixes(ROOT);
 
@@ -198,7 +200,7 @@ function getIndexableRoutes() {
   // pages (e.g. /settings) that render generic/empty content anyway
   // outside of a logged-in session, so prerendering them wastes build
   // time and would just bake in a placeholder.
-  const routes = [...ROUTE_DEFS.map((r) => r.path), ...EXTRA_PRERENDER_ROUTES].filter(
+  const routes = [...getSitemapRoutes(ROOT).map((r) => r.path), ...EXTRA_PRERENDER_ROUTES].filter(
     (route) => !disallowed.some((d) => route === d || route.startsWith(d + "/"))
   );
 
