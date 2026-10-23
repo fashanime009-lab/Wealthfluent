@@ -9,6 +9,7 @@ import { FinanceProvider } from "./context/FinanceContext";
 
 import { SettingsProvider } from "./context/SettingsContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { clearPrerenderedSeoTags } from "./utils/prerender";
 
 // Every page ships prerendered (see scripts/prerender.mjs) and this is a full
 // client render, not hydration, so mounting replaces that static markup — first
@@ -47,6 +48,11 @@ function mountAfterFirstPaint(mount) {
 }
 
 mountAfterFirstPaint(() => {
+  // Must run before Helmet's first render, not before — the prerendered
+  // tags still need to be in the document for the real production domain
+  // (and for anything reading <title>/meta very early) through first
+  // paint; only Helmet's own fresh render needs a clean slate.
+  clearPrerenderedSeoTags();
   ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
       <HelmetProvider>

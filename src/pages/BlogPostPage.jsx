@@ -157,6 +157,7 @@ export default function BlogPostPage() {
       <div className="mx-auto max-w-[720px] px-5 py-16 sm:px-8">
         <Seo
           title={frontmatter.seoTitle}
+          appendSiteName={false}
           description={frontmatter.metaDescription}
           path={`/blog/${post.slug}`}
           type="article"

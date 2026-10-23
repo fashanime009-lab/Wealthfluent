@@ -1,10 +1,14 @@
 import { Helmet } from "react-helmet-async";
 
 export const SITE_NAME = "FINAIW";
-export const SITE_URL = (
-  import.meta.env.VITE_SITE_URL ||
-  (typeof window !== "undefined" ? window.location.origin : "https://www.finaiw.com")
-).replace(/\/+$/, ""); // strip any trailing slash so `${SITE_URL}${path}` never double-slashes
+// Never window.location.origin — on a Vercel preview that's the preview's
+// own *.vercel.app URL, not the real site, which baked a wrong canonical/
+// og:url into every preview deploy's client-rendered tags (the prerendered
+// static snapshot was always correct; this is specifically about what the
+// client-side Helmet render recomputes after the page loads real JS — see
+// clearPrerenderedSeoTags() in src/utils/prerender.js for the other half
+// of that bug).
+export const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://www.finaiw.com").replace(/\/+$/, ""); // strip any trailing slash so `${SITE_URL}${path}` never double-slashes
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 
 /**
@@ -26,9 +30,14 @@ export default function Seo({
   jsonLd,
   publishedTime,
   modifiedTime,
+  // Blog posts' seoTitle is already a complete, length-budgeted title
+  // (e.g. "How Much to Invest Monthly to Become a Millionaire (2026)",
+  // 56 chars) — appending " | FINAIW" on top risks pushing it past
+  // Google's ~60-char display budget. Every other page keeps the suffix.
+  appendSiteName = true,
 }) {
   const url = `${SITE_URL}${path}`;
-  const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
+  const fullTitle = !appendSiteName || title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
   const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
   return (
