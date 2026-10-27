@@ -102,6 +102,9 @@ export default function InsightsPage() {
             { name: "Home", path: "/" },
             { name: "Insights", path: "/insights" },
           ])}
+          // No noindex here: robots.txt already disallows /insights, and
+          // a page Google's crawler never fetches can't see a noindex
+          // meta tag either — combining both is redundant, not safer.
         />
 
         <span className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Insights</span>

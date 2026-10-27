@@ -185,7 +185,17 @@ function rewriteSiteUrls(html) {
 // below) is that non-indexable pages don't appear in the sitemap either.
 // Prerendering and "should Google index this" are separate questions;
 // this list is only about the former.
-const EXTRA_PRERENDER_ROUTES = ["/links"];
+//
+// /settings, /goals, /insights and /financial-profile used to be assumed
+// not worth prerendering — "generic/empty content outside a logged-in
+// session" — but that wasn't actually true: /insights shows substantial
+// default content with no saved data, and even /goals' empty state is
+// real, coherent copy, not a blank placeholder. What they actually all
+// had in common was being the only pages on the whole site that showed a
+// blank flash before JS finished mounting — and /goals and /insights are
+// both top-level nav items, visible and clickable from literally every
+// page, including to a first-time visitor who never saves any data.
+const EXTRA_PRERENDER_ROUTES = ["/links", "/settings", "/goals", "/insights", "/financial-profile"];
 
 // Shares its route list with scripts/generate-sitemap.js
 // (scripts/lib/routes.mjs's getIndexableRoutes(), which includes the
@@ -196,13 +206,15 @@ const EXTRA_PRERENDER_ROUTES = ["/links"];
 function getIndexableRoutes() {
   const disallowed = getDisallowedPrefixes(ROOT);
 
-  // Skip anything robots.txt says not to crawl — those are app-state
-  // pages (e.g. /settings) that render generic/empty content anyway
-  // outside of a logged-in session, so prerendering them wastes build
-  // time and would just bake in a placeholder.
-  const routes = [...getSitemapRoutes(ROOT).map((r) => r.path), ...EXTRA_PRERENDER_ROUTES].filter(
-    (route) => !disallowed.some((d) => route === d || route.startsWith(d + "/"))
-  );
+  // The disallow filter only applies to the sitemap-sourced routes —
+  // EXTRA_PRERENDER_ROUTES exists specifically for pages that should be
+  // prerendered (so no visitor, crawler or reviewer ever sees a blank
+  // flash) but must stay out of search entirely (robots.txt still blocks
+  // crawling them, and they're never in the sitemap) — see above.
+  const sitemapRoutes = getSitemapRoutes(ROOT)
+    .map((r) => r.path)
+    .filter((route) => !disallowed.some((d) => route === d || route.startsWith(d + "/")));
+  const routes = [...sitemapRoutes, ...EXTRA_PRERENDER_ROUTES];
 
   // "/" must be prerendered LAST. This script overwrites dist/index.html
   // with each route's fully-rendered output, but dist/index.html also

@@ -40,6 +40,9 @@ export default function GoalsPage() {
             { name: "Home", path: "/" },
             { name: "Goals", path: "/goals" },
           ])}
+          // No noindex here: robots.txt already disallows /goals, and a
+          // page Google's crawler never fetches can't see a noindex meta
+          // tag either — combining both is redundant, not safer.
         />
 
         <div className="flex flex-wrap items-end justify-between gap-4">
