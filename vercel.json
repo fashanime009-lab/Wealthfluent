@@ -26,6 +26,12 @@
       "source": "/x",
       "destination": "https://www.finaiw.com/?utm_source=twitter&utm_medium=social&utm_campaign=bio_link",
       "permanent": false
+    },
+    {
+      "source": "/((?!ads\\.txt$).*)",
+      "has": [{ "type": "host", "value": "finaiw.com" }],
+      "destination": "https://www.finaiw.com/$1",
+      "permanent": true
     }
   ],
 
