@@ -70,8 +70,21 @@ export function faqSchema(faqs) {
   };
 }
 
+// Default reviewer for callers that don't pass their own (e.g. LessonPage,
+// whose 30 lessons shipped as one batch with no per-post reviewer byline).
+const DEFAULT_REVIEWER = [{ "@type": "Person", name: "Nishit B", jobTitle: "Financial Crime Risk Analyst" }];
+
 /** For blog/lesson content — eligible for Article rich results. */
-export function articleSchema({ title, description, path, publishedTime, modifiedTime, image, inLanguage = "en" }) {
+export function articleSchema({
+  title,
+  description,
+  path,
+  publishedTime,
+  modifiedTime,
+  image,
+  inLanguage = "en",
+  reviewedBy,
+}) {
   return {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -96,15 +109,14 @@ export function articleSchema({ title, description, path, publishedTime, modifie
       "@type": "Organization",
       name: SITE_NAME,
     },
-    // Nishit B is the team member who reviews financial content before it's
-    // published (see /about) — naming a real reviewer here, not just the
-    // publisher org, is what Google's own guidance on finance content
-    // ("YMYL") specifically asks for.
-    reviewedBy: {
-      "@type": "Person",
-      name: "Nishit B",
-      jobTitle: "Financial Crime Risk Analyst",
-    },
+    // The team members who review financial content before it's published
+    // (see /about) — naming real reviewers here, not just the publisher
+    // org, is what Google's own guidance on finance content ("YMYL")
+    // specifically asks for. Should match the post's visible byline
+    // exactly, which is why callers with their own reviewers (e.g. blog
+    // posts) pass them in rather than this generic default being silently
+    // out of sync with what the page actually shows.
+    reviewedBy: reviewedBy && reviewedBy.length ? reviewedBy : DEFAULT_REVIEWER,
   };
 }
 
