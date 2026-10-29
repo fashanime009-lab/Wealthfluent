@@ -4,6 +4,7 @@ import { ChevronDown } from "lucide-react";
 import { getItem, setItem } from "../../utils/safeStorage";
 import { COOKIE_CONSENT_KEY } from "@/lib/consent";
 import { updateAnalyticsConsent, updateAdConsent } from "../../lib/analytics";
+import { resolveTcfScope } from "../../lib/tcf";
 import { isPrerendering } from "../../utils/prerender";
 
 function Toggle({ checked, onChange, label }) {
@@ -85,9 +86,24 @@ export default function CookieConsent() {
     // and a dialog frozen into static HTML is dead markup that flashes at
     // every returning visitor. Real visitors never set this flag.
     if (isPrerendering()) return undefined;
-    // Small delay so it doesn't compete with the initial page paint.
-    const t = setTimeout(() => setVisible(true), 600);
-    return () => clearTimeout(t);
+
+    // Google's own "European regulations" consent message (set up in
+    // AdSense's Privacy & messaging) targets EEA/UK/Swiss visitors
+    // specifically. For those visitors, let Google's message own the
+    // decision instead of layering a second banner on top of it — see
+    // lib/tcf.js. Everyone else (where it never applies) gets this
+    // banner exactly as before.
+    let cancelled = false;
+    let timer;
+    resolveTcfScope().then((tcfApplies) => {
+      if (cancelled || tcfApplies) return;
+      // Small delay so it doesn't compete with the initial page paint.
+      timer = setTimeout(() => setVisible(true), 600);
+    });
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
