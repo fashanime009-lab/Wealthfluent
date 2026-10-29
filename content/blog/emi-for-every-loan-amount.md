@@ -2,7 +2,7 @@
 slug: emi-for-every-loan-amount
 seoTitle: "EMI for Any Loan Amount: Full Table by Rate & Tenure (2026)"
 h1: "EMI for Every Loan Amount: The Complete Table by Rate and Tenure"
-metaDescription: "See the exact EMI for any loan amount in minutes. A complete table across every common interest rate and tenure, plus how to scale it to your own loan — in any currency."
+metaDescription: "See the EMI for any loan amount at every common rate and tenure, plus the total interest you'll pay and how to scale it to your loan. Any currency."
 datePublished: 2026-10-29
 dateModified: 2026-10-29
 author: "FINAIW Team"
@@ -11,10 +11,14 @@ readTime: "6 min read"
 category: "Loans & Interest"
 tags: ["Loans", "EMI", "Home Loan", "Budgeting"]
 keywords: ["emi calculator", "how much is my emi", "emi for 20 lakh home loan", "emi for 50 lakh loan", "loan emi table", "emi calculation formula", "emi for 10 lakh loan", "home loan emi by tenure", "how to calculate emi"]
+heroImage: "/blog/images/emi-for-every-loan-amount-hero.webp"
+heroAlt: "EMI for every loan amount by interest rate and tenure"
 ctaPath: "/emi-calculator"
 ctaLabel: "Open the EMI Calculator →"
 ctaDescription: "Plug in your exact loan amount, rate and tenure — the FINAIW EMI Calculator works in any currency."
 ---
+
+![EMI for every loan amount by interest rate and tenure](/blog/images/emi-for-every-loan-amount-hero.webp)
 
 For every **100,000 you borrow at 9% interest over 20 years, your EMI is about 900 a month**. The amount scales directly with how much you borrow — a 1,000,000 loan on the same terms costs ten times that, about 9,000 a month. The numbers below work in any currency, at any loan size: dollars, euros, rupees, dirhams, or anything else.
 
@@ -36,6 +40,17 @@ Below is the complete table — every common interest rate, every common tenure 
 
 Every figure is the monthly EMI for every 100,000 borrowed, using the same reducing-balance formula as the [FINAIW EMI Calculator](/emi-calculator) above.
 
+### EMI for common loan amounts (8.5%, 20 years)
+
+| Loan amount | Monthly EMI |
+| --- | --- |
+| 5 lakh (500,000) | about 4,340 |
+| 10 lakh (1,000,000) | about 8,680 |
+| 20 lakh (2,000,000) | about 17,360 |
+| 30 lakh (3,000,000) | about 26,040 |
+| 50 lakh (5,000,000) | about 43,400 |
+| 1 crore (10,000,000) | about 86,800 |
+
 ## How to scale this to your actual loan amount
 
 The table is built around a clean unit — 100,000 — specifically so it scales by simple multiplication. Find your rate and tenure, read the EMI per 100,000, then multiply by how many 100,000s you're actually borrowing.
@@ -48,6 +63,8 @@ The table is built around a clean unit — 100,000 — specifically so it scales
 - **1 crore (10,000,000)** at 8.5% for 20 years: 868 × 100 = **about 86,800/month**
 - **500,000** at 9% for 20 years: 900 × 5 = **about 4,500/month**
 - **300,000** at 7% for 30 years (a typical long-tenure mortgage): 665 × 3 = **about 2,000/month**
+
+![Home loan EMI for 5 lakh to 1 crore at 8.5% for 20 years](/blog/images/home-loan-emi-for-common-loan-amounts.webp)
 
 If your exact rate falls between two rows, or your exact amount doesn't divide evenly into 100,000s, the [EMI Calculator](/emi-calculator) gives you the precise figure instantly — the table is for quick estimates without reaching for a calculator at all.
 
@@ -71,6 +88,8 @@ A lower EMI from a longer tenure looks appealing, but it isn't free — you pay 
 | 10.0% | 27,482 | 58,581 | 93,429 | 131,605 | 172,610 | 215,926 |
 | 12.0% | 33,467 | 72,165 | 116,030 | 164,261 | 215,967 | 270,301 |
 
+![Monthly EMI vs total interest paid by loan tenure, per 100,000 borrowed at 9%](/blog/images/emi-vs-total-interest-by-tenure.webp)
+
 Take a 100,000 loan at 9%: stretching the tenure from 10 to 20 years lowers your EMI by about **29%** (1,267 → 900), but the total interest you pay more than doubles — **2.23 times** as much (52,011 → 115,934). A shorter tenure costs more per month and far less overall; a longer one is the opposite. There's no free lunch, only a trade-off between monthly comfort and total cost.
 
 A common rule of thumb: keep your total EMIs at 30–40% of monthly income or less. The [Home Affordability Calculator](/home-affordability-calculator) tests a specific property price against exactly that limit.
@@ -87,6 +106,12 @@ About 9,000 a month (900 per 100,000 borrowed, × 10). Use the table above for o
 ### What is the EMI for a 50 lakh home loan?
 At 8.5% over 20 years, about 43,400 a month. At 9% it's about 45,000; at 8% it's about 41,800. Home loan rates and the exact amount both move the figure, so check the full table above for your specific terms.
 
+### What is the EMI for a 30 lakh home loan?
+About 26,040 a month at 8.5% for 20 years. At 9% it's about 27,000.
+
+### What is the EMI for a 1 crore home loan?
+About 86,800 a month at 8.5% for 20 years. At 9% it's about 90,000.
+
 ### Does a longer tenure reduce my EMI?
 Yes, but not proportionally, and it increases total interest significantly. Going from a 10-year to a 20-year tenure at 9% lowers the monthly EMI by about 29% but more than doubles the total interest paid over the life of the loan.
 
@@ -99,6 +124,8 @@ A common guideline is to keep all your EMIs combined at 30–40% of your monthly
 ## The bottom line
 
 EMI scales predictably with loan amount, rises with rate, and falls — slowly, not proportionally — as tenure stretches out. The table above covers every common combination so you can estimate your own EMI in seconds; the trade-off to actually decide on is monthly comfort against total interest paid, not the headline EMI number alone.
+
+Planning to invest the difference instead? See [How much to invest to become a millionaire](/blog/how-much-to-invest-to-become-a-millionaire).
 
 **Get your exact EMI in seconds with the [FINAIW EMI Calculator →](/emi-calculator)**
 

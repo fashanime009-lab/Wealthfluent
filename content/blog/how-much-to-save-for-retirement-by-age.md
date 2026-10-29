@@ -11,12 +11,16 @@ readTime: "7 min read"
 category: "Retirement"
 tags: ["Retirement", "FIRE", "Goal Planning", "Compounding"]
 keywords: ["how much to save for retirement by age", "how much to invest for retirement", "retirement savings by age", "how much do i need to retire", "retirement corpus calculator", "25x rule retirement", "4% rule retirement", "fire number by age"]
+heroImage: "/blog/images/retirement-savings-by-age-hero.webp"
+heroAlt: "How much to save for retirement by age"
 ctaPath: "/retirement-calculator"
 ctaLabel: "Open the Retirement Calculator →"
 ctaDescription: "Plug in your own monthly investment, return and years left — the FINAIW Retirement Calculator works in any currency."
 ---
 
-For every **100,000 a year you plan to spend in retirement, you need a corpus of about 2,500,000** — the standard "25 times annual expenses" target behind both the 4% rule and the FIRE movement. What changes everything is **when you start investing toward it**. Starting at 25 instead of 45 needs roughly a sixth of the monthly amount, for the exact same retirement target.
+![How much to save for retirement by age](/blog/images/retirement-savings-by-age-hero.webp)
+
+For every **100,000 a year you plan to spend in retirement, you need a corpus of about 2,500,000** — the standard "25 times annual expenses" target behind both the 4% rule and the FIRE movement. What changes everything is **when you start investing toward it**, via a [monthly investment](/sip-calculator) that compounds over time. Starting at 25 instead of 45 needs roughly a sixth of the monthly amount, for the exact same retirement target.
 
 Below is the monthly investment needed to hit that target, by the age you start, assuming you retire at 65 — plus what happens if you wait, and the one real limitation of this kind of table.
 
@@ -35,7 +39,9 @@ Figures are the monthly investment needed per 100,000 of annual retirement expen
 | 55 | 10 | 15,179 | 13,575 | 12,103 | 10,760 |
 | 60 | 5 | 35,654 | 33,799 | 32,017 | 30,308 |
 
-At 8%, starting at 25 instead of 45 needs **711 a month instead of 4,216** — less than a sixth — for the identical 2,500,000-per-100,000-of-expenses target. That gap is entirely the effect of 20 extra years of compounding, not of investing more aggressively.
+![Monthly retirement investment needed by starting age, per 100,000 of yearly expenses at 8% return](/blog/images/monthly-retirement-investment-by-starting-age.webp)
+
+At 8%, starting at 25 instead of 45 needs **711 a month instead of 4,216** — about a sixth — for the identical 2,500,000-per-100,000-of-expenses target. That gap is entirely the effect of 20 extra years of compounding, not of investing more aggressively.
 
 Want your own exact number? The [FINAIW Retirement Calculator](/retirement-calculator) projects your corpus for any monthly amount, return and timeline, in any currency.
 
@@ -66,6 +72,8 @@ The later you start, the more of your own money — not investment growth — ha
 | 45 | 1,012,000 | 2,500,000 | 1,488,000 (60%) |
 | 55 | 1,629,000 | 2,500,000 | 871,000 (35%) |
 
+![Share of a retirement corpus from your own money vs compounding, by starting age](/blog/images/you-invest-vs-compounding-by-starting-age.webp)
+
 (All figures per 100,000 of annual expenses, at 8% return.) Starting at 25, compounding does 86% of the work. Starting at 55, you're funding 65% of your own retirement out of pocket, with compounding doing comparatively little — there simply isn't enough time left for it to take over.
 
 ## The cost of waiting 5 years
@@ -81,7 +89,30 @@ Every 5 years you delay starting raises the required monthly amount by more than
 | 45 | 4,216 (+62%) |
 | 50 | 7,177 (+70%) |
 
+![Every 5 years you wait raises the monthly retirement investment needed](/blog/images/cost-of-waiting-to-save-for-retirement.webp)
+
 Each 5-year delay costs more than the one before it, as a percentage. Waiting from 25 to 30 adds 52%; waiting from 45 to 50 adds 70%, for the same 5 years.
+
+## How much should you have saved by each age?
+
+If you start at 25 and invest 711 a month per 100,000 of yearly expenses at an 8% return, this is the balance that keeps you on track for the 2,500,000 target at 65:
+
+| Age | Balance to be on track (per 100,000 of yearly expenses) |
+| --- | --- |
+| 30 | about 53,000 |
+| 35 | about 131,000 |
+| 40 | about 248,000 |
+| 45 | about 422,000 |
+| 50 | about 681,000 |
+| 55 | about 1,067,000 |
+| 60 | about 1,642,000 |
+| 65 | 2,500,000 |
+
+![Retirement balance needed at each age to stay on track for a 25x target](/blog/images/retirement-savings-on-track-by-age.webp)
+
+If you're behind these numbers, use the starting-age table above from your current age, minus what you've already saved.
+
+A popular salary-based rule of thumb from [Fidelity](https://www.fidelity.com/viewpoints/retirement/how-much-do-i-need): aim to have about 1x your salary saved by 30, 3x by 40, 6x by 50, 8x by 60 and 10x by 67. It assumes you save 15% of your income from age 25 and retire at 67.
 
 ## What this table doesn't include: inflation
 
@@ -95,6 +126,9 @@ Using the 25x-expenses target at an 8% return, about 1,083 a month for every 100
 ### How much should I save for retirement by age 40?
 About 2,611 a month per 100,000 of annual expenses at 8% return, roughly 3.7 times more than starting at 25, for the same eventual target.
 
+### How much should I have saved for retirement by 40?
+On a 25x-expenses plan started at 25, about 248,000 per 100,000 of yearly expenses (8% return). Fidelity's salary rule suggests about 3x your annual salary by 40.
+
 ### What is the 25x rule for retirement?
 Your retirement corpus should be about 25 times your annual expenses, derived from the 4% rule — withdrawing 4% of a portfolio a year is historically unlikely to deplete it over a long retirement. 1 ÷ 0.04 = 25.
 
@@ -107,6 +141,8 @@ No — these are nominal, today's-money figures, same as the Retirement Calculat
 ## The bottom line
 
 The 25x-annual-expenses target is the same standard used by the FIRE movement and most retirement planners — what actually determines your monthly investment is almost entirely when you start, not how aggressively you invest later. Starting at 25 needs roughly a sixth of what starting at 45 needs, for the identical eventual target.
+
+Want a round-number goal instead? See [How much to invest to become a millionaire](/blog/how-much-to-invest-to-become-a-millionaire).
 
 **Project your own retirement corpus with the [FINAIW Retirement Calculator →](/retirement-calculator)**
 

@@ -11,6 +11,12 @@ export const BLOG_IMAGE_DIMENSIONS = {
   "monthly-investment-to-reach-1-million-by-years.webp": { width: 1200, height: 700 },
   "cost-of-starting-to-invest-late.webp": { width: 1000, height: 1500 },
   "real-value-of-1-million-after-inflation.webp": { width: 1200, height: 700 },
+  "monthly-retirement-investment-by-starting-age.webp": { width: 1200, height: 700 },
+  "you-invest-vs-compounding-by-starting-age.webp": { width: 1200, height: 700 },
+  "cost-of-waiting-to-save-for-retirement.webp": { width: 1000, height: 1500 },
+  "retirement-savings-on-track-by-age.webp": { width: 1200, height: 700 },
+  "emi-vs-total-interest-by-tenure.webp": { width: 1200, height: 700 },
+  "home-loan-emi-for-common-loan-amounts.webp": { width: 1000, height: 1500 },
 };
 
 export function dimensionsFor(src) {

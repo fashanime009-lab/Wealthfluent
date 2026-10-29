@@ -17,6 +17,18 @@ function joinReviewers(names) {
   return `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
 }
 
+// Parses frontmatter.reviewedBy entries ("Nishit B, Founder") into the
+// {name, jobTitle} shape articleSchema's JSON-LD needs, so the structured
+// data always matches the visible byline above instead of drifting from it.
+function parseReviewers(names) {
+  return names.map((entry) => {
+    const commaIndex = entry.indexOf(",");
+    const name = commaIndex === -1 ? entry.trim() : entry.slice(0, commaIndex).trim();
+    const jobTitle = commaIndex === -1 ? undefined : entry.slice(commaIndex + 1).trim();
+    return { "@type": "Person", name, ...(jobTitle ? { jobTitle } : {}) };
+  });
+}
+
 // Internal (root-relative) links use React Router's Link for client-side
 // navigation, matching every other internal link on the site; anything
 // else (there are none in this post, but future posts might link out)
@@ -186,6 +198,7 @@ export default function BlogPostPage() {
               publishedTime: frontmatter.datePublished,
               modifiedTime: frontmatter.dateModified,
               image: absoluteHeroUrl,
+              reviewedBy: parseReviewers(frontmatter.reviewedBy || []),
             }),
             breadcrumbSchema([
               { name: "Home", path: "/" },
