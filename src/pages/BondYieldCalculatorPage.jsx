@@ -3,7 +3,7 @@ import { formatCurrency } from "../utils/currency";
 import { useMemo } from "react";
 import useDefaultableField, { useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -98,6 +98,17 @@ export default function BondYieldCalculatorPage() {
             "answer": "A discount bond trades below its par value (its YTM exceeds its coupon rate), while a premium bond trades above par (its YTM is below its coupon rate). A bond at exactly par value yields exactly its coupon rate."
           }
         ]),
+        howToSchema({
+          name: "How to Use the Bond Yield Calculator",
+          description: "Calculate a bond's current yield and yield to maturity (YTM) from its price, par value, coupon rate and years to maturity.",
+          steps: [
+            { name: "Enter the current price", text: "Enter the bond's current market price in the Current price field." },
+            { name: "Enter the par value", text: "Enter the bond's par value (face value) in the Par value field." },
+            { name: "Enter the coupon rate", text: "Enter the bond's annual coupon rate as a percentage in the Coupon rate field." },
+            { name: "Enter the years to maturity", text: "Enter how many years remain until the bond matures in the Years to maturity field." },
+            { name: "View your result instantly", text: "The calculator instantly shows the current yield and yield to maturity (YTM)." },
+          ],
+        }),
       ]}
       />
 

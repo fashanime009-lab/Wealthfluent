@@ -3,7 +3,7 @@ import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
 import useDefaultableField, { useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -74,6 +74,16 @@ export default function CAGRCalculatorPage() {
           path: "/cagr-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the CAGR Calculator",
+          description: "Find the Compound Annual Growth Rate from a starting value, an ending value and the number of years between them.",
+          steps: [
+            { name: "Enter the initial investment", text: "Enter the starting value of the investment in the Initial Investment field." },
+            { name: "Enter the final value", text: "Enter the ending value of the investment in the Final Value field." },
+            { name: "Enter the investment duration", text: "Enter the number of years between the two values in the Investment Duration field." },
+            { name: "View your result instantly", text: "The calculator instantly shows the Compound Annual Growth Rate." },
+          ],
+        }),
       ]}
       />
 

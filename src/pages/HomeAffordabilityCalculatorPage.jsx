@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import { useSettings } from "../context/SettingsContext";
 import { useDefaultableObject, useFieldBounds } from "@/hooks/useDefaultableField";
 import { formatCurrency } from "../utils/currency";
@@ -89,6 +89,20 @@ export default function HomeAffordabilityCalculatorPage() {
               answer: "Generally no. A home loan is typically the largest, longest debt most people take on — buying at the edge of what you can afford leaves no room for a job change, medical expense, or rate increase (most home loans in India are floating rate) without real financial stress.",
             },
           ]),
+          howToSchema({
+            name: "How to Use the Home Affordability Calculator",
+            description: "Check whether a home is actually affordable for your income, before you commit to a property.",
+            steps: [
+              { name: "Enter the property price", text: "Enter the price of the property you're considering in the Property Price field." },
+              { name: "Enter your down payment", text: "Enter how much you'll pay upfront in the Down Payment field." },
+              { name: "Enter your monthly income", text: "Enter your monthly take-home income in the Monthly Income field." },
+              { name: "Enter your other monthly expenses", text: "Enter your regular living expenses in the Other Monthly Expenses field." },
+              { name: "Enter any existing EMI", text: "Enter any EMI you're already paying on other loans in the Existing EMI field." },
+              { name: "Enter the loan tenure", text: "Enter the loan repayment period in years in the Loan Tenure field." },
+              { name: "Enter the interest rate", text: "Enter the expected annual interest rate as a percentage in the Interest Rate field." },
+              { name: "View your result instantly", text: "The calculator instantly shows your estimated EMI, affordability status, and EMI-to-income and debt-to-income ratios." },
+            ],
+          }),
         ]}
       />
 

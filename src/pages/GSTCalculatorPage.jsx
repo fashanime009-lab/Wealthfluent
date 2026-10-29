@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import { formatCurrency } from "../utils/currency";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
@@ -53,6 +53,16 @@ export default function GSTCalculatorPage() {
           path: "/gst-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the GST Calculator",
+          description: "Add or remove GST from any amount instantly and see the tax breakdown for India's GST slabs.",
+          steps: [
+            { name: "Choose add or remove GST", text: "Select whether you want to add GST to an amount or remove it from a GST-inclusive total." },
+            { name: "Enter the amount", text: "Enter the base amount (before GST) or the total amount (GST included), depending on your chosen mode." },
+            { name: "Enter the GST rate", text: "Enter the applicable GST rate as a percentage in the GST rate field." },
+            { name: "View your result instantly", text: "The calculator instantly shows the GST amount, base amount and total amount." },
+          ],
+        }),
       ]}
       />
 

@@ -1,7 +1,7 @@
 import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -63,6 +63,17 @@ export default function HRACalculatorPage() {
           path: "/hra-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the HRA Calculator",
+          description: "Calculate your tax-exempt House Rent Allowance under the Indian Income Tax Act's three-way rule.",
+          steps: [
+            { name: "Enter your basic salary", text: "Enter your monthly basic salary in the Basic salary field." },
+            { name: "Enter your HRA received", text: "Enter the monthly HRA you receive from your employer in the HRA received field." },
+            { name: "Enter your rent paid", text: "Enter how much monthly rent you actually pay in the Rent paid field." },
+            { name: "Select your city type", text: "Choose Metro or Non-metro for the city you live in, under City type." },
+            { name: "View your result instantly", text: "The calculator instantly shows your tax-exempt HRA and the taxable portion." },
+          ],
+        }),
       ]}
       />
 

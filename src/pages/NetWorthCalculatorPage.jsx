@@ -7,7 +7,7 @@ import { formatCurrency } from "../utils/currency";
 import AdSlot from "../components/ads/AdSlot";
 
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
@@ -159,6 +159,15 @@ const currency = settings.currency;
             "answer": "Quarterly or annually is enough for most people. Checking daily or weekly just tracks market noise rather than genuine progress."
           }
         ]),
+        howToSchema({
+          name: "How to Use the Net Worth Calculator",
+          description: "Calculate your net worth by listing all your assets and liabilities.",
+          steps: [
+            { name: "Enter your assets", text: "Enter every asset you own — bank balances, investments, retirement accounts, real estate and more — in the Total Assets panel." },
+            { name: "Enter your liabilities", text: "Enter everything you owe — loans, credit card dues, taxes and other bills — in the Total Liabilities panel." },
+            { name: "View your result instantly", text: "The calculator instantly shows your net worth, debt-to-asset ratio and a liquidity breakdown of your assets." },
+          ],
+        }),
       ]}
       />
 

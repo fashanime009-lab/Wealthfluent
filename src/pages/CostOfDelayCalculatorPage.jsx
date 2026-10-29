@@ -3,7 +3,7 @@ import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -67,6 +67,17 @@ export default function CostOfDelayCalculatorPage() {
           path: "/cost-of-delay-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the Cost of Delay Calculator",
+          description: "See exactly what delaying your monthly investment by a few years costs in final value.",
+          steps: [
+            { name: "Enter your monthly investment", text: "Enter the amount you plan to invest every month in the Monthly investment field." },
+            { name: "Enter the expected return", text: "Enter the expected annual rate of return as a percentage in the Expected return field." },
+            { name: "Enter the total horizon", text: "Enter the total number of years you plan to invest in the Total horizon field." },
+            { name: "Enter the delay in years", text: "Enter how many years you'd delay starting in the Years you'd delay starting field." },
+            { name: "View your result instantly", text: "The calculator instantly shows what the delay costs you in final value." },
+          ],
+        }),
       ]}
       />
 

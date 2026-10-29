@@ -3,7 +3,7 @@ import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -91,6 +91,17 @@ export default function FDCalculatorPage() {
           path: "/fd-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the FD Calculator",
+          description: "Calculate your fixed deposit's maturity value and interest earned from your deposit, rate, tenure and compounding frequency.",
+          steps: [
+            { name: "Enter the deposit amount", text: "Enter the amount you plan to deposit in the Deposit amount field." },
+            { name: "Enter the interest rate", text: "Enter the annual interest rate as a percentage in the Interest rate field." },
+            { name: "Enter the duration", text: "Enter the deposit's tenure in years in the Duration field." },
+            { name: "Choose the compounding frequency", text: "Select how often interest compounds — Annually, Half-yearly, Quarterly or Monthly." },
+            { name: "View your result instantly", text: "The calculator instantly shows the maturity amount and interest earned." },
+          ],
+        }),
       ]}
       />
 

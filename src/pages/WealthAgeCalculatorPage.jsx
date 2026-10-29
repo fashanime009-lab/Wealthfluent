@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import { formatCurrency } from "../utils/currency";
 import AdSlot from "../components/ads/AdSlot";
 import { useSettings } from "../context/SettingsContext";
@@ -152,6 +152,19 @@ export default function WealthAgeCalculatorPage() {
             "answer": "No — treat it as a quick gut-check, not a substitute for a full financial plan. For actual retirement projections, use the Retirement or FIRE calculators, which model your specific numbers rather than producing a single comparative score."
           }
         ]),
+        howToSchema({
+          name: "How to Use the Wealth Age Calculator",
+          description: "Compare your financial age to your real age using your income, savings, investments and debt.",
+          steps: [
+            { name: "Enter your current age", text: "Enter your real age in the Current Age field." },
+            { name: "Enter your monthly income", text: "Enter your monthly income in the Monthly Income field." },
+            { name: "Enter your monthly savings", text: "Enter how much you save every month in the Monthly Savings field." },
+            { name: "Enter your investments", text: "Enter the total value of your investments in the Investments field." },
+            { name: "Enter your debt", text: "Enter your total outstanding debt in the Debt field." },
+            { name: "Enter your monthly expenses", text: "Enter your monthly expenses in the Monthly Expenses field." },
+            { name: "View your result instantly", text: "The calculator instantly shows your financial age, wealth score, savings rate and net worth." },
+          ],
+        }),
       ]}
       />
 

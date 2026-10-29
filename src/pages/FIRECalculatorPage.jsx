@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { useDefaultableObjectCustom, useFieldBounds } from "@/hooks/useDefaultableField";
 import { defaultFor, assumptionsFor } from "@/data/calculatorDefaults";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -117,6 +117,20 @@ export default function FIRECalculatorPage() {
           path: "/fire-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the FIRE Calculator",
+          description: "Plan your Financial Independence, Retire Early journey by estimating your wealth, FIRE number, and freedom score.",
+          steps: [
+            { name: "Enter your current age", text: "Enter your current age in the Current age field." },
+            { name: "Enter your target retirement age", text: "Enter the age you'd like to retire by in the Retirement age field." },
+            { name: "Enter your monthly expenses", text: "Enter your current monthly expenses in the Monthly expenses field." },
+            { name: "Enter your current savings", text: "Enter how much you've already saved in the Current savings field." },
+            { name: "Enter your monthly investment", text: "Enter how much you invest every month in the Monthly investment field." },
+            { name: "Enter the expected return", text: "Enter your expected annual rate of return as a percentage in the Expected return field." },
+            { name: "Enter the inflation rate", text: "Enter your assumed annual inflation rate as a percentage in the Inflation rate field." },
+            { name: "View your result instantly", text: "The calculator instantly shows your freedom score, estimated wealth and FIRE number." },
+          ],
+        }),
       ]}
       />
 

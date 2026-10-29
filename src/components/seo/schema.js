@@ -108,6 +108,28 @@ export function articleSchema({ title, description, path, publishedTime, modifie
   };
 }
 
+/**
+ * For a calculator page's actual input steps — not generic "enter your
+ * numbers" filler, but the real field labels/order on that specific
+ * calculator, since Google explicitly devalues templated HowTo content
+ * that doesn't reflect the page it's attached to.
+ */
+export function howToSchema({ name, description, steps, totalTime }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name,
+    description,
+    ...(totalTime ? { totalTime } : {}),
+    step: steps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+    })),
+  };
+}
+
 /** Breadcrumb trail — improves how the URL path shows in search results. */
 export function breadcrumbSchema(items) {
   return {

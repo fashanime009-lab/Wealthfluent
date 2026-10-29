@@ -4,7 +4,7 @@ import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useMemo } from "react";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -86,6 +86,16 @@ export default function SWPCalculatorPage() {
           path: "/swp-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the SWP Calculator",
+          description: "See how long a lump sum lasts with a fixed monthly withdrawal, or whether it can sustain that payout indefinitely.",
+          steps: [
+            { name: "Enter your starting corpus", text: "Enter the lump sum you're starting with in the Starting corpus field." },
+            { name: "Enter your monthly withdrawal", text: "Enter the fixed amount you plan to withdraw every month in the Monthly withdrawal field." },
+            { name: "Enter the expected return", text: "Enter your expected annual rate of return as a percentage in the Expected return field." },
+            { name: "View your result instantly", text: "The calculator instantly shows how long your withdrawals will last, or whether they're sustainable indefinitely." },
+          ],
+        }),
       ]}
       />
 

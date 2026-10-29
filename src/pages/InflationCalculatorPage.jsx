@@ -4,7 +4,7 @@ import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useMemo } from "react";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -70,6 +70,16 @@ export default function InflationCalculatorPage() {
           path: "/inflation-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the Inflation Calculator",
+          description: "See how inflation erodes the purchasing power of your money and what today's expenses will cost in the future.",
+          steps: [
+            { name: "Enter your current expense amount", text: "Enter today's cost in the Current Expense Amount field." },
+            { name: "Enter the annual inflation rate", text: "Enter your assumed annual inflation rate as a percentage in the Annual Inflation Rate field." },
+            { name: "Enter the time period", text: "Enter how many years ahead you want to project in the Time Period field." },
+            { name: "View your result instantly", text: "The calculator instantly shows the future cost and how much purchasing power is lost." },
+          ],
+        }),
       ]}
       />
 

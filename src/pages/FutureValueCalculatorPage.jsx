@@ -3,7 +3,7 @@ import { formatCurrency } from "../utils/currency";
 import { useMemo } from "react";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -102,6 +102,17 @@ export default function FutureValueCalculatorPage() {
             "answer": "No — the future value shown is in nominal terms. To see what that amount is worth in today's purchasing power, discount it by your assumed inflation rate separately, or use the Inflation Calculator alongside this one."
           }
         ]),
+        howToSchema({
+          name: "How to Use the Future Value Calculator",
+          description: "Calculate the future value of an investment with compound interest and optional annual additions.",
+          steps: [
+            { name: "Enter your current principal", text: "Enter your starting investment amount in the Current principal field." },
+            { name: "Enter an annual addition", text: "Optionally enter a fixed amount you'll add every year in the Annual addition field." },
+            { name: "Enter the years to grow", text: "Enter how many years the investment will grow in the Years to grow field." },
+            { name: "Enter the growth rate", text: "Enter your expected annual growth rate as a percentage in the Growth rate field." },
+            { name: "View your result instantly", text: "The calculator instantly shows the future value and total returns." },
+          ],
+        }),
       ]}
       />
 

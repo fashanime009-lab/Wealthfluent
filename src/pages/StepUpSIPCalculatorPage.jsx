@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -101,6 +101,17 @@ export default function StepUpSIPCalculatorPage() {
           path: "/step-up-sip-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the Step-Up SIP Calculator",
+          description: "Calculate what a SIP grows to when you increase the monthly amount every year, compared against a flat SIP.",
+          steps: [
+            { name: "Enter your starting monthly SIP", text: "Enter the amount you'll start investing monthly in the Starting monthly SIP field." },
+            { name: "Enter the annual step-up percentage", text: "Enter how much you'll increase your SIP every year in the Annual step-up % field." },
+            { name: "Enter the expected rate of return", text: "Enter your expected annual rate of return as a percentage in the Expected Rate of Return field." },
+            { name: "Enter the investment duration", text: "Enter how many years you'll invest for in the Investment Duration field." },
+            { name: "View your result instantly", text: "The calculator instantly shows the future value of your investment, total invested and estimated returns." },
+          ],
+        }),
       ]}
       />
 

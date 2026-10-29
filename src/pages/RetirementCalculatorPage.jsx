@@ -4,7 +4,7 @@ import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { sipFutureValue } from "@/utils/projections";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -62,6 +62,16 @@ export default function RetirementCalculatorPage() {
           path: "/retirement-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the Retirement Calculator",
+          description: "Project the retirement corpus a monthly investment builds, based on your expected return and years invested.",
+          steps: [
+            { name: "Enter your monthly investment", text: "Enter how much you plan to invest every month in the Monthly investment field." },
+            { name: "Enter the expected annual return", text: "Enter your expected annual rate of return as a percentage in the Expected annual return field." },
+            { name: "Enter the investment duration", text: "Enter how many years you'll invest for in the Investment duration field." },
+            { name: "View your result instantly", text: "The calculator instantly shows your estimated retirement corpus, total investment and estimated returns." },
+          ],
+        }),
       ]}
       />
 

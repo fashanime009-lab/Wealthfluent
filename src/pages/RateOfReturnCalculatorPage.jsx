@@ -4,7 +4,7 @@ import useExampleCurrency from "@/hooks/useExampleCurrency";
 import useDefaultableField, { useFieldBounds } from "@/hooks/useDefaultableField";
 import { useMemo } from "react";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -87,6 +87,16 @@ export default function RateOfReturnCalculatorPage() {
             "answer": "Yes — annualized rate of return and CAGR describe the same calculation: the constant yearly growth rate that would take a present value to a future value over a given number of years."
           }
         ]),
+        howToSchema({
+          name: "How to Use the Rate of Return Calculator",
+          description: "Calculate the annualized rate of return (CAGR) for an investment from its present value, future value and holding period.",
+          steps: [
+            { name: "Enter the present value", text: "Enter the investment's starting value in the Present value field." },
+            { name: "Enter the future value", text: "Enter the investment's current or ending value in the Future value field." },
+            { name: "Enter the years to grow", text: "Enter how many years the investment was held in the Years to grow field." },
+            { name: "View your result instantly", text: "The calculator instantly shows the annualized rate of return (CAGR) and total gain." },
+          ],
+        }),
       ]}
       />
 

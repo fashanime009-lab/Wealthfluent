@@ -1,7 +1,7 @@
 import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -63,6 +63,15 @@ export default function GratuityCalculatorPage() {
           path: "/gratuity-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the Gratuity Calculator",
+          description: "Estimate your gratuity amount under India's Payment of Gratuity Act from your last drawn salary and years of service.",
+          steps: [
+            { name: "Enter your last drawn basic salary + DA", text: "Enter your last drawn basic salary plus dearness allowance in the Last drawn basic salary + DA field." },
+            { name: "Enter your completed years of service", text: "Enter your completed years of service in the Completed years of service field." },
+            { name: "View your result instantly", text: "The calculator instantly shows your estimated gratuity amount and the taxable portion, if any." },
+          ],
+        }),
       ]}
       />
 

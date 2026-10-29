@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import { useFinance } from "../context/FinanceContext";
 import { useSettings } from "../context/SettingsContext";
 
@@ -114,6 +114,16 @@ export default function SIPCalculatorPage() {
           path: "/sip-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the SIP Calculator",
+          description: "Calculate what your monthly SIP investment grows to using real compound math.",
+          steps: [
+            { name: "Enter your SIP amount", text: "Enter how much you plan to invest every month in the SIP Amount field." },
+            { name: "Enter the expected rate of return", text: "Enter your expected annual rate of return as a percentage in the Expected Rate of Return field." },
+            { name: "Enter the investment duration", text: "Enter how many years you'll invest for in the Investment Duration field." },
+            { name: "View your result instantly", text: "The calculator instantly shows the future value of your investment, your total investment and estimated returns." },
+          ],
+        }),
       ]}
       />
 

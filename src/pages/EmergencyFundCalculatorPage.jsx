@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import { useSettings } from "../context/SettingsContext";
 import { useDefaultableObject, useFieldBounds } from "@/hooks/useDefaultableField";
 import { formatCurrency } from "../utils/currency";
@@ -89,6 +89,17 @@ export default function EmergencyFundCalculatorPage() {
             "answer": "No — the purpose of this money is reliability, not growth. Investing it defeats the point: if a downturn coincides with your emergency (a common pattern, since layoffs often spike during downturns), you'd be forced to sell at a loss."
           }
         ]),
+        howToSchema({
+          name: "How to Use the Emergency Fund Calculator",
+          description: "Calculate how much you need in your emergency fund based on your monthly expenses and current savings.",
+          steps: [
+            { name: "Enter your monthly living expenses", text: "Enter your average monthly living expenses in the Monthly Living Expenses field." },
+            { name: "Enter months of expenses to cover", text: "Enter how many months of expenses you'd like to cover in the Months of Expenses to Cover field." },
+            { name: "Enter your current savings", text: "Enter how much you've already saved in the Current Savings field." },
+            { name: "Enter any additional income", text: "Optionally enter rental, freelance or other extra monthly income in the Additional Income Source field." },
+            { name: "View your result instantly", text: "The calculator instantly shows your recommended emergency fund and whether you're fully funded." },
+          ],
+        }),
       ]}
       />
 

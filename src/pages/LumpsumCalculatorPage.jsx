@@ -5,7 +5,7 @@ import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -81,6 +81,16 @@ export default function LumpsumCalculatorPage() {
           path: "/lumpsum-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the Lumpsum Calculator",
+          description: "Calculate the future value of a one-time mutual fund investment, compounded monthly.",
+          steps: [
+            { name: "Enter your lumpsum amount", text: "Enter the one-time amount you're investing in the Lumpsum amount field." },
+            { name: "Enter the expected rate of return", text: "Enter your expected annual rate of return as a percentage in the Expected Rate of Return field." },
+            { name: "Enter the investment duration", text: "Enter how many years the investment will grow in the Investment Duration field." },
+            { name: "View your result instantly", text: "The calculator instantly shows the future value of your investment." },
+          ],
+        }),
       ]}
       />
 

@@ -1,7 +1,7 @@
 import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -68,6 +68,16 @@ export default function RDCalculatorPage() {
           path: "/rd-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the RD Calculator",
+          description: "Calculate your recurring deposit's maturity value and interest earned from your monthly deposit, rate and tenure.",
+          steps: [
+            { name: "Enter the monthly deposit", text: "Enter the fixed amount you'll deposit every month in the Monthly deposit field." },
+            { name: "Enter the interest rate", text: "Enter the annual interest rate as a percentage in the Interest rate field." },
+            { name: "Enter the duration", text: "Enter the RD's tenure in years in the Duration field." },
+            { name: "View your result instantly", text: "The calculator instantly shows the maturity amount and interest earned." },
+          ],
+        }),
       ]}
       />
 

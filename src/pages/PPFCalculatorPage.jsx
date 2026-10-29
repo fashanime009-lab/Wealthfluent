@@ -1,7 +1,7 @@
 import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -75,6 +75,16 @@ export default function PPFCalculatorPage() {
           path: "/ppf-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the PPF Calculator",
+          description: "Calculate your Public Provident Fund maturity value and interest earned from your yearly contribution and tenure.",
+          steps: [
+            { name: "Enter your yearly contribution", text: "Enter how much you plan to contribute each year in the Yearly contribution field." },
+            { name: "Enter the interest rate", text: "Enter the current government-declared PPF rate as a percentage in the Interest rate field." },
+            { name: "Enter the duration", text: "Enter your PPF tenure in years in the Duration field." },
+            { name: "View your result instantly", text: "The calculator instantly shows the maturity amount and interest earned." },
+          ],
+        }),
       ]}
       />
 

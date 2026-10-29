@@ -3,7 +3,7 @@ import { formatCurrency } from "../utils/currency";
 import { useMemo } from "react";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
@@ -79,6 +79,16 @@ export default function GoalSIPCalculatorPage() {
           path: "/goal-sip",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        howToSchema({
+          name: "How to Use the Goal SIP Calculator",
+          description: "Calculate the monthly SIP investment needed to reach a specific financial goal.",
+          steps: [
+            { name: "Enter your goal amount", text: "Enter the target amount you want to reach in the Goal Amount field." },
+            { name: "Enter the investment duration", text: "Enter how many years you have to invest in the Investment Duration field." },
+            { name: "Enter the expected rate of return", text: "Enter your expected annual rate of return as a percentage in the Expected Rate of Return field." },
+            { name: "View your result instantly", text: "The calculator instantly shows the monthly SIP amount required to reach your goal." },
+          ],
+        }),
       ]}
       />
 

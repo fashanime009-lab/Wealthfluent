@@ -1,5 +1,5 @@
 import Seo from "@/components/seo/Seo";
-import { calculatorSchema, faqSchema } from "@/components/seo/schema";
+import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import { formatCurrency } from "../utils/currency";
 import AdSlot from "../components/ads/AdSlot";
 import { useSettings } from "../context/SettingsContext";
@@ -91,6 +91,16 @@ export default function EMICalculatorPage() {
             path: "/emi-calculator",
           }),
           faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+          howToSchema({
+            name: "How to Use the Loan EMI Calculator",
+            description: "Work out your monthly EMI, total interest and total repayment for a home, car, personal or education loan.",
+            steps: [
+              { name: "Enter the loan amount", text: "Enter the amount you plan to borrow in the Loan amount field." },
+              { name: "Enter the interest rate", text: "Enter the annual interest rate as a percentage in the Interest rate field." },
+              { name: "Enter the loan duration", text: "Enter the repayment period in years in the Loan duration field." },
+              { name: "View your result instantly", text: "The calculator instantly shows your monthly EMI, total interest and total payment." },
+            ],
+          }),
         ]}
       />
 
