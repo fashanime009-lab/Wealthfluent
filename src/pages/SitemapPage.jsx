@@ -90,6 +90,11 @@ const sitemapSections = [
         path: "/blog/how-much-to-invest-to-become-a-millionaire",
         description: "Monthly investment needed to reach 1 million in 10 to 40 years",
       },
+      {
+        name: "EMI for Every Loan Amount: The Complete Table by Rate and Tenure",
+        path: "/blog/emi-for-every-loan-amount",
+        description: "EMI for any loan amount, rate and tenure, in any currency",
+      },
     ],
   },
   {
