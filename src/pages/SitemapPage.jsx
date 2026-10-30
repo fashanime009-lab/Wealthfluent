@@ -100,6 +100,11 @@ const sitemapSections = [
         path: "/blog/how-much-to-save-for-retirement-by-age",
         description: "Monthly retirement investment needed, by the age you start",
       },
+      {
+        name: "The Janitor Who Died With $8 Million (and the Banker Who Went Broke)",
+        path: "/blog/build-wealth-on-an-average-salary",
+        description: "True stories and the 5 money habits that matter more than salary",
+      },
     ],
   },
   {

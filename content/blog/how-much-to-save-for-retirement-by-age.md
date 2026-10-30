@@ -138,6 +138,8 @@ It's a common planning figure for a stock-heavy portfolio over long periods in l
 ### Does this account for inflation?
 No — these are nominal, today's-money figures, same as the Retirement Calculator itself. Run your expected annual expenses through the [Inflation Calculator](/inflation-calculator) to project what they'll actually cost at your retirement age, then apply the 25x target to that adjusted figure.
 
+Related: [The janitor who died with $8 million](/blog/build-wealth-on-an-average-salary)
+
 ## The bottom line
 
 The 25x-annual-expenses target is the same standard used by the FIRE movement and most retirement planners — what actually determines your monthly investment is almost entirely when you start, not how aggressively you invest later. Starting at 25 needs roughly a sixth of what starting at 45 needs, for the identical eventual target.

@@ -17,6 +17,8 @@ export const BLOG_IMAGE_DIMENSIONS = {
   "retirement-savings-on-track-by-age.webp": { width: 1200, height: 700 },
   "emi-vs-total-interest-by-tenure.webp": { width: 1200, height: 700 },
   "home-loan-emi-for-common-loan-amounts.webp": { width: 1000, height: 1500 },
+  "janitor-vs-banker-two-lives.webp": { width: 1000, height: 1500 },
+  "warren-buffett-wealth-after-65.webp": { width: 1200, height: 700 },
 };
 
 export function dimensionsFor(src) {

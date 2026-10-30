@@ -163,6 +163,8 @@ Yes. 1 crore is 10 million, so multiply the table amounts by 10. In higher-infla
 ### Will 1 million be enough in 30 years?
 At 3% inflation, 1 million in 30 years buys about what 412,000 buys today. Set your target from your future expenses, not the round number.
 
+Related: [The janitor who died with $8 million](/blog/build-wealth-on-an-average-salary)
+
 ## The bottom line
 
 Becoming a millionaire is within reach for most people with a steady income, in almost any country. The amount you need depends far more on **when you start** than on how much you earn. Pick your timeline from the table, start an amount you can keep up even in bad months, and raise it every year.
