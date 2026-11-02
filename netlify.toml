@@ -9,10 +9,11 @@
 
 [functions]
   directory = "netlify/functions"
-  # Read at runtime by api/og/index.js via fs, so not auto-traced.
-  included_files = ["api/og/Geist-Regular.ttf"]
+  # Read from disk at runtime by the OG function, so not auto-traced: the
+  # font, and harfbuzz's wasm (satori's text shaper loads it via fs).
+  included_files = ["api/og/Geist-Regular.ttf", "node_modules/harfbuzzjs/hb.wasm"]
   # Copied as whole packages, not bundled: resvg ships a native binary, and
-  # satori's require() was left unresolved by the bundler (502 on /api/og).
+  # satori's dependencies locate their files relative to their own package.
   external_node_modules = ["@resvg/resvg-js", "satori"]
 
 # Social short links — temporary (302) so destinations can change later.

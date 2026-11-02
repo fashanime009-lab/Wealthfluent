@@ -41,32 +41,14 @@ const fs = require("fs");
 const path = require("path");
 const satori = require("satori").default;
 const { Resvg } = require("@resvg/resvg-js");
-
-const WIDTH = 1200;
-const HEIGHT = 630;
+const { WIDTH, HEIGHT, clampPercent, buildCard } = require("./_card.js");
 
 // Geist, Vercel's own open-source font (SIL OFL) — the same file
 // @vercel/og itself bundles for exactly this purpose. Satori has no
 // built-in font and needs the actual bytes; embedded in this directory
 // (not read from a node_modules path) so Vercel's function bundler
 // reliably includes it regardless of what's a traced dependency.
-// Netlify's function bundler can relocate this file, moving __dirname
-// away from the font; the font itself is shipped at its repo-relative
-// path (netlify.toml included_files), so fall back to that.
-const FONT_PATH = [
-  // __dirname doesn't exist once Netlify bundles this file as ESM.
-  typeof __dirname !== "undefined" ? path.join(__dirname, "Geist-Regular.ttf") : null,
-  path.join(process.cwd(), "api/og/Geist-Regular.ttf"),
-].find((candidate) => candidate && fs.existsSync(candidate));
-const FONT_DATA = fs.readFileSync(FONT_PATH);
-
-const el = (type, style, children) => ({ type, props: { style, children } });
-
-function clampPercent(raw) {
-  const n = Number(raw);
-  if (!Number.isFinite(n) || n <= 0 || n > 100) return null;
-  return Math.round(n * 10) / 10;
-}
+const FONT_DATA = fs.readFileSync(path.join(__dirname, "Geist-Regular.ttf"));
 
 module.exports = async function handler(req, res) {
   const p = clampPercent(req.query.p);
@@ -76,47 +58,8 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const root = el(
-    "div",
-    {
-      width: "100%",
-      height: "100%",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-between",
-      padding: "64px 72px",
-      background: "linear-gradient(160deg, #0e1512 0%, #04140f 100%)",
-      color: "#eef1ec",
-      fontFamily: "Geist",
-    },
-    [
-      el("div", { display: "flex", alignItems: "baseline" }, [
-        el("span", { fontSize: 40, fontWeight: 700, color: "#ffffff" }, "FIN"),
-        el("span", { fontSize: 40, fontWeight: 700, color: "#34d399" }, "AIW"),
-      ]),
-      el("div", { display: "flex", flexDirection: "column" }, [
-        el("span", { fontSize: 26, fontWeight: 700, color: "#34d399", letterSpacing: 1 }, "GLOBAL NET WORTH PERCENTILE"),
-        el(
-          "span",
-          { fontSize: 108, fontWeight: 700, color: "#ffffff", lineHeight: 1.05, marginTop: 12 },
-          `Top ${p}% globally`
-        ),
-        el(
-          "span",
-          { fontSize: 34, color: "rgba(238,241,236,0.75)", marginTop: 18 },
-          "Free global net worth percentile calculator — any currency, no signup"
-        ),
-      ]),
-      el(
-        "div",
-        { display: "flex", alignItems: "center", fontSize: 28, color: "rgba(238,241,236,0.55)" },
-        "finaiw.com/net-worth-percentile"
-      ),
-    ]
-  );
-
   try {
-    const svg = await satori(root, {
+    const svg = await satori(buildCard(p), {
       width: WIDTH,
       height: HEIGHT,
       fonts: [{ name: "Geist", data: FONT_DATA, weight: 700, style: "normal" }],
