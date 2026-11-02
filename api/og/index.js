@@ -54,9 +54,10 @@ const HEIGHT = 630;
 // away from the font; the font itself is shipped at its repo-relative
 // path (netlify.toml included_files), so fall back to that.
 const FONT_PATH = [
-  path.join(__dirname, "Geist-Regular.ttf"),
+  // __dirname doesn't exist once Netlify bundles this file as ESM.
+  typeof __dirname !== "undefined" ? path.join(__dirname, "Geist-Regular.ttf") : null,
   path.join(process.cwd(), "api/og/Geist-Regular.ttf"),
-].find((candidate) => fs.existsSync(candidate));
+].find((candidate) => candidate && fs.existsSync(candidate));
 const FONT_DATA = fs.readFileSync(FONT_PATH);
 
 const el = (type, style, children) => ({ type, props: { style, children } });

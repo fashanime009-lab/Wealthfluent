@@ -11,8 +11,9 @@
   directory = "netlify/functions"
   # Read at runtime by api/og/index.js via fs, so not auto-traced.
   included_files = ["api/og/Geist-Regular.ttf"]
-  # Native binary — must be copied as-is, not bundled.
-  external_node_modules = ["@resvg/resvg-js"]
+  # Copied as whole packages, not bundled: resvg ships a native binary, and
+  # satori's require() was left unresolved by the bundler (502 on /api/og).
+  external_node_modules = ["@resvg/resvg-js", "satori"]
 
 # Social short links — temporary (302) so destinations can change later.
 [[redirects]]
