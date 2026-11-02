@@ -91,7 +91,7 @@ import { getIndexableRoutes as getSitemapRoutes, getDisallowedPrefixes } from ".
 // linux as well as the env var distinguishes a real remote Vercel build
 // from a local `vercel build` emulating one.
 async function launchBrowser() {
-  if (process.env.VERCEL && process.platform === "linux") {
+  if ((process.env.VERCEL || process.env.NETLIFY) && process.platform === "linux") {
     const { default: chromium } = await import("@sparticuz/chromium");
     // Matches @sparticuz/chromium's own documented usage exactly: args
     // must go through puppeteer's defaultArgs() (merges chromium's flags

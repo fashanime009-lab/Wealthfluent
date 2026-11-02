@@ -50,7 +50,14 @@ const HEIGHT = 630;
 // built-in font and needs the actual bytes; embedded in this directory
 // (not read from a node_modules path) so Vercel's function bundler
 // reliably includes it regardless of what's a traced dependency.
-const FONT_DATA = fs.readFileSync(path.join(__dirname, "Geist-Regular.ttf"));
+// Netlify's function bundler can relocate this file, moving __dirname
+// away from the font; the font itself is shipped at its repo-relative
+// path (netlify.toml included_files), so fall back to that.
+const FONT_PATH = [
+  path.join(__dirname, "Geist-Regular.ttf"),
+  path.join(process.cwd(), "api/og/Geist-Regular.ttf"),
+].find((candidate) => fs.existsSync(candidate));
+const FONT_DATA = fs.readFileSync(FONT_PATH);
 
 const el = (type, style, children) => ({ type, props: { style, children } });
 
