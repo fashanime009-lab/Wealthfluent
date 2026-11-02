@@ -366,10 +366,14 @@ async function main() {
   const routes = getIndexableRoutes();
   console.log(`Prerendering ${routes.length} routes for crawlers...`);
 
-  const server = spawn("npx", ["vite", "preview", "--port", String(PORT), "--strictPort"], {
-    cwd: ROOT,
-    stdio: "pipe",
-  });
+  // Vite's CLI run directly by node, not via `npx`: npx spawns Vite as a
+  // grandchild, so server.kill() below only stopped npx on Netlify and the
+  // orphaned Vite kept this process alive until the 17-minute build timeout.
+  const server = spawn(
+    process.execPath,
+    [path.join(ROOT, "node_modules/vite/bin/vite.js"), "preview", "--port", String(PORT), "--strictPort"],
+    { cwd: ROOT, stdio: "pipe" }
+  );
 
   let serverErrorOutput = "";
   server.stderr?.on("data", (d) => {
@@ -430,7 +434,9 @@ async function main() {
   }
 
   console.log(`Prerendering complete: ${routes.length - failures}/${routes.length} routes succeeded.`);
-  if (failures > 0) process.exitCode = 1;
+  // Exit explicitly: any leftover handle (a browser helper process, an
+  // open pipe) would otherwise keep the build running until it times out.
+  process.exit(failures > 0 ? 1 : 0);
 }
 
 main();
