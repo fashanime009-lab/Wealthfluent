@@ -230,6 +230,9 @@ export default function QuizzesPage() {
         description="Questions generated from live finance and business headlines, so the quiz keeps changing without manual updates. Free, no signup."
         path="/quizzes"
         keywords="finance quiz, investing quiz, personal finance test, financial literacy quiz"
+        // Questions are generated from third-party news headlines, not
+        // FINAIW's own writing, so keep the page out of Google's index.
+        noindex
         jsonLd={breadcrumbSchema([
           { name: "Home", path: "/" },
           { name: "Quizzes", path: "/quizzes" },

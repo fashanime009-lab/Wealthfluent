@@ -98,8 +98,10 @@ export const ROUTE_DEFS = [
     changefreq: "monthly",
     priority: "0.6",
   })),
-  { path: "/news", changefreq: "daily", priority: "0.8" },
-  { path: "/quizzes", changefreq: "weekly", priority: "0.7" },
+  // /news and /quizzes intentionally excluded: their content comes from
+  // third-party news headlines, not FINAIW's own writing, so both carry
+  // <Seo noindex /> and are prerendered via EXTRA_PRERENDER_ROUTES in
+  // scripts/prerender.mjs instead.
 
   { path: "/privacy-policy", changefreq: "yearly", priority: "0.4" },
   { path: "/disclaimer", changefreq: "yearly", priority: "0.4" },

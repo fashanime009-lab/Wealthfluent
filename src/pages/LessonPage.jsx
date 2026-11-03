@@ -22,6 +22,11 @@ function resolve(field, currency) {
 // Outer component just re-keys the real content by slug, so navigating
 // between lessons (via the "Next" link) gets a genuine fresh mount instead
 // of stale state syncing through an effect.
+// Who reviews the lessons, shown in the visible byline and passed to the
+// Article schema from this one place so the two can't drift apart. Matches
+// the reviewer role described on /about.
+const LESSON_REVIEWER = { name: "Nishit B", credential: "MBA in Finance", jobTitle: "Financial Crime Risk Analyst" };
+
 export default function LessonPage() {
   const { slug } = useParams();
   return <LessonContent key={slug} slug={slug} />;
@@ -129,6 +134,7 @@ function LessonContent({ slug }) {
               // authored on individual dates, so one real shared date is
               // more honest here than inventing 30 distinct ones.
               publishedTime: "2026-09-11",
+              reviewedBy: [{ "@type": "Person", name: LESSON_REVIEWER.name, jobTitle: LESSON_REVIEWER.jobTitle }],
             }),
             breadcrumbSchema([
               { name: "Home", path: "/" },
@@ -169,6 +175,13 @@ function LessonContent({ slug }) {
             Lesson {index + 1} of {LESSONS.length}
           </p>
         </div>
+        <p className="mt-2 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">
+          By FINAIW Team · Reviewed by{" "}
+          <Link to="/about" className="font-semibold underline decoration-current/30 underline-offset-2 hover:text-[#111814] dark:hover:text-[#eef1ec]">
+            {LESSON_REVIEWER.name}
+          </Link>
+          , {LESSON_REVIEWER.credential}
+        </p>
 
         <div className="mt-9 space-y-5 text-[15px] leading-7 text-[#111814]/75 dark:text-[#eef1ec]/75">
           {body.map((para, i) => (

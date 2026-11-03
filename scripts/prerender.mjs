@@ -195,7 +195,7 @@ function rewriteSiteUrls(html) {
 // blank flash before JS finished mounting — and /goals and /insights are
 // both top-level nav items, visible and clickable from literally every
 // page, including to a first-time visitor who never saves any data.
-const EXTRA_PRERENDER_ROUTES = ["/links", "/settings", "/goals", "/insights", "/financial-profile"];
+const EXTRA_PRERENDER_ROUTES = ["/links", "/news", "/quizzes", "/settings", "/goals", "/insights", "/financial-profile"];
 
 // Shares its route list with scripts/generate-sitemap.js
 // (scripts/lib/routes.mjs's getIndexableRoutes(), which includes the
