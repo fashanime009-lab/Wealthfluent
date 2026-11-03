@@ -47,10 +47,10 @@
   status = 302
   force = true
 
-# Apex domain: redirect to the www canonical host. ads.txt is the exception,
-# served directly on the apex by netlify/edge-functions/apex-ads-txt.js
-# (Netlify's primary-domain redirect beats any rule here, so it can't be
-# exempted from this file).
+# Apex domain: redirect to the www canonical host. Netlify's own
+# primary-domain redirect already does this before any rule or edge function
+# runs (verified on production), so ads.txt on the apex redirects to www too
+# and can't be exempted here. The ads.txt spec allows that same-domain redirect.
 [[redirects]]
   from = "https://finaiw.com/*"
   to = "https://www.finaiw.com/:splat"

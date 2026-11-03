@@ -42,7 +42,7 @@ export default function PrivacyPolicyPage() {
             Privacy Policy
           </h1>
           <p className="mt-3 font-mono-tech text-[13px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
-            Last updated: October 21, 2026
+            Last updated: November 3, 2026
           </p>
 
           <div className="mt-10 space-y-3 text-[14px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
@@ -183,7 +183,19 @@ export default function PrivacyPolicyPage() {
                 Third-party vendors, including Google, use cookies to serve ads based on a
                 user's prior visits to this website or other websites. Google's use of
                 advertising cookies enables it and its partners to serve ads to our users
-                based on their visit to this site and/or other sites on the Internet.
+                based on their visit to this site and/or other sites on the Internet. To do
+                this, Google and its partners may place and read cookies on your browser, or
+                use web beacons and your IP address, to collect information when ads are
+                served. You can read how Google uses this information in{" "}
+                <a
+                  href="https://policies.google.com/technologies/partner-sites"
+                  target="_blank"
+                  rel="noreferrer"
+                  className={link}
+                >
+                  How Google uses information from sites or apps that use our services
+                </a>
+                .
               </p>
               <p>
                 You may opt out of personalized advertising by visiting{" "}
