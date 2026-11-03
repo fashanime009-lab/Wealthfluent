@@ -349,6 +349,23 @@ function AboutRiskProfiling() {
           </Link>
           , then retake the profile.
         </p>
+        <p>
+          Your capacity score is the same one the{" "}
+          <Link to="/financial-health-checkup" className="font-semibold underline decoration-current/30 underline-offset-2">
+            financial health checkup
+          </Link>{" "}
+          calculates, so that's where to see exactly which part is holding it back. If people
+          depend on your income, check you're covered before taking more risk: the{" "}
+          <Link to="/verdict/insurance-need" className="font-semibold underline decoration-current/30 underline-offset-2">
+            insurance need verdict
+          </Link>{" "}
+          works out how much life cover you need. And to see what a long-term, equity-heavy
+          portfolio can grow into, read{" "}
+          <Link to="/blog/how-much-to-invest-to-become-a-millionaire" className="font-semibold underline decoration-current/30 underline-offset-2">
+            how much to invest to become a millionaire
+          </Link>
+          .
+        </p>
       </CalcSection>
 
       <VerdictFAQ items={FAQ_ITEMS} className="border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />

@@ -462,6 +462,21 @@ function DebtGuide() {
           </Link>{" "}
           shows what any loan really costs.
         </p>
+        <p>
+          To see what different loan sizes cost each month before you borrow again, read{" "}
+          <Link to="/blog/emi-for-every-loan-amount" className="font-semibold underline decoration-current/30 underline-offset-2">
+            EMI for every loan amount
+          </Link>
+          . If you're weighing a car loan, the{" "}
+          <Link to="/verdict/lease-vs-buy-car" className="font-semibold underline decoration-current/30 underline-offset-2">
+            lease vs buy verdict
+          </Link>{" "}
+          compares the real cost of each. And the{" "}
+          <Link to="/financial-health-checkup" className="font-semibold underline decoration-current/30 underline-offset-2">
+            financial health checkup
+          </Link>{" "}
+          shows how your debt load affects your overall financial health score.
+        </p>
       </CalcSection>
     </div>
   );

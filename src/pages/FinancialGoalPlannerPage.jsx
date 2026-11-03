@@ -542,11 +542,19 @@ function GoalPlannerGuide() {
           <Link to="/goal-sip" className="font-semibold underline decoration-current/30 underline-offset-2">
             goal SIP calculator
           </Link>
-          , and if one of your goals is an emergency fund, the{" "}
-          <Link to="/emergency-fund-calculator" className="font-semibold underline decoration-current/30 underline-offset-2">
-            emergency fund calculator
+          . If one of your goals is buying a home, the{" "}
+          <Link to="/verdict/rent-vs-buy" className="font-semibold underline decoration-current/30 underline-offset-2">
+            rent vs buy verdict
           </Link>{" "}
-          helps you pick the right target.
+          checks whether buying makes sense for you first, and for retirement,{" "}
+          <Link to="/blog/how-much-to-save-for-retirement-by-age" className="font-semibold underline decoration-current/30 underline-offset-2">
+            how much to save for retirement by age
+          </Link>{" "}
+          gives realistic targets. Before committing a budget, the{" "}
+          <Link to="/financial-health-checkup" className="font-semibold underline decoration-current/30 underline-offset-2">
+            financial health checkup
+          </Link>{" "}
+          shows whether your emergency fund and debts leave room for it.
         </p>
       </CalcSection>
 

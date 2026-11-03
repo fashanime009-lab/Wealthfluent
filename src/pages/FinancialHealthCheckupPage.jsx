@@ -296,8 +296,20 @@ function HealthGuide() {
           with the{" "}
           <Link to="/networth-calculator" className="font-semibold underline decoration-current/30 underline-offset-2">
             net worth calculator
+          </Link>{" "}
+          and see where you stand worldwide with the{" "}
+          <Link to="/net-worth-percentile" className="font-semibold underline decoration-current/30 underline-offset-2">
+            global net worth percentile
           </Link>
-          .
+          . For the habits behind a high savings rate, read{" "}
+          <Link to="/blog/build-wealth-on-an-average-salary" className="font-semibold underline decoration-current/30 underline-offset-2">
+            the janitor who died with $8 million
+          </Link>
+          . Once your base is solid, the{" "}
+          <Link to="/investment-risk-analyzer" className="font-semibold underline decoration-current/30 underline-offset-2">
+            investment risk analyzer
+          </Link>{" "}
+          uses this same score to suggest how much investment risk you can afford.
         </p>
       </CalcSection>
     </div>
