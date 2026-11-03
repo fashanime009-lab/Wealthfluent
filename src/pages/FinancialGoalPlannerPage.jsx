@@ -1,12 +1,15 @@
 import { useEffect, useId, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
-import { breadcrumbSchema } from "@/components/seo/schema";
+import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import { monthsUntil, monthsToReach, compareStrategies } from "@/engine/goalOptimizerEngine";
 import { TOOL_TONES } from "@/data/toolTones";
 import { TONE_COLOR } from "@/components/verdict/palette";
 import { useSettings } from "@/context/SettingsContext";
 import { formatCurrency } from "@/utils/currency";
 import { currencies } from "@/data/currencies";
+import CalcSection from "@/components/calculators/CalcSection";
+import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const tone = TOOL_TONES.goalPlanner;
 const STORAGE_KEY = "finaiw-goal-optimizer";
@@ -17,6 +20,41 @@ const STRATEGY_META = {
   priority: { label: "Priority order", note: "Fully funds your single most important goal first, then the next." },
   optimized: { label: "Optimized", note: "Provably maximizes how much of your priorities get funded for this budget." },
 };
+
+// Worked example for the guide below, run through the real engine at load
+// so the numbers in the text always match what the tool itself would show.
+const EXAMPLE_BUDGET = 30000;
+const EXAMPLE_GOALS = [
+  { id: "wedding", name: "Wedding", targetAmount: 600000, currentAmount: 0, months: 12, importance: 5, riskProfile: "conservative" },
+  { id: "emergency", name: "Emergency fund", targetAmount: 150000, currentAmount: 0, months: 12, importance: 4, riskProfile: "conservative" },
+  { id: "laptop", name: "New laptop", targetAmount: 120000, currentAmount: 0, months: 12, importance: 4, riskProfile: "conservative" },
+];
+const EXAMPLE = compareStrategies(EXAMPLE_GOALS, EXAMPLE_BUDGET);
+const inr = (v) => `₹${Math.round(v).toLocaleString("en-IN")}`;
+const exampleGoal = (strategy, id) => EXAMPLE[strategy].allocations.find((g) => g.id === id);
+
+const FAQ_ITEMS = [
+  {
+    q: "What does the goal planner actually optimize?",
+    a: "It splits one fixed monthly budget across all your goals so that as much as possible of what you marked important, and soon, gets funded. Each goal's importance (1 to 5) is weighted by how soon it is due, and the planner funds the goals that return the most of that weighted value per rupee first.",
+  },
+  {
+    q: "Why not just fund my most important goal first?",
+    a: "Because one expensive goal can swallow the whole budget while cheaper goals that matter almost as much get nothing. The worked example on this page shows this: priority order funds only the wedding and scores far lower than the optimized split, which fully funds two goals and still puts money toward the wedding.",
+  },
+  {
+    q: "Which growth profile should I pick for each goal?",
+    a: "Match it to the time left. For goals due within about three years, conservative (5% assumed growth) is safer, because there isn't time to recover from a market fall. Moderate (9%) suits medium-term goals, and aggressive (13%) only goals many years away. A higher assumed rate lowers the monthly amount the tool asks for, so don't pick one your investments can't realistically earn.",
+  },
+  {
+    q: "Is my data saved or shared?",
+    a: "Your goals and budget are saved only in your own browser so they're still there next time. They are never sent to FINAIW's servers or anyone else. Clearing your browser data removes them.",
+  },
+  {
+    q: "What if my budget can't cover all my goals?",
+    a: "That's the normal case, and it's what the tool is for. It shows exactly how much each goal gets and how many months each will take at that pace. If a goal is underfunded, you can push its date back, lower the target, raise the monthly budget, or accept that a lower-priority goal waits.",
+  },
+];
 
 function load() {
   try {
@@ -84,11 +122,14 @@ export default function FinancialGoalPlannerPage() {
         description="Build your own set of goals and a monthly budget, and see the provably-optimal way to split that budget across them — a real fractional-knapsack optimizer, compared against naive strategies."
         path="/financial-goal-planner"
         keywords="financial goal planner, goal optimizer, budget allocation tool, multi-goal planning"
-        jsonLd={breadcrumbSchema([
-          { name: "Home", path: "/" },
-          { name: "Tools", path: "/tools" },
-          { name: "Financial Goal Planner", path: "/financial-goal-planner" },
-        ])}
+        jsonLd={[
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Tools", path: "/tools" },
+            { name: "Financial Goal Planner", path: "/financial-goal-planner" },
+          ]),
+          faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+        ]}
       />
 
       <div className="mx-auto max-w-[920px] px-5 py-16 sm:px-8 lg:px-12">
@@ -126,6 +167,7 @@ export default function FinancialGoalPlannerPage() {
         )}
 
         <Methodology />
+        <GoalPlannerGuide />
       </div>
     </div>
   );
@@ -452,6 +494,63 @@ function Methodology() {
         weighted satisfaction. This is a planning model based on the numbers you enter, not
         personalized financial advice.
       </p>
+    </div>
+  );
+}
+
+function GoalPlannerGuide() {
+  const priorityWedding = exampleGoal("priority", "wedding");
+  const optimizedWedding = exampleGoal("optimized", "wedding");
+  const needs = Object.fromEntries(EXAMPLE.optimized.allocations.map((g) => [g.id, g.requiredMonthly]));
+
+  return (
+    <div className="mt-14 space-y-10">
+      <CalcSection title="A worked example">
+        <p>
+          Say you can set aside {inr(EXAMPLE_BUDGET)} a month and have three goals, all due in 12
+          months and all saved conservatively: a {inr(600000)} wedding (importance 5), a{" "}
+          {inr(150000)} emergency fund (importance 4) and a {inr(120000)} laptop (importance 4).
+          Fully funding them needs about {inr(needs.wedding)}, {inr(needs.emergency)} and{" "}
+          {inr(needs.laptop)} a month, far more than the budget.
+        </p>
+        <p>
+          <strong>Priority order</strong> puts all {inr(priorityWedding.allocated)} into the wedding,
+          because it's the most important goal, and leaves the other two with nothing. It scores{" "}
+          {EXAMPLE.priority.score}/100. <strong>An equal split</strong> spreads the money evenly and
+          scores {EXAMPLE.equal.score}/100. <strong>The optimized split</strong> fully funds the
+          laptop and the emergency fund, which cost little for how much they matter, and puts the
+          remaining {inr(optimizedWedding.allocated)} toward the wedding. It scores{" "}
+          {EXAMPLE.optimized.score}/100, the best of the three for the same money.
+        </p>
+        <p>
+          The lesson isn't that the wedding matters less. An expensive goal with a near deadline can
+          quietly crowd out everything else, and seeing the trade-off in numbers helps you decide
+          whether to move its date, lower its target or raise your budget.
+        </p>
+      </CalcSection>
+
+      <CalcSection title="How to use the planner">
+        <p>
+          Start with the monthly amount you can reliably commit, not your best month. Add each goal
+          with what it will cost, what you've already saved toward it and when you need it. Rate its
+          importance from 1 to 5, and choose a growth profile that suits the time left. The planner
+          then compares all three strategies and shows how much each goal gets and how long it would
+          take to reach.
+        </p>
+        <p>
+          For a single goal you can also use the{" "}
+          <Link to="/goal-sip" className="font-semibold underline decoration-current/30 underline-offset-2">
+            goal SIP calculator
+          </Link>
+          , and if one of your goals is an emergency fund, the{" "}
+          <Link to="/emergency-fund-calculator" className="font-semibold underline decoration-current/30 underline-offset-2">
+            emergency fund calculator
+          </Link>{" "}
+          helps you pick the right target.
+        </p>
+      </CalcSection>
+
+      <VerdictFAQ items={FAQ_ITEMS} className="border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />
     </div>
   );
 }

@@ -6,12 +6,16 @@ import { TOOL_TONES } from "@/data/toolTones";
 import { useSettings } from "@/context/SettingsContext";
 import { formatCurrency } from "@/utils/currency";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
+import CalcSection from "@/components/calculators/CalcSection";
+import { Link } from "react-router-dom";
 
 const tone = TOOL_TONES.healthCheckup;
 
 const FAQ_ITEMS = [
   { q: "Where does the 0-100 score come from?", a: "Four categories, 25 points each: savings rate, emergency fund coverage, debt-to-income ratio, and net worth relative to your annual income. The exact rubric is published below — nothing about the scoring is hidden." },
   { q: "Is my data saved anywhere?", a: "Only in your browser, and only if you choose to save it. Typing numbers in here computes your score instantly on your device; nothing is sent anywhere unless you click \"Save to my Financial Profile,\" which stores it in your browser's local storage, not on a server." },
+  { q: "What does debt-to-income mean in this score?", a: "Your total outstanding loans (home loan, car loan, personal loans, credit card balances) as a percentage of one year's income. Under 20% scores full marks, under 36% scores 18 of 25, under 50% scores 10, and 50% or more scores 0. A large home loan can push this up even when the EMI is affordable, so read it alongside your savings rate." },
+  { q: "How often should I check my financial health?", a: "Once every few months is plenty, and after any big change such as a new job, a new loan or a large purchase. The score moves slowly, so the useful thing to watch is the direction of each of the four parts rather than the headline number." },
   { q: "Why does net worth need 3x income to score full marks?", a: "It's a common long-term benchmark, not a rule — being at 1x annual income in net worth by your mid-30s and 3x by retirement age are typical milestones cited in financial planning. Being below it isn't a failing grade, especially earlier in your career; it's one input among four, not the whole picture." },
 ];
 
@@ -143,6 +147,8 @@ export default function FinancialHealthCheckupPage() {
 
         <Methodology />
 
+        <HealthGuide />
+
         <VerdictFAQ items={FAQ_ITEMS} className="mt-14" />
       </div>
     </div>
@@ -210,11 +216,90 @@ function Methodology() {
       <h2 className="font-display text-[15px] font-bold text-[#111814] dark:text-[#eef1ec]">How this is computed</h2>
       <p className="mt-2 max-w-[62ch] text-[13px] leading-6 text-[#111814]/60 dark:text-[#eef1ec]/55">
         25 points each, published so it's auditable rather than a black box. Savings rate: 20%+ scores full
-        marks, scaling down to 0 at or below 0%. Emergency fund: scales linearly to full marks at 6 months of
+        marks, stepping down to 0 if you spend more than you earn. Emergency fund: scales linearly to full marks at 6 months of
         expenses covered. Debt-to-income: full marks under 20% of annual income, scaling down to 0 above 50%.
         Net worth: full marks at 3x annual income or more, 0 at or below zero net worth. The four scores sum to
         your total out of 100.
       </p>
+    </div>
+  );
+}
+
+// The starting numbers this page opens with, scored by the real engine so
+// the worked example below always matches what the tool shows.
+const EXAMPLE_PROFILE = defaultProfile();
+const EXAMPLE_HEALTH = computeFinancialHealth(EXAMPLE_PROFILE);
+const inr = (v) => `₹${Math.round(v).toLocaleString("en-IN")}`;
+
+function HealthGuide() {
+  const [savings, emergency, debt, netWorth] = EXAMPLE_HEALTH.breakdown;
+  const level = levelFor(EXAMPLE_HEALTH.score);
+
+  return (
+    <div className="mt-14 space-y-10">
+      <CalcSection title="What each part of the score tells you">
+        <p>
+          <strong>Savings rate</strong> is the share of your monthly income left after expenses.
+          It's the engine behind everything else: a high savings rate builds your emergency fund,
+          pays down debt and grows net worth. Saving 20% or more of what you earn scores full marks.
+        </p>
+        <p>
+          <strong>Emergency fund</strong> is how many months of expenses you could cover with cash
+          set aside for surprises such as a job loss or a hospital bill. Six months scores full
+          marks. Below that, the score falls in proportion.
+        </p>
+        <p>
+          <strong>Debt-to-income</strong> is your total outstanding loans as a percentage of a
+          year's income. It shows how much of your future earnings are already spoken for.
+        </p>
+        <p>
+          <strong>Net worth</strong> is everything you own minus everything you owe, compared with
+          your annual income. Reaching three times your annual income scores full marks. Early in a
+          career it's normal to be well below that.
+        </p>
+      </CalcSection>
+
+      <CalcSection title="A worked example">
+        <p>
+          The checkup opens with an example: {inr(EXAMPLE_PROFILE.monthlyIncome)} monthly income,{" "}
+          {inr(EXAMPLE_PROFILE.monthlyExpenses)} in expenses, {inr(EXAMPLE_PROFILE.emergencyFundAmount)}{" "}
+          in an emergency fund, {inr(EXAMPLE_PROFILE.totalAssets)} in assets and{" "}
+          {inr(EXAMPLE_PROFILE.totalLiabilities)} in loans. That person saves {savings.value} of
+          their income ({savings.score}/25), has {EXAMPLE_HEALTH.emergencyMonths.toFixed(1)} months of
+          expenses saved ({emergency.score}/25), owes {debt.value} of a year's income ({debt.score}/25) and gets{" "}
+          {netWorth.score}/25 for net worth. The total is {EXAMPLE_HEALTH.score}/100: {level.label}.
+        </p>
+        <p>
+          Their savings habit is already strong. The two quickest gains are topping up the
+          emergency fund towards six months of expenses and letting that savings rate keep building
+          net worth.
+        </p>
+      </CalcSection>
+
+      <CalcSection title="How to raise your score">
+        <p>
+          Work on the lowest of the four parts first, since that's where each rupee moves the score
+          most. If your emergency fund is short, park a fixed amount in a savings account or liquid
+          fund every month until it covers six months; the{" "}
+          <Link to="/emergency-fund-calculator" className="font-semibold underline decoration-current/30 underline-offset-2">
+            emergency fund calculator
+          </Link>{" "}
+          gives you a target. If debt is high, clear the most expensive loans first with the{" "}
+          <Link to="/debt-payoff-planner" className="font-semibold underline decoration-current/30 underline-offset-2">
+            debt payoff planner
+          </Link>
+          . If your savings rate is low, look at your three biggest monthly expenses before cutting
+          small ones.
+        </p>
+        <p>
+          Net worth improves on its own once the other three are healthy. Track it every few months
+          with the{" "}
+          <Link to="/networth-calculator" className="font-semibold underline decoration-current/30 underline-offset-2">
+            net worth calculator
+          </Link>
+          .
+        </p>
+      </CalcSection>
     </div>
   );
 }

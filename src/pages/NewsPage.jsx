@@ -126,6 +126,9 @@ export default function NewsPage() {
         description="Fresh finance, market, economy, and business stories — refreshed every minute."
         path="/news"
         keywords="finance news, stock market news, business news, economy news"
+        // Headlines come from third-party news APIs, not FINAIW's own
+        // writing, so keep the page out of Google's index.
+        noindex
         jsonLd={breadcrumbSchema([
           { name: "Home", path: "/" },
           { name: "News", path: "/news" },

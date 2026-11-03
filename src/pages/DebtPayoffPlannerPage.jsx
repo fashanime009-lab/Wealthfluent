@@ -7,12 +7,16 @@ import { useSettings } from "@/context/SettingsContext";
 import { formatCurrency } from "@/utils/currency";
 import { currencies } from "@/data/currencies";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
+import CalcSection from "@/components/calculators/CalcSection";
+import { Link } from "react-router-dom";
 
 const tone = TOOL_TONES.debtStrategy;
 const STORAGE_KEY = "finaiw-debt-payoff-planner";
 
 const FAQ_ITEMS = [
   { q: "Why do snowball and avalanche sometimes take the same number of months?", a: "When your extra payment is large relative to your balances, both strategies clear everything at close to the same pace — the difference is mainly in total interest paid, and in which debt disappears first (a real psychological factor snowball is built around)." },
+  { q: "Which is better, snowball or avalanche?", a: "Avalanche always pays the same or less total interest, because the most expensive debt shrinks first. Snowball can pay a little more interest but clears small debts sooner, and those early wins help many people keep going. If the interest difference is small, pick the one you'll actually stick to." },
+  { q: "Should I invest or pay off debt first?", a: "Compare the loan's interest rate with what you can realistically earn after tax. Credit card debt at 36% a year beats almost any investment return, so clear it first. A home loan at 8 to 9% is a closer call. The debt vs invest verdict on FINAIW works through that decision with your own numbers." },
   { q: "Does the order I enter debts in matter?", a: "No — each strategy re-sorts your list internally: snowball by smallest balance first, avalanche by highest interest rate first, regardless of the order you typed them in." },
   { q: "What if my minimum payments don't even cover the interest?", a: "That's negative amortization — the balance would grow forever no matter which strategy you pick. If the tool can't find a payoff month within 50 years, it'll tell you rather than show a misleading number; the fix is almost always more extra payment, not a better strategy." },
 ];
@@ -114,6 +118,8 @@ export default function DebtPayoffPlannerPage() {
         {result && <StrategyComparison result={result} debts={debts} fmt={fmt} />}
 
         <Methodology />
+
+        <DebtGuide />
 
         <VerdictFAQ items={FAQ_ITEMS} className="mt-14" />
       </div>
@@ -383,6 +389,80 @@ function Methodology() {
         time instead of staying flat. This is a planning model based on the numbers you enter, not personalized
         financial advice.
       </p>
+    </div>
+  );
+}
+
+// Worked example for the guide, run through the real simulation so the
+// numbers always match the tool. The page's own default debts are a case
+// where both strategies agree, so this uses one where they differ.
+const EXAMPLE_EXTRA = 10000;
+const EXAMPLE_DEBTS = [
+  { id: "consumer", name: "Consumer loan", balance: 40000, rate: 16, minPayment: 3000 },
+  { id: "card", name: "Credit card", balance: 150000, rate: 36, minPayment: 6000 },
+  { id: "personal", name: "Personal loan", balance: 300000, rate: 14, minPayment: 8000 },
+];
+const EXAMPLE = compareDebtStrategies({ debts: EXAMPLE_DEBTS, extraMonthly: EXAMPLE_EXTRA });
+const inr = (v) => `₹${Math.round(v).toLocaleString("en-IN")}`;
+
+function DebtGuide() {
+  const { snowball, avalanche } = EXAMPLE;
+
+  return (
+    <div className="mt-14 space-y-10">
+      <CalcSection title="Snowball vs avalanche, in plain words">
+        <p>
+          Both strategies pay the minimum on every debt and put every extra rupee on one target
+          debt. When that debt is gone, its minimum payment joins the extra amount and rolls onto
+          the next target, so the payment you throw at debt keeps growing. The only difference is
+          the order.
+        </p>
+        <p>
+          <strong>Snowball</strong> targets the smallest balance first. You clear a whole debt
+          sooner, which feels good and keeps many people motivated. <strong>Avalanche</strong>{" "}
+          targets the highest interest rate first. It's the cheapest order mathematically, because
+          the most expensive money is paid off first.
+        </p>
+      </CalcSection>
+
+      <CalcSection title="A worked example">
+        <p>
+          Say you owe {inr(EXAMPLE_DEBTS[0].balance)} on a consumer loan at{" "}
+          {EXAMPLE_DEBTS[0].rate}%, {inr(EXAMPLE_DEBTS[1].balance)} on a credit card at{" "}
+          {EXAMPLE_DEBTS[1].rate}% and {inr(EXAMPLE_DEBTS[2].balance)} on a personal loan at{" "}
+          {EXAMPLE_DEBTS[2].rate}%, with {inr(EXAMPLE.totalMinPayments)} of minimum payments and{" "}
+          {inr(EXAMPLE_EXTRA)} extra each month.
+        </p>
+        <p>
+          Snowball clears the consumer loan in month {snowball.payoffMonth.consumer}, an early win,
+          and pays {inr(snowball.totalInterest)} in total interest. Avalanche goes after the credit
+          card first and pays {inr(avalanche.totalInterest)}, saving {inr(EXAMPLE.interestSaved)}.
+          Both are debt-free in {avalanche.months} months. Here the choice comes down to whether
+          that early win is worth {inr(EXAMPLE.interestSaved)} to you.
+        </p>
+      </CalcSection>
+
+      <CalcSection title="Getting out of debt faster">
+        <p>
+          The extra monthly amount matters far more than the strategy. Even a few thousand rupees
+          more each month can cut months off the plan, so try changing it above and watch the
+          payoff date move. Stop adding new debt while you pay down the old, especially on credit
+          cards, and never pay only the card's minimum due: at 36% or more a year, the balance
+          barely moves.
+        </p>
+        <p>
+          Before prepaying a loan, check whether your lender charges a prepayment or foreclosure
+          fee. If you're unsure whether to prepay or invest, the{" "}
+          <Link to="/verdict/debt-vs-invest" className="font-semibold underline decoration-current/30 underline-offset-2">
+            debt vs invest verdict
+          </Link>{" "}
+          compares both with your own numbers, and the{" "}
+          <Link to="/emi-calculator" className="font-semibold underline decoration-current/30 underline-offset-2">
+            EMI calculator
+          </Link>{" "}
+          shows what any loan really costs.
+        </p>
+      </CalcSection>
     </div>
   );
 }
