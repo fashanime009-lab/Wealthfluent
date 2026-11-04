@@ -393,6 +393,15 @@ async function main() {
     await page.evaluateOnNewDocument(() => {
       window.__PRERENDER__ = true;
     });
+    // The site picks its currency from the device timezone (see
+    // src/utils/autoDetect.js). Build machines run in UTC, which maps to
+    // USD, so every prerendered page was captured with rupee-sized
+    // examples behind a "$" ("$10,000 monthly") or FX-converted lesson
+    // figures ("$104"). Pin the snapshot to India, the site's main
+    // audience, so the HTML Google and link previews read shows ₹ on any
+    // build machine. Visitors still get their own currency once the page
+    // loads, since detection reruns in their browser.
+    await page.emulateTimezone("Asia/Kolkata");
 
     for (const route of routes) {
       try {
