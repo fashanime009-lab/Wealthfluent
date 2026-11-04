@@ -6,7 +6,7 @@ import { getLessonRelated } from "@/data/recommendations/lessonRecommendations";
 import { isLessonComplete, markLessonComplete, getStreak, getLessonsCompletedCount } from "@/services/learningEngine";
 import { highlightText, extractKeyNumbers } from "@/utils/highlightNumbers";
 import LessonChart from "@/components/learn/LessonChart";
-import Seo from "@/components/seo/Seo";
+import Seo, { SITE_URL } from "@/components/seo/Seo";
 import { articleSchema, breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 import { useSettings } from "@/context/SettingsContext";
@@ -25,6 +25,11 @@ function resolve(field, currency) {
 // Who reviews the lessons, shown in the visible byline and passed to the
 // Article schema from this one place so the two can't drift apart. Matches
 // the reviewer role described on /about.
+// Every lesson has a 1200x630 cover in public/learn/images/, named by slug:
+// .webp for the page itself, .jpg for social previews (og:image), since
+// some link-preview crawlers still don't read WebP.
+const coverPath = (slug, ext) => `/learn/images/${slug}.${ext}`;
+
 const LESSON_REVIEWER = { name: "Nishit B", credential: "MBA in Finance", jobTitle: "Financial Crime Risk Analyst" };
 
 export default function LessonPage() {
@@ -123,6 +128,7 @@ function LessonContent({ slug }) {
           description={lesson.summary}
           path={`/learn/${lesson.slug}`}
           type="article"
+          image={`${SITE_URL}${coverPath(lesson.slug, "jpg")}`}
           keywords={`${lesson.title}, personal finance, ${lesson.category}, financial literacy`}
           jsonLd={[
             articleSchema({
@@ -134,6 +140,7 @@ function LessonContent({ slug }) {
               // authored on individual dates, so one real shared date is
               // more honest here than inventing 30 distinct ones.
               publishedTime: "2026-09-11",
+              image: `${SITE_URL}${coverPath(lesson.slug, "jpg")}`,
               reviewedBy: [{ "@type": "Person", name: LESSON_REVIEWER.name, jobTitle: LESSON_REVIEWER.jobTitle }],
             }),
             breadcrumbSchema([
@@ -182,6 +189,16 @@ function LessonContent({ slug }) {
           </Link>
           , {LESSON_REVIEWER.credential}
         </p>
+
+        <img
+          src={coverPath(lesson.slug, "webp")}
+          alt={`${lesson.title} illustration`}
+          width={1200}
+          height={630}
+          loading="eager"
+          fetchPriority="high"
+          className="mt-8 h-auto w-full rounded-lg"
+        />
 
         <div className="mt-9 space-y-5 text-[15px] leading-7 text-[#111814]/75 dark:text-[#eef1ec]/75">
           {body.map((para, i) => (
