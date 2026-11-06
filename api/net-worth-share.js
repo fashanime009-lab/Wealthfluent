@@ -12,8 +12,9 @@
 // interactive tool (/net-worth-percentile?p=...), which reads the same
 // ?p= to show the "Your friend is in the top X%..." banner.
 //
-// Publicly reachable at /net-worth-percentile/share via the rewrite in
-// vercel.json (kept out of /api/ in the URL a person actually shares).
+// Publicly reachable at /net-worth-percentile/share via the second path in
+// netlify/functions/net-worth-share.mjs (kept out of /api/ in the URL a
+// person actually shares).
 const SITE_URL = "https://www.finaiw.com";
 
 function clampPercent(raw) {
