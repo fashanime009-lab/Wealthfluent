@@ -1,0 +1,98 @@
+# Builds the site and deploys it to Cloudflare Workers (see wrangler.jsonc).
+#
+# Pull requests: uploads a preview version and comments its URL on the PR.
+# Pushes to main: deploys to the live Worker.
+#
+# Cloudflare can't build this site itself (the prerender needs Chrome and
+# runs longer than Cloudflare's build limit), so GitHub's runner does it.
+# Needs two repository secrets: CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+# Until they exist the build still runs and the deploy step is skipped.
+name: Cloudflare
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: cloudflare-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  WRANGLER_VERSION: 4.160.0
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # The 1001 share cards take minutes to render, so keep them between
+      # runs and re-render only when something that changes a card changes.
+      - name: Restore share cards
+        uses: actions/cache@v4
+        with:
+          path: .cache/og
+          key: og-cards-${{ hashFiles('api/og/_card.js', 'api/og/Geist-Regular.ttf', 'scripts/generate-og-images.mjs', 'package-lock.json') }}
+
+      - name: Build
+        run: npm run build:cloudflare
+
+      - name: Check for Cloudflare credentials
+        id: creds
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "::notice::No CLOUDFLARE_API_TOKEN secret yet, skipping deploy."; fi
+
+      - name: Upload preview version
+        if: github.event_name == 'pull_request' && steps.creds.outputs.ok == 'true'
+        id: preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -o pipefail
+          # Preview URLs only exist once the Worker has been deployed to
+          # workers.dev at least once. The very first run does that deploy;
+          # it's safe because nothing routes finaiw.com to the Worker until
+          # its custom domains are added.
+          deployments=$(npx --yes wrangler@"$WRANGLER_VERSION" deployments list --json 2>/dev/null || echo "[]")
+          if [ "$(echo "$deployments" | jq 'length' 2>/dev/null || echo 0)" = "0" ]; then
+            echo "::notice::Worker has never been deployed, doing the first deploy."
+            npx --yes wrangler@"$WRANGLER_VERSION" deploy
+          fi
+          npx --yes wrangler@"$WRANGLER_VERSION" versions upload --preview-alias "pr-${{ github.event.number }}" | tee upload.log
+          url=$(grep -oE 'https://pr-${{ github.event.number }}-[^ ]+\.workers\.dev' upload.log | head -1 || true)
+          if [ -z "$url" ]; then
+            echo "::warning::Uploaded, but Cloudflare returned no preview URL. Check that a workers.dev subdomain is set up under Workers & Pages."
+          fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Comment preview URL
+        if: steps.preview.outputs.url != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment "${{ github.event.number }}" --edit-last --create-if-none \
+            --body "Cloudflare preview for ${GITHUB_SHA::7}: ${{ steps.preview.outputs.url }}"
+
+      - name: Deploy to production
+        if: github.event_name == 'push' && steps.creds.outputs.ok == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@"$WRANGLER_VERSION" deploy

@@ -1,0 +1,9 @@
+# Cloudflare static-asset redirects, copied into dist/ by
+# scripts/build-cloudflare.mjs. Social short links, temporary (302) so the
+# destinations can change later. The apex -> www redirect lives in a
+# Cloudflare Redirect Rule instead, since it has to match on the hostname.
+/ig https://www.finaiw.com/?utm_source=instagram&utm_medium=social&utm_campaign=bio_link 302
+/story https://www.finaiw.com/?utm_source=instagram&utm_medium=social&utm_campaign=story 302
+/fb https://www.finaiw.com/?utm_source=facebook&utm_medium=social&utm_campaign=bio_link 302
+/pin https://www.finaiw.com/?utm_source=pinterest&utm_medium=social&utm_campaign=bio_link 302
+/x https://www.finaiw.com/?utm_source=twitter&utm_medium=social&utm_campaign=bio_link 302

@@ -36,3 +36,9 @@ dist-ssr
 # dist/sitemap.xml) — never hand-edited or meant to be committed; keeping
 # a second copy here risked exactly the staleness bug it was meant to fix.
 public/sitemap.xml
+
+# Pre-rendered share cards for the Cloudflare build (scripts/generate-og-images.mjs)
+.cache
+# Local Cloudflare secrets for `wrangler dev`
+.dev.vars
+.wrangler

@@ -1,9 +1,8 @@
-import { Resend } from "resend";
+import { getResend } from "./lib/resendClient.js";
 import { rateLimit } from "./lib/rateLimit.js";
 import { escapeHtml, isValidEmail, cleanText } from "./lib/sanitize.js";
 import { renderEmail, dataTable, dataRow, messageBlock } from "./lib/emailTemplate.js";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
   // Everything is inside this outer try/catch, including request parsing
@@ -60,7 +59,7 @@ export default async function handler(req, res) {
     // The Resend Node SDK does NOT throw on API errors — it resolves with
     // { data, error } — so `error` must be checked explicitly, or a failed
     // send would silently look identical to a successful one.
-    const { error: sendError } = await resend.emails.send({
+    const { error: sendError } = await getResend().emails.send({
       from: "FINAIW <hello@finaiw.com>",
       to: process.env.CONTACT_INBOX_EMAIL || "finaiw.organisation@gmail.com",
       subject: `⭐ New FINAIW Feedback (${safeFeedbackType})`,

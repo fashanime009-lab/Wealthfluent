@@ -1,4 +1,4 @@
-# Netlify config — replaces vercel.json.
+# Netlify config (the site moved here from Vercel in November 2026).
 
 [build]
   command = "npm run build"
