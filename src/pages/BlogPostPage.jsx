@@ -29,6 +29,14 @@ function parseReviewers(names) {
   });
 }
 
+// frontmatter.author is either the team ("FINAIW Team") or one person in the
+// same "Name, Job title" form as reviewedBy. A person becomes a Person
+// author in the Article schema; the team stays the publisher organization.
+function parseAuthor(entry) {
+  if (!entry || entry === "FINAIW Team") return undefined;
+  return parseReviewers([entry])[0];
+}
+
 // Internal (root-relative) links use React Router's Link for client-side
 // navigation, matching every other internal link on the site; anything
 // else (there are none in this post, but future posts might link out)
@@ -171,6 +179,9 @@ export default function BlogPostPage() {
   const bodyWithoutDuplicateHero = content.replace(/^!\[[^\]]*\]\([^)]*\)\s*\n+/, "");
   const sections = splitIntoH2Sections(bodyWithoutDuplicateHero);
   const firstTableIndex = sections.findIndex((section) => sectionHasTable(section));
+  // Posts that aren't about a calculator (e.g. compliance guides) set
+  // `cta: false` to drop the "Find your exact number" box entirely.
+  const showCta = frontmatter.cta !== false;
   const ctaProps = {
     ...(frontmatter.ctaPath && { path: frontmatter.ctaPath }),
     ...(frontmatter.ctaLabel && { label: frontmatter.ctaLabel }),
@@ -199,6 +210,7 @@ export default function BlogPostPage() {
               modifiedTime: frontmatter.dateModified,
               image: absoluteHeroUrl,
               reviewedBy: parseReviewers(frontmatter.reviewedBy || []),
+              author: parseAuthor(frontmatter.author),
             }),
             breadcrumbSchema([
               { name: "Home", path: "/" },
@@ -223,7 +235,8 @@ export default function BlogPostPage() {
         </h1>
 
         <p className="mt-3 text-[13px] text-[#111814]/60 dark:text-[#eef1ec]/55">
-          By {frontmatter.author} · Reviewed by {joinReviewers(frontmatter.reviewedBy || [])} · Updated{" "}
+          By {frontmatter.author}
+          {frontmatter.reviewedBy?.length > 0 && <> · Reviewed by {joinReviewers(frontmatter.reviewedBy)}</>} · Updated{" "}
           {formatPostDate(frontmatter.dateModified)} · {frontmatter.readTime}
         </p>
 
@@ -243,12 +256,12 @@ export default function BlogPostPage() {
               <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                 {section}
               </ReactMarkdown>
-              {i === firstTableIndex && <BlogCta {...ctaProps} />}
+              {showCta && i === firstTableIndex && <BlogCta {...ctaProps} />}
             </div>
           ))}
         </div>
 
-        <BlogCta {...ctaProps} />
+        {showCta && <BlogCta {...ctaProps} />}
       </div>
     </div>
   );
