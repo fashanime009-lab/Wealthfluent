@@ -24,7 +24,7 @@ export default function PrivacyPolicyPage() {
     <>
       <Seo
         title="Privacy Policy – FINAIW"
-        description="Read the Privacy Policy of FINAIW to understand how we collect, use, and protect your personal information."
+        description="How FINAIW handles your data: what we collect, analytics and ad cookies (only with your consent), what stays in your browser, and your privacy rights."
         path="/privacy-policy"
         keywords="privacy policy, data protection, FINAIW, GDPR, personal information, cookies"
         jsonLd={breadcrumbSchema([

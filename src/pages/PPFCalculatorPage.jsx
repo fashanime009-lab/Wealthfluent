@@ -64,7 +64,7 @@ export default function PPFCalculatorPage() {
   return (
     <>
       <Seo
-        title="PPF Calculator India – Public Provident Fund Maturity"
+        title="PPF Calculator: Maturity Value & Interest (India)"
         description="Calculate your Indian PPF maturity value and interest earned from your yearly contribution, interest rate and tenure. Free, no signup."
         path="/ppf-calculator"
         keywords="PPF calculator, public provident fund calculator, PPF maturity calculator, PPF interest calculator"

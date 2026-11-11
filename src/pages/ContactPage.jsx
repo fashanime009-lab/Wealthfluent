@@ -63,7 +63,7 @@ export default function ContactPage() {
     <>
       <Seo
         title="Contact Us – FINAIW"
-        description="Get in touch with FINAIW. We're here to help with your financial questions. Based in Mumbai, India."
+        description="Contact the FINAIW team in Mumbai, India, with questions about our free calculators, verdicts and guides, partnerships or feedback. We reply by email."
         path="/contact"
         keywords="contact FINAIW, support, feedback, financial intelligence"
         jsonLd={breadcrumbSchema([

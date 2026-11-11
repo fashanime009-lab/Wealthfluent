@@ -67,8 +67,8 @@ export default function InvestmentRiskAnalyzerPage() {
   return (
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <Seo
-        title="Investment Risk Analyzer — Willingness vs Capacity Risk Profiling"
-        description="A real two-sided risk-profiling tool: how much risk you're willing to take, reconciled against how much your actual finances can afford, with a recommended asset allocation."
+        title="Risk Profile Analyzer: Risk Tolerance vs Capacity"
+        description="Find your investment risk profile: an 8-question risk tolerance quiz checked against what your finances can absorb, with a model asset allocation."
         path="/investment-risk-analyzer"
         keywords="investment risk analyzer, risk profile, risk tolerance, asset allocation tool"
         jsonLd={[

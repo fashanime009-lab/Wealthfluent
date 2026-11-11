@@ -106,7 +106,7 @@ export default function FIRECalculatorPage() {
   return (
     <>
       <Seo
-        title="FIRE Calculator – Financial Independence & Retire Early Planning"
+        title="FIRE Calculator: Your Financial Independence Number"
         description="Plan your financial independence with our FIRE Calculator. Estimate wealth, FIRE number, and retirement timeline with inflation-adjusted projections."
         path="/fire-calculator"
         keywords="FIRE calculator, financial independence, retire early, wealth planning, retirement calculator"

@@ -63,7 +63,7 @@ export default function CAGRCalculatorPage() {
   return (
     <>
       <Seo
-        title="CAGR Calculator: Find Your Compound Annual Growth Rate"
+        title="CAGR Calculator: Compound Annual Growth Rate"
         description="CAGR calculator: find the compound annual growth rate from a starting value, ending value and years. Free, with formula, worked examples and how to read it."
         path="/cagr-calculator"
         keywords="CAGR calculator, what is CAGR, CAGR meaning, compound annual growth rate, CAGR formula, CAGR calculator for stocks, mutual fund CAGR"

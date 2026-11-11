@@ -77,8 +77,8 @@ export default function ToolsPage() {
   return (
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <Seo
-        title="Smart Finance Tools — Planning & Portfolio Utilities"
-        description="Explore smart finance planning tools, investment utilities, financial learning resources, and wealth planning systems."
+        title="Free Money Planning Tools: Goals, Risk & Debt"
+        description="Free FINAIW planning tools: a multi-goal budget planner, investment risk analyzer, financial health checkup and debt payoff planner. No signup."
         path="/tools"
         keywords="finance tools, goal planner, risk analyzer, portfolio tracker, inflation calculator, wealth roadmap"
         jsonLd={breadcrumbSchema([

@@ -118,8 +118,8 @@ export default function FinancialGoalPlannerPage() {
   return (
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <Seo
-        title="Financial Goal Planner — Multi-Goal Budget Optimizer"
-        description="Build your own set of goals and a monthly budget, and see the provably-optimal way to split that budget across them — a real fractional-knapsack optimizer, compared against naive strategies."
+        title="Financial Goal Planner: Split Your Monthly Budget"
+        description="Plan several money goals at once: enter your goals and monthly budget and see the split that funds the most of what matters, vs simpler strategies."
         path="/financial-goal-planner"
         keywords="financial goal planner, goal optimizer, budget allocation tool, multi-goal planning"
         jsonLd={[

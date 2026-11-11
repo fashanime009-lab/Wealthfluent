@@ -88,7 +88,7 @@ export default function AnnualRetirementIncomePage() {
   return (
     <>
       <Seo
-        title="Annual Retirement Income Calculator – Plan Your Retirement"
+        title="Annual Retirement Income Calculator"
         description="Calculate your retirement corpus and annual retirement income based on your pre-retirement savings and post-retirement payout period."
         path="/annual-retirement-income"
         keywords="retirement income calculator, annual retirement income, retirement planning, corpus calculator"

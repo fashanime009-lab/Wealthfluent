@@ -65,14 +65,14 @@ export default function EmergencyFundCalculatorPage() {
   return (
     <>
       <Seo
-        title="Emergency Fund Calculator – How Much Should You Save?"
-        description="Calculate how much you need in your emergency fund based on your monthly expenses and savings. Plan for financial security."
+        title="Emergency Fund Calculator: How Much to Save"
+        description="Calculate how big your emergency fund should be from your monthly expenses, and how long it will take to build it from what you can save each month."
         path="/emergency-fund-calculator"
         keywords="emergency fund calculator, rainy day fund, savings goal, financial security"
         jsonLd={[
         calculatorSchema({
           name: "Emergency Fund Calculator",
-          description: "Calculate how much you need in your emergency fund based on your monthly expenses and savings. Plan for financial security.",
+          description: "Calculate how big your emergency fund should be from your monthly expenses, and how long it will take to build it from what you can save each month.",
           path: "/emergency-fund-calculator",
         }),
         faqSchema([

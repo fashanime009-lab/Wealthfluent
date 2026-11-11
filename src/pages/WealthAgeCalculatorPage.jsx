@@ -128,7 +128,7 @@ export default function WealthAgeCalculatorPage() {
   return (
     <>
       <Seo
-        title="Wealth Age Calculator – Compare Your Financial Age to Your Real Age"
+        title="Wealth Age Calculator: Your Financial Age"
         description="Free Wealth Age Calculator: see how your savings rate and net worth compare to your real age, with a wealth score and personalized insights."
         path="/wealth-age-calculator"
         keywords="wealth age calculator, financial age, net worth calculator, savings rate, wealth score"

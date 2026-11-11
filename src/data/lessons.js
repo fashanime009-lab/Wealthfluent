@@ -23,6 +23,7 @@ export const LESSONS = [
     category: "Core Skill",
     readTime: "6 min",
     summary: "Understand how time, consistency and returns interact — the single most important idea in personal finance.",
+    seoDescription: "What compound interest is and why time matters most: worked examples of returns earning returns, monthly vs yearly compounding, and debt that compounds.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -55,6 +56,7 @@ export const LESSONS = [
     category: "Beginner",
     readTime: "7 min",
     summary: "Learn the foundations before choosing financial products — what actually differentiates one investment from another.",
+    seoDescription: "Investment basics for beginners: how return, risk and liquidity separate one investment from another, and how to match each one to your goals.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -75,6 +77,7 @@ export const LESSONS = [
     category: "Planning",
     readTime: "7 min",
     summary: "Turn a distant, abstract goal into a practical, numbers-based savings system.",
+    seoDescription: "How to plan for retirement with real numbers: set a target corpus, allow for inflation, and turn it into a monthly savings plan you can stick to.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -95,6 +98,7 @@ export const LESSONS = [
     category: "Guide",
     readTime: "6 min",
     summary: "Balance growth, liquidity and downside protection — before you think about returns.",
+    seoDescription: "Investment risk explained: how much you can afford to lose, why liquidity and diversification matter, and protecting your plan before chasing returns.",
     body: [
       "Most people think of investment risk as 'how much can I lose,' but that's only half the picture. The other half is 'how much can I afford to lose without derailing my life' — and that depends entirely on your emergency fund, insurance, and debt situation, not your investment picks.",
       "This is why financial advisors insist on building an emergency fund and getting adequate insurance before investing aggressively. Without them, a single bad year — a job loss, a medical emergency — can force you to liquidate investments at the worst possible time, locking in losses that would have recovered if you'd had a cash buffer instead.",
@@ -112,6 +116,7 @@ export const LESSONS = [
     category: "Markets",
     readTime: "6 min",
     summary: "Read financial headlines with better context instead of reacting to noise.",
+    seoDescription: "Stock market basics: why prices move on expectations rather than just results, and how to read financial headlines with context instead of panic.",
     body: [
       "Stock markets move on expectations, not just current facts — which is why a company can report record profits and still see its stock price fall, if investors expected even more. This is the single most common source of confusion for new investors reading financial news.",
       "Short-term price movements are dominated by sentiment, interest rate expectations, and global flows of capital — genuinely difficult to predict consistently, even for professionals. Long-term returns, over 10+ years, are dominated by something much simpler and more predictable: the underlying growth of company earnings and the economy.",
@@ -129,6 +134,7 @@ export const LESSONS = [
     category: "Foundations",
     readTime: "5 min",
     summary: "The unglamorous first step that makes every other financial goal possible.",
+    seoDescription: "What an emergency fund is, how many months of expenses to keep, and where to park it so it's safe and easy to reach when a job loss or big bill hits.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -149,6 +155,7 @@ export const LESSONS = [
     category: "Foundations",
     readTime: "6 min",
     summary: "Not all debt is equal — how to think about which debt to attack first.",
+    seoDescription: "Which debt to pay off first: compare interest rates, decide between prepaying a loan and investing, and why expensive credit card debt goes first.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -182,6 +189,7 @@ export const LESSONS = [
     category: "Foundations",
     readTime: "5 min",
     summary: "A simple, durable framework for where your money should go each month.",
+    seoDescription: "Budgeting basics with the 50/30/20 rule: how to split take-home pay between needs, wants and savings, and adapt the framework to your income.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -202,6 +210,7 @@ export const LESSONS = [
     category: "Core Skill",
     readTime: "6 min",
     summary: "Why the real enemy of long-term savings isn't market crashes — it's quietly rising prices.",
+    seoDescription: "What inflation is and how it quietly erodes your savings, what today's prices could become at 6% a year, and why your returns must beat it.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -234,6 +243,7 @@ export const LESSONS = [
     category: "Foundations",
     readTime: "6 min",
     summary: "The three-digit number that quietly decides your loan rates — and how to actually move it.",
+    seoDescription: "Credit score (CIBIL) basics: what the 300-900 score means, how it affects loan approvals and interest rates, and the habits that actually raise it.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -254,6 +264,7 @@ export const LESSONS = [
     category: "Guide",
     readTime: "7 min",
     summary: "Why relying only on your employer's health cover is a riskier bet than it feels like.",
+    seoDescription: "Health insurance basics: why relying only on employer cover is risky, how a personal policy protects you between jobs and in retirement, what to check.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -274,6 +285,8 @@ export const LESSONS = [
     category: "Beginner",
     readTime: "7 min",
     summary: "Equity, debt, hybrid, index — a map of the mutual fund landscape before you pick one.",
+    seoDescription: "Types of mutual funds explained: equity, debt, hybrid and index funds, which suit short or long-term goals, and the safest options for beginners.",
+    seoTitle: "Types of Mutual Funds: Every Category Explained",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -312,6 +325,7 @@ export const LESSONS = [
     category: "Core Skill",
     readTime: "6 min",
     summary: "The numbers usually aren't the problem — your reaction to them is.",
+    seoDescription: "Behavioral investing mistakes explained, starting with loss aversion: why your reactions to market moves often cost more than the funds you pick.",
     body: [
       "Loss aversion means people feel the pain of a loss roughly twice as intensely as the pleasure of an equivalent gain. This is why investors often sell winning investments too early (to 'lock in' the good feeling) and hold losing investments too long (to avoid 'realizing' the bad feeling) — the exact opposite of a sound strategy, which should judge each position on its future prospects, not its past cost.",
       "Recency bias makes people extrapolate recent performance forward: a fund that did well for two years suddenly looks like the obvious choice, and a market that's fallen for a few months starts to feel permanently broken. In reality, chasing recent top-performing funds is a well-documented way to underperform, since strong recent performance is often followed by reversion, not continuation.",
@@ -329,6 +343,7 @@ export const LESSONS = [
     category: "Markets",
     readTime: "6 min",
     summary: "Where gold, real estate and other alternatives actually fit in a portfolio — and where they don't.",
+    seoDescription: "Gold, real estate and other alternative assets: the role each plays in a portfolio, and why gold works as a diversifier rather than a growth asset.",
     body: [
       "Gold's main portfolio role isn't high growth — historically it has trailed equity returns over long periods — it's low correlation with equity markets. Gold has tended to hold up or rise during periods of high inflation, currency weakness, or geopolitical stress, exactly when equities often struggle, which makes a small allocation (commonly cited around 5-10%) a diversification tool rather than a growth engine.",
       "Sovereign Gold Bonds and gold ETFs are generally more efficient ways to hold gold than physical jewelry or coins for investment purposes — no making charges, no storage risk, and SGBs additionally pay a small annual interest on top of gold's price movement, with capital gains tax exemption if held to maturity.",
@@ -346,6 +361,7 @@ export const LESSONS = [
     category: "Planning",
     readTime: "7 min",
     summary: "The EMI is only the headline number — here's what actually determines the total cost.",
+    seoDescription: "Home loan basics: how principal, interest rate and tenure set your EMI, why a longer tenure costs far more interest, and what else to check first.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -378,6 +394,7 @@ export const LESSONS = [
     category: "Beginner",
     readTime: "6 min",
     summary: "Low-cost tracking beats stock-picking more often than most investors expect — but not always.",
+    seoDescription: "Index funds vs actively managed funds: how each works, why low-cost index funds often beat stock-pickers after fees, and when active can make sense.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -411,6 +428,7 @@ export const LESSONS = [
     category: "Guide",
     readTime: "6 min",
     summary: "Pure protection, no savings component — why term insurance beats endowment plans for most people.",
+    seoDescription: "Term insurance basics: pure life cover with no maturity payout, why it usually beats endowment plans, and how to think about how much cover you need.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -434,6 +452,7 @@ export const LESSONS = [
     category: "Planning",
     readTime: "7 min",
     summary: "India's three big retirement vehicles, and how their lock-ins and tax treatment actually differ.",
+    seoDescription: "NPS vs PPF vs EPF compared: how India's three retirement schemes differ on contributions, lock-in periods, returns and tax treatment.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -463,6 +482,7 @@ export const LESSONS = [
     category: "Core Skill",
     readTime: "6 min",
     summary: "The mechanical habit that forces you to sell high and buy low, without needing to predict anything.",
+    seoDescription: "How to rebalance a portfolio: why a 70/30 mix drifts after a strong year, when to rebalance, and how it makes you sell high and buy low.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -483,6 +503,7 @@ export const LESSONS = [
     category: "Markets",
     readTime: "6 min",
     summary: "The single smoothed number that makes messy year-to-year returns comparable — and where it can mislead.",
+    seoDescription: "What CAGR means and how to calculate it: the smoothed yearly growth rate that makes returns comparable, with examples and where it can mislead.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -503,6 +524,7 @@ export const LESSONS = [
     category: "Foundations",
     readTime: "5 min",
     summary: "The underused technique for expenses you can see coming, so they never feel like an emergency.",
+    seoDescription: "Sinking funds explained: save gradually for known costs like insurance premiums, festivals and weddings so they never turn into an emergency.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -523,6 +545,7 @@ export const LESSONS = [
     category: "Planning",
     readTime: "7 min",
     summary: "How to actually read a CTC breakup, and what in it genuinely changes your take-home pay.",
+    seoDescription: "How to read your CTC breakup: which salary components reach your bank account, where EPF and gratuity fit, and what really changes take-home pay.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -546,6 +569,7 @@ export const LESSONS = [
     category: "Beginner",
     readTime: "6 min",
     summary: "Averaging in beats investing all at once more often than intuition suggests — but not universally.",
+    seoDescription: "SIP vs lump sum investing: how averaging in through a SIP works, when investing all at once comes out ahead, and how to choose for your money.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -578,6 +602,8 @@ export const LESSONS = [
     category: "Guide",
     readTime: "6 min",
     summary: "The handful of numbers on a dense factsheet that actually matter for your decision.",
+    seoDescription: "How to read a mutual fund factsheet line by line: expense ratio and the handful of other numbers that should actually drive your decision.",
+    seoTitle: "How to Read a Mutual Fund Factsheet, Line by Line",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -621,6 +647,7 @@ export const LESSONS = [
     category: "Core Skill",
     readTime: "6 min",
     summary: "How your mix of equity, debt and cash should shift as decades pass — and why most people don't adjust enough.",
+    seoDescription: "Asset allocation by age: how your mix of equity, debt and cash should shift from your 20s to retirement, and why most people adjust too little.",
     body: [
       "In your 20s and early 30s, time is the biggest asset you have. A heavy equity allocation (often 70-90%) is generally appropriate for long-term goals, since decades remain to ride out any downturn — a 30-40% market drop is recoverable when there's no near-term need to withdraw.",
       "Through your 40s, as retirement moves from abstract to a real 15-20 year horizon and obligations grow (children's education, aging parents, a home loan), a gradual shift toward a more balanced mix — commonly 50-65% equity — starts to make sense, trading some upside for reduced volatility on a growing, harder-to-replace corpus.",
@@ -639,6 +666,7 @@ export const LESSONS = [
     category: "Core Skill",
     readTime: "6 min",
     summary: "The single number that tells you whether you're actually getting wealthier, not just earning more.",
+    seoDescription: "How to calculate and track your net worth: assets minus liabilities, what to include, how often to update it and what the trend tells you.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -662,6 +690,7 @@ export const LESSONS = [
     category: "Planning",
     readTime: "7 min",
     summary: "The math behind retiring decades early — and why the real lever is your savings rate, not your salary.",
+    seoDescription: "FIRE (Financial Independence, Retire Early) explained: the math behind retiring early and why your savings rate matters more than your salary.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -693,6 +722,7 @@ export const LESSONS = [
     category: "Guide",
     readTime: "7 min",
     summary: "Why 'rent is throwing money away' is the most misleading piece of financial folk wisdom in housing.",
+    seoDescription: "Rent vs buy a home: why 'rent is wasted money' misleads, and how to compare the full cost of owning with renting and investing the difference.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -713,6 +743,7 @@ export const LESSONS = [
     category: "Foundations",
     readTime: "5 min",
     summary: "How the tax quietly baked into nearly everything you buy actually works.",
+    seoDescription: "How GST works in India: one tax applied at each stage of the supply chain, why it replaced older indirect taxes, and who finally ends up paying it.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [
@@ -733,6 +764,7 @@ export const LESSONS = [
     category: "Core Skill",
     readTime: "6 min",
     summary: "Why money today is worth more than the same amount in five years — and how to actually compare the two.",
+    seoDescription: "Time value of money explained: why money today is worth more than the same amount later, and how to compare sums across time using simple math.",
     body: (currency) => {
       const { inr, fmt } = currencyHelpers(currency);
       return [

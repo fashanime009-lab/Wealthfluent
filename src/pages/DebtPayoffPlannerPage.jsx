@@ -76,8 +76,8 @@ export default function DebtPayoffPlannerPage() {
   return (
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <Seo
-        title="Debt Payoff Strategy Planner — Snowball vs Avalanche, Simulated"
-        description="Enter every debt you're carrying and see snowball vs avalanche payoff simulated month by month — total interest, payoff timeline, and which one actually wins for your real numbers."
+        title="Debt Payoff Planner: Snowball vs Avalanche"
+        description="List your debts and compare snowball vs avalanche payoff month by month: total interest, your debt-free date and which strategy wins for your numbers."
         path="/debt-payoff-planner"
         keywords="debt payoff calculator, debt snowball calculator, debt avalanche calculator, debt payoff strategy, pay off multiple debts"
         jsonLd={[

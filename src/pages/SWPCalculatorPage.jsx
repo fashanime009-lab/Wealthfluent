@@ -75,7 +75,7 @@ export default function SWPCalculatorPage() {
   return (
     <>
       <Seo
-        title="SWP Calculator – How Long Will Your Withdrawals Last?"
+        title="SWP Calculator: How Long Will Withdrawals Last?"
         description="See how long a lump sum lasts with a fixed monthly withdrawal (SWP), or whether it can sustain that payout indefinitely. Free, no signup."
         path="/swp-calculator"
         keywords="SWP calculator, systematic withdrawal plan calculator, retirement withdrawal calculator, how long will my corpus last"

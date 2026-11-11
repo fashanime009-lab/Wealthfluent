@@ -80,8 +80,8 @@ export default function FDCalculatorPage() {
   return (
     <>
       <Seo
-        title="FD Calculator: Fixed Deposit Maturity & Interest, Free"
-        description="FD calculator for maturity value and interest earned on your deposit, rate and tenure. Compare quarterly vs monthly compounding and payout vs cumulative FDs free."
+        title="FD Calculator: Fixed Deposit Maturity & Interest"
+        description="FD calculator for maturity value and interest on any deposit, rate and tenure. Compare quarterly vs monthly compounding and payout vs cumulative FDs."
         path="/fd-calculator"
         keywords="fixed deposit calculator, FD calculator, FD return calculator, fixed deposit interest calculator, FD monthly payout, term deposit calculator"
         jsonLd={[

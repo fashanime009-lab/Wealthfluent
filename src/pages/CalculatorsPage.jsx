@@ -62,8 +62,8 @@ export default function CalculatorsPage() {
   return (
     <>
       <Seo
-        title="Financial Calculators – SIP, EMI, Retirement, FIRE & More"
-        description={`Explore ${TOTAL_CALCULATORS}+ free financial calculators for investments, loans, retirement planning, bond yields, net worth, inflation, and more. Make smarter financial decisions with FINAIW.`}
+        title={`${TOTAL_CALCULATORS} Free Financial Calculators: SIP, EMI, FD, FIRE`}
+        description={`${TOTAL_CALCULATORS} free financial calculators for SIP, EMI, FD, PPF, retirement, FIRE, inflation and net worth. Real formulas, any currency, no signup needed.`}
         path="/calculators"
         keywords="financial calculators, investment calculator, loan calculator, retirement calculator, bond yield calculator, net worth calculator, inflation calculator"
         jsonLd={breadcrumbSchema([

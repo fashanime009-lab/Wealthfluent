@@ -59,14 +59,14 @@ export default function InflationCalculatorPage() {
   return (
     <>
       <Seo
-        title="Inflation Calculator – Understand the Impact of Inflation"
-        description="Calculate the impact of inflation on your money. Find out how much you will need in the future to meet your current expenses whilst keeping up with inflation."
+        title="Inflation Calculator: What Your Money Will Be Worth"
+        description="Calculate the impact of inflation on your money: how much you'll need in future to cover today's expenses, and what your savings will really be worth."
         path="/inflation-calculator"
         keywords="inflation calculator, purchasing power, future cost, inflation impact, financial planning"
         jsonLd={[
         calculatorSchema({
           name: "Inflation Calculator",
-          description: "Calculate the impact of inflation on your money. Find out how much you will need in the future to meet your current expenses whilst keeping up with inflation.",
+          description: "Calculate the impact of inflation on your money: how much you'll need in future to cover today's expenses, and what your savings will really be worth.",
           path: "/inflation-calculator",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
@@ -88,7 +88,7 @@ export default function InflationCalculatorPage() {
           <CalcHeader
             category="Investment planning"
             title="Inflation Calculator"
-            description="Calculate the impact of inflation on your money. Find out how much you will need in the future to meet your current expenses whilst keeping up with inflation."
+            description="Calculate the impact of inflation on your money: how much you'll need in future to cover today's expenses, and what your savings will really be worth."
           />
 
           <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">

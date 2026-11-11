@@ -169,7 +169,7 @@ const currency = settings.currency;
   return (
     <>
       <Seo
-        title="Retirement Corpus Planner – Goal-Based Retirement Calculator"
+        title="Retirement Corpus Calculator: Goal-Based Planner"
         description="Plan the corpus you need to retire, with variable asset allocation and inflation-adjusted expenses. Free retirement goal planner, no signup."
         path="/goal-planner"
         keywords="retirement corpus planner, goal planner, retirement planning, corpus calculator, financial planning, asset allocation"
