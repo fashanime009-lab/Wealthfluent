@@ -1,7 +1,7 @@
 import { getResend } from "./lib/resendClient.js";
 import { rateLimit } from "./lib/rateLimit.js";
 import { escapeHtml, isValidEmail, cleanText } from "./lib/sanitize.js";
-import { renderEmail, dataTable, dataRow, messageBlock } from "./lib/emailTemplate.js";
+import { renderEmail, dataTable, dataRow, messageBlock, stars } from "./lib/emailTemplate.js";
 
 
 export default async function handler(req, res) {
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(emailRaw);
     const safeMessage = escapeHtml(message).replace(/\n/g, "<br>");
-    const safeFeedbackType = escapeHtml(feedbackType);
+    const typeLabel = { suggestion: "Suggestion", bug: "Bug report", feature: "Feature request", other: "Feedback" }[feedbackType];
 
     // The Resend Node SDK does NOT throw on API errors — it resolves with
     // { data, error } — so `error` must be checked explicitly, or a failed
@@ -62,20 +62,27 @@ export default async function handler(req, res) {
     const { error: sendError } = await getResend().emails.send({
       from: "FINAIW <hello@finaiw.com>",
       to: process.env.CONTACT_INBOX_EMAIL || "finaiw.organisation@gmail.com",
-      subject: `⭐ New FINAIW Feedback (${safeFeedbackType})`,
+      // Reply goes straight to the person when they left an email.
+      ...(emailRaw ? { replyTo: emailRaw } : {}),
+      subject: `New feedback (${typeLabel}, ${rating}/5) from ${name.replace(/[\r\n]+/g, " ")}`,
       html: renderEmail({
-        eyebrow: "Feedback Form",
-        heading: "New Submission",
+        preheader: `${typeLabel} feedback rated ${rating}/5.`,
+        eyebrow: "Feedback form",
+        heading: `${typeLabel} from ${safeName}`,
+        intro: emailRaw
+          ? "New feedback on finaiw.com. Reply to this email to answer them directly."
+          : "New feedback on finaiw.com. They didn't leave an email address.",
         bodyHtml:
           dataTable(
-            dataRow("Name", safeName) +
-              dataRow("Email", safeEmail || "Not provided") +
-              dataRow("Rating", `${escapeHtml(rating)} ⭐`) +
-              dataRow("Feedback Type", safeFeedbackType) +
-              dataRow("Newsletter", subscribe ? "Yes" : "No")
+            dataRow("Rating", stars(rating)) +
+              dataRow("Type", typeLabel) +
+              dataRow("Name", safeName) +
+              dataRow("Email", safeEmail ? `<a href="mailto:${safeEmail}" style="color:#047857;">${safeEmail}</a>` : "Not provided") +
+              dataRow("Newsletter", subscribe ? "Wants to subscribe" : "No")
           ) + messageBlock("Message", safeMessage),
-        footerNote: "This email was automatically generated from the FINAIW Feedback Form.",
+        footerNote: "Sent automatically by the feedback form on finaiw.com.",
       }),
+      text: `${typeLabel} from ${name} (${rating}/5)\nEmail: ${emailRaw || "not provided"}\nNewsletter: ${subscribe ? "yes" : "no"}\n\n${message}`,
     });
 
     if (sendError) {
