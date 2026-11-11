@@ -34,7 +34,7 @@ function parseReviewers(names) {
 // author in the Article schema; the team stays the publisher organization.
 function parseAuthor(entry) {
   if (!entry || entry === "FINAIW Team") return undefined;
-  return parseReviewers([entry])[0];
+  return { ...parseReviewers([entry])[0], url: `${SITE_URL}/about` };
 }
 
 // Internal (root-relative) links use React Router's Link for client-side
@@ -73,7 +73,8 @@ function MarkdownImage({ src, alt }) {
       loading="lazy"
       width={dims?.width}
       height={dims?.height}
-      className="w-full border border-[#111814]/10 dark:border-[#eef1ec]/10"
+      className={`w-full border border-[#111814]/10 dark:border-[#eef1ec]/10 ${dims?.maxWidth ? "mx-auto" : ""}`}
+      style={dims?.maxWidth ? { maxWidth: dims.maxWidth } : undefined}
     />
   );
 }

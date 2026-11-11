@@ -11,3 +11,9 @@
 # Vite emits content-hashed filenames, so these can be cached forever.
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
+
+# The workers.dev copies (the production workers.dev URL and every PR
+# preview, e.g. pr-12-finaiw.<account>.workers.dev) must not be indexed;
+# only www.finaiw.com should be. Matches host, so www is unaffected.
+https://:version.:subdomain.workers.dev/*
+  X-Robots-Tag: noindex

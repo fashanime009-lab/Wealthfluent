@@ -52,17 +52,30 @@ async function serveOgImage(request, env) {
   });
 }
 
+// _headers marks workers.dev hosts noindex for static assets, but its rules
+// don't apply to responses the Worker builds, so do the same here.
+function withNoindexOnWorkersDev(request, response) {
+  if (!new URL(request.url).hostname.endsWith(".workers.dev")) return response;
+  const marked = new Response(response.body, response);
+  marked.headers.set("X-Robots-Tag", "noindex");
+  return marked;
+}
+
 export default {
   async fetch(request, env) {
-    const { pathname } = new URL(request.url);
-
-    if (pathname === "/api/og") return serveOgImage(request, env);
-
-    const handler = HANDLERS[pathname];
-    if (handler) {
-      return handler(request, { ip: request.headers.get("CF-Connecting-IP") || "unknown" });
-    }
-
-    return env.ASSETS.fetch(request);
+    return withNoindexOnWorkersDev(request, await route(request, env));
   },
 };
+
+async function route(request, env) {
+  const { pathname } = new URL(request.url);
+
+  if (pathname === "/api/og") return serveOgImage(request, env);
+
+  const handler = HANDLERS[pathname];
+  if (handler) {
+    return handler(request, { ip: request.headers.get("CF-Connecting-IP") || "unknown" });
+  }
+
+  return env.ASSETS.fetch(request);
+}

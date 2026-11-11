@@ -2,7 +2,7 @@
 slug: negative-news-screening
 seoTitle: "Negative News Screening: A Risk-Based Guide for Finance"
 h1: "Negative News Screening in Finance: Build a Defensible Risk-Based Program"
-metaDescription: "Negative news (adverse media) screening for financial firms: what it can and can't show, how to set scope and sources, review alerts, govern and measure it."
+metaDescription: "Negative news (adverse media) screening for financial firms: what it shows, how to set scope and sources, review alerts, and govern and measure it."
 datePublished: 2026-11-11
 dateModified: 2026-11-11
 author: "Nishit B, Financial Crime Risk Analyst"
@@ -12,6 +12,8 @@ category: "Compliance"
 tags: ["Compliance", "AML", "Risk Management", "Due Diligence"]
 keywords: ["negative news screening", "adverse media screening", "adverse media screening AML", "negative news screening compliance", "adverse media checks", "risk-based approach AML", "customer due diligence", "enhanced due diligence", "adverse media false positives"]
 cta: false
+heroImage: "/blog/images/negative-news-screening-hero.webp"
+heroAlt: "Negative news screening: a headline is not proof, verify before you act"
 ---
 
 A customer or business partner may seem low-risk at onboarding, then credible reporting links them to fraud, corruption, sanctions evasion, or another financial crime. That shift can leave a firm asking whether to act, what to verify, and how to avoid treating a headline as fact.
@@ -34,6 +36,8 @@ Sanctions and politically exposed person (PEP) checks compare names against stru
 
 Public coverage is uneven. Some events receive little reporting, while language differences, transliterations, common names, and incomplete records can obscure or confuse a match. Reports can also be outdated or wrong, so analysts should distinguish a rumor or allegation from an investigation, charge, court finding, or conviction.
 
+![The adverse media evidence ladder, from rumour and allegation up to investigation, charge, court finding and conviction](/blog/images/adverse-media-evidence-ladder.webp)
+
 ## Design negative news screening around risk and useful sources
 
 ### Define who and what to screen
@@ -51,6 +55,8 @@ Search categories might include corruption, fraud, money laundering, terrorist f
 The [FATF’s risk-based approach for the banking sector](https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Risk-based-approach-banking-sector.html) offers a resource for designing controls around identified risk; its guidance is not a standalone legal mandate for every firm. The [Wolfsberg Group’s Negative News Screening FAQs](https://wolfsberg-group.org/news/publication-of-the-negative-news-screening-faqs) also discuss source reliability, result relevance, alert handling, and governance.
 
 ## Turn screening alerts into consistent decisions
+
+![Five-step negative news alert review: alert, verify identity, assess source and status, escalate in proportion, record the decision](/blog/images/negative-news-alert-review-process.webp)
 
 ### Verify identity before judging the story
 
@@ -91,6 +97,23 @@ Check that chosen sources remain current and relevant across key languages and l
 ### Use results to update rules and training
 
 Quality reviews and new risks may show that search terms, source coverage, or analyst guidance need changes. Document why each change was made and check its effect on alert quality, review time, and missed-risk concerns. This creates a practical feedback loop instead of relying on alert volume as a measure of success.
+
+## Frequently asked questions
+
+### What is negative news screening?
+Negative news screening, also called adverse media screening, searches public reporting for information tied to financial crime, integrity or other risks relevant to a customer relationship. It informs due diligence but doesn't replace it, sanctions checks or an investigation.
+
+### How is adverse media screening different from sanctions or PEP screening?
+Sanctions and PEP checks compare names against structured lists. Media screening searches news and other public information. It can add context, but it doesn't by itself establish a legal ban or a confirmed list match.
+
+### Does a negative news hit mean we should reject the customer?
+No. A news mention alone proves no wrongdoing. First confirm it's the same person or entity, then assess the source and whether the story is a rumour, allegation, investigation, charge, court finding or conviction, and escalate in proportion to the evidence.
+
+### When should firms run negative news screening?
+At onboarding and, where the firm's risk assessment and policy call for it, as part of ongoing monitoring.
+
+### What should a negative news case record include?
+The alert, sources checked, identity comparison, risk assessment, reviewer, any escalation and the reason for the final decision.
 
 ## Conclusion
 
