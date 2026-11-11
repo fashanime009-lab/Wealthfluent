@@ -6,7 +6,8 @@
 //
 // When adding a new post, add its body images' real dimensions here too —
 // an image missing from this table still renders fine, it just won't have
-// width/height set (a minor CLS risk, not a broken page).
+// width/height set (a minor CLS risk, not a broken page). An optional
+// maxWidth caps how wide the image is displayed (it's centred).
 export const BLOG_IMAGE_DIMENSIONS = {
   "monthly-investment-to-reach-1-million-by-years.webp": { width: 1200, height: 700 },
   "cost-of-starting-to-invest-late.webp": { width: 1000, height: 1500 },
@@ -19,6 +20,10 @@ export const BLOG_IMAGE_DIMENSIONS = {
   "home-loan-emi-for-common-loan-amounts.webp": { width: 1000, height: 1500 },
   "janitor-vs-banker-two-lives.webp": { width: 1000, height: 1500 },
   "warren-buffett-wealth-after-65.webp": { width: 1200, height: 700 },
+  "negative-news-alert-review-process.webp": { width: 1200, height: 700 },
+  // Tall infographic: shown at most 520px wide and centred, so it doesn't
+  // take over the article column.
+  "adverse-media-evidence-ladder.webp": { width: 1000, height: 1500, maxWidth: 520 },
 };
 
 export function dimensionsFor(src) {
