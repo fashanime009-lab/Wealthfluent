@@ -1,7 +1,7 @@
 import { getResend } from "./lib/resendClient.js";
 import { rateLimit } from "./lib/rateLimit.js";
 import { escapeHtml, isValidEmail, cleanText } from "./lib/sanitize.js";
-import { renderEmail } from "./lib/emailTemplate.js";
+import { renderEmail, dataTable, dataRow } from "./lib/emailTemplate.js";
 
 
 export default async function handler(req, res) {
@@ -62,17 +62,16 @@ export default async function handler(req, res) {
     const { error: notifyError } = await getResend().emails.send({
       from: "FINAIW <hello@finaiw.com>",
       to: process.env.CONTACT_INBOX_EMAIL || "finaiw.organisation@gmail.com",
-      subject: "📬 New FINAIW Newsletter Signup",
+      subject: `New newsletter subscriber: ${email}`,
       html: renderEmail({
+        preheader: `${email} just subscribed to the FINAIW newsletter.`,
         eyebrow: "Newsletter",
-        heading: "New Subscriber",
-        bodyHtml: `
-          <p style="margin:0;font-size:15px;font-weight:600;color:#0f172a;">
-            ${safeEmail}
-          </p>
-        `,
-        footerNote: "This email was automatically generated from the FINAIW newsletter signup form.",
+        heading: "New subscriber",
+        intro: "Someone just joined the FINAIW newsletter from the signup form on finaiw.com. They've been added to your Resend contacts.",
+        bodyHtml: dataTable(dataRow("Email", `<a href="mailto:${safeEmail}" style="color:#047857;">${safeEmail}</a>`)),
+        footerNote: "Sent automatically by the newsletter signup form on finaiw.com.",
       }),
+      text: `New newsletter subscriber: ${email}\n\nThey've been added to your Resend contacts.`,
     });
     if (notifyError) {
       console.warn("Owner notification email failed:", notifyError.message || notifyError);

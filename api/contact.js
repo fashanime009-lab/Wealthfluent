@@ -1,7 +1,7 @@
 import { getResend } from "./lib/resendClient.js";
 import { rateLimit } from "./lib/rateLimit.js";
 import { escapeHtml, isValidEmail, cleanText } from "./lib/sanitize.js";
-import { renderEmail, dataTable, dataRow, messageBlock } from "./lib/emailTemplate.js";
+import { renderEmail, dataTable, dataRow, messageBlock, button, linkList, siteLink } from "./lib/emailTemplate.js";
 
 
 export default async function handler(req, res) {
@@ -49,6 +49,9 @@ export default async function handler(req, res) {
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safeMessage = escapeHtml(message).replace(/\n/g, "<br>");
+    // Subjects are plain text, not HTML, so they use the cleaned name
+    // rather than the HTML-escaped one (which would show "&amp;").
+    const subjectName = name.replace(/[\r\n]+/g, " ");
 
     // Email to the site owner. The Resend Node SDK does NOT throw on API
     // errors — it resolves with { data, error } — so `error` must be
@@ -57,15 +60,24 @@ export default async function handler(req, res) {
     const { error: ownerError } = await getResend().emails.send({
       from: "FINAIW <hello@finaiw.com>",
       to: process.env.CONTACT_INBOX_EMAIL || "finaiw.organisation@gmail.com",
-      subject: `📩 New Contact Form Submission from ${safeName}`,
+      // Hitting Reply answers the visitor, not hello@finaiw.com.
+      replyTo: email,
+      subject: `New message from ${subjectName} via finaiw.com`,
       html: renderEmail({
-        eyebrow: "Contact Form",
-        heading: "New Submission",
+        preheader: `${subjectName} wrote to FINAIW through the contact form.`,
+        eyebrow: "Contact form",
+        heading: `New message from ${safeName}`,
+        intro: "Someone just wrote to FINAIW through the contact form. Reply to this email to answer them directly.",
         bodyHtml:
-          dataTable(dataRow("Name", safeName) + dataRow("Email", safeEmail)) +
-          messageBlock("Message", safeMessage),
-        footerNote: "This email was automatically generated from the FINAIW Contact Form.",
+          dataTable(
+            dataRow("Name", safeName) +
+              dataRow("Email", `<a href="mailto:${safeEmail}" style="color:#047857;">${safeEmail}</a>`)
+          ) +
+          messageBlock("Message", safeMessage) +
+          button(`mailto:${safeEmail}`, `Reply to ${safeName}`),
+        footerNote: "Sent automatically by the contact form on finaiw.com.",
       }),
+      text: `New message from ${subjectName} via finaiw.com\n\nName: ${name}\nEmail: ${email}\n\n${message}\n\nReply to this email to answer them directly.`,
     });
 
     if (ownerError) {
@@ -84,25 +96,27 @@ export default async function handler(req, res) {
     const { error: replyError } = await getResend().emails.send({
       from: "FINAIW <hello@finaiw.com>",
       to: email,
-      subject: "✅ We received your message",
+      subject: "We got your message, thanks for writing to FINAIW",
       html: renderEmail({
-        eyebrow: "Thank you",
-        heading: `Hello ${safeName} 👋`,
+        preheader: "We've received your message and usually reply within 24–48 hours.",
+        eyebrow: "Message received",
+        heading: `Thanks, ${safeName}. We've got your message.`,
+        intro: "A real person on the FINAIW team will read it and reply to this email address, usually within <strong>24–48 hours</strong>.",
         bodyHtml: `
-          <p style="margin:0 0 12px;font-size:14px;line-height:1.7;color:#334155;">
-            Thank you for contacting <strong>FINAIW</strong>. We've successfully received
-            your message and will review it as soon as possible.
+          ${messageBlock("What you sent us", safeMessage)}
+          <p style="margin:24px 0 0;">
+            Talk soon,<br>
+            <strong style="color:#111814;">The FINAIW team</strong>
           </p>
-          ${messageBlock("Your message", safeMessage)}
-          <p style="margin:20px 0 0;font-size:14px;line-height:1.7;color:#334155;">
-            We usually respond within <strong>24–48 hours</strong>. Thank you for your patience.
-          </p>
-          <p style="margin:20px 0 0;font-size:14px;line-height:1.7;color:#0f172a;">
-            <strong>FINAIW Team</strong><br>
-            <span style="color:#64748b;">Personal Finance Tools &amp; Calculators</span>
-          </p>
+          ${linkList("While you wait", [
+            { href: siteLink("/calculators", "contact_autoreply"), label: "30 free financial calculators", note: "SIP, EMI, FD, PPF, retirement and FIRE, in any currency." },
+            { href: siteLink("/verdict", "contact_autoreply"), label: "Get a verdict on a money decision", note: "Rent vs buy, debt vs invest, term vs endowment and more." },
+            { href: siteLink("/blog", "contact_autoreply"), label: "Read the FINAIW blog", note: "Number-first guides on investing, saving and planning." },
+          ])}
         `,
+        footerNote: "You're getting this because you contacted us on finaiw.com. We don't add you to any mailing list.",
       }),
+      text: `Thanks, ${name}. We've got your message.\n\nA real person on the FINAIW team will read it and reply to this email address, usually within 24-48 hours.\n\nWhat you sent us:\n${message}\n\nTalk soon,\nThe FINAIW team\nhttps://www.finaiw.com\n\nYou're getting this because you contacted us on finaiw.com. We don't add you to any mailing list.`,
     });
 
     if (replyError) {
