@@ -105,6 +105,11 @@ const sitemapSections = [
         path: "/blog/build-wealth-on-an-average-salary",
         description: "True stories and the 5 money habits that matter more than salary",
       },
+      {
+        name: "Negative News Screening in Finance: Build a Defensible Risk-Based Program",
+        path: "/blog/negative-news-screening",
+        description: "Adverse media screening for financial firms, from scope to audit trail",
+      },
     ],
   },
   {

@@ -84,6 +84,9 @@ export function articleSchema({
   image,
   inLanguage = "en",
   reviewedBy,
+  // A named Person when the content has an individual author; otherwise
+  // the publisher organization is credited.
+  author,
 }) {
   return {
     "@context": "https://schema.org",
@@ -105,7 +108,7 @@ export function articleSchema({
         url: `${SITE_URL}/logo.png`,
       },
     },
-    author: {
+    author: author || {
       "@type": "Organization",
       name: SITE_NAME,
     },
@@ -115,8 +118,13 @@ export function articleSchema({
     // specifically asks for. Should match the post's visible byline
     // exactly, which is why callers with their own reviewers (e.g. blog
     // posts) pass them in rather than this generic default being silently
-    // out of sync with what the page actually shows.
-    reviewedBy: reviewedBy && reviewedBy.length ? reviewedBy : DEFAULT_REVIEWER,
+    // out of sync with what the page actually shows. An explicit empty
+    // list (a post with no separate reviewer) adds no reviewedBy at all.
+    ...(reviewedBy === undefined
+      ? { reviewedBy: DEFAULT_REVIEWER }
+      : reviewedBy.length
+        ? { reviewedBy }
+        : {}),
   };
 }
 
