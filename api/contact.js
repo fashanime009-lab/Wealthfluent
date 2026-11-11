@@ -1,9 +1,8 @@
-import { Resend } from "resend";
+import { getResend } from "./lib/resendClient.js";
 import { rateLimit } from "./lib/rateLimit.js";
 import { escapeHtml, isValidEmail, cleanText } from "./lib/sanitize.js";
 import { renderEmail, dataTable, dataRow, messageBlock } from "./lib/emailTemplate.js";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
   // Everything is inside this outer try/catch, including request parsing
@@ -55,7 +54,7 @@ export default async function handler(req, res) {
     // errors — it resolves with { data, error } — so `error` must be
     // checked explicitly, or a failed send would silently look identical
     // to a successful one.
-    const { error: ownerError } = await resend.emails.send({
+    const { error: ownerError } = await getResend().emails.send({
       from: "FINAIW <hello@finaiw.com>",
       to: process.env.CONTACT_INBOX_EMAIL || "finaiw.organisation@gmail.com",
       subject: `📩 New Contact Form Submission from ${safeName}`,
@@ -82,7 +81,7 @@ export default async function handler(req, res) {
     // works — this failure is isolated from the owner-notification result
     // above so a hiccup here doesn't make an already-delivered message look
     // failed to the visitor.
-    const { error: replyError } = await resend.emails.send({
+    const { error: replyError } = await getResend().emails.send({
       from: "FINAIW <hello@finaiw.com>",
       to: email,
       subject: "✅ We received your message",

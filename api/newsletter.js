@@ -1,9 +1,8 @@
-import { Resend } from "resend";
+import { getResend } from "./lib/resendClient.js";
 import { rateLimit } from "./lib/rateLimit.js";
 import { escapeHtml, isValidEmail, cleanText } from "./lib/sanitize.js";
 import { renderEmail } from "./lib/emailTemplate.js";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
   // Everything is inside this outer try/catch, including request parsing
@@ -48,7 +47,7 @@ export default async function handler(req, res) {
     // here (e.g. the email is already a contact from a previous signup)
     // still lets the visitor see "you're subscribed" rather than an error,
     // but it's now actually logged instead of silently swallowed.
-    const { error: contactError } = await resend.contacts.create({
+    const { error: contactError } = await getResend().contacts.create({
       email,
       unsubscribed: false,
     });
@@ -60,7 +59,7 @@ export default async function handler(req, res) {
     // an audience/campaign workflow is fully set up. A notification failure
     // still shouldn't make a successful signup look failed to the visitor,
     // but it's logged so it's visible in Vercel's function logs.
-    const { error: notifyError } = await resend.emails.send({
+    const { error: notifyError } = await getResend().emails.send({
       from: "FINAIW <hello@finaiw.com>",
       to: process.env.CONTACT_INBOX_EMAIL || "finaiw.organisation@gmail.com",
       subject: "📬 New FINAIW Newsletter Signup",
