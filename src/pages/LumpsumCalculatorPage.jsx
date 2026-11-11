@@ -70,7 +70,7 @@ export default function LumpsumCalculatorPage() {
   return (
     <>
       <Seo
-        title="Lumpsum Calculator – What a One-Time Investment Grows To"
+        title="Lumpsum Calculator: One-Time Investment Returns"
         description="Calculate the maturity value of a one-time (lumpsum) mutual fund investment. Free, no signup — see future value and total returns instantly."
         path="/lumpsum-calculator"
         keywords="lumpsum calculator, lumpsum investment calculator, mutual fund lumpsum calculator, one time investment calculator"

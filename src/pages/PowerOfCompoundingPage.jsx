@@ -51,7 +51,7 @@ export default function PowerOfCompoundingPage() {
   return (
     <>
       <Seo
-        title="Power of Compounding Calculator – Simple vs Compound"
+        title="Compound Interest Calculator: Simple vs Compound"
         description="See exactly how much more compound interest earns than simple interest on the same amount, rate and years. Free, no signup."
         path="/power-of-compounding"
         keywords="power of compounding calculator, simple vs compound interest calculator, compound interest calculator"

@@ -59,14 +59,14 @@ export default function RateOfReturnCalculatorPage() {
   return (
     <>
       <Seo
-        title="Rate of Return Calculator – Find Your Annualized Return"
-        description="Calculate the annualized rate of return (CAGR) for your investments. Find out how much your money has grown over time."
+        title="Rate of Return Calculator: Annualized Return"
+        description="Calculate the annualized rate of return (CAGR) on any investment from its start value, end value and time held. See how much your money really grew."
         path="/rate-of-return-calculator"
         keywords="rate of return calculator, CAGR calculator, investment returns, annualized return"
         jsonLd={[
         calculatorSchema({
           name: "Rate of Return Calculator",
-          description: "Calculate the annualized rate of return (CAGR) for your investments. Find out how much your money has grown over time.",
+          description: "Calculate the annualized rate of return (CAGR) on any investment from its start value, end value and time held. See how much your money really grew.",
           path: "/rate-of-return-calculator",
         }),
         faqSchema([

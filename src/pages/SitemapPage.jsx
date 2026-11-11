@@ -142,7 +142,7 @@ export default function SitemapPage() {
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <Seo
         title="Sitemap"
-        description="Explore the complete sitemap of FINAIW. Find all calculators, tools, resources, and legal pages in one place."
+        description="Every page on FINAIW in one place: all free financial calculators, decision verdicts, planning tools, lessons, blog posts and legal pages."
         path="/sitemap"
         keywords="sitemap, FINAIW, site navigation, financial calculators, tools"
         jsonLd={{

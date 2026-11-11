@@ -68,7 +68,7 @@ export default function GoalSIPCalculatorPage() {
   return (
     <>
       <Seo
-        title="Goal Investment Calculator – Plan Your Financial Goals"
+        title="Goal SIP Calculator: Monthly SIP for Any Goal"
         description="Calculate the monthly SIP investment needed to reach your financial goal. Plan your investments with our Goal SIP Calculator."
         path="/goal-sip"
         keywords="goal SIP calculator, SIP planner, mutual fund goal planner, investment calculator"

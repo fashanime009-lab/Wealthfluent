@@ -77,7 +77,7 @@ export default function NetWorthPercentilePage() {
   return (
     <>
       <Seo
-        title="Net Worth Percentile: How Rich Are You vs. the World?"
+        title="Net Worth Percentile: How Rich Are You Globally?"
         description="See your global wealth percentile using UBS Global Wealth Report data — free net worth percentile calculator, any currency, no signup."
         path="/net-worth-percentile"
         keywords="net worth percentile calculator, global wealth percentile, how rich am I compared to the world, world net worth percentile, UBS global wealth report calculator, net worth needed to be top 1% in the world, global rich list, am I in the top 1% net worth"

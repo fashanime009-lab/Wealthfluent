@@ -106,14 +106,14 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
   return (
     <>
       <Seo
-        title="Retirement Investment Tracker – Plan & Track Retirement Savings"
-        description="Track your retirement investments year by year. Set annual increase targets and monitor your actual contributions."
+        title="Retirement Investment Tracker: Year by Year"
+        description="Track your retirement investments year by year: set yearly step-up targets, log what you actually invested and see whether you're on track. Free."
         path="/retirement-investment-tracker"
         keywords="retirement tracker, investment tracker, retirement planning, goal tracking"
         jsonLd={[
         calculatorSchema({
           name: "Retirement Investment Tracker",
-          description: "Track your retirement investments year by year. Set annual increase targets and monitor your actual contributions.",
+          description: "Track your retirement investments year by year: set yearly step-up targets, log what you actually invested and see whether you're on track. Free.",
           path: "/retirement-investment-tracker",
         }),
         faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),

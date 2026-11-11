@@ -42,7 +42,7 @@ export default function BlogIndexPage() {
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <div className="mx-auto max-w-[800px] px-5 py-16 sm:px-8 lg:px-12">
         <Seo
-          title="Blog — Real Numbers on Investing, Saving and Planning"
+          title="FINAIW Blog: Investing, Saving & Money Guides"
           description="FINAIW's blog: clear, number-first articles on investing, saving, retirement and goal planning — reviewed by our team, not AI-generated filler."
           path="/blog"
           keywords="personal finance blog, investing articles, how to invest, financial planning blog"

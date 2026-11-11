@@ -67,14 +67,14 @@ export default function IncomePercentilePage() {
   return (
     <>
       <Seo
-        title="Global Income Percentile Calculator: How Rich Is Your Salary?"
-        description="See your global income percentile using World Inequality Report data — free income percentile calculator comparing your salary to the world's adults, any currency."
+        title="Global Income Percentile: How Rich Is Your Salary?"
+        description="See your global income percentile using World Inequality Report data. Free calculator comparing your salary with the world's adults, in any currency."
         path="/income-percentile"
         keywords="income percentile calculator, global income percentile, how rich am I compared to the world, world income percentile, global income distribution, am I in the top 1% income, salary percentile world"
         jsonLd={[
           calculatorSchema({
             name: "Global Income Percentile Calculator",
-            description: "See your global income percentile using World Inequality Report data — free income percentile calculator comparing your salary to the world's adults, any currency.",
+            description: "See your global income percentile using World Inequality Report data. Free calculator comparing your salary with the world's adults, in any currency.",
             path: "/income-percentile",
           }),
           faqSchema(

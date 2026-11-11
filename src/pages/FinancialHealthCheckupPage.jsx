@@ -77,7 +77,7 @@ export default function FinancialHealthCheckupPage() {
   return (
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">
       <Seo
-        title="Financial Health Checkup — Your Real Score, Not a Vibe"
+        title="Financial Health Checkup: Your Score Out of 100"
         description="A real composite financial health score out of 100 — savings rate, emergency fund, debt-to-income, and net worth, with a published, auditable rubric."
         path="/financial-health-checkup"
         keywords="financial health score, financial checkup, financial wellness score, personal finance score calculator"

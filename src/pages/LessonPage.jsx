@@ -124,8 +124,10 @@ function LessonContent({ slug }) {
 
       <div className="mx-auto max-w-[680px] px-5 py-16 sm:px-8" ref={articleRef}>
         <Seo
-          title={`${lesson.title} — Learn`}
-          description={lesson.summary}
+          // Lessons whose title plus " — Learn | FINAIW" would pass Google's
+          // ~60-character display limit set their own shorter seoTitle.
+          title={lesson.seoTitle || `${lesson.title} — Learn`}
+          description={lesson.seoDescription || lesson.summary}
           path={`/learn/${lesson.slug}`}
           type="article"
           image={`${SITE_URL}${coverPath(lesson.slug, "jpg")}`}
@@ -133,7 +135,7 @@ function LessonContent({ slug }) {
           jsonLd={[
             articleSchema({
               title: lesson.title,
-              description: lesson.summary,
+              description: lesson.seoDescription || lesson.summary,
               path: `/learn/${lesson.slug}`,
               // All 30 lessons shipped together in one batch (see
               // src/data/lessons.js's git history) rather than being

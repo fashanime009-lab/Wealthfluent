@@ -94,7 +94,7 @@ export default function FeedbackPage() {
     <>
       <Seo
         title="Share Your Feedback – FINAIW"
-        description="We value your feedback! Share your thoughts, suggestions, and experiences with FINAIW to help us improve."
+        description="Share feedback on FINAIW's free financial calculators and guides: report a bug, suggest a new calculator or tell us what would make the site more useful."
         path="/feedback"
         keywords="feedback, suggestions, FINAIW, user experience, improve"
         jsonLd={breadcrumbSchema([
