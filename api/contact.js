@@ -96,6 +96,9 @@ export default async function handler(req, res) {
     const { error: replyError } = await getResend().emails.send({
       from: "FINAIW <hello@finaiw.com>",
       to: email,
+      // hello@finaiw.com has no inbox; a visitor replying to this should
+      // reach the team, not bounce.
+      replyTo: process.env.CONTACT_INBOX_EMAIL || "finaiw.organisation@gmail.com",
       subject: "We got your message, thanks for writing to FINAIW",
       html: renderEmail({
         preheader: "We've received your message and usually reply within 24–48 hours.",
