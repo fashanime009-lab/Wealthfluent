@@ -1,7 +1,9 @@
 import { getResend } from "./lib/resendClient.js";
 import { rateLimit } from "./lib/rateLimit.js";
 import { escapeHtml, isValidEmail, cleanText } from "./lib/sanitize.js";
-import { renderEmail, dataTable, dataRow } from "./lib/emailTemplate.js";
+import { renderEmail, dataTable, dataRow, linkList, siteLink } from "./lib/emailTemplate.js";
+
+const INBOX = process.env.CONTACT_INBOX_EMAIL || "finaiw.organisation@gmail.com";
 
 
 export default async function handler(req, res) {
@@ -61,7 +63,7 @@ export default async function handler(req, res) {
     // but it's logged so it's visible in Vercel's function logs.
     const { error: notifyError } = await getResend().emails.send({
       from: "FINAIW <hello@finaiw.com>",
-      to: process.env.CONTACT_INBOX_EMAIL || "finaiw.organisation@gmail.com",
+      to: INBOX,
       subject: `New newsletter subscriber: ${email}`,
       html: renderEmail({
         preheader: `${email} just subscribed to the FINAIW newsletter.`,
@@ -75,6 +77,47 @@ export default async function handler(req, res) {
     });
     if (notifyError) {
       console.warn("Owner notification email failed:", notifyError.message || notifyError);
+    }
+
+    // Welcome email, only when the contact was newly created: if creating it
+    // failed (usually because they're already subscribed), someone signing up
+    // twice doesn't get welcomed twice. Like the notification above, a
+    // failure here never turns a successful signup into an error.
+    if (!contactError) {
+      const { error: welcomeError } = await getResend().emails.send({
+        from: "FINAIW <hello@finaiw.com>",
+        to: email,
+        // hello@finaiw.com has no inbox, so replies (including "unsubscribe")
+        // go somewhere a person actually reads.
+        replyTo: INBOX,
+        headers: { "List-Unsubscribe": `<mailto:${INBOX}?subject=Unsubscribe%20${encodeURIComponent(email)}>` },
+        subject: "You're in: sharper money decisions, every Sunday",
+        html: renderEmail({
+          preheader: "Welcome to the FINAIW newsletter. Here's where to start before your first Sunday email.",
+          eyebrow: "Welcome",
+          heading: "You're in. Welcome to FINAIW.",
+          intro: "Every Sunday you'll get one short email from us with market updates and new calculators. No spam, and you can leave any time.",
+          bodyHtml: `
+            <p style="margin:0;">While you wait for your first one, here are the places most readers start:</p>
+            ${linkList("Start here", [
+              { href: siteLink("/sip-calculator", "newsletter_welcome"), label: "SIP Calculator", note: "Our most-used tool: what a monthly investment grows to." },
+              { href: siteLink("/net-worth-percentile", "newsletter_welcome"), label: "Global net worth percentile", note: "See where your net worth ranks against the world's adults." },
+              { href: siteLink("/verdict", "newsletter_welcome"), label: "Get a verdict on a money decision", note: "Rent vs buy, debt vs invest, term vs endowment and more." },
+              { href: siteLink("/blog", "newsletter_welcome"), label: "Read the FINAIW blog", note: "Number-first guides on investing, saving and planning." },
+            ])}
+            <p style="margin:28px 0 0;">
+              Have a question or an idea for a calculator? Just reply to this email.<br><br>
+              See you on Sunday,<br>
+              <strong style="color:#111814;">The FINAIW team</strong>
+            </p>
+          `,
+          footerNote: 'You\'re getting this because you subscribed on finaiw.com. To unsubscribe, reply to this email with "unsubscribe".',
+        }),
+        text: `You're in. Welcome to FINAIW.\n\nEvery Sunday you'll get one short email from us with market updates and new calculators. No spam, and you can leave any time.\n\nStart here:\n- SIP Calculator: https://www.finaiw.com/sip-calculator\n- Global net worth percentile: https://www.finaiw.com/net-worth-percentile\n- Get a verdict on a money decision: https://www.finaiw.com/verdict\n- FINAIW blog: https://www.finaiw.com/blog\n\nHave a question or an idea for a calculator? Just reply to this email.\n\nSee you on Sunday,\nThe FINAIW team\n\nYou're getting this because you subscribed on finaiw.com. To unsubscribe, reply with "unsubscribe".`,
+      });
+      if (welcomeError) {
+        console.warn("Welcome email failed:", welcomeError.message || welcomeError);
+      }
     }
 
     return res.status(200).json({
