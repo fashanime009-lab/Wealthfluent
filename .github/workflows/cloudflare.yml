@@ -66,15 +66,20 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -o pipefail
-          # Preview versions can only be uploaded to a Worker that exists.
-          # The very first run creates it; that's safe because nothing routes
-          # finaiw.com to the Worker until its custom domains are added.
-          if ! npx --yes wrangler@"$WRANGLER_VERSION" deployments list > /dev/null 2>&1; then
-            echo "::notice::Worker doesn't exist yet, creating it with a first deploy."
+          # Preview URLs only exist once the Worker has been deployed to
+          # workers.dev at least once. The very first run does that deploy;
+          # it's safe because nothing routes finaiw.com to the Worker until
+          # its custom domains are added.
+          deployments=$(npx --yes wrangler@"$WRANGLER_VERSION" deployments list --json 2>/dev/null || echo "[]")
+          if [ "$(echo "$deployments" | jq 'length' 2>/dev/null || echo 0)" = "0" ]; then
+            echo "::notice::Worker has never been deployed, doing the first deploy."
             npx --yes wrangler@"$WRANGLER_VERSION" deploy
           fi
           npx --yes wrangler@"$WRANGLER_VERSION" versions upload --preview-alias "pr-${{ github.event.number }}" | tee upload.log
-          url=$(grep -oE 'https://pr-${{ github.event.number }}-[^ ]+\.workers\.dev' upload.log | head -1)
+          url=$(grep -oE 'https://pr-${{ github.event.number }}-[^ ]+\.workers\.dev' upload.log | head -1 || true)
+          if [ -z "$url" ]; then
+            echo "::warning::Uploaded, but Cloudflare returned no preview URL. Check that a workers.dev subdomain is set up under Workers & Pages."
+          fi
           echo "url=$url" >> "$GITHUB_OUTPUT"
 
       - name: Comment preview URL
