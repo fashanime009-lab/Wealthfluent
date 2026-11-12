@@ -110,6 +110,11 @@ const sitemapSections = [
         path: "/blog/negative-news-screening",
         description: "Adverse media screening for financial firms, from scope to audit trail",
       },
+      {
+        name: "Net Worth by Age: What's Normal, and Are You Behind?",
+        path: "/blog/net-worth-by-age",
+        description: "Median and average net worth by age, from the newest Fed data",
+      },
     ],
   },
   {

@@ -140,6 +140,8 @@ No — these are nominal, today's-money figures, same as the Retirement Calculat
 
 Related: [The janitor who died with $8 million](/blog/build-wealth-on-an-average-salary)
 
+Related: [Net worth by age: what's normal, and are you behind?](/blog/net-worth-by-age)
+
 ## The bottom line
 
 The 25x-annual-expenses target is the same standard used by the FIRE movement and most retirement planners — what actually determines your monthly investment is almost entirely when you start, not how aggressively you invest later. Starting at 25 needs roughly a sixth of what starting at 45 needs, for the identical eventual target.
