@@ -24,6 +24,8 @@ export const BLOG_IMAGE_DIMENSIONS = {
   // Tall infographic: shown at most 520px wide and centred, so it doesn't
   // take over the article column.
   "adverse-media-evidence-ladder.webp": { width: 1000, height: 1500, maxWidth: 520 },
+  "median-net-worth-by-age-2025.webp": { width: 1200, height: 700 },
+  "average-vs-median-net-worth-trap.webp": { width: 1000, height: 1500, maxWidth: 520 },
 };
 
 export function dimensionsFor(src) {

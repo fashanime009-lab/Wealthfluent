@@ -165,6 +165,8 @@ At 3% inflation, 1 million in 30 years buys about what 412,000 buys today. Set y
 
 Related: [The janitor who died with $8 million](/blog/build-wealth-on-an-average-salary)
 
+Related: [Net worth by age: what's normal, and are you behind?](/blog/net-worth-by-age)
+
 ## The bottom line
 
 Becoming a millionaire is within reach for most people with a steady income, in almost any country. The amount you need depends far more on **when you start** than on how much you earn. Pick your timeline from the table, start an amount you can keep up even in bad months, and raise it every year.
