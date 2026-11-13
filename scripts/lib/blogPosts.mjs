@@ -8,6 +8,22 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parseFrontmatter } from "../../src/blog/parseFrontmatter.js";
 
+// Guide pages (content/pages/*.md, see src/guides/guides.js): top-level
+// URLs taken from each page's frontmatter `url`.
+export function getGuidePages(repoRoot) {
+  const dir = path.join(repoRoot, "content/pages");
+  let files;
+  try {
+    files = readdirSync(dir).filter((f) => f.endsWith(".md"));
+  } catch {
+    return [];
+  }
+  return files
+    .map((file) => parseFrontmatter(readFileSync(path.join(dir, file), "utf-8")).data)
+    .filter((data) => data.url && !data.draft)
+    .map((data) => ({ url: data.url, frontmatter: data }));
+}
+
 export function getBlogPosts(repoRoot) {
   const blogDir = path.join(repoRoot, "content/blog");
   let files;

@@ -135,6 +135,8 @@ The median. The average is pulled up by a small number of very wealthy household
 ### How do I calculate my net worth?
 Add up everything you own (cash, investments, retirement accounts, property) and subtract everything you owe (mortgage, loans, credit cards). The FINAIW Net Worth Calculator does it for you.
 
+Related: [How am I doing financially for my age?](/how-am-i-doing-financially-for-my-age)
+
 ## The bottom line
 
 Net worth by age is a useful mirror, as long as you look into the right one. Ignore the averages, compare yourself to the median, and above all compare yourself with **you, last year**. If that number keeps rising, you're on the right path, whatever your cousin's holiday photos say.
