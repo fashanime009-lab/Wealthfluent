@@ -195,7 +195,25 @@ function rewriteSiteUrls(html) {
 // blank flash before JS finished mounting — and /goals and /insights are
 // both top-level nav items, visible and clickable from literally every
 // page, including to a first-time visitor who never saves any data.
-const EXTRA_PRERENDER_ROUTES = ["/links", "/news", "/quizzes", "/settings", "/goals", "/insights", "/financial-profile"];
+//
+// /journeys/home-buying is here only so it keeps working by direct URL now
+// that unknown paths on Cloudflare get a real 404 instead of the SPA
+// fallback; robots.txt still disallows it and it stays out of the sitemap.
+const EXTRA_PRERENDER_ROUTES = [
+  "/links",
+  "/news",
+  "/quizzes",
+  "/settings",
+  "/goals",
+  "/insights",
+  "/financial-profile",
+  "/journeys/home-buying",
+];
+
+// Rendered from a path no route matches (the app's NotFoundPage, which
+// is noindex) and written to dist/404.html only. Cloudflare serves it
+// with status 404 for every path that isn't a real file.
+const NOT_FOUND_ROUTE = "/__finaiw-not-found__";
 
 // Shares its route list with scripts/generate-sitemap.js
 // (scripts/lib/routes.mjs's getIndexableRoutes(), which includes the
@@ -214,7 +232,7 @@ function getIndexableRoutes() {
   const sitemapRoutes = getSitemapRoutes(ROOT)
     .map((r) => r.path)
     .filter((route) => !disallowed.some((d) => route === d || route.startsWith(d + "/")));
-  const routes = [...sitemapRoutes, ...EXTRA_PRERENDER_ROUTES];
+  const routes = [...sitemapRoutes, ...EXTRA_PRERENDER_ROUTES, NOT_FOUND_ROUTE];
 
   // "/" must be prerendered LAST. This script overwrites dist/index.html
   // with each route's fully-rendered output, but dist/index.html also
@@ -421,6 +439,11 @@ async function main() {
         const problems = findRuntimeOnlyContent(html, { allowedScriptSrcs });
         if (problems.length > 0) {
           throw new Error(`runtime-only content in snapshot:\n      - ${problems.join("\n      - ")}`);
+        }
+        if (route === NOT_FOUND_ROUTE) {
+          writeFileSync(path.join(DIST, "404.html"), html, "utf-8");
+          console.log(`  \u2713 404.html`);
+          continue;
         }
         const outPath =
           route === "/"
