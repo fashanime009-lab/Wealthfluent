@@ -13,13 +13,11 @@ import path from "node:path";
 import { LESSONS } from "../../src/data/lessons.js";
 import { getBlogPosts } from "./blogPosts.mjs";
 
-// `lastmod` is intentionally absent from every entry below. This project
-// has no page with a real, trustworthy "last substantively changed" date
-// available at build time without git history (which Vercel's build
-// container doesn't check out — see the bug this replaced). Blog posts
-// are the one exception — see blogPostRouteDefs() below, which reads each
-// post's own frontmatter ("dateModified", falling back to
-// "datePublished") instead.
+// `lastmod` is absent from the entries below on purpose: the sitemap
+// generator adds it from git history (scripts/lib/lastmod.mjs), so it
+// isn't needed by prerender.mjs. Blog posts are the exception, see
+// blogPostRouteDefs() below, which reads each post's own frontmatter
+// ("dateModified", falling back to "datePublished").
 export const ROUTE_DEFS = [
   { path: "/", changefreq: "daily", priority: "1.0" },
   { path: "/about", changefreq: "monthly", priority: "0.8" },

@@ -6,13 +6,13 @@
 // the live site kept serving whatever had last been committed, not what
 // this script produced. It also used to compute each route's lastmod
 // from `git log`, which isn't available in Vercel's build container (no
-// .git checked out there) — see getIndexableRoutes()/ROUTE_DEFS in
-// scripts/lib/routes.mjs for why lastmod is simply omitted for every
-// route now instead.
+// .git checked out there). Cloudflare builds in GitHub Actions with the
+// full history, so lastmod is back: see scripts/lib/lastmod.mjs.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getIndexableRoutes } from "./lib/routes.mjs";
+import { addLastmod } from "./lib/lastmod.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.join(__dirname, "..");
@@ -29,7 +29,7 @@ if (!fs.existsSync(dist)) {
 
 let routes;
 try {
-  routes = getIndexableRoutes(repoRoot);
+  routes = addLastmod(getIndexableRoutes(repoRoot), repoRoot);
 } catch (err) {
   fail(`could not resolve the route list — ${err.message}`);
 }

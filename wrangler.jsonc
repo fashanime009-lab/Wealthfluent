@@ -11,9 +11,12 @@
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
-    // Prerendered routes exist as /route.html and /route/index.html;
-    // unknown paths fall back to index.html, same as the SPA always has.
-    "not_found_handling": "single-page-application",
+    // Every app route is prerendered (/route.html and /route/index.html),
+    // so anything else is a real 404: dist/404.html (the app's "Page not
+    // found" page, noindex) served with status 404. The old SPA fallback
+    // answered every unknown path with the home page and a 200, which
+    // Google saw as endless soft-404 duplicates.
+    "not_found_handling": "404-page",
     // Only these paths run the Worker. Everything else is a static asset
     // and never touches the free plan's daily Worker request quota.
     "run_worker_first": ["/api/*", "/net-worth-percentile/share"]
