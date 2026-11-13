@@ -452,9 +452,9 @@ async function main() {
 
         mkdirSync(path.dirname(outPath), { recursive: true });
         writeFileSync(outPath, html, "utf-8");
-        // Netlify 301-redirects /route to /route/ when only route/index.html
-        // exists, but serves route.html at /route directly — and every
-        // canonical/sitemap URL here has no trailing slash.
+        // Cloudflare serves route.html at /route, the canonical/sitemap URL
+        // (no trailing slash); /route/ 301s there via the _redirects rules
+        // scripts/build-cloudflare.mjs generates from route/index.html.
         if (route !== "/") {
           writeFileSync(path.join(DIST, `${route.replace(/^\//, "")}.html`), html, "utf-8");
         }

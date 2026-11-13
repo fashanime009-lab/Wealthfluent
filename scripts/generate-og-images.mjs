@@ -2,7 +2,7 @@
 // Cloudflare build.
 //
 // On Cloudflare's free plan a Worker gets 10 ms of CPU per request, far
-// too little to run satori + resvg on demand the way the Vercel/Netlify
+// too little to run satori + resvg on demand the way the old Vercel/Netlify
 // function did. The card only varies by one number, which
 // api/og/_card.js's clampPercent() rounds to one decimal in (0, 100], so
 // every possible card is known ahead of time: 0.0 through 100.0 in 0.1

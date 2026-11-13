@@ -6,14 +6,14 @@
 // here, so ordinary page views never count against the free plan's daily
 // Worker request quota.
 //
-// The api/ handlers are the same Vercel-style (req, res) files Netlify
-// runs, wrapped by the same adapter, so there's still one copy of each.
+// The api/ handlers are Vercel-style (req, res) files, wrapped by
+// ./vercelAdapter.mjs, so there's one copy of each.
 import contact from "../api/contact.js";
 import feedback from "../api/feedback.js";
 import newsletter from "../api/newsletter.js";
 import news from "../api/news.js";
 import netWorthShare from "../api/net-worth-share.js";
-import { fromVercelHandler } from "../netlify/lib/vercelAdapter.mjs";
+import { fromVercelHandler } from "./vercelAdapter.mjs";
 
 const HANDLERS = {
   "/api/contact": fromVercelHandler(contact),

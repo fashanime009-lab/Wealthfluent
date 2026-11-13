@@ -29,7 +29,7 @@ when you do it, and a rotation that doesn't feel stale between batches.
 4. It appends each valid lesson to `lessons.js`, skips anything malformed
    (with a warning telling you which field was missing), and resets the
    draft file so it's ready for next time.
-5. Check `git diff`, commit, push. Vercel/Netlify auto-deploys as usual.
+5. Check `git diff`, commit, push. Merging to main deploys to Cloudflare (GitHub Actions); pull requests get a preview link.
 
 ## Format reference
 Each lesson block needs `Title`, `Category`, `ReadTime`, `Summary`,
