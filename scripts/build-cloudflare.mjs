@@ -1,7 +1,6 @@
 // Finishes dist/ for Cloudflare after the regular build (npm run build):
-// adds the static-asset _headers/_redirects files and the pre-rendered
-// share cards. Netlify never runs this, so its deploys are unaffected
-// while both hosts exist.
+// adds the 404 page check, the static-asset _headers/_redirects files and
+// the pre-rendered share cards.
 import { appendFileSync, cpSync, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

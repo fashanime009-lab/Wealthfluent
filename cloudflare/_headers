@@ -1,5 +1,5 @@
 # Cloudflare static-asset headers, copied into dist/ by
-# scripts/build-cloudflare.mjs. Same values as netlify.toml.
+# scripts/build-cloudflare.mjs.
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff

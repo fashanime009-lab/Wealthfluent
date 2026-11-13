@@ -1,6 +1,6 @@
-// Runs an existing Vercel-style `(req, res)` handler from api/ as a
-// Netlify Function, so the handler files stay the single source of
-// truth. Covers exactly the request/response surface those handlers use:
+// Runs an existing Vercel-style `(req, res)` handler from api/ inside the
+// Cloudflare Worker (cloudflare/worker.mjs), so the handler files stay the
+// single source of truth. Covers exactly the request/response surface those handlers use:
 // req.method/headers/query/body/socket.remoteAddress and
 // res.status/json/send/setHeader/writeHead/end.
 export function fromVercelHandler(handler) {

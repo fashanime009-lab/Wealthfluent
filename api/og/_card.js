@@ -1,8 +1,7 @@
-// Shared OG card layout, used by both api/og/index.js (Vercel) and
-// netlify/functions/og.mjs (Netlify). Deliberately dependency-free: each
-// entry point imports satori/resvg itself, because Netlify's bundler only
-// ships those packages when they're static ESM imports in the function.
-// Underscore prefix keeps Vercel from treating this file as a function.
+// Shared OG card layout, used by scripts/generate-og-images.mjs to
+// pre-render every share card at build time (and by the older on-demand
+// api/og/index.js). Deliberately dependency-free: each caller imports
+// satori/resvg itself.
 const WIDTH = 1200;
 const HEIGHT = 630;
 
