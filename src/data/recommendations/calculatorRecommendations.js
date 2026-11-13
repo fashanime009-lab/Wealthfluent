@@ -7,8 +7,9 @@ import { LESSONS } from "../lessons";
  *      anchor text (kept equal to the page's own H1, so a link and its
  *      destination name the same thing) and `summary` is the note beside it.
  *   2. It is what THIS page's <RelatedLinks /> block shows: `lesson` is a
- *      slug from src/data/lessons.js and `calculator` is another entry's key.
- *      Either may be left out — the block only renders what exists.
+ *      slug from src/data/lessons.js, `calculator` is another entry's key and
+ *      `guide` is a key of GUIDE_LINKS below. Any may be left out — the
+ *      block only renders what exists.
  *
  * So adding a calculator is one entry here plus a <RelatedLinks /> in the
  * page. Adding a lesson needs nothing here until a calculator points at it.
@@ -199,6 +200,7 @@ export const CALCULATOR_RECOMMENDATIONS = {
     lesson: "net-worth-tracking",
     // No `calculator`: the page already links /networth-calculator and
     // /income-percentile inline, where they're most useful.
+    guide: "/how-am-i-doing-financially-for-my-age",
   },
   "/income-percentile": {
     label: "Global Income Percentile Calculator",
@@ -211,6 +213,15 @@ export const CALCULATOR_RECOMMENDATIONS = {
   "/financial-goal-planner": {
     label: "Multi-Goal Budget Optimizer",
     summary: "Splits a monthly budget across several goals at once and compares the result with simpler strategies.",
+  },
+};
+
+// Guide pages (content/pages/*.md) a calculator page can point to with
+// `guide`. label is the anchor text.
+export const GUIDE_LINKS = {
+  "/how-am-i-doing-financially-for-my-age": {
+    label: "How am I doing financially for my age?",
+    summary: "A 5-point check of your net worth, retirement savings, savings rate, emergency fund and debt.",
   },
 };
 
@@ -239,6 +250,11 @@ export function getCalculatorRelated(path) {
   const target = entry.calculator && CALCULATOR_RECOMMENDATIONS[entry.calculator];
   if (target) {
     items.push({ kind: "Calculator", to: entry.calculator, label: target.label, note: target.summary });
+  }
+
+  const guide = entry.guide && GUIDE_LINKS[entry.guide];
+  if (guide) {
+    items.push({ kind: "Guide", to: entry.guide, label: guide.label, note: guide.summary });
   }
 
   return items;

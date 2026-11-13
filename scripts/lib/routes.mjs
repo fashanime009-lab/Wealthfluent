@@ -11,7 +11,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { LESSONS } from "../../src/data/lessons.js";
-import { getBlogPosts } from "./blogPosts.mjs";
+import { getBlogPosts, getGuidePages } from "./blogPosts.mjs";
 
 // `lastmod` is absent from the entries below on purpose: the sitemap
 // generator adds it from git history (scripts/lib/lastmod.mjs), so it
@@ -125,6 +125,16 @@ function blogPostRouteDefs(repoRoot) {
   }));
 }
 
+// Guide pages (content/pages/*.md), also dated from their own frontmatter.
+function guidePageRouteDefs(repoRoot) {
+  return getGuidePages(repoRoot).map((page) => ({
+    path: page.url,
+    changefreq: "monthly",
+    priority: "0.8",
+    lastmod: page.frontmatter.dateModified || page.frontmatter.datePublished || undefined,
+  }));
+}
+
 export function getDisallowedPrefixes(repoRoot) {
   const robotsTxt = readFileSync(path.join(repoRoot, "public/robots.txt"), "utf-8");
   return [...robotsTxt.matchAll(/^Disallow:\s*(\S+)/gm)].map((m) => m[1]);
@@ -142,6 +152,6 @@ function isDisallowed(routePath, disallowedPrefixes) {
 // neither reads ROUTE_DEFS directly anymore, so neither can miss a post.
 export function getIndexableRoutes(repoRoot) {
   const disallowed = getDisallowedPrefixes(repoRoot);
-  const allRoutes = [...ROUTE_DEFS, ...blogPostRouteDefs(repoRoot)];
+  const allRoutes = [...ROUTE_DEFS, ...guidePageRouteDefs(repoRoot), ...blogPostRouteDefs(repoRoot)];
   return allRoutes.filter((route) => !isDisallowed(route.path, disallowed));
 }

@@ -26,6 +26,8 @@ export const BLOG_IMAGE_DIMENSIONS = {
   "adverse-media-evidence-ladder.webp": { width: 1000, height: 1500, maxWidth: 520 },
   "median-net-worth-by-age-2025.webp": { width: 1200, height: 700 },
   "average-vs-median-net-worth-trap.webp": { width: 1000, height: 1500, maxWidth: 520 },
+  // Guide pages (content/pages/*.md) use this table too.
+  "financial-checkup-by-age-scorecard.webp": { width: 1000, height: 1500, maxWidth: 520 },
 };
 
 export function dimensionsFor(src) {

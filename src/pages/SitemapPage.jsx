@@ -64,6 +64,11 @@ const sitemapSections = [
     title: "Tools & Resources",
     pages: [
       { name: "All Tools", path: "/tools", description: "Browse all tools" },
+      {
+        name: "How Am I Doing Financially for My Age?",
+        path: "/how-am-i-doing-financially-for-my-age",
+        description: "A 5-point financial check for your age, with the Wealth Age Calculator",
+      },
       { name: "Financial Goal Planner", path: "/financial-goal-planner", description: "Optimizes your budget across every goal at once" },
       { name: "Investment Risk Analyzer", path: "/investment-risk-analyzer", description: "Risk profile reconciled against your real finances" },
       { name: "Financial Health Checkup", path: "/financial-health-checkup", description: "A composite financial health score out of 100" },

@@ -68,6 +68,7 @@ const HomeBuyingJourney = lazy(() => import("@/journeys/home-buying/pages/HomeBu
 const EmergencyFundCalculatorPage = lazy(() => import("./pages/EmergencyFundCalculatorPage"));
 const HomeAffordabilityCalculatorPage = lazy(() => import("./pages/HomeAffordabilityCalculatorPage"));
 const LinksPage = lazy(() => import("./pages/LinksPage"));
+const GuidePage = lazy(() => import("./pages/GuidePage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 export default function App() {
@@ -145,6 +146,8 @@ export default function App() {
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/emergency-fund-calculator" element={<EmergencyFundCalculatorPage />} />
             <Route path="/home-affordability-calculator" element={<HomeAffordabilityCalculatorPage />} />
+            {/* Guide pages: content/pages/*.md, one route each (its frontmatter url). */}
+            <Route path="/how-am-i-doing-financially-for-my-age" element={<GuidePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
           {/* Outside Layout on purpose: a full-bleed "link in bio" poster page,

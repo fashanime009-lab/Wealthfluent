@@ -32,6 +32,17 @@ const tools = [
   },
 ];
 
+// Guide pages (content/pages/*.md): long-form checks with a tool embedded.
+// Listed separately so the "live tools" count above stays about tools.
+const guides = [
+  {
+    title: "How Am I Doing Financially for My Age?",
+    desc: "A 5-point check of net worth, retirement savings, savings rate, emergency fund and debt, with the Wealth Age Calculator built in.",
+    path: "/how-am-i-doing-financially-for-my-age",
+    cta: "Read guide",
+  },
+];
+
 const highlights = [
   { title: "Goal setting", desc: "Define and track your financial goals with precision." },
   { title: "Risk assessment", desc: "Understand your risk tolerance and investment comfort." },
@@ -55,7 +66,7 @@ function ToolRow({ tool }) {
       </div>
       <div className="min-w-0 sm:text-right">
         <span className="font-mono-tech text-[12.5px] tabular-nums text-[#111814]/60 dark:text-[#eef1ec]/50">
-          {tool.path ? "Open tool" : "Coming soon"}
+          {tool.path ? tool.cta || "Open tool" : "Coming soon"}
         </span>
       </div>
     </>
@@ -105,6 +116,16 @@ export default function ToolsPage() {
           {tools.map((tool) => (
             <ToolRow key={tool.title} tool={tool} />
           ))}
+        </div>
+
+        {/* Guides */}
+        <div className="mt-12">
+          <span className="text-[13px] font-semibold text-[#047857] dark:text-[#34d399]">Guides</span>
+          <div className="mt-2 divide-y divide-[#111814]/10 border-y border-[#111814]/10 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/10">
+            {guides.map((guide) => (
+              <ToolRow key={guide.title} tool={guide} />
+            ))}
+          </div>
         </div>
 
         {/* Spec strip */}
