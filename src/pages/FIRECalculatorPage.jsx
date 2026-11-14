@@ -6,7 +6,6 @@ import { useDefaultableObjectCustom, useFieldBounds } from "@/hooks/useDefaultab
 import { defaultFor, assumptionsFor } from "@/data/calculatorDefaults";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
-import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
@@ -206,7 +205,6 @@ export default function FIRECalculatorPage() {
           </div>
 
           <div className="mt-16">
-            <AdSlot slotId="fire_calc_mid" />
 
             <CalcSection title="Financial insights">
               <CalcBenefitGrid

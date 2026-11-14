@@ -7,7 +7,6 @@ import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
 import VerdictChart from "@/components/verdict/VerdictChart";
 import VerdictContent from "@/components/verdict/VerdictContent";
-import AdSlot from "@/components/ads/AdSlot";
 import { DEBT_VS_INVEST } from "@/data/verdictContent";
 import { calculateDebtVsInvest } from "@/verdict/logic/debtVsInvest";
 import { formatCurrency } from "@/utils/currency";
@@ -101,7 +100,6 @@ export default function DebtVsInvestPage() {
             analyticsContext="verdict_debt_vs_invest"
           />
 
-          <AdSlot slotId="verdict_debt_vs_invest_result" />
         </div>
       </div>
       <VerdictContent content={content} />

@@ -200,22 +200,22 @@ export default function PrivacyPolicyPage() {
               <p>
                 You may opt out of personalized advertising by visiting{" "}
                 <a
-                  href="https://adssettings.google.com/"
+                  href="https://myadcenter.google.com/"
                   target="_blank"
                   rel="noreferrer"
                   className={link}
                 >
-                  Google Ads Settings
+                  My Ad Center
                 </a>
                 . Alternatively, you can opt out of a third-party vendor's use of cookies for
                 personalized advertising by visiting{" "}
                 <a
-                  href="https://www.aboutads.info/choices/"
+                  href="https://optout.aboutads.info/"
                   target="_blank"
                   rel="noreferrer"
                   className={link}
                 >
-                  www.aboutads.info
+                  optout.aboutads.info
                 </a>
                 .
               </p>

@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
-import AdSlot from "@/components/ads/AdSlot";
 import VerdictScale from "@/components/verdict/VerdictScale";
 import VerdictContent from "@/components/verdict/VerdictContent";
 import { VERDICT_INDEX } from "@/data/verdictContent";
@@ -119,7 +118,6 @@ export default function VerdictIndex() {
         ))}
       </div>
 
-      <AdSlot slotId="verdict_index_mid" className="mt-14" />
 
       <VerdictContent content={VERDICT_INDEX} className="mt-16 space-y-12" />
     </div>

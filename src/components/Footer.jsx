@@ -13,14 +13,12 @@ const footerColumns = [
       { label: "Goals", to: "/goals" },
       { label: "Insights", to: "/insights" },
       { label: "Tools", to: "/tools" },
-      { label: "News", to: "/news" },
     ],
   },
   {
     title: "Learn",
     links: [
       { label: "Blog", to: "/blog" },
-      { label: "Quizzes", to: "/quizzes" },
       { label: "Guides", to: "/learn" },
       { label: "FIRE Planning", to: "/fire-calculator" },
     ],
@@ -77,7 +75,7 @@ export default function Footer() {
   const share = async () => {
     const shareData = {
       title: "FINAIW",
-      text: "Free finance calculators, investment tools, live market news, and practical insights.",
+      text: "Free finance calculators, investment tools, lessons and practical guides.",
       url: window.location.origin,
     };
     try {

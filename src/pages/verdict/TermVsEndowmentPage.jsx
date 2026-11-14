@@ -5,7 +5,6 @@ import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
 import VerdictChart from "@/components/verdict/VerdictChart";
 import VerdictContent from "@/components/verdict/VerdictContent";
-import AdSlot from "@/components/ads/AdSlot";
 import { TERM_VS_ENDOWMENT } from "@/data/verdictContent";
 import { calculateTermVsEndowment } from "@/verdict/logic/termVsEndowment";
 import { formatCurrency } from "@/utils/currency";
@@ -87,7 +86,6 @@ export default function TermVsEndowmentPage() {
             </div>
           </div>
 
-          <AdSlot slotId="verdict_term_vs_endowment_result" />
         </div>
       </div>
       <VerdictContent content={content} />

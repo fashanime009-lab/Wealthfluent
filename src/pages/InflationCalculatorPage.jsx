@@ -5,7 +5,6 @@ import { useMemo } from "react";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
-import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
@@ -159,7 +158,6 @@ export default function InflationCalculatorPage() {
 
           {/* SEO Content */}
           <div className="mt-16">
-            <AdSlot slotId="inflation_calc_mid" />
 
             <CalcSection title="What Is an Inflation Calculator?">
               <p>

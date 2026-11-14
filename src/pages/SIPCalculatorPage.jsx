@@ -5,7 +5,6 @@ import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schem
 import { useFinance } from "../context/FinanceContext";
 import { useSettings } from "../context/SettingsContext";
 
-import AdSlot from "../components/ads/AdSlot";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
@@ -257,7 +256,6 @@ export default function SIPCalculatorPage() {
               </p>
             </CalcSection>
 
-            <AdSlot slotId="sip_calc_mid" />
 
             <CalcSection title="SIP vs Lump Sum — which is better?">
               <p>

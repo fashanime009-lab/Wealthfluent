@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
-import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import WealthAgeCalculator from "@/components/calculators/WealthAgeCalculator";
 import CalcSection from "@/components/calculators/CalcSection";
@@ -83,7 +82,6 @@ export default function WealthAgeCalculatorPage() {
 
           {/* SEO Content */}
           <div className="mt-16">
-            <AdSlot slotId="wealthage_calc_mid" />
 
             <CalcSection title="What Is a Wealth Age Calculator?">
               <p>

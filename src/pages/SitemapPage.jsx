@@ -82,8 +82,6 @@ const sitemapSections = [
     title: "Learning Center",
     pages: [
       { name: "Learn", path: "/learn", description: "Daily financial lessons" },
-      { name: "News", path: "/news", description: "Latest financial news" },
-      { name: "Quizzes", path: "/quizzes", description: "Test your financial knowledge" },
     ],
   },
   {

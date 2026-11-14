@@ -5,7 +5,6 @@ import useDefaultableField, { useFieldBounds } from "@/hooks/useDefaultableField
 import { useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
-import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
@@ -146,7 +145,6 @@ export default function RateOfReturnCalculatorPage() {
           </div>
 
           <div className="mt-16">
-            <AdSlot slotId="rateofreturn_calc_mid" />
 
             <CalcSection title="What Is a Rate of Return Calculator?">
               <p>

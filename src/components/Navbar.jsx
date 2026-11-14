@@ -12,10 +12,8 @@ const SearchModal = lazy(loadSearchModal);
 const navItems = [
   { label: "Calculators", to: "/calculators" },
   { label: "Verdict", to: "/verdict" },
-  { label: "Goals", to: "/goals" },
   { label: "Learn", to: "/learn" },
   { label: "Blog", to: "/blog" },
-  { label: "Insights", to: "/insights" },
   { label: "Tools", to: "/tools" },
 ];
 

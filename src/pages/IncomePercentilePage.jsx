@@ -10,7 +10,6 @@ import {
   USD_CONVERSION_RATES,
   MEDIAN_INCOME_USD,
 } from "../services/calculators/globalIncomePercentile";
-import AdSlot from "../components/ads/AdSlot";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
@@ -187,7 +186,6 @@ export default function IncomePercentilePage() {
 
           {/* SEO Content */}
           <div className="mt-16">
-            <AdSlot slotId="income_percentile_mid" />
 
             <CalcSection title="How Rich Is Your Salary Compared to the World? The Method Behind This Income Percentile">
               <p>

@@ -5,7 +5,6 @@ import { useSettings } from "../context/SettingsContext";
 import { useDefaultableObject, useFieldBounds } from "@/hooks/useDefaultableField";
 import { formatCurrency } from "../utils/currency";
 import { calculateHomeAffordability } from "../services/calculators/homeAffordability";
-import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
@@ -233,7 +232,6 @@ export default function HomeAffordabilityCalculatorPage() {
 
           {/* SEO Content */}
           <div className="mt-16">
-            <AdSlot slotId="homeaffordability_calc_mid" />
 
             <CalcSection title="What Does 'Affordable' Actually Mean Here?">
               <p>
