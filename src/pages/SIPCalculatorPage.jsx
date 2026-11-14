@@ -348,10 +348,10 @@ export default function SIPCalculatorPage() {
                     </div>
                   </div>
 
-                  {/* AI Insight */}
+                  {/* Tip */}
                   <div className="mt-6 border border-[#111814]/12 p-5 dark:border-[#eef1ec]/12">
                     <h4 className="text-[13.5px] font-bold text-[#111814] dark:text-[#eef1ec]">
-                      AI Wealth Insight
+                      Tip
                     </h4>
                     <p className="mt-1 text-[13.5px] leading-6 text-[#111814]/65 dark:text-[#eef1ec]/65">
                       If you increase your monthly investment by just 2,000 units every year,

@@ -23,7 +23,7 @@ export default function DisclaimerPage() {
     <>
       <Seo
         title="Disclaimer – FINAIW"
-        description="Read the FINAIW disclaimer. Learn about our educational content, AI-generated insights, financial calculators, and limitations of liability."
+        description="Read the FINAIW disclaimer: how our calculators and articles are made, what they can and can't tell you, and the limits of our liability."
         path="/disclaimer"
         jsonLd={breadcrumbSchema([
           { name: "Home", path: "/" },
@@ -74,25 +74,29 @@ export default function DisclaimerPage() {
               </p>
             </Section>
 
-            <Section title="AI-Generated Content">
+            <Section title="How Our Content Is Made">
               <p>
-                FINAIW utilises artificial intelligence to generate financial insights,
-                summaries, and educational content. While we strive for accuracy and
-                relevance, AI-generated content is
-                <span className={strong}> not a substitute for professional human judgment</span>.
+                Calculator results come from standard financial formulas applied to the
+                numbers you enter, along with the assumptions shown on each calculator (such
+                as an expected rate of return). Articles, lessons and guides are written and
+                reviewed by the FINAIW team, using the public sources they cite. Even so, our
+                content is
+                <span className={strong}> not a substitute for professional judgement about your own situation</span>.
               </p>
               <p>You acknowledge and agree that:</p>
               <ul className={list}>
                 <li>
-                  AI-generated content may contain errors, omissions, or outdated information.
+                  Calculator results are estimates based on your inputs and stated assumptions,
+                  not guarantees of future returns, costs or outcomes.
                 </li>
                 <li>
-                  You are responsible for verifying any AI-generated information
+                  Our content may contain errors or omissions, or become outdated as rates,
+                  rules and data change. You are responsible for checking anything important
                   before acting on it.
                 </li>
                 <li>
-                  FINAIW shall not be liable for any decisions made based on
-                  AI-generated content.
+                  FINAIW shall not be liable for any decisions made based on our calculators
+                  or content.
                 </li>
               </ul>
             </Section>
