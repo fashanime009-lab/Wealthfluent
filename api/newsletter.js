@@ -94,12 +94,12 @@ export default async function handler(req, res) {
         // hello@finaiw.com's forwarding.
         replyTo: PUBLIC_EMAIL,
         headers: { "List-Unsubscribe": `<mailto:${PUBLIC_EMAIL}?subject=Unsubscribe%20${encodeURIComponent(email)}>` },
-        subject: "You're in: sharper money decisions, every Sunday",
+        subject: "You're in: sharper money decisions from FINAIW",
         html: renderEmail({
-          preheader: "Welcome to the FINAIW newsletter. Here's where to start before your first Sunday email.",
+          preheader: "Welcome to the FINAIW newsletter. Here's where to start.",
           eyebrow: "Welcome",
           heading: "You're in. Welcome to FINAIW.",
-          intro: "Every Sunday you'll get one short email from us with market updates and new calculators. No spam, and you can leave any time.",
+          intro: "We'll email you when we publish something worth your time: new guides, articles and calculators. No spam, and you can leave any time.",
           bodyHtml: `
             <p style="margin:0;">While you wait for your first one, here are the places most readers start:</p>
             ${linkList("Start here", [
@@ -110,13 +110,13 @@ export default async function handler(req, res) {
             ])}
             <p style="margin:28px 0 0;">
               Have a question or an idea for a calculator? Just reply to this email.<br><br>
-              See you on Sunday,<br>
+              Thanks for joining,<br>
               <strong style="color:#111814;">The FINAIW team</strong>
             </p>
           `,
           footerNote: 'You\'re getting this because you subscribed on finaiw.com. To unsubscribe, reply to this email with "unsubscribe".',
         }),
-        text: `You're in. Welcome to FINAIW.\n\nEvery Sunday you'll get one short email from us with market updates and new calculators. No spam, and you can leave any time.\n\nStart here:\n- SIP Calculator: https://www.finaiw.com/sip-calculator\n- Global net worth percentile: https://www.finaiw.com/net-worth-percentile\n- Get a verdict on a money decision: https://www.finaiw.com/verdict\n- FINAIW blog: https://www.finaiw.com/blog\n\nHave a question or an idea for a calculator? Just reply to this email.\n\nSee you on Sunday,\nThe FINAIW team\n\nYou're getting this because you subscribed on finaiw.com. To unsubscribe, reply with "unsubscribe".`,
+        text: `You're in. Welcome to FINAIW.\n\nWe'll email you when we publish something worth your time: new guides, articles and calculators. No spam, and you can leave any time.\n\nStart here:\n- SIP Calculator: https://www.finaiw.com/sip-calculator\n- Global net worth percentile: https://www.finaiw.com/net-worth-percentile\n- Get a verdict on a money decision: https://www.finaiw.com/verdict\n- FINAIW blog: https://www.finaiw.com/blog\n\nHave a question or an idea for a calculator? Just reply to this email.\n\nThanks for joining,\nThe FINAIW team\n\nYou're getting this because you subscribed on finaiw.com. To unsubscribe, reply with "unsubscribe".`,
       });
       if (welcomeError) {
         console.warn("Welcome email failed:", welcomeError.message || welcomeError);
