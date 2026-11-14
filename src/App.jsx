@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/ScrollToTop";
+import PageLoading from "./components/PageLoading";
 
 // ─── Lazy-loaded page components ──────────────────────────────
 const AboutPage = lazy(() => import("./pages/AboutPage"));
@@ -75,13 +76,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <Suspense
-        fallback={
-          <div className="min-h-screen flex items-center justify-center">
-            Loading...
-          </div>
-        }
-      >
+      {/* Pages inside Layout have their own boundary (see Layout.jsx), so the
+          menu and footer stay put while a page loads; this one only covers
+          the few routes outside it. */}
+      <Suspense fallback={<PageLoading />}>
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<WealthFluentHomepage />} />

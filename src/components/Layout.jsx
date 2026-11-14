@@ -2,7 +2,9 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import CookieConsent from "./consent/CookieConsent";
 import SiteGuideLauncher from "./guide/SiteGuideLauncher";
+import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
+import PageLoading from "./PageLoading";
 
 export default function Layout() {
   return (
@@ -19,7 +21,9 @@ export default function Layout() {
           those overrides already handle, giving every page this shared
           fallback keeps its background and text flipping together. */}
       <main className="bg-white">
-        <Outlet />
+        <Suspense fallback={<PageLoading />}>
+          <Outlet />
+        </Suspense>
       </main>
 
       <Footer />
