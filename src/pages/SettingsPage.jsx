@@ -34,7 +34,7 @@ export default function SettingsPage() {
             </h1>
 
             <p className="mt-3 max-w-2xl text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
-              Set your preferences once and every calculator, verdict and future AI feature will automatically
+              Set your preferences once and every calculator and verdict will automatically
               follow them.
             </p>
           </div>

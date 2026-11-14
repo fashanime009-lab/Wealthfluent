@@ -100,9 +100,9 @@ export default function Footer() {
       <div className="mx-auto max-w-[1240px] px-5 pb-8 pt-14 sm:px-8 lg:px-10">
         <div className="flex flex-col gap-6 border-b border-[#eef1ec]/10 pb-10 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="font-display text-[20px] font-bold text-[#eef1ec]">Sharper money decisions, every Sunday.</h2>
+            <h2 className="font-display text-[20px] font-bold text-[#eef1ec]">Sharper money decisions, in your inbox.</h2>
             <p className="mt-1.5 max-w-md text-[13.5px] leading-6 text-[#eef1ec]/50">
-              Market updates and new calculators — straight to your inbox, no spam.
+              New guides, articles and calculators when we publish them. No spam, unsubscribe any time.
             </p>
           </div>
           <form onSubmit={subscribe} className="flex w-full max-w-sm flex-shrink-0 items-center gap-2 border-b border-[#eef1ec]/25 pb-1.5">

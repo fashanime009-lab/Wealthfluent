@@ -7,7 +7,7 @@ const faqs = [
   {
     question: "What is FINAIW?",
     answer:
-      "FINAIW (Financial Intelligence, AI for Wealth) is a free platform that offers financial calculators, AI-powered insights, and educational content to help you make smarter money decisions.",
+      "FINAIW (Financial Intelligence, AI for Wealth) is a free platform that offers financial calculators, side-by-side decision tools, and educational content written and reviewed by our team, to help you make smarter money decisions.",
   },
   {
     question: "How do I use the calculators?",
