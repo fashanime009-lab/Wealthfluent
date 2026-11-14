@@ -4,7 +4,6 @@ import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schem
 import { useSettings } from "../context/SettingsContext";
 import { useDefaultableObject, useFieldBounds } from "@/hooks/useDefaultableField";
 import { formatCurrency } from "../utils/currency";
-import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
@@ -208,7 +207,6 @@ export default function EmergencyFundCalculatorPage() {
 
           {/* SEO Content */}
           <div className="mt-16">
-            <AdSlot slotId="emergencyfund_calc_mid" />
 
             <CalcSection title="What Is an Emergency Fund?">
               <p>

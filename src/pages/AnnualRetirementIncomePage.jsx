@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
-import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
@@ -157,7 +156,6 @@ export default function AnnualRetirementIncomePage() {
           </div>
 
           <div className="mt-16">
-            <AdSlot slotId="arincome_calc_mid" />
 
             <CalcSection title="What is an annual retirement income calculator?">
               <p>

@@ -66,8 +66,6 @@ export const searchIndex = [
 
   // Learning
   { title: "Learn", description: "Daily financial lessons", path: "/learn", category: "Learn" },
-  { title: "News", description: "Latest financial news", path: "/news", category: "Learn" },
-  { title: "Quizzes", description: "Test your financial knowledge", path: "/quizzes", category: "Learn" },
 
   // Legal
   { title: "Privacy Policy", description: "How FINAIW protects your data", path: "/privacy-policy", category: "Page" },

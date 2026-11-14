@@ -4,7 +4,6 @@ import { useSettings } from "../context/SettingsContext";
 
 import { formatCurrency } from "../utils/currency";
 
-import AdSlot from "../components/ads/AdSlot";
 
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
@@ -290,7 +289,6 @@ const currency = settings.currency;
 
           {/* SEO Content */}
           <div className="mt-16">
-            <AdSlot slotId="networth_calc_mid" />
 
             <CalcSection title="What Is Net Worth?">
               <p>

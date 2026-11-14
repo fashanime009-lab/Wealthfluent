@@ -10,7 +10,6 @@ import {
   USD_CONVERSION_RATES,
   MEDIAN_NET_WORTH_USD,
 } from "../services/calculators/globalWealthPercentile";
-import AdSlot from "../components/ads/AdSlot";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
@@ -202,7 +201,6 @@ export default function NetWorthPercentilePage() {
 
           {/* SEO Content */}
           <div className="mt-16">
-            <AdSlot slotId="networth_percentile_mid" />
 
             <CalcSection title="How Rich Am I Compared to the World? The Method Behind This World Net Worth Percentile">
               <p>

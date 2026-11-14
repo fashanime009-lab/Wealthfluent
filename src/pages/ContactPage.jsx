@@ -80,6 +80,14 @@ export default function ContactPage() {
           <p className="mt-4 max-w-[52ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
             Have a question or feedback? Reach out to us — we'd love to hear from you.
           </p>
+          <p className="mt-4 max-w-[52ch] text-[15px] leading-7 text-[#111814]/65 dark:text-[#eef1ec]/65">
+            Write to us if a calculator gives a result that looks wrong, if you spot a mistake in
+            a lesson or article, if there's a topic you'd like us to cover, or if you have a
+            question about your data and privacy. Every message is read by the FINAIW team in
+            Mumbai, the same people who build the tools and write and review the content. We can't
+            give personal investment advice, but we're happy to explain how a calculator works or
+            where a figure comes from.
+          </p>
 
           <form onSubmit={handleSubmit} className="mt-10 space-y-6">
             <div>

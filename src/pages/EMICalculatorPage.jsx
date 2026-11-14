@@ -1,7 +1,6 @@
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import { formatCurrency } from "../utils/currency";
-import AdSlot from "../components/ads/AdSlot";
 import { useSettings } from "../context/SettingsContext";
 import useDefaultableField, { useFieldBounds } from "@/hooks/useDefaultableField";
 import { defaultFor } from "@/data/calculatorDefaults";
@@ -134,7 +133,6 @@ export default function EMICalculatorPage() {
           </div>
 
           <div className="mt-16">
-            <AdSlot slotId="emi_calc_mid" />
 
             <CalcSection title="What is a loan EMI calculator?">
               <p>

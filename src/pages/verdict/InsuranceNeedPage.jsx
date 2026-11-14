@@ -4,7 +4,6 @@ import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
 import VerdictContent from "@/components/verdict/VerdictContent";
-import AdSlot from "@/components/ads/AdSlot";
 import { INSURANCE_NEED } from "@/data/verdictContent";
 import { calculateInsuranceNeed } from "@/verdict/logic/insuranceNeed";
 import { formatCurrency } from "@/utils/currency";
@@ -76,7 +75,6 @@ export default function InsuranceNeedPage() {
             b={{ label: "What you have", value: result.totalHave }}
           />
 
-          <AdSlot slotId="verdict_insurance_need_result" />
         </div>
       </div>
       <VerdictContent content={content} />

@@ -7,7 +7,6 @@ import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
 import VerdictChart from "@/components/verdict/VerdictChart";
 import VerdictContent from "@/components/verdict/VerdictContent";
-import AdSlot from "@/components/ads/AdSlot";
 import { RENT_VS_BUY } from "@/data/verdictContent";
 import { calculateRentVsBuy } from "@/verdict/logic/rentVsBuy";
 import { formatCurrency } from "@/utils/currency";
@@ -111,7 +110,6 @@ export default function RentVsBuyPage() {
             analyticsContext="verdict_rent_vs_buy"
           />
 
-          <AdSlot slotId="verdict_rent_vs_buy_result" />
         </div>
       </div>
 

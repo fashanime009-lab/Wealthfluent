@@ -6,7 +6,6 @@ import { breadcrumbSchema, faqSchema } from "@/components/seo/schema";
 import VerdictSlider from "@/components/verdict/VerdictSlider";
 import VerdictResult from "@/components/verdict/VerdictResult";
 import VerdictContent from "@/components/verdict/VerdictContent";
-import AdSlot from "@/components/ads/AdSlot";
 import { LEASE_VS_BUY } from "@/data/verdictContent";
 import { calculateLeaseVsBuy } from "@/verdict/logic/leaseVsBuy";
 import { formatCurrency } from "@/utils/currency";
@@ -99,7 +98,6 @@ export default function LeaseVsBuyPage() {
             analyticsContext="verdict_lease_vs_buy_car"
           />
 
-          <AdSlot slotId="verdict_lease_vs_buy_result" />
         </div>
       </div>
       <VerdictContent content={content} />

@@ -12,10 +12,8 @@ const SearchModal = lazy(loadSearchModal);
 const navItems = [
   { label: "Calculators", to: "/calculators" },
   { label: "Verdict", to: "/verdict" },
-  { label: "Goals", to: "/goals" },
   { label: "Learn", to: "/learn" },
   { label: "Blog", to: "/blog" },
-  { label: "Insights", to: "/insights" },
   { label: "Tools", to: "/tools" },
 ];
 
@@ -165,6 +163,15 @@ export default function Navbar() {
             >
               Settings
             </Link>
+            {/* Mobile only: the footer is a long scroll away on a phone. */}
+            <div className="flex gap-6 border-t border-[#111814]/8 pt-3.5 text-[13px] font-medium text-[#111814]/65 dark:border-[#eef1ec]/8 dark:text-[#eef1ec]/60">
+              <Link to="/about" onClick={closeMenu}>
+                About us
+              </Link>
+              <Link to="/contact" onClick={closeMenu}>
+                Contact us
+              </Link>
+            </div>
           </div>
           <div className="px-5 pb-5">
             <Link

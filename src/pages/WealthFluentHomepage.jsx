@@ -6,8 +6,6 @@ import StatsStrip from "../components/home/StatsStrip";
 import CalculatorsSection from "../components/home/calculators/CalculatorsSection";
 import WorkspacePanel from "../components/home/WorkspacePanel";
 import HowItWorks from "../components/home/HowItWorks";
-import TrendingStrip from "../components/home/TrendingStrip";
-import AdSlot from "../components/ads/AdSlot";
 import LearningSection from "../components/home/LearningSection";
 import ToolFinder from "../components/home/ToolFinder";
 import HomeFAQ from "../components/home/HomeFAQ";
@@ -40,12 +38,9 @@ export default function WealthFluentHomepage() {
         <FinancialStatusWidget />
       </div>
       <StatsStrip />
-      <AdSlot slotId="home_leaderboard" className="mx-auto max-w-[1240px] px-5 py-6 sm:px-8 lg:px-12" />
       <CalculatorsSection />
       <WorkspacePanel />
       <HowItWorks />
-      <TrendingStrip />
-      <AdSlot slotId="home_mid" className="mx-auto max-w-[1240px] px-5 py-6 sm:px-8 lg:px-12" />
       <LearningSection />
       <ToolFinder />
       <HomeFAQ />

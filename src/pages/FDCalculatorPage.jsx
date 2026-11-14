@@ -4,7 +4,6 @@ import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useState } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
-import AdSlot from "../components/ads/AdSlot";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
@@ -155,7 +154,6 @@ export default function FDCalculatorPage() {
           </div>
 
           <div className="mt-16">
-            <AdSlot slotId="fd_calc_mid" />
 
             <CalcSection title="What is a fixed deposit (FD) calculator?">
               <p>
