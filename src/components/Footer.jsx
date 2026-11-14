@@ -26,7 +26,7 @@ const footerColumns = [
   {
     title: "Company",
     links: [
-      { label: "Why FINAIW", to: "/about" },
+      { label: "About us", to: "/about" },
       { label: "Contact us", to: "/contact" },
       { label: "Settings", to: "/settings" },
       { label: "Help", to: "/help" },
