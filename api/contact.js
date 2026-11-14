@@ -3,6 +3,9 @@ import { rateLimit } from "./lib/rateLimit.js";
 import { escapeHtml, isValidEmail, cleanText } from "./lib/sanitize.js";
 import { renderEmail, dataTable, dataRow, messageBlock, button, linkList, siteLink } from "./lib/emailTemplate.js";
 
+// The address visitors see and reply to (forwarded to the team inbox by
+// Cloudflare Email Routing).
+const PUBLIC_EMAIL = "hello@finaiw.com";
 
 export default async function handler(req, res) {
   // Everything is inside this outer try/catch, including request parsing
@@ -96,9 +99,9 @@ export default async function handler(req, res) {
     const { error: replyError } = await getResend().emails.send({
       from: "FINAIW <hello@finaiw.com>",
       to: email,
-      // hello@finaiw.com has no inbox; a visitor replying to this should
-      // reach the team, not bounce.
-      replyTo: process.env.CONTACT_INBOX_EMAIL || "finaiw.organisation@gmail.com",
+      // hello@finaiw.com receives mail through Cloudflare Email Routing,
+      // which forwards it to the team inbox.
+      replyTo: PUBLIC_EMAIL,
       subject: "We got your message, thanks for writing to FINAIW",
       html: renderEmail({
         preheader: "We've received your message and usually reply within 24–48 hours.",

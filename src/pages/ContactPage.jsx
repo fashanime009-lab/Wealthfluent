@@ -163,10 +163,10 @@ export default function ContactPage() {
             <div>
               <p className="text-[13px] font-semibold text-[#111814]/60 dark:text-[#eef1ec]/50">Email us</p>
               <a
-                href="mailto:finaiw.organisation@gmail.com"
+                href="mailto:hello@finaiw.com"
                 className="text-[14.5px] font-semibold text-[#047857] hover:underline dark:text-[#34d399]"
               >
-                finaiw.organisation@gmail.com
+                hello@finaiw.com
               </a>
             </div>
             <div>

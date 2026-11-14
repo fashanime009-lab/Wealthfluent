@@ -4,6 +4,9 @@ import { escapeHtml, isValidEmail, cleanText } from "./lib/sanitize.js";
 import { renderEmail, dataTable, dataRow, linkList, siteLink } from "./lib/emailTemplate.js";
 
 const INBOX = process.env.CONTACT_INBOX_EMAIL || "finaiw.organisation@gmail.com";
+// The address subscribers see and reply to (forwarded to INBOX by Cloudflare
+// Email Routing).
+const PUBLIC_EMAIL = "hello@finaiw.com";
 
 
 export default async function handler(req, res) {
@@ -87,10 +90,10 @@ export default async function handler(req, res) {
       const { error: welcomeError } = await getResend().emails.send({
         from: "FINAIW <hello@finaiw.com>",
         to: email,
-        // hello@finaiw.com has no inbox, so replies (including "unsubscribe")
-        // go somewhere a person actually reads.
-        replyTo: INBOX,
-        headers: { "List-Unsubscribe": `<mailto:${INBOX}?subject=Unsubscribe%20${encodeURIComponent(email)}>` },
+        // Replies (including "unsubscribe") reach the team inbox via
+        // hello@finaiw.com's forwarding.
+        replyTo: PUBLIC_EMAIL,
+        headers: { "List-Unsubscribe": `<mailto:${PUBLIC_EMAIL}?subject=Unsubscribe%20${encodeURIComponent(email)}>` },
         subject: "You're in: sharper money decisions, every Sunday",
         html: renderEmail({
           preheader: "Welcome to the FINAIW newsletter. Here's where to start before your first Sunday email.",

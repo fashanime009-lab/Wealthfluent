@@ -161,8 +161,8 @@ export default function TermsOfServicePage() {
               </p>
               <p>
                 <span className={strong}>Email:</span>{" "}
-                <a href="mailto:finaiw.organisation@gmail.com" className={link}>
-                  finaiw.organisation@gmail.com
+                <a href="mailto:hello@finaiw.com" className={link}>
+                  hello@finaiw.com
                 </a>
                 <br />
                 <span className={strong}>Location:</span> Mumbai, India

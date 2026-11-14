@@ -222,8 +222,8 @@ export default function DisclaimerPage() {
                 If you have any questions about this Disclaimer, please contact us at:
               </p>
               <p>
-                <a href="mailto:finaiw.organisation@gmail.com" className={`${link} font-semibold`}>
-                  finaiw.organisation@gmail.com
+                <a href="mailto:hello@finaiw.com" className={`${link} font-semibold`}>
+                  hello@finaiw.com
                 </a>
               </p>
               <p className="text-[12.5px] text-[#111814]/60 dark:text-[#eef1ec]/50">
