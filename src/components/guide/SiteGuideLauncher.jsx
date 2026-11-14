@@ -68,7 +68,8 @@ export default function SiteGuideLauncher() {
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
-  const hidden = tucked && !open && !showHint;
+  // The first-visit hint hides with the button and comes back with it.
+  const hidden = tucked && !open;
 
   const dismissHint = () => {
     setShowHint(false);
