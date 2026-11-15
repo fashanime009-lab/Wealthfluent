@@ -41,6 +41,12 @@ const guides = [
     path: "/how-am-i-doing-financially-for-my-age",
     cta: "Read guide",
   },
+  {
+    title: "Top 1% Income in Canada",
+    desc: "Statistics Canada's 2023 cutoffs for the top 1%, 0.1% and 0.01%, with a quick check of where your income sits.",
+    path: "/top-1-percent-income-canada",
+    cta: "Read guide",
+  },
 ];
 
 const highlights = [

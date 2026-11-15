@@ -207,6 +207,7 @@ export const CALCULATOR_RECOMMENDATIONS = {
     summary: "Where your annual income ranks among the world's adults.",
     lesson: "salary-structuring-and-tax",
     // No `calculator`: the page already links /net-worth-percentile inline.
+    guide: "/top-1-percent-income-canada",
   },
 
   // ── Advanced tool that other pages may link to (no block of its own) ─
@@ -222,6 +223,10 @@ export const GUIDE_LINKS = {
   "/how-am-i-doing-financially-for-my-age": {
     label: "How am I doing financially for my age?",
     summary: "A 5-point check of your net worth, retirement savings, savings rate, emergency fund and debt.",
+  },
+  "/top-1-percent-income-canada": {
+    label: "What it takes to join Canada's top 1%",
+    summary: "Statistics Canada's 2023 cutoffs for the top 1%, 0.1% and 0.01%, with a quick income check.",
   },
 };
 

@@ -69,6 +69,11 @@ const sitemapSections = [
         path: "/how-am-i-doing-financially-for-my-age",
         description: "A 5-point financial check for your age, with the Wealth Age Calculator",
       },
+      {
+        name: "How Much Do You Need to Earn to Be in Canada's Top 1%?",
+        path: "/top-1-percent-income-canada",
+        description: "Canada's top 1%, 0.1% and 0.01% income cutoffs, with a quick income check",
+      },
       { name: "Financial Goal Planner", path: "/financial-goal-planner", description: "Optimizes your budget across every goal at once" },
       { name: "Investment Risk Analyzer", path: "/investment-risk-analyzer", description: "Risk profile reconciled against your real finances" },
       { name: "Financial Health Checkup", path: "/financial-health-checkup", description: "A composite financial health score out of 100" },
