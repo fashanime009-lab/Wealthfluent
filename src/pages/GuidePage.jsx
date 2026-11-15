@@ -7,15 +7,17 @@ import { extractFaqItems } from "@/blog/markdownSections";
 import { joinReviewers, parseAuthor, parseReviewers } from "@/blog/people";
 import PostMarkdown from "@/blog/PostMarkdown";
 import WealthAgeCalculator from "@/components/calculators/WealthAgeCalculator";
+import CanadaTopIncomeCheck from "@/components/calculators/CanadaTopIncomeCheck";
 
-// Tools a guide can embed, by frontmatter `embedTool`. The Markdown marks
-// the spot with a line like "[Embed: Wealth Age Calculator]". These are the
-// same components the calculator pages use, not copies.
+// Tools a guide can embed, keyed by the name in its Markdown marker line,
+// e.g. "[Embed: Wealth Age Calculator]" (matched case-insensitively). These
+// are the same components the calculator pages use, not copies.
 const EMBEDDABLE_TOOLS = {
-  "wealth-age-calculator": () => <WealthAgeCalculator stacked />,
+  "wealth age calculator": () => <WealthAgeCalculator stacked />,
+  "canada top-income check": () => <CanadaTopIncomeCheck />,
 };
 
-const EMBED_LINE = /^\[Embed: [^\]]+\]\s*$/m;
+const EMBED_LINE = /^\[Embed: ([^\]]+)\]\s*$/m;
 
 /**
  * A standalone guide page (content/pages/*.md) at a top-level URL. Same
@@ -35,8 +37,10 @@ export default function GuidePage() {
   // The body's first line repeats the hero image for anyone previewing the
   // raw Markdown; it's rendered once from frontmatter.heroImage below.
   const body = content.replace(/^!\[[^\]]*\]\([^)]*\)\s*\n+/, "");
-  const [beforeEmbed, afterEmbed] = EMBED_LINE.test(body) ? body.split(EMBED_LINE) : [body, null];
-  const Tool = EMBEDDABLE_TOOLS[frontmatter.embedTool];
+  const marker = body.match(EMBED_LINE);
+  const beforeEmbed = marker ? body.slice(0, marker.index) : body;
+  const afterEmbed = marker ? body.slice(marker.index + marker[0].length) : null;
+  const Tool = marker ? EMBEDDABLE_TOOLS[marker[1].trim().toLowerCase()] : null;
 
   return (
     <div className="bg-[#eef1ec] dark:bg-[#0b1210]">

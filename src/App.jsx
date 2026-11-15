@@ -146,6 +146,7 @@ export default function App() {
             <Route path="/home-affordability-calculator" element={<HomeAffordabilityCalculatorPage />} />
             {/* Guide pages: content/pages/*.md, one route each (its frontmatter url). */}
             <Route path="/how-am-i-doing-financially-for-my-age" element={<GuidePage />} />
+            <Route path="/top-1-percent-income-canada" element={<GuidePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
           {/* Outside Layout on purpose: a full-bleed "link in bio" poster page,

@@ -28,6 +28,7 @@ export const BLOG_IMAGE_DIMENSIONS = {
   "average-vs-median-net-worth-trap.webp": { width: 1000, height: 1500, maxWidth: 520 },
   // Guide pages (content/pages/*.md) use this table too.
   "financial-checkup-by-age-scorecard.webp": { width: 1000, height: 1500, maxWidth: 520 },
+  "top-1-percent-income-canada-facts.webp": { width: 1000, height: 1500, maxWidth: 520 },
 };
 
 export function dimensionsFor(src) {
