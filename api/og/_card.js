@@ -1,7 +1,8 @@
 // Shared OG card layout, used by scripts/generate-og-images.mjs to
-// pre-render every share card at build time (and by the older on-demand
-// api/og/index.js). Deliberately dependency-free: each caller imports
-// satori/resvg itself.
+// pre-render every share card at build time (cloudflare/worker.mjs serves
+// them at /api/og?p=). Deliberately dependency-free: the caller imports
+// satori/resvg itself. CommonJS (see ./package.json) so the script can
+// require() it.
 const WIDTH = 1200;
 const HEIGHT = 630;
 
