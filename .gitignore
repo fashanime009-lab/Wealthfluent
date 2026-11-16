@@ -30,6 +30,8 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+# npm's download cache, if npm is ever pointed at the project folder
+.npm-cache/
 .env*
 
 # Generated at build time only (scripts/generate-sitemap.js writes
