@@ -13,7 +13,13 @@ import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
+// The first two answer the questions people actually search for (Search
+// Console, Nov 2026: "how to calculate an emergency fund", "how much do i
+// save for emergency fund"). The page and its FAQPage schema both come from
+// this one list.
 const FAQ_ITEMS = [
+  { q: "How do I calculate my emergency fund?", a: "Add up your essential monthly expenses: rent or home-loan EMI, groceries, utilities, insurance premiums, other loan repayments, school fees and transport. Leave out spending you would cut in a crisis. Multiply that total by the number of months you want covered, 3 to 6 for most households and 6 to 9 if your income is irregular. That is your target. Subtract the savings you already have set aside to find your shortfall. The calculator above does exactly this." },
+  { q: "How much should I save for an emergency fund?", a: "Enough to cover 3 to 6 months of essential expenses, or 6 to 9 months if you are self-employed, freelance or the only earner. For example, if your essentials cost 40,000 a month, a 6-month fund is 240,000. You don't have to build it at once: aim for one month first, then three, then six, by setting aside a fixed amount every month." },
   { q: "How many months of expenses should I save?", a: "3 months is a common starting point for stable, dual-income households; 6–9 months is safer for freelancers, single-income households, or anyone with variable income." },
   { q: "Where should I keep my emergency fund?", a: "Somewhere accessible within a day or two without penalty or market risk — a high-yield savings account or a liquid mutual fund, not equity and not a long-tenure fixed deposit." },
   { q: "Should I invest my emergency fund for better returns?", a: "No — the purpose of this money is reliability, not growth. Investing it defeats the point: if a downturn coincides with your emergency (a common pattern, since layoffs often spike during downturns), you'd be forced to sell at a loss." },
@@ -74,20 +80,7 @@ export default function EmergencyFundCalculatorPage() {
           description: "Calculate how big your emergency fund should be from your monthly expenses, and how long it will take to build it from what you can save each month.",
           path: "/emergency-fund-calculator",
         }),
-        faqSchema([
-          {
-            "question": "How many months of expenses should I save?",
-            "answer": "3 months is a common starting point for stable, dual-income households; 6–9 months is safer for freelancers, single-income households, or anyone with variable income."
-          },
-          {
-            "question": "Where should I keep my emergency fund?",
-            "answer": "Somewhere accessible within a day or two without penalty or market risk — a high-yield savings account or a liquid mutual fund, not equity and not a long-tenure fixed deposit."
-          },
-          {
-            "question": "Should I invest my emergency fund for better returns?",
-            "answer": "No — the purpose of this money is reliability, not growth. Investing it defeats the point: if a downturn coincides with your emergency (a common pattern, since layoffs often spike during downturns), you'd be forced to sell at a loss."
-          }
-        ]),
+        faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
         howToSchema({
           name: "How to Use the Emergency Fund Calculator",
           description: "Calculate how much you need in your emergency fund based on your monthly expenses and current savings.",
