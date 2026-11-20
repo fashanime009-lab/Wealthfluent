@@ -103,7 +103,9 @@ function LessonContent({ slug }) {
   const body = resolve(lesson.body, settings.currency);
   const chart = resolve(lesson.chart, settings.currency);
   const faq = resolve(lesson.faq, settings.currency);
-  const keyNumbers = extractKeyNumbers(body);
+  // A body item is a paragraph string, or { h2: "..." } for a section
+  // heading in longer lessons.
+  const keyNumbers = extractKeyNumbers(body.filter((part) => typeof part === "string"));
   const newCompletedCount = completedCount + (done ? 0 : 1);
 
   const handleComplete = () => {
@@ -203,7 +205,15 @@ function LessonContent({ slug }) {
         />
 
         <div className="mt-9 space-y-5 text-[15px] leading-7 text-[#111814]/75 dark:text-[#eef1ec]/75">
-          {body.map((para, i) => (
+          {body.map((para, i) =>
+            typeof para !== "string" ? (
+              <h2
+                key={i}
+                className="font-display pt-4 text-[21px] font-extrabold tracking-[-0.01em] text-[#111814] dark:text-[#eef1ec]"
+              >
+                {para.h2}
+              </h2>
+            ) : (
             <p
               key={i}
               className={
@@ -214,7 +224,8 @@ function LessonContent({ slug }) {
             >
               <Highlighted text={para} />
             </p>
-          ))}
+            ),
+          )}
         </div>
 
         <LessonChart chart={chart} />
