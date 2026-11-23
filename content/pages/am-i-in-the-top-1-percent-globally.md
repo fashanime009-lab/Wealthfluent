@@ -101,6 +101,8 @@ No. In rich countries the national top 1% starts far higher than $1 million. The
 ### Is net worth the same as income?
 No. Net worth is what you own minus what you owe. A retiree with a paid-off home can be in the global top 10% on a small income. To compare your income instead, use the [Global Income Percentile calculator](/income-percentile).
 
+Related: [Net worth by age in Canada](/net-worth-by-age-canada)
+
 ## The bottom line
 
 The global top 1% starts at about $1 million in net worth, and half the world owns less than about $15,000. Wherever you are on that ladder, the number that matters most is whether yours grows each year.

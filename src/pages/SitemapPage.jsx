@@ -79,6 +79,11 @@ const sitemapSections = [
         path: "/am-i-in-the-top-1-percent-globally",
         description: "The net worth needed for the world's top 50%, 10% and 1%",
       },
+      {
+        name: "Net Worth by Age in Canada: What's Typical, and Where Do You Stand?",
+        path: "/net-worth-by-age-canada",
+        description: "Statistics Canada's 2023 median net worth by age and province",
+      },
       { name: "Financial Goal Planner", path: "/financial-goal-planner", description: "Optimizes your budget across every goal at once" },
       { name: "Investment Risk Analyzer", path: "/investment-risk-analyzer", description: "Risk profile reconciled against your real finances" },
       { name: "Financial Health Checkup", path: "/financial-health-checkup", description: "A composite financial health score out of 100" },

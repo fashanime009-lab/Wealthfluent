@@ -80,6 +80,8 @@ Wealth surveys differ by country, so these numbers aren't directly comparable wi
 
 **United Kingdom.** The Office for National Statistics (Wealth and Assets Survey, April 2018 to March 2020) found a median household wealth of **£302,500**. Households headed by 25 to 34-year-olds had a median of **almost £77,000**. For 35 to 44-year-olds it was **nearly £200,000**, and for those aged 55 to State Pension age, **£553,400**. UK figures include private pension wealth, which is a big reason they look high.
 
+**Canada:** see [net worth by age in Canada](/net-worth-by-age-canada) for the full 2023 Statistics Canada breakdown.
+
 **Around the world.** UBS's Global Wealth Report 2026 (end-2025 data) gives median wealth **per adult**, not per household, in US dollars:
 
 | Country | Median wealth per adult (USD) |

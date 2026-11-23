@@ -86,6 +86,8 @@ $606,000 in 2023. The median within the group was $402,900, because a small numb
 ### Which province has the highest-earning top 1%?
 Alberta, where the top 1% averaged $644,400 in 2023, followed by Ontario at $623,200.
 
+Related: [Net worth by age in Canada](/net-worth-by-age-canada)
+
 ## The bottom line
 
 Canada's top 1% starts at $293,800, but most people who reach it are in their 50s, and nearly three in ten fall out the following year. Income is only half the story. What builds lasting security is how much of it you keep and invest.

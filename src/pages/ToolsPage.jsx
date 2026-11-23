@@ -53,6 +53,12 @@ const guides = [
     path: "/am-i-in-the-top-1-percent-globally",
     cta: "Read guide",
   },
+  {
+    title: "Net Worth by Age in Canada",
+    desc: "Statistics Canada's 2023 median net worth for each age group and province, with a quick check of where you stand.",
+    path: "/net-worth-by-age-canada",
+    cta: "Read guide",
+  },
 ];
 
 const highlights = [

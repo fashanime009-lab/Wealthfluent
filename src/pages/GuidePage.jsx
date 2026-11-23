@@ -9,6 +9,7 @@ import PostMarkdown from "@/blog/PostMarkdown";
 import WealthAgeCalculator from "@/components/calculators/WealthAgeCalculator";
 import CanadaTopIncomeCheck from "@/components/calculators/CanadaTopIncomeCheck";
 import NetWorthPercentileCalculator from "@/components/calculators/NetWorthPercentileCalculator";
+import CanadaNetWorthByAgeCheck from "@/components/calculators/CanadaNetWorthByAgeCheck";
 
 // Tools a guide can embed, keyed by the name in its Markdown marker line,
 // e.g. "[Embed: Wealth Age Calculator]" (matched case-insensitively). These
@@ -17,6 +18,7 @@ const EMBEDDABLE_TOOLS = {
   "wealth age calculator": () => <WealthAgeCalculator stacked />,
   "canada top-income check": () => <CanadaTopIncomeCheck />,
   "net worth percentile": () => <NetWorthPercentileCalculator compact />,
+  "canada net worth by age check": () => <CanadaNetWorthByAgeCheck />,
 };
 
 const EMBED_LINE = /^\[Embed: ([^\]]+)\]\s*$/m;
