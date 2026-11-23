@@ -44,6 +44,17 @@ const MU = Math.log(WORLD_BAND_THRESHOLD_USD) - SIGMA * Z_BAND;
 // The fitted curve's own 50th percentile — derived, not assumed. ≈ $15,072.
 export const MEDIAN_NET_WORTH_USD = Math.exp(MU);
 
+// Every figure the site quotes from this model (the median, the "what it
+// takes" thresholds, the guide pages' tables) goes through this one
+// rounding, so the same number shows everywhere: nearest $1,000 below $1m,
+// nearest $100,000 above. Percentile maths keeps using the exact values.
+export function roundForDisplayUSD(usd) {
+  return usd < 1000000 ? Math.round(usd / 1000) * 1000 : Math.round(usd / 100000) * 100000;
+}
+
+// The world median as quoted on the site (≈ $15,000).
+export const MEDIAN_DISPLAY_USD = roundForDisplayUSD(MEDIAN_NET_WORTH_USD);
+
 // Approximate, fixed conversion to USD — NOT a live exchange rate, but a
 // real one: Federal Reserve H.10 noon buying rates, 18 Sep 2026. Good
 // enough to place a figure on a global curve; not precise enough for
@@ -95,7 +106,7 @@ const REFERENCE_POINTS = [
 export function getReferenceThresholdsUSD() {
   return REFERENCE_POINTS.map(({ label, z }) => ({
     label,
-    netWorthUSD: Math.exp(MU + SIGMA * z),
+    netWorthUSD: roundForDisplayUSD(Math.exp(MU + SIGMA * z)),
   }));
 }
 

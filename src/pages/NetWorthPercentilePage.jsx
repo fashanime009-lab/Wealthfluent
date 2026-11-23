@@ -1,37 +1,29 @@
-import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import Seo, { SITE_URL } from "@/components/seo/Seo";
+import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
-import {
-  calculateGlobalWealthPercentile,
-  getReferenceThresholdsUSD,
-  USD_CONVERSION_RATES,
-  MEDIAN_NET_WORTH_USD,
-} from "../services/calculators/globalWealthPercentile";
-import CalcField from "@/components/calculators/CalcField";
-import CalcResultPanel from "@/components/calculators/CalcResultPanel";
-import CalcStat from "@/components/calculators/CalcStat";
+import { USD_CONVERSION_RATES, MEDIAN_DISPLAY_USD } from "../services/calculators/globalWealthPercentile";
+import NetWorthPercentileCalculator from "@/components/calculators/NetWorthPercentileCalculator";
 import CalcSection from "@/components/calculators/CalcSection";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
-import ShareResult from "@/components/share/ShareResult";
 import useShareLanding from "@/hooks/useShareLanding";
-import { drawNetWorthShareCard } from "@/components/share/drawNetWorthShareCard";
 
 function buildFaqItems(usdFmt) {
+  // The quoted median comes from the model (MEDIAN_DISPLAY_USD), the same
+  // value the calculator's result card shows, so the two can't drift apart.
+  const median = usdFmt(MEDIAN_DISPLAY_USD);
   return [
-    { q: `Where do the ${usdFmt(15000)} median and ${usdFmt(1000000)} top-1% figures come from?`, a: `Both come from the UBS Global Wealth Report 2026, the most current major global wealth-distribution study. It states that just over 41% of the world's adults held under ${usdFmt(10000)} in net worth in 2025 — fitting a statistical curve to that (41% below ${usdFmt(10000)}) and the world's ~57.5 million-strong dollar-millionaire population (almost exactly 1% of all adults) implies a global median net worth of roughly ${usdFmt(15000)}, with about ${usdFmt(1000000)} still marking the entry point to the wealthiest 1%. Everything in between is estimated from that same curve — not a precise, per-person ranking, since no dataset like that exists.` },
-    { q: "Why does so little net worth put me ahead of half the world?", a: `Global wealth is heavily concentrated — a large share of the world's adults have little to no savings or own no property, especially outside high-income countries, while a relatively small share holds a large share of total wealth. Someone with ${usdFmt(15000)} in net worth — a modest used car and some savings, say — is already at the world median, which surprises a lot of people in wealthier countries.` },
+    { q: `Where do the ${median} median and ${usdFmt(1000000)} top-1% figures come from?`, a: `Both come from the UBS Global Wealth Report 2026, the most current major global wealth-distribution study. It states that just over 41% of the world's adults held under ${usdFmt(10000)} in net worth in 2025 — fitting a statistical curve to that (41% below ${usdFmt(10000)}) and the world's ~57.5 million-strong dollar-millionaire population (almost exactly 1% of all adults) implies a global median net worth of roughly ${median}, with about ${usdFmt(1000000)} still marking the entry point to the wealthiest 1%. Everything in between is estimated from that same curve — not a precise, per-person ranking, since no dataset like that exists.` },
+    { q: "Why does so little net worth put me ahead of half the world?", a: `Global wealth is heavily concentrated — a large share of the world's adults have little to no savings or own no property, especially outside high-income countries, while a relatively small share holds a large share of total wealth. Someone with ${median} in net worth — a modest used car and some savings, say — is already at the world median, which surprises a lot of people in wealthier countries.` },
     { q: "My net worth is negative — what does that mean here?", a: "It means your debts exceed your assets, which this model can't place on the curve (it's mathematically undefined at zero and below). It's also extremely common early in life or career in wealthy countries — student loans, a new mortgage — and says more about life stage and country than lifetime financial trajectory." },
     { q: "Is this the same as income percentile?", a: "No — this measures net worth (what you own minus what you owe), not annual income. The two are related but genuinely different: a retiree with a paid-off home and modest income can rank far higher on wealth than a high-earning 25-year-old who hasn't had time to accumulate assets yet." },
     { q: "How is my currency converted for this?", a: "Using a fixed, approximate conversion between currencies (since the reference data is USD-denominated) — not a live exchange rate. It's accurate enough to place your number on the right part of the global curve, not precise enough to treat as today's actual rate." },
     { q: "Is this calculator based on the UBS Global Wealth Report?", a: `Yes. The UBS Global Wealth Report 2026 is the source for both reference points this calculator is calibrated against: that just over 41% of the world's adults held under ${usdFmt(10000)} in net worth in 2025, and that the world's roughly 57.5 million dollar-millionaires make up almost exactly 1% of all adults. Every percentile in between is a statistical estimate fitted to those two UBS figures, not a number UBS itself publishes.` },
     { q: "What net worth do I need to be in the global top 1%?", a: `Roughly ${usdFmt(1000000)} in net worth — assets minus debts — puts you at the entry point of the world's wealthiest 1% of adults, based on the UBS Global Wealth Report's count of roughly 57.5 million dollar-millionaires worldwide. That threshold is far lower than what's needed to rank in the top 1% within a wealthy country, because the comparison here is against every adult on Earth, most of whom live in lower-income countries.` },
     { q: "Can I see my net worth percentile by age?", a: "This calculator ranks you against every adult in the world, whatever their age. Wealth usually builds with age, so someone in their 20s will rank lower than someone in their 50s with the same habits, and that is normal. For typical figures at each age, see FINAIW's Net worth by age guide, which uses the US Federal Reserve's 2025 survey, along with UK and global data." },
-    { q: "How does this compare to a global rich list?", a: `A rich list (like the various billionaire rankings) only names a few thousand people at the extreme top. This calculator instead estimates where an ordinary net worth — ${usdFmt(15000)}, ${usdFmt(100000)}, ${usdFmt(500000)} — falls among all ~5.5 billion adults worldwide, which is a far more useful comparison for most people than a billionaire list.` },
+    { q: "How does this compare to a global rich list?", a: `A rich list (like the various billionaire rankings) only names a few thousand people at the extreme top. This calculator instead estimates where an ordinary net worth — ${median}, ${usdFmt(100000)}, ${usdFmt(500000)} — falls among all ~5.5 billion adults worldwide, which is a far more useful comparison for most people than a billionaire list.` },
   ];
 }
 
@@ -53,26 +45,10 @@ export default function NetWorthPercentilePage() {
   const usdFmt = (usd) => fmt(scale(usd));
   const FAQ_ITEMS = buildFaqItems(usdFmt);
 
-  const [netWorth, setNetWorth] = useState(() => scale(45000));
-
-  const result = useMemo(
-    () => calculateGlobalWealthPercentile({ netWorth, currencyCode: currency }),
-    [netWorth, currency]
-  );
-
-  const thresholds = useMemo(() => getReferenceThresholdsUSD(), []);
-
-  // A visitor arriving via a shared link (?p=<top-percent>, one decimal —
-  // see the Share URL note below) sees a banner instead of the blank
-  // default input. Fires a consent-gated share_landing GA4 event once.
+  // A visitor arriving via a shared link (?p=<top-percent>) sees a banner
+  // instead of the blank default input. Fires a consent-gated
+  // share_landing GA4 event once.
   const sharedTopPercent = useShareLanding("p", { context: "net_worth_percentile" });
-
-  const headline =
-    result.percentile === null
-      ? "Your net worth is below zero"
-      : result.percentile >= 99
-        ? `You're wealthier than ${result.percentile}% of the world`
-        : `You're wealthier than ${result.percentile}% of the world's adults`;
 
   return (
     <>
@@ -104,100 +80,8 @@ export default function NetWorthPercentilePage() {
             Enter one number and find out.
           </p>
 
-          {/* Main Grid */}
-          <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
-            {/* Left Panel – Input */}
-            <div className="space-y-7 border border-[#111814]/12 bg-[#ffffff] p-7 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-              {sharedTopPercent !== null && (
-                <p className="border border-[#047857]/30 bg-[#047857]/[0.08] px-4 py-3 text-[13.5px] font-semibold text-[#047857] dark:border-[#34d399]/25 dark:bg-[#34d399]/[0.08] dark:text-[#34d399]">
-                  Your friend is in the top {sharedTopPercent}% of the world. Where do you rank?
-                </p>
-              )}
-              <CalcField
-                label="Your net worth (assets minus debts)"
-                value={netWorth}
-                onChange={setNetWorth}
-                min={scale(-100000)}
-                max={scale(5000000)}
-                step={Math.max(1, scale(1000))}
-                format={fmt}
-              />
-              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
-                Everything you own (savings, investments, property, vehicles at resale value) minus everything you
-                owe (loans, credit card balances, mortgages). Not sure? The{" "}
-                <Link to="/networth-calculator" className="font-semibold underline decoration-[#111814]/25 underline-offset-4 dark:decoration-[#eef1ec]/25">
-                  Net Worth Calculator
-                </Link>{" "}
-                works it out for you. Curious how your salary compares instead? Try the{" "}
-                <Link to="/income-percentile" className="font-semibold underline decoration-[#111814]/25 underline-offset-4 dark:decoration-[#eef1ec]/25">
-                  Income Percentile Calculator
-                </Link>
-                .
-              </p>
-            </div>
-
-            {/* Right Panel – Result */}
-            <div className="space-y-6">
-              <CalcResultPanel
-                label={result.percentile === null ? "Global standing" : "Your global standing"}
-                value={result.percentile === null ? "—" : `Top ${result.topPercent}%`}
-                note={headline}
-              />
-
-              {result.percentile !== null ? (
-                <div className="border border-[#047857]/25 bg-[#047857]/[0.06] p-6 dark:border-[#34d399]/20 dark:bg-[#0e1512]">
-                  <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">Where you stand</p>
-                  <p className="mt-1 text-[22px] font-bold text-[#047857] dark:text-[#34d399]">
-                    You're in {result.bucket}
-                  </p>
-                  <p className="mt-1 text-[13.5px] text-[#111814]/65 dark:text-[#eef1ec]/65">
-                    That's roughly{" "}
-                    <strong className="text-[#111814] dark:text-[#eef1ec]">
-                      {result.timesMedian >= 1 ? `${result.timesMedian.toFixed(1)}×` : `${(result.timesMedian * 100).toFixed(0)}%`}
-                    </strong>{" "}
-                    the world's median adult net worth (≈ {fmt(MEDIAN_NET_WORTH_USD / rate)}).
-                  </p>
-                  <p className="mt-3 text-[11px] text-[#111814]/45 dark:text-[#eef1ec]/40">
-                    Data: UBS Global Wealth Report 2026 (estimate)
-                  </p>
-                </div>
-              ) : (
-                <div className="border border-amber-500/25 bg-amber-500/[0.06] p-6 dark:border-amber-400/20 dark:bg-[#0e1512]">
-                  <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">Where you stand</p>
-                  <p className="mt-1 text-[22px] font-bold text-amber-800 dark:text-amber-400">Debts exceed assets</p>
-                  <p className="mt-1 text-[13.5px] text-[#111814]/65 dark:text-[#eef1ec]/65">
-                    Extremely common early in life or career — this says more about life stage than trajectory. See
-                    the FAQ below.
-                  </p>
-                </div>
-              )}
-
-              {result.percentile !== null && (
-                <ShareResult
-                  shareUrl={`${SITE_URL}/net-worth-percentile/share?p=${result.topPercent}`}
-                  shareText={`I'm in the top ${result.topPercent}% of the world by net worth — wealthier than ${result.percentile}% of adults. Where do you rank?`}
-                  drawCard={(ctx, size) => drawNetWorthShareCard(ctx, size, result)}
-                  fileName="finaiw-net-worth-percentile.png"
-                  analyticsContext="net_worth_percentile"
-                />
-              )}
-
-              {/* Reference thresholds */}
-              <div className="divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                <p className="py-3.5 text-[12px] font-semibold uppercase tracking-wide text-[#111814]/60 dark:text-[#eef1ec]/50">
-                  What it takes, worldwide
-                </p>
-                {thresholds.map((t) => (
-                  <CalcStat key={t.label} label={t.label} value={fmt(t.netWorthUSD / rate)} />
-                ))}
-              </div>
-
-              <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
-                <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
-                This is a statistical estimate calibrated to widely-cited global wealth research, not a precise
-                per-person ranking or live dataset. See "How this is calculated" below.
-              </p>
-            </div>
+          <div className="mt-10">
+            <NetWorthPercentileCalculator sharedTopPercent={sharedTopPercent} />
           </div>
 
           {/* SEO Content */}
@@ -212,7 +96,7 @@ export default function NetWorthPercentilePage() {
                 over 41% of the world's adults held under {usdFmt(10000)} in net worth in 2025, and the world's roughly 57.5
                 million dollar-millionaires are almost exactly 1% of all adults, keeping {usdFmt(1000000)} as the entry
                 point to the world's wealthiest 1%. Fitting a curve to those two points implies a worldwide median
-                adult net worth of roughly {usdFmt(15000)} — itself an estimate, not a UBS-quoted figure.
+                adult net worth of roughly {usdFmt(MEDIAN_DISPLAY_USD)} — itself an estimate, not a UBS-quoted figure.
               </p>
               <p>
                 Global wealth is heavily concentrated — a large share of adults worldwide have little to no net

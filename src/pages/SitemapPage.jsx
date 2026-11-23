@@ -74,6 +74,11 @@ const sitemapSections = [
         path: "/top-1-percent-income-canada",
         description: "Canada's top 1%, 0.1% and 0.01% income cutoffs, with a quick income check",
       },
+      {
+        name: "Am I in the Top 1% Globally? What It Takes in Net Worth",
+        path: "/am-i-in-the-top-1-percent-globally",
+        description: "The net worth needed for the world's top 50%, 10% and 1%",
+      },
       { name: "Financial Goal Planner", path: "/financial-goal-planner", description: "Optimizes your budget across every goal at once" },
       { name: "Investment Risk Analyzer", path: "/investment-risk-analyzer", description: "Risk profile reconciled against your real finances" },
       { name: "Financial Health Checkup", path: "/financial-health-checkup", description: "A composite financial health score out of 100" },

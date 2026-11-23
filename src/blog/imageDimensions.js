@@ -29,6 +29,7 @@ export const BLOG_IMAGE_DIMENSIONS = {
   // Guide pages (content/pages/*.md) use this table too.
   "financial-checkup-by-age-scorecard.webp": { width: 1000, height: 1500, maxWidth: 520 },
   "top-1-percent-income-canada-facts.webp": { width: 1000, height: 1500, maxWidth: 520 },
+  "global-wealth-pyramid.webp": { width: 1200, height: 800 },
 };
 
 export function dimensionsFor(src) {

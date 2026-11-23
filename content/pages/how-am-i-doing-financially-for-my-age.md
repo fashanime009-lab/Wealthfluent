@@ -112,6 +112,8 @@ No. A higher savings rate, cleared debt and steady investing can close much of t
 ### What is a wealth age calculator?
 It compares your "financial age", based on your savings rate and net worth, with your real age. A financial age below your real age means your money habits are ahead of where they need to be.
 
+Related: [What net worth puts you in the global top 1%?](/am-i-in-the-top-1-percent-globally)
+
 ## The bottom line
 
 You're not behind because a friend posted a new car. You're behind only if your own five numbers say so, and the fix is usually the same: clear expensive debt, build a buffer, and save a little more each year. Check again in twelve months. The person to beat is you, last year.
