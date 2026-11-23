@@ -8,7 +8,7 @@ import { LESSONS } from "../lessons";
  *      destination name the same thing) and `summary` is the note beside it.
  *   2. It is what THIS page's <RelatedLinks /> block shows: `lesson` is a
  *      slug from src/data/lessons.js, `calculator` is another entry's key and
- *      `guide` is a key of GUIDE_LINKS below. Any may be left out — the
+ *      `guide` is a key (or list of keys) of GUIDE_LINKS below. Any may be left out — the
  *      block only renders what exists.
  *
  * So adding a calculator is one entry here plus a <RelatedLinks /> in the
@@ -200,7 +200,7 @@ export const CALCULATOR_RECOMMENDATIONS = {
     lesson: "net-worth-tracking",
     // No `calculator`: the page already links /networth-calculator and
     // /income-percentile inline, where they're most useful.
-    guide: "/how-am-i-doing-financially-for-my-age",
+    guide: ["/how-am-i-doing-financially-for-my-age", "/am-i-in-the-top-1-percent-globally"],
   },
   "/income-percentile": {
     label: "Global Income Percentile Calculator",
@@ -223,6 +223,10 @@ export const GUIDE_LINKS = {
   "/how-am-i-doing-financially-for-my-age": {
     label: "How am I doing financially for my age?",
     summary: "A 5-point check of your net worth, retirement savings, savings rate, emergency fund and debt.",
+  },
+  "/am-i-in-the-top-1-percent-globally": {
+    label: "What net worth puts you in the global top 1%?",
+    summary: "The net worth needed for the world's top 50%, 10% and 1%, from UBS Global Wealth Report data.",
   },
   "/top-1-percent-income-canada": {
     label: "What it takes to join Canada's top 1%",
@@ -257,9 +261,10 @@ export function getCalculatorRelated(path) {
     items.push({ kind: "Calculator", to: entry.calculator, label: target.label, note: target.summary });
   }
 
-  const guide = entry.guide && GUIDE_LINKS[entry.guide];
-  if (guide) {
-    items.push({ kind: "Guide", to: entry.guide, label: guide.label, note: guide.summary });
+  // `guide` is one guide path or a list of them.
+  for (const path of [].concat(entry.guide || [])) {
+    const guide = GUIDE_LINKS[path];
+    if (guide) items.push({ kind: "Guide", to: path, label: guide.label, note: guide.summary });
   }
 
   return items;

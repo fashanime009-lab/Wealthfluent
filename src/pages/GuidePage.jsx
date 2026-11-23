@@ -8,6 +8,7 @@ import { joinReviewers, parseAuthor, parseReviewers } from "@/blog/people";
 import PostMarkdown from "@/blog/PostMarkdown";
 import WealthAgeCalculator from "@/components/calculators/WealthAgeCalculator";
 import CanadaTopIncomeCheck from "@/components/calculators/CanadaTopIncomeCheck";
+import NetWorthPercentileCalculator from "@/components/calculators/NetWorthPercentileCalculator";
 
 // Tools a guide can embed, keyed by the name in its Markdown marker line,
 // e.g. "[Embed: Wealth Age Calculator]" (matched case-insensitively). These
@@ -15,9 +16,19 @@ import CanadaTopIncomeCheck from "@/components/calculators/CanadaTopIncomeCheck"
 const EMBEDDABLE_TOOLS = {
   "wealth age calculator": () => <WealthAgeCalculator stacked />,
   "canada top-income check": () => <CanadaTopIncomeCheck />,
+  "net worth percentile": () => <NetWorthPercentileCalculator compact />,
 };
 
 const EMBED_LINE = /^\[Embed: ([^\]]+)\]\s*$/m;
+
+// "2026-11-23" -> "23 November 2026". Guides write {{dataLastChecked}} in
+// their Markdown (e.g. under a data table) and keep the date itself in the
+// frontmatter, so a yearly data refresh only edits the frontmatter.
+function formatLongDate(iso) {
+  const d = new Date(`${iso}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+}
 
 /**
  * A standalone guide page (content/pages/*.md) at a top-level URL. Same
@@ -36,7 +47,9 @@ export default function GuidePage() {
 
   // The body's first line repeats the hero image for anyone previewing the
   // raw Markdown; it's rendered once from frontmatter.heroImage below.
-  const body = content.replace(/^!\[[^\]]*\]\([^)]*\)\s*\n+/, "");
+  const body = content
+    .replace(/^!\[[^\]]*\]\([^)]*\)\s*\n+/, "")
+    .replaceAll("{{dataLastChecked}}", frontmatter.dataLastChecked ? formatLongDate(frontmatter.dataLastChecked) : "");
   const marker = body.match(EMBED_LINE);
   const beforeEmbed = marker ? body.slice(0, marker.index) : body;
   const afterEmbed = marker ? body.slice(marker.index + marker[0].length) : null;

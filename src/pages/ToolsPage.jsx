@@ -47,6 +47,12 @@ const guides = [
     path: "/top-1-percent-income-canada",
     cta: "Read guide",
   },
+  {
+    title: "Am I in the Top 1% Globally?",
+    desc: "The net worth it takes to reach the world's top 50%, 10% and 1%, with the Net Worth Percentile calculator built in.",
+    path: "/am-i-in-the-top-1-percent-globally",
+    cta: "Read guide",
+  },
 ];
 
 const highlights = [
