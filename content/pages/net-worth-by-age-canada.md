@@ -26,9 +26,9 @@ But a single number tells you very little. A 30-year-old renter and a 60-year-ol
 
 [Embed: Canada net worth by age check]
 
-## Median net worth by age in Canada (2023)
+## Median and average net worth by age in Canada (2023)
 
-| Age of main income earner | Median net worth 2019 | Median net worth 2023 | Average net worth 2023 | Change |
+| Age of main income earner | Median net worth 2019 | Median net worth 2023 | Average net worth 2023 | Change (median) |
 | --- | --- | --- | --- | --- |
 | Under 35 | $56,400 | $159,100 | $459,800 | +182% |
 | 35 to 44 | $270,800 | $409,300 | $753,500 | +51% |
@@ -45,7 +45,7 @@ But a single number tells you very little. A 30-year-old renter and a 60-year-ol
 
 We use the **median**, the family exactly in the middle, because the average is pulled up by a small number of very wealthy families. Statistics Canada itself warns that its survey under-counts the very rich, which is one more reason the median is the fairer benchmark.
 
-For reference, the average Canadian family's net worth was $995,900 in 2023, almost twice the median, because a small number of very wealthy families pull the average up.
+For reference, the average Canadian family's net worth was $995,900 in 2023, almost twice the median.
 
 ## Three things the data shows
 
