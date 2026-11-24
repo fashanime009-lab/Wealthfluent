@@ -309,6 +309,7 @@ export function INSURANCE_NEED(currency) {
       },
     ],
     related: [
+      { label: "How Much Term Insurance Do You Need?", to: "/blog/how-much-term-insurance-do-i-need", note: "three ways to work out your cover, with a worked example" },
       { label: "Term Insurance Basics", to: "/learn/term-insurance-basics", note: "why pure protection beats bundled policies for most people" },
       { label: "Term Insurance vs Endowment/ULIP", to: "/verdict/term-vs-endowment", note: "once you know the amount, compare the two ways of buying protection" },
       { label: "Health Insurance Basics", to: "/learn/health-insurance-basics", note: "life cover doesn't replace a medical policy" },
@@ -516,6 +517,7 @@ export function TERM_VS_ENDOWMENT(currency) {
     related: [
       { label: "Term Insurance Basics", to: "/learn/term-insurance-basics", note: "why pure protection beats bundled plans for most people" },
       { label: "How Much Term Insurance Do You Need?", to: "/verdict/insurance-need", note: "work out the cover amount before you compare products" },
+      { label: "How much term insurance do you need? (guide)", to: "/blog/how-much-term-insurance-do-i-need", note: "term vs endowment vs ULIP, side by side, with a worked example" },
       { label: "Index Funds vs Active Funds", to: "/learn/index-funds-vs-active-funds", note: "a low-cost way to invest the premium difference" },
       { label: "SIP Calculator", to: "/sip-calculator", note: "see what a monthly investment grows to" },
     ],
