@@ -1,6 +1,6 @@
 ---
 slug: how-much-term-insurance-do-i-need
-seoTitle: "How Much Term Insurance Do I Need? (2026 Guide + Examples)"
+seoTitle: "How Much Term Insurance Do I Need? (Guide + Examples)"
 h1: "How Much Term Insurance Do You Need? A Simple Way to Work It Out"
 metaDescription: "Work out how much term insurance you need in 3 ways: income multiple, life value and needs-based, with a worked ₹ example, term vs endowment, and FAQs."
 datePublished: 2026-11-24
@@ -11,10 +11,14 @@ readTime: "10 min read"
 category: "Insurance"
 tags: ["Term Insurance", "Insurance", "Financial Planning"]
 keywords: ["how much term insurance do i need", "how much term insurance should i buy", "how to calculate term insurance cover", "term insurance cover by income", "human life value", "term insurance vs endowment"]
+heroImage: "/blog/images/how-much-term-insurance-hero.webp"
+heroAlt: "How much term insurance do you need? Most people need cover of 10 to 15 times their yearly income"
 ctaPath: "/verdict/insurance-need"
 ctaLabel: "Check your cover with the Insurance Need tool →"
 ctaDescription: "Enter your income, loans, goals and savings to see the cover your family would need."
 ---
+
+![How much term insurance do you need? Most people need cover of 10 to 15 times their yearly income](/blog/images/how-much-term-insurance-hero.webp)
 
 Most people need term insurance cover of **10 to 15 times their annual income**. A more accurate figure comes from your own numbers: the money your family would need to live on for as many years as they depend on you, plus your loans and big goals, minus what you've already saved.
 
@@ -95,11 +99,15 @@ Meet Rahul. He's 32, lives in Pune and earns ₹12 lakh a year. His wife works p
 
 Total: **₹1.75 crore**.
 
+![Needs-based example: ₹1.2 crore living costs plus ₹40 lakh home loan plus ₹30 lakh education minus ₹15 lakh savings equals ₹1.75 crore of cover](/blog/images/term-insurance-needs-based-example.webp)
+
 | Method | How it's worked out | Cover |
 |---|---|---|
 | Income multiple | 10–15 × ₹12 lakh | ₹1.2–1.8 crore |
 | Human life value | ₹9 lakh a year for 28 years, income rising 5%, discounted at 8% | ≈ ₹1.65 crore |
 | Needs-based | ₹1.2 crore living costs + ₹40 lakh loan + ₹30 lakh education − ₹15 lakh savings | ₹1.75 crore |
+
+![Three methods, one answer: income multiple ₹1.2 to 1.8 crore, human life value about ₹1.65 crore, needs-based ₹1.75 crore](/blog/images/term-insurance-three-methods.webp)
 
 All three land between about ₹1.6 crore and ₹1.8 crore. That agreement is the reassurance: when three different methods point to the same band, you can be confident the number isn't a guess. For Rahul, **₹1.75 crore to ₹2 crore** of cover, running until he's 60, is a sound choice.
 
