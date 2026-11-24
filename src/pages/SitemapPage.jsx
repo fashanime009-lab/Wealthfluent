@@ -133,6 +133,11 @@ const sitemapSections = [
         path: "/blog/net-worth-by-age",
         description: "Median and average net worth by age, from the newest Fed data",
       },
+      {
+        name: "How Much Term Insurance Do You Need? A Simple Way to Work It Out",
+        path: "/blog/how-much-term-insurance-do-i-need",
+        description: "Three ways to work out your cover, with a worked example",
+      },
     ],
   },
   {
