@@ -80,7 +80,12 @@ export default function CanadaNetWorthByAgeCheck() {
 
         {result && (
           <div className="space-y-3">
-            <p className="font-display text-[24px] font-extrabold leading-tight text-[#047857] dark:text-[#34d399]">
+            {/* Green only for good news; "below the median" uses the body ink. */}
+            <p
+              className={`font-display text-[24px] font-extrabold leading-tight ${
+                result.position === "below" ? "text-[#111814] dark:text-[#eef1ec]" : "text-[#047857] dark:text-[#34d399]"
+              }`}
+            >
               {result.position === "at"
                 ? "Right at the median"
                 : result.position === "above"
