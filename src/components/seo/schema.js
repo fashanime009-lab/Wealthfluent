@@ -87,10 +87,14 @@ export function articleSchema({
   // A named Person when the content has an individual author; otherwise
   // the publisher organization is credited.
   author,
+  // Optional "@id", so a WebPage node can point at this article (see
+  // webPageSchema below).
+  id,
 }) {
   return {
     "@context": "https://schema.org",
     "@type": "Article",
+    ...(id && { "@id": id }),
     headline: title,
     description,
     url: `${SITE_URL}${path}`,
@@ -125,6 +129,25 @@ export function articleSchema({
       : reviewedBy.length
         ? { reviewedBy }
         : {}),
+  };
+}
+
+/**
+ * The page an article sits on. reviewedBy is a WebPage property, not an
+ * Article one, so pages that name their reviewers put them here and pass
+ * reviewedBy: [] to articleSchema. mainEntity points at the article by
+ * its "@id".
+ */
+export function webPageSchema({ path, name, reviewedBy, mainEntityId, inLanguage = "en" }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${SITE_URL}${path}`,
+    url: `${SITE_URL}${path}`,
+    name,
+    inLanguage,
+    ...(reviewedBy?.length && { reviewedBy }),
+    ...(mainEntityId && { mainEntity: { "@id": mainEntityId } }),
   };
 }
 

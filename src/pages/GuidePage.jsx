@@ -1,6 +1,6 @@
 import { Link, Navigate, useLocation } from "react-router-dom";
 import Seo, { SITE_URL } from "@/components/seo/Seo";
-import { articleSchema, breadcrumbSchema, faqSchema } from "@/components/seo/schema";
+import { articleSchema, breadcrumbSchema, faqSchema, webPageSchema } from "@/components/seo/schema";
 import { getGuideByPath } from "@/guides/guides";
 import { formatPostDate } from "@/blog/formatDate";
 import { extractFaqItems } from "@/blog/markdownSections";
@@ -46,6 +46,7 @@ export default function GuidePage() {
   const { frontmatter, content, url } = guide;
   const absoluteHeroUrl = `${SITE_URL}${frontmatter.heroImage || "/og-image.png"}`;
   const faqItems = extractFaqItems(content);
+  const articleId = `${SITE_URL}${url}#article`;
 
   // The body's first line repeats the hero image for anyone previewing the
   // raw Markdown; it's rendered once from frontmatter.heroImage below.
@@ -78,8 +79,16 @@ export default function GuidePage() {
               publishedTime: frontmatter.datePublished,
               modifiedTime: frontmatter.dateModified,
               image: absoluteHeroUrl,
-              reviewedBy: parseReviewers(frontmatter.reviewedBy || []),
+              // Reviewers belong on the WebPage node below, not the Article.
+              reviewedBy: [],
               author: parseAuthor(frontmatter.author),
+              id: articleId,
+            }),
+            webPageSchema({
+              path: url,
+              name: frontmatter.seoTitle,
+              reviewedBy: parseReviewers(frontmatter.reviewedBy || []),
+              mainEntityId: articleId,
             }),
             breadcrumbSchema([
               { name: "Home", path: "/" },
