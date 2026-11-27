@@ -1,6 +1,6 @@
 ---
 slug: how-much-to-invest-to-become-a-millionaire
-seoTitle: "How Much to Invest Monthly to Become a Millionaire (2026)"
+seoTitle: "How Much to Invest Monthly to Become a Millionaire"
 h1: "How Much Do You Need to Invest Each Month to Become a Millionaire?"
 metaDescription: "See exactly how much to invest each month to reach 1 million in 10 to 40 years, in any currency. Includes return scenarios, inflation and a free calculator."
 datePublished: 2026-10-24

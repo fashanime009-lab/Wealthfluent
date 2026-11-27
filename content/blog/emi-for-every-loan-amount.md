@@ -1,6 +1,6 @@
 ---
 slug: emi-for-every-loan-amount
-seoTitle: "EMI for Any Loan Amount: Full Table by Rate & Tenure (2026)"
+seoTitle: "EMI for Any Loan Amount: Full Table by Rate & Tenure"
 h1: "EMI for Every Loan Amount: The Complete Table by Rate and Tenure"
 metaDescription: "See the EMI for any loan amount at every common rate and tenure, plus the total interest you'll pay and how to scale it to your loan. Any currency."
 datePublished: 2026-10-29

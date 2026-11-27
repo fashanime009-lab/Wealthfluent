@@ -7,7 +7,7 @@ import { isLessonComplete, markLessonComplete, getStreak, getLessonsCompletedCou
 import { highlightText, extractKeyNumbers } from "@/utils/highlightNumbers";
 import LessonChart from "@/components/learn/LessonChart";
 import Seo, { SITE_URL } from "@/components/seo/Seo";
-import { articleSchema, breadcrumbSchema, faqSchema } from "@/components/seo/schema";
+import { articleSchema, breadcrumbSchema, faqSchema, webPageSchema } from "@/components/seo/schema";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 import { useSettings } from "@/context/SettingsContext";
 
@@ -145,7 +145,13 @@ function LessonContent({ slug }) {
               // more honest here than inventing 30 distinct ones.
               publishedTime: "2026-09-11",
               image: `${SITE_URL}${coverPath(lesson.slug, "jpg")}`,
+              id: `${SITE_URL}/learn/${lesson.slug}#article`,
+            }),
+            webPageSchema({
+              path: `/learn/${lesson.slug}`,
+              name: lesson.seoTitle || `${lesson.title} — Learn`,
               reviewedBy: [{ "@type": "Person", name: LESSON_REVIEWER.name, jobTitle: LESSON_REVIEWER.jobTitle }],
+              mainEntityId: `${SITE_URL}/learn/${lesson.slug}#article`,
             }),
             breadcrumbSchema([
               { name: "Home", path: "/" },

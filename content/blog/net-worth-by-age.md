@@ -1,6 +1,6 @@
 ---
 slug: net-worth-by-age
-seoTitle: "Average Net Worth by Age (2026 Data): How Do You Compare?"
+seoTitle: "Average Net Worth by Age: How Do You Compare?"
 h1: "Net Worth by Age: What's Normal, and Are You Behind?"
 metaDescription: "New 2025 Fed data on median and average net worth by age, plus UK and global figures, why averages mislead, and how to check where you stand."
 datePublished: 2026-11-12

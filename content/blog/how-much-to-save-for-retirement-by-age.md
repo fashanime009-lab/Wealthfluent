@@ -1,6 +1,6 @@
 ---
 slug: how-much-to-save-for-retirement-by-age
-seoTitle: "How Much to Save for Retirement by Age (2026 Guide)"
+seoTitle: "How Much to Save for Retirement by Age: The Full Guide"
 h1: "How Much Should You Invest for Retirement, by Age?"
 metaDescription: "See exactly how much to invest monthly for retirement, by the age you start. Based on the standard 25x-expenses (4% rule) target, in any currency."
 datePublished: 2026-10-29
