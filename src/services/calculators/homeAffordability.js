@@ -75,13 +75,21 @@ export function calculateHomeAffordability({
   let affordabilityScore;
   let recommendation;
 
-  if (emiRatio <= 30) {
+  // Rated on ALL EMIs (the new one plus existing loans), not the new EMI
+  // alone: a new EMI at 30% of income on top of existing EMIs at 30% used
+  // to rate "Excellent" with 60% of income already going to loans. And a
+  // home that leaves less than nothing each month is High Risk whatever
+  // the ratio says.
+  if (monthlyCashAfterEMI < 0) {
+    affordabilityScore = 30;
+    recommendation = "High Risk";
+  } else if (debtToIncomeRatio <= 30) {
     affordabilityScore = 90;
     recommendation = "Excellent";
-  } else if (emiRatio <= 40) {
+  } else if (debtToIncomeRatio <= 40) {
     affordabilityScore = 75;
     recommendation = "Good";
-  } else if (emiRatio <= 50) {
+  } else if (debtToIncomeRatio <= 50) {
     affordabilityScore = 55;
     recommendation = "Caution";
   } else {
