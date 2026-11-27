@@ -134,7 +134,7 @@ export default function RDCalculatorPage() {
                 Here <strong className="text-[#111814] dark:text-[#eef1ec]">R</strong> is the monthly deposit,{" "}
                 <strong className="text-[#111814] dark:text-[#eef1ec]">i</strong> is the monthly interest rate (annual
                 rate ÷ 12), and <strong className="text-[#111814] dark:text-[#eef1ec]">n</strong> is the number of
-                months. A {fmt(5000)} monthly deposit at 7% for 5 years (60 months) matures at about {fmt(exampleMaturity)} — {fmt(exampleDeposited)}
+                months. A {fmt(5000)} monthly deposit at 7% for 5 years (60 months) matures at about {fmt(exampleMaturity)} — {fmt(exampleDeposited)}{" "}
                 deposited and about {fmt(exampleMaturity - exampleDeposited)} earned in interest.
               </p>
               <p>

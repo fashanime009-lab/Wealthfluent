@@ -185,7 +185,7 @@ export default function FDCalculatorPage() {
                 defaults to quarterly, the convention many banks use for fixed deposits.
               </p>
               <p>
-                The same quoted rate produces different maturity values depending on the frequency. A {fmt(examplePrincipal)}
+                The same quoted rate produces different maturity values depending on the frequency. A {fmt(examplePrincipal)}{" "}
                 deposit at 7% for 5 years grows to {fmt(exampleAnnual)} with annual compounding, {fmt(exampleHalfYearly)} half-yearly,
                 {" "}{fmt(exampleQuarterly)} quarterly and {fmt(exampleMonthly)} monthly. The gap is small on a short deposit and widens with a
                 larger amount, a higher rate or a longer tenure, so check your bank's actual compounding frequency

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import { formatCurrency } from "../utils/currency";
@@ -20,6 +21,87 @@ function emiOf(principal, annualRate, years) {
   const r = annualRate / 12 / 100;
   const n = years * 12;
   return Math.round(r === 0 ? principal / n : (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
+}
+
+// Interest, principal and closing balance for each year of a loan repaid
+// with a fixed EMI. The EMI is rounded to a whole unit, which leaves a few
+// units unpaid at the end; the last year clears them so the table ends at 0.
+function amortizeByYear(principal, annualRate, years, emi) {
+  const r = annualRate / 12 / 100;
+  let balance = principal;
+  const rows = [];
+  for (let year = 1; year <= years; year++) {
+    let interest = 0;
+    let principalPaid = 0;
+    for (let m = 0; m < 12 && balance > 0; m++) {
+      const i = balance * r;
+      const p = Math.min(emi - i, balance);
+      interest += i;
+      principalPaid += p;
+      balance -= p;
+    }
+    if (year === years) {
+      principalPaid += balance;
+      balance = 0;
+    }
+    rows.push({ year, interest, principal: principalPaid, balance });
+  }
+  return rows;
+}
+
+// Months to repay, and total interest, when `prepay` is paid on top of the
+// EMI after month `afterMonth` and the EMI stays the same.
+function repayWithPrepayment(principal, annualRate, emi, prepay, afterMonth) {
+  const r = annualRate / 12 / 100;
+  let balance = principal;
+  let interest = 0;
+  let months = 0;
+  while (balance > 0.5 && months < 1200) {
+    const i = balance * r;
+    balance -= Math.min(emi - i, balance);
+    interest += i;
+    months += 1;
+    if (months === afterMonth) balance -= prepay;
+  }
+  return { months, interest };
+}
+
+const roundTo = (value, step) => Math.round(value / step) * step;
+
+function yearsAndMonths(totalMonths) {
+  const y = Math.floor(totalMonths / 12);
+  const m = totalMonths % 12;
+  const parts = [];
+  if (y) parts.push(`${y} year${y === 1 ? "" : "s"}`);
+  if (m) parts.push(`${m} month${m === 1 ? "" : "s"}`);
+  return parts.join(" and ") || "0 months";
+}
+
+const tableHead = "border-b border-[#111814]/15 text-[#111814] dark:border-[#eef1ec]/15 dark:text-[#eef1ec]";
+const tableRow = "border-b border-[#111814]/10 dark:border-[#eef1ec]/10";
+const strong = "text-[#111814] dark:text-[#eef1ec]";
+const inlineLink =
+  "font-semibold text-[#047857] underline decoration-[#047857]/30 underline-offset-4 dark:text-[#34d399] dark:decoration-[#34d399]/30";
+
+// Three questions whose answers use the page's worked example, so they're
+// built per currency like the body copy.
+function exampleFaqItems({ fmt, principal, rate, years, emi }) {
+  const incomeLow = roundTo(emi / 0.4, 1000);
+  const incomeHigh = roundTo(emi / 0.35, 1000);
+  return [
+    {
+      q: `How much salary do I need for a ${fmt(principal)} home loan?`,
+      a: `It depends on the rate and tenure, because those set the EMI. At ${rate}% over ${years} years, a ${fmt(principal)} loan has an EMI of about ${fmt(emi)}. Lenders set their own limit on how much of your take-home pay can go to EMIs, and keeping all your EMIs to 35–40% of it leaves room to save. On that basis, this EMI needs a take-home income of roughly ${fmt(incomeLow)} to ${fmt(incomeHigh)} a month, and more if you already pay other EMIs.`,
+    },
+    {
+      q: "What happens if I miss an EMI payment?",
+      a: "The lender charges a late-payment or bounce fee, usually with GST on top; in India these must be levied as penal charges, not as a higher interest rate. The missed payment is reported to the credit bureaus as overdue, which can lower your credit score and stays in your repayment history. If a loan stays unpaid for more than 90 days, it's classed as a non-performing asset and the lender can start recovery. If you expect to miss a payment, talk to your lender before the due date.",
+    },
+    {
+      q: "Should I prepay my loan or invest the extra money?",
+      a: "Compare the loan's interest rate with the return you can realistically expect after tax. Prepaying earns a guaranteed return equal to the loan rate, so it usually wins for expensive debt like personal loans and credit cards. For a cheaper loan, such as a home loan, investing for the long term may come out ahead, but with more risk. Keep an emergency fund either way. The Debt vs Invest verdict on this site compares both with your own numbers.",
+    },
+  ];
 }
 
 const FAQ_ITEMS = [
@@ -75,6 +157,38 @@ export default function EMICalculatorPage() {
   const exampleInterest7yr = exampleEmi7yr * 84 - examplePrincipal;
   const exampleInterest10yr = exampleEmi10yr * 120 - examplePrincipal;
   const exampleMonthlyR = (exampleRate / 12 / 100).toFixed(6);
+  const emiDropPercent = Math.round((1 - exampleEmi10yr / exampleEmi5yr) * 100);
+  const interestRatio = exampleInterest10yr / exampleInterest5yr;
+
+  // Tenure table: the common tenures, plus this currency's default tenure.
+  const exampleYears = defaultFor("emi", "years", currency);
+  const tenureRows = [...new Set([3, 5, 7, 10, 20, exampleYears])]
+    .sort((a, b) => a - b)
+    .map((years) => {
+      const e = emiOf(examplePrincipal, exampleRate, years);
+      return { years, emi: e, interest: e * years * 12 - examplePrincipal, total: e * years * 12 };
+    });
+
+  // Amortization of the default example loan, shown at milestone years.
+  const exampleEmi = emiOf(examplePrincipal, exampleRate, exampleYears);
+  const schedule = amortizeByYear(examplePrincipal, exampleRate, exampleYears, exampleEmi);
+  const milestoneRows = schedule.filter((row) => row.year === 1 || row.year % 5 === 0 || row.year === exampleYears);
+  const year1 = schedule[0];
+  const balanceAfter10 = schedule[Math.min(10, exampleYears) - 1].balance;
+  const owedAfter10Percent = Math.round((balanceAfter10 / examplePrincipal) * 100);
+  const halfwayYear = schedule.find((row) => row.principal > row.interest)?.year;
+
+  // One prepayment of 5% of the loan at the end of year 1, EMI unchanged.
+  const prepayAmount = examplePrincipal * 0.05;
+  const withPrepay = repayWithPrepayment(examplePrincipal, exampleRate, exampleEmi, prepayAmount, 12);
+  const prepayMonthsSaved = exampleYears * 12 - withPrepay.months;
+  const withoutPrepay = repayWithPrepayment(examplePrincipal, exampleRate, exampleEmi, 0, 12);
+  const prepayInterestSaved = withoutPrepay.interest - withPrepay.interest;
+
+  const faqItems = [
+    ...FAQ_ITEMS,
+    ...exampleFaqItems({ fmt, principal: examplePrincipal, rate: exampleRate, years: exampleYears, emi: exampleEmi }),
+  ];
 
   return (
     <>
@@ -89,7 +203,7 @@ export default function EMICalculatorPage() {
             description: "Work out your monthly EMI, total interest and total repayment for a home, car, personal or education loan. See how tenure and rate change the cost. Free.",
             path: "/emi-calculator",
           }),
-          faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
+          faqSchema(faqItems.map((f) => ({ question: f.q, answer: f.a }))),
           howToSchema({
             name: "How to Use the Loan EMI Calculator",
             description: "Work out your monthly EMI, total interest and total repayment for a home, car, personal or education loan.",
@@ -125,6 +239,12 @@ export default function EMICalculatorPage() {
                 <CalcStat label="Total interest" value={fmt(totalInterest)} share={interestShare} />
                 <CalcStat label="Total payment" value={fmt(totalPayment)} share={100} />
               </div>
+              <p className="text-[13.5px] leading-6 text-[#111814]/75 dark:text-[#eef1ec]/75">
+                Have spare cash? See whether prepaying this loan or investing the money comes out ahead:{" "}
+                <Link to="/verdict/debt-vs-invest" className={inlineLink}>
+                  Run the Debt vs Invest verdict →
+                </Link>
+              </p>
               <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 These figures are illustrative only and don't represent actual loan terms or guaranteed approvals.
                 Interest rates and loan terms vary by lender policy and borrower eligibility.
@@ -167,16 +287,166 @@ export default function EMICalculatorPage() {
 
             <CalcSection title="EMI example: how tenure changes what you pay">
               <p>
-                On a {fmt(examplePrincipal)} loan at {exampleRate}%, the EMI is about {fmt(exampleEmi3yr)} over 3 years, {fmt(exampleEmi5yr)} over 5 years, {fmt(exampleEmi7yr)}
-                over 7 years and {fmt(exampleEmi10yr)} over 10 years. The total interest paid moves the other way: roughly
-                {" "}{fmt(exampleInterest3yr)}, {fmt(exampleInterest5yr)}, {fmt(exampleInterest7yr)} and {fmt(exampleInterest10yr)}. Stretching a loan from 5 to 10 years lowers the monthly
-                burden by about 38% but more than doubles the interest.
+                On a {fmt(examplePrincipal)} loan at {exampleRate}%, the EMI is about {fmt(exampleEmi3yr)} over 3 years, {fmt(exampleEmi5yr)} over 5 years,{" "}
+                {fmt(exampleEmi7yr)} over 7 years and {fmt(exampleEmi10yr)} over 10 years. The total interest paid moves the other way: roughly{" "}
+                {fmt(exampleInterest3yr)}, {fmt(exampleInterest5yr)}, {fmt(exampleInterest7yr)} and {fmt(exampleInterest10yr)}. Stretching a loan from 5 to 10 years lowers the monthly
+                burden by about {emiDropPercent}% but{" "}
+                {interestRatio >= 2 ? "more than doubles the interest" : `raises the interest by about ${Math.round((interestRatio - 1) * 100)}%`}.
               </p>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[480px] text-left text-[13px]">
+                  <caption className="pb-2 text-left text-[12.5px] text-[#111814]/60 dark:text-[#eef1ec]/55">
+                    {fmt(examplePrincipal)} at {exampleRate}% a year, by tenure
+                  </caption>
+                  <thead>
+                    <tr className={tableHead}>
+                      <th className="py-2 pr-4 font-semibold">Tenure</th>
+                      <th className="py-2 pr-4 font-semibold">Monthly EMI</th>
+                      <th className="py-2 pr-4 font-semibold">Total interest</th>
+                      <th className="py-2 font-semibold">Total repaid</th>
+                    </tr>
+                  </thead>
+                  <tbody className="font-mono-tech tabular-nums">
+                    {tenureRows.map((row) => (
+                      <tr key={row.years} className={tableRow}>
+                        <td className={`py-2 pr-4 font-sans font-semibold ${strong}`}>{row.years} years</td>
+                        <td className="py-2 pr-4">{fmt(row.emi)}</td>
+                        <td className="py-2 pr-4">{fmt(row.interest)}</td>
+                        <td className="py-2">{fmt(row.total)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               <p>
                 That is the trade-off to weigh before you borrow: a longer tenure makes the EMI comfortable, a
                 shorter one makes the loan cheaper. A common rule of thumb is to keep your EMIs at 30–40% of
-                monthly income or less — the Home Affordability Calculator tests a property against exactly that.
+                monthly income or less, and the{" "}
+                <Link to="/home-affordability-calculator" className={inlineLink}>
+                  Home Affordability Calculator
+                </Link>{" "}
+                tests a property against exactly that. For EMIs on other loan amounts and rates, see{" "}
+                <Link to="/blog/emi-for-every-loan-amount" className={inlineLink}>
+                  EMI for every loan amount
+                </Link>
+                .
               </p>
+            </CalcSection>
+
+            <CalcSection title="Year-by-year: how much of your EMI is interest">
+              <p>
+                Your EMI stays the same every month, but what it pays for changes. Interest is charged on what you
+                still owe, so early on most of each EMI goes to interest. On a {fmt(examplePrincipal)} loan at{" "}
+                {exampleRate}% over {exampleYears} years, the EMI is {fmt(exampleEmi)}. In year 1 you pay{" "}
+                {fmt(exampleEmi * 12)} in total: <strong className={strong}>{fmt(year1.interest)}</strong> is interest
+                and only <strong className={strong}>{fmt(year1.principal)}</strong> reduces the loan.
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[480px] text-left text-[13px]">
+                  <caption className="pb-2 text-left text-[12.5px] text-[#111814]/60 dark:text-[#eef1ec]/55">
+                    {fmt(examplePrincipal)} at {exampleRate}% over {exampleYears} years: EMI {fmt(exampleEmi)}
+                  </caption>
+                  <thead>
+                    <tr className={tableHead}>
+                      <th className="py-2 pr-4 font-semibold">Year</th>
+                      <th className="py-2 pr-4 font-semibold">Interest paid</th>
+                      <th className="py-2 pr-4 font-semibold">Principal repaid</th>
+                      <th className="py-2 font-semibold">Still owed at year end</th>
+                    </tr>
+                  </thead>
+                  <tbody className="font-mono-tech tabular-nums">
+                    {milestoneRows.map((row) => (
+                      <tr key={row.year} className={tableRow}>
+                        <td className={`py-2 pr-4 font-sans font-semibold ${strong}`}>Year {row.year}</td>
+                        <td className="py-2 pr-4">{fmt(row.interest)}</td>
+                        <td className="py-2 pr-4">{fmt(row.principal)}</td>
+                        <td className="py-2">{fmt(row.balance)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p>
+                {exampleYears > 10 && (
+                  <>
+                    After 10 years of payments, you still owe {fmt(balanceAfter10)}, about {owedAfter10Percent}% of the
+                    original loan.{" "}
+                  </>
+                )}
+                {halfwayYear && halfwayYear > 1 && (
+                  <>Principal only overtakes interest in year {halfwayYear}. </>
+                )}
+                That's why prepaying early saves so much: every extra payment cuts the balance directly, and the
+                interest that balance would have charged for the rest of the loan disappears with it.
+              </p>
+              <p>
+                For example, paying an extra {fmt(prepayAmount)} once, at the end of year 1, and keeping the same
+                EMI, clears this loan <strong className={strong}>{yearsAndMonths(prepayMonthsSaved)}</strong> early
+                and saves about <strong className={strong}>{fmt(roundTo(prepayInterestSaved, 1000))}</strong> in
+                interest. Most lenders let you choose between a shorter tenure and a lower EMI after a prepayment;
+                a shorter tenure saves more.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Typical rates and tenures by loan type in India">
+              <p>
+                One EMI calculator works for every loan, but the rate and tenure you should test differ a lot by
+                loan type. These are typical ranges at Indian banks, checked in November 2026. Your rate depends on
+                your credit score, income and lender, and floating rates move with the RBI's repo rate.
+              </p>
+              <ul className="list-disc space-y-3 pl-5">
+                <li>
+                  <strong className={strong}>Home loans:</strong> roughly 7.5% to 9.5% a year for most borrowers,
+                  over 15 to 30 years. Most are floating-rate, so your EMI or tenure changes when rates move.
+                  Lenders can't charge a prepayment or foreclosure penalty on a floating-rate loan an individual
+                  takes for personal use, which makes prepaying a home loan easy.
+                </li>
+                <li>
+                  <strong className={strong}>Car loans:</strong> roughly 7.5% to 9% a year at most banks for new
+                  cars, and higher for used cars or weaker credit, usually over 3 to 7 years. A car loses value
+                  every year, so stretching the loan past about five years can leave you owing more than the car is
+                  worth.
+                </li>
+                <li>
+                  <strong className={strong}>Personal loans:</strong> from about 10% a year at banks for strong
+                  profiles, and often 16% to 24% for others, over 1 to 5 years. Many are fixed-rate, so check the
+                  foreclosure charges before you sign: they're usually a percentage of the amount you prepay.
+                </li>
+              </ul>
+            </CalcSection>
+
+            <CalcSection title="Costs beyond the EMI">
+              <p>
+                The EMI formula only covers the loan amount and interest. Before you compare offers, ask for these
+                too, because they change what the loan really costs:
+              </p>
+              <ul className="list-disc space-y-3 pl-5">
+                <li>
+                  <strong className={strong}>Processing fee:</strong> a flat fee or a percentage of the loan,
+                  usually deducted from the amount you receive. Home loan fees tend to be small; some car and
+                  personal loans charge up to about 2% of the loan.
+                </li>
+                <li>
+                  <strong className={strong}>Legal, valuation and stamp duty charges:</strong> home loans add
+                  legal and technical checks on the property, and stamp duty on the loan documents, which varies by
+                  state.
+                </li>
+                <li>
+                  <strong className={strong}>Bundled loan insurance:</strong> lenders often offer a loan-protection
+                  policy and add its one-time premium to the loan. You then pay interest on that premium for the
+                  whole tenure, which quietly raises your EMI. It's usually optional, so ask for a quote without it
+                  and compare it with a term insurance plan.
+                </li>
+                <li>
+                  <strong className={strong}>GST:</strong> 18% GST applies to fees such as processing, foreclosure
+                  and late-payment charges. On a personal or home loan there's no GST on the interest itself, but on
+                  a credit card EMI, GST is charged on the interest part of every instalment.
+                </li>
+                <li>
+                  <strong className={strong}>Late-payment and bounce charges:</strong> a missed or failed EMI costs
+                  a fee plus GST, and is reported to the credit bureaus.
+                </li>
+              </ul>
             </CalcSection>
 
             <CalcSection title="Benefits of EMI calculation">
@@ -192,7 +462,7 @@ export default function EMICalculatorPage() {
 
             <RelatedLinks />
 
-            <VerdictFAQ items={FAQ_ITEMS} className="border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />
+            <VerdictFAQ items={faqItems} className="border-t border-[#111814]/10 pt-10 dark:border-[#eef1ec]/10" />
           </div>
         </div>
       </div>

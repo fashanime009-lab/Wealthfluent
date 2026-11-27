@@ -235,7 +235,7 @@ export default function SIPCalculatorPage() {
               </p>
               <p>
                 For the defaults above, P = {fmt(exampleMonthly)}. A 12% annual return gives r = 12 ÷ 12 ÷ 100 = 0.01, and 15 years
-                gives n = 180. Then (1.01)^180 = 5.9958, so [(1.01)^180 − 1] / 0.01 = 499.58. Multiplying by {fmt(exampleMonthly)}
+                gives n = 180. Then (1.01)^180 = 5.9958, so [(1.01)^180 − 1] / 0.01 = 499.58. Multiplying by {fmt(exampleMonthly)}{" "}
                 gives about {fmt(Math.round(exampleMonthly * 499.58))}, and the final × 1.01 gives {fmt(example1FV)} — the same figure the calculator above
                 produces for those inputs.
               </p>
