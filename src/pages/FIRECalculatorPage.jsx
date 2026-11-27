@@ -2,6 +2,7 @@ import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import { sipFutureValue } from "@/utils/projections";
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { useDefaultableObjectCustom, useFieldBounds } from "@/hooks/useDefaultableField";
 import { defaultFor, assumptionsFor } from "@/data/calculatorDefaults";
 import Seo from "@/components/seo/Seo";
@@ -10,6 +11,9 @@ import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import CalcStat from "@/components/calculators/CalcStat";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import GrowthChart from "@/components/calculators/GrowthChart";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
@@ -19,7 +23,24 @@ const FAQ_ITEMS = [
   { q: "Is the 4% rule still valid today?", a: "It remains a widely used starting point, though some planners now suggest a more conservative 3.25-3.5% for very long retirements (40+ years) given today's valuations and lower expected bond returns compared to when the original research was done." },
   { q: "Does this account for taxes on withdrawals?", a: "No — this is a pre-tax projection. Depending on which account types your investments sit in, actual withdrawals may be taxed, meaning your real-world FIRE number could need to be somewhat higher than shown here." },
   { q: "What if my freedom score is below 100%?", a: "You have three levers: increase your monthly investment, push back your target retirement age, or reduce your target annual expenses (which also lowers your FIRE number, since it's 25× annual expenses)." },
+  { q: "Is 25 times expenses enough in India?", a: "It's a common starting point, but many Indian planners use 30 to 35 times, because inflation has been higher than in the US where the 4% rule was studied, retirements that start early last longer, and healthcare costs rise quickly. Running the numbers at 30× gives you a margin of safety." },
+  { q: "What is Coast FIRE?", a: "Coast FIRE means you've already saved enough that, left invested, it will grow to your FIRE number by your target retirement age without any further contributions. After that point you only need to earn enough to cover your living costs, which lets you work less or take a lower-paid job you prefer." },
+  { q: "How does my savings rate affect when I can retire?", a: "Much more than your income does. Saving more both grows your investments faster and shows you can live on less, which lowers the FIRE number you need. The savings-rate table on this page shows how the years to financial independence fall as the rate rises." },
 ];
+
+// Years until savings at rate `s` (as a share of income), invested at a
+// real return `rr`, reach 25× the yearly spending they leave behind.
+// Works in today's money, so income growth and inflation cancel out.
+function yearsToFire(s, rr) {
+  if (s >= 1) return 0;
+  const target = 25 * (1 - s);
+  let wealth = 0;
+  for (let year = 1; year <= 80; year++) {
+    wealth = wealth * (1 + rr) + s;
+    if (wealth >= target) return year;
+  }
+  return null;
+}
 
 export default function FIRECalculatorPage() {
   const { settings } = useSettings();
@@ -34,7 +55,9 @@ export default function FIRECalculatorPage() {
   }));
 
   const results = useMemo(() => {
-    const years = formData.retirementAge - formData.currentAge;
+    // A retirement age at or below the current age used to produce a
+    // negative number of years; treat it as retiring now.
+    const years = Math.max(0, formData.retirementAge - formData.currentAge);
 
     // Shared helper — handles a 0% return, which the inline annuity formula
     // turned into NaN (the slider's minimum is 0).
@@ -70,6 +93,25 @@ export default function FIRECalculatorPage() {
       });
     }
 
+    // The age at which projected wealth first covers 25× that year's
+    // (inflated) expenses. The old "you could achieve financial freedom in
+    // N years" just repeated retirement age − current age.
+    let fireAge = null;
+    for (let i = 0; i <= 60; i++) {
+      const wealth =
+        sipFutureValue(formData.monthlyInvestment, i, formData.expectedReturn) +
+        formData.currentSavings * Math.pow(1 + formData.expectedReturn / 100, i);
+      const target = formData.monthlyExpenses * Math.pow(1 + formData.inflationRate / 100, i) * 12 * 25;
+      if (wealth >= target) {
+        fireAge = formData.currentAge + i;
+        break;
+      }
+    }
+
+    // Coast FIRE: what you'd need invested today to reach the FIRE number by
+    // the target age with no further contributions.
+    const coastNumber = fireNumber / Math.pow(1 + formData.expectedReturn / 100, years);
+
     return {
       years,
       totalWealth,
@@ -77,6 +119,8 @@ export default function FIRECalculatorPage() {
       fireNumber,
       freedomScore,
       chartData,
+      fireAge,
+      coastNumber,
     };
   }, [formData]);
 
@@ -91,6 +135,16 @@ export default function FIRECalculatorPage() {
   const monthlyInvestmentBounds = useFieldBounds("fire", "monthlyInvestment");
   const expectedReturnBounds = useFieldBounds("fire", "expectedReturn");
   const inflationRateBounds = useFieldBounds("fire", "inflationRate");
+
+  const realReturn = (1 + formData.expectedReturn / 100) / (1 + formData.inflationRate / 100) - 1;
+  const savingsRows = [10, 20, 30, 40, 50, 60].map((pct) => {
+    const n = yearsToFire(pct / 100, realReturn);
+    return [`${pct}% of income`, n === null ? "80+ years" : `About ${n} years`];
+  });
+  const expenseRows = [0.5, 1, 1.5, 2].map((k) => {
+    const monthly = Math.round(formData.monthlyExpenses * k);
+    return [`${fmt(monthly)} a month`, fmt(monthly * 12 * 25), fmt(monthly * 12 * 30)];
+  });
 
   const FIELDS = [
     { label: "Current age", name: "currentAge", ...currentAgeBounds, suffix: "" },
@@ -175,6 +229,19 @@ export default function FIRECalculatorPage() {
                   </p>
                 </div>
               </div>
+              <div className="divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+                <CalcStat
+                  label="Age you'd reach your FIRE number"
+                  value={results.fireAge === null ? "Not within 60 years" : `${results.fireAge}`}
+                  tone="signal"
+                />
+                <CalcStat label="Coast FIRE: needed invested today" value={fmt(Math.round(results.coastNumber))} />
+              </div>
+              {formData.retirementAge <= formData.currentAge && (
+                <p className="text-[12.5px] text-amber-800 dark:text-amber-400">
+                  Your retirement age is at or below your current age, so the figures above assume you retire now.
+                </p>
+              )}
               <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 These projections are for illustrative purposes only and do not guarantee actual returns. Market
                 returns are subject to volatility and past performance does not indicate future results. Please
@@ -209,7 +276,13 @@ export default function FIRECalculatorPage() {
             <CalcSection title="Financial insights">
               <CalcBenefitGrid
                 items={[
-                  { title: "Retirement timeline", text: `Based on your current strategy, you could potentially achieve financial freedom in ${results.years} years.` },
+                  {
+                    title: "Retirement timeline",
+                    text:
+                      results.fireAge === null
+                        ? "At your current investment and spending, your projected wealth doesn't reach your FIRE number within 60 years. Investing more or spending less are the two levers."
+                        : `At your current pace, your projected wealth first covers 25× your expenses at age ${results.fireAge}${results.fireAge <= formData.retirementAge ? `, on or before your target of ${formData.retirementAge}` : `, ${results.fireAge - formData.retirementAge} years after your target of ${formData.retirementAge}`}.`,
+                  },
                   { title: "Inflation impact", text: `Future monthly expenses after inflation may be approximately ${fmt(results.futureExpenses)}.` },
                   { title: "Wealth optimization", text: "Increasing your monthly investments by even 10–15% can significantly accelerate your path to independence." },
                   { title: "FIRE readiness", text: `Your current trajectory gives a ${results.freedomScore}% freedom score, indicating the progress toward your FIRE goal.` },
@@ -247,6 +320,57 @@ export default function FIRECalculatorPage() {
                 your FIRE number, and separately projects your actual investment growth (current savings plus
                 ongoing monthly investments, compounded at your expected return) to calculate your freedom score —
                 what percentage of that FIRE number your current plan reaches.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Your savings rate decides when">
+              <p>
+                The single biggest driver of when you reach financial independence is the share of your income you
+                save. Here's roughly how long it takes, starting from nothing, at a real return of{" "}
+                {(realReturn * 100).toFixed(1)}% a year ({formData.expectedReturn}% return minus {formData.inflationRate}% inflation):
+              </p>
+              <CalcTable caption="Years to save 25× your yearly spending, from zero" columns={["You save", "Time to FIRE"]} rows={savingsRows} />
+              <p>
+                Saving more works twice: your investments grow faster, and you prove you can live on less, which
+                shrinks the number you need. Existing savings shorten every row.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="FIRE number by monthly spending">
+              <CalcTable
+                caption="In today's money, before inflation"
+                columns={["Monthly spending", "FIRE number (25×)", "Cautious (30×)"]}
+                rows={expenseRows}
+              />
+              <p>
+                In India, where inflation has run higher than in the US and an early retirement can last 40 years
+                or more, many planners use 30× or more. Your FIRE number in the results above is higher than this
+                table because it inflates your expenses to your target age first.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Coast FIRE: the halfway milestone">
+              <p>
+                Coast FIRE is the point where you've saved enough that, left alone, it will grow to your FIRE number
+                by your target age. With your inputs, that's about{" "}
+                <strong className={calcStrongClass}>{fmt(Math.round(results.coastNumber))}</strong> invested today. Once
+                you're there, you only need to earn enough to cover your living costs, which lets you work less or
+                choose a job for reasons other than pay.
+              </p>
+              <p>
+                Once you reach FIRE, the{" "}
+                <Link to="/swp-calculator" className={calcLinkClass}>
+                  SWP Calculator
+                </Link>{" "}
+                and the{" "}
+                <Link to="/annual-retirement-income" className={calcLinkClass}>
+                  Annual Retirement Income Calculator
+                </Link>{" "}
+                show how long withdrawals last. Our lesson on{" "}
+                <Link to="/learn/fire-movement-basics" className={calcLinkClass}>
+                  FIRE movement basics
+                </Link>{" "}
+                covers the ideas behind it.
               </p>
             </CalcSection>
 

@@ -1,6 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
-import useExampleCurrency from "@/hooks/useExampleCurrency";
+import { Link } from "react-router-dom";
+import { assumptionsFor, defaultFor } from "@/data/calculatorDefaults";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
@@ -9,6 +10,8 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
@@ -22,7 +25,7 @@ function sipFutureValue(monthly, years, annualRate) {
 
 const FAQ_ITEMS = [
   { q: "Why does a short delay cost so much?", a: "Because the years you lose are the ones compounding would have worked on the longest — money invested early doesn't just have more years, those early years are also the ones multiplying every later year's growth. Losing the first 5 years of a 30-year plan costs far more than losing any other 5-year stretch in the middle." },
-  { q: "What if I invest more later to make up for the delay?", a: "You can close some of the gap, but rarely all of it — the issue isn't just the money not invested during the delay, it's the compounding time that money never got. Try the calculator with a higher monthly amount for the delayed path to see how much more you'd actually need to invest each month to catch up." },
+  { q: "What if I invest more later to make up for the delay?", a: "You can catch up, but it costs more than the delay suggests, because the money you invest later has less time to compound. The results show the monthly amount the late start would need to reach the same final value; it's usually far more than the original amount spread over fewer years." },
   { q: "Is this realistic, or does it assume a perfectly smooth return?", a: "It assumes a constant annual return for simplicity, which real markets don't deliver — any single period can run well above or below the long-term average. The point isn't the exact figure, it's the shape of the result: delay costs disproportionately more than the length of the delay itself suggests." },
   { q: "Does the order of the delay matter — early vs late?", a: "Yes, a lot. A delay at the start of a long horizon costs far more than an identical-length pause taken near the end, because the paused money would otherwise have compounded for the full remaining period. This calculator models delaying the start, which is the worst-case version of a pause." },
   { q: "What's the actual lesson here?", a: "Starting with a smaller amount today usually beats waiting to start with a larger one — because time invested is doing more of the work than the size of any single contribution. See the Compound Interest lesson for the same point made with a worked example." },
@@ -45,12 +48,26 @@ export default function CostOfDelayCalculatorPage() {
   const costOfDelay = noDelayValue - delayedValue;
 
   const fmt = (v) => formatCurrency(v, settings.currency);
-  const { inr } = useExampleCurrency();
+  const { equityReturn } = assumptionsFor(settings.currency);
 
-  const exampleMonthly = inr(10000);
-  const exampleNoDelay = Math.round(sipFutureValue(exampleMonthly, 25, 12));
-  const exampleDelayed = Math.round(sipFutureValue(exampleMonthly, 20, 12));
+  // Monthly amount the delayed start needs to reach the no-delay value.
+  const catchUpMonthly = investedYears > 0 ? Math.round(noDelayValue / sipFutureValue(1, investedYears, rate)) : null;
+
+  // Worked examples from this currency's defaults and return assumption
+  // (they used to be FX-converted rupees at a fixed 12%).
+  const exampleMonthly = defaultFor("costOfDelay", "monthly", settings.currency);
+  const exampleNoDelay = Math.round(sipFutureValue(exampleMonthly, 25, equityReturn));
+  const exampleDelayed = Math.round(sipFutureValue(exampleMonthly, 20, equityReturn));
   const exampleCost = exampleNoDelay - exampleDelayed;
+  const delayRows = [1, 3, 5, 10].map((d) => {
+    const late = sipFutureValue(exampleMonthly, 25 - d, equityReturn);
+    return [
+      `${d} year${d > 1 ? "s" : ""}`,
+      fmt(Math.round(late)),
+      fmt(Math.round(exampleNoDelay - late)),
+      `${Math.round((1 - late / exampleNoDelay) * 100)}%`,
+    ];
+  });
 
   return (
     <>
@@ -101,6 +118,10 @@ export default function CostOfDelayCalculatorPage() {
               <div className="divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
                 <CalcStat label={`Starting now (${horizon} yrs invested)`} value={fmt(noDelayValue)} share={100} tone="signal" />
                 <CalcStat label={`Starting in ${delay} yrs (${investedYears} yrs invested)`} value={fmt(delayedValue)} share={noDelayValue > 0 ? (delayedValue / noDelayValue) * 100 : 0} />
+                <CalcStat
+                  label="Monthly amount the late start needs to catch up"
+                  value={catchUpMonthly === null ? "—" : fmt(catchUpMonthly)}
+                />
               </div>
               <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Illustrative only — both paths invest the same monthly amount at the same assumed return; only the
@@ -130,11 +151,51 @@ export default function CostOfDelayCalculatorPage() {
                 Cost of delay = FV(monthly, full horizon) − FV(monthly, horizon − delay)
               </p>
               <p>
-                {fmt(exampleMonthly)} a month at 12% for 25 years reaches about {fmt(exampleNoDelay)}. Delay the start by 5 years — so the
+                {fmt(exampleMonthly)} a month at {equityReturn}% for 25 years reaches about {fmt(exampleNoDelay)}. Delay the start by 5 years — so the
                 same {fmt(exampleMonthly)} a month is invested for only 20 years, reaching the same end date — and the total
                 drops to about {fmt(exampleDelayed)}. The 5-year delay costs roughly {fmt(exampleCost)}, which is more than the
                 entire amount that would have been invested over those 5 years ({fmt(exampleMonthly * 60)}) many times over — almost
                 all of that cost is lost compounding time, not lost contributions.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="What each year of waiting costs">
+              <CalcTable
+                caption={`${fmt(exampleMonthly)} a month at ${equityReturn}%, all paths ending in the same year (25 years from now)`}
+                columns={["Delay", "Final value", "Cost of the delay", "Share lost"]}
+                rows={delayRows}
+              />
+              <p>
+                The losses grow faster than the delay. The years you skip are the ones that would have compounded
+                the longest, so a short wait at the start costs far more than the same pause near the end.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="When waiting is the right call">
+              <p>
+                Delay isn't always a mistake. Two things usually come first: <strong className={calcStrongClass}>clearing
+                expensive debt</strong>, since a credit card at 30–40% costs more than investing is likely to earn, and{" "}
+                <strong className={calcStrongClass}>building an emergency fund</strong>, so a surprise bill doesn't force
+                you to sell investments at a bad time. The{" "}
+                <Link to="/verdict/debt-vs-invest" className={calcLinkClass}>
+                  Debt vs Invest verdict
+                </Link>{" "}
+                and the{" "}
+                <Link to="/emergency-fund-calculator" className={calcLinkClass}>
+                  Emergency Fund Calculator
+                </Link>{" "}
+                help with both.
+              </p>
+              <p>
+                Otherwise, start with whatever you can, even a small amount, and raise it each year. The{" "}
+                <Link to="/step-up-sip-calculator" className={calcLinkClass}>
+                  Step-Up SIP Calculator
+                </Link>{" "}
+                shows how a small SIP that grows with your income compares with waiting to start big, and{" "}
+                <Link to="/blog/how-much-to-save-for-retirement-by-age" className={calcLinkClass}>
+                  how much to save for retirement by age
+                </Link>{" "}
+                shows what each five years of waiting adds to the monthly amount you need.
               </p>
             </CalcSection>
 

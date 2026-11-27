@@ -1,5 +1,6 @@
 import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import CalcHeader from "@/components/calculators/CalcHeader";
@@ -7,6 +8,8 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
@@ -19,6 +22,7 @@ function buildFaqItems(fmt) {
     { q: "Can I claim HRA and a home loan deduction at the same time?", a: "Yes, if you're renting in one city while owning a home (empty, rented out, or occupied by family) elsewhere, or if your own home isn't ready for possession yet. You generally can't claim HRA for rent paid on a home you also live in and claim a home loan deduction for." },
     { q: "What if I pay rent to a parent or relative?", a: "It's allowed, provided it's genuine — a real rental agreement, actual rent transfers (not just a paper trail), and the relative declares the rent as income on their own return. Tax authorities scrutinise these arrangements more closely than rent paid to an unrelated landlord." },
     { q: "Does the new tax regime allow HRA exemption?", a: "No — HRA exemption is only available under the old tax regime. Under the new regime, HRA received is fully taxable as salary, which is one of the specific trade-offs to weigh when comparing the two regimes if you pay significant rent." },
+    { q: "My salary has no HRA. Can I still save tax on rent?", a: "Under the old tax regime, if you don't receive HRA and don't own a home where you live, you can claim a deduction for rent paid (Section 80GG under the old Act). It's the lowest of ₹5,000 a month, 25% of your total income, or rent paid minus 10% of total income, and you file a declaration with your return." },
   ];
 }
 
@@ -47,6 +51,17 @@ export default function HRACalculatorPage() {
   const exampleOptB = Math.max(0, exampleRent - 0.1 * exampleBasic);
   const exampleOptC = exampleBasic * 0.5;
   const exampleExempt = Math.min(exampleHra, exampleOptB, exampleOptC);
+
+  // Exemption at different rents, from the salary entered above.
+  const exemptAt = (rent) => Math.min(hraReceived, Math.max(0, rent - 0.1 * basicSalary), basicSalary * metroPct);
+  const rentRows = [0.2, 0.4, 0.6, 0.8].map((k) => {
+    const rent = Math.round((basicSalary * k) / 1000) * 1000;
+    const exempt = exemptAt(rent);
+    return [`${fmt(rent)} a month`, fmt(Math.round(exempt)), fmt(Math.round(hraReceived - exempt)), fmt(Math.round(exempt * 12))];
+  });
+  // Tax saved a year on the exemption, by slab, including 4% cess.
+  const yearlyExempt = exemptHRA * 12;
+  const slabRows = [5, 20, 30].map((slab) => [`${slab}% slab`, fmt(Math.round(yearlyExempt * (slab / 100) * 1.04))]);
 
   return (
     <>
@@ -119,6 +134,7 @@ export default function HRACalculatorPage() {
                 <CalcStat label="Rent − 10% of basic" value={fmt(Math.round(optB))} share={hraReceived > 0 ? (optB / hraReceived) * 100 : 0} />
                 <CalcStat label={`${Math.round(metroPct * 100)}% of basic`} value={fmt(Math.round(optC))} share={hraReceived > 0 ? (optC / hraReceived) * 100 : 0} />
                 <CalcStat label="Taxable HRA" value={fmt(Math.round(taxableHRA))} share={hraReceived > 0 ? (taxableHRA / hraReceived) * 100 : 0} tone="signal" />
+                <CalcStat label="Tax-exempt HRA per year" value={fmt(Math.round(exemptHRA * 12))} />
               </div>
               <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Illustrative only — only available under the old tax regime, and assumes you have valid rent
@@ -154,6 +170,64 @@ export default function HRACalculatorPage() {
                 of basic is {fmt(exampleOptC)}. The lowest of the three is {fmt(exampleExempt)} — not the full {fmt(exampleHra)} HRA received, even
                 though it might look that way at first glance. The remaining {fmt(exampleHra - exampleExempt)} of HRA is taxed as regular
                 salary.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="How rent changes your exemption">
+              <p>
+                With a {fmt(basicSalary)} basic salary and {fmt(hraReceived)} HRA in a{" "}
+                {isMetro ? "metro" : "non-metro"} city, here's how much is exempt at different rents:
+              </p>
+              <CalcTable
+                caption="Monthly figures, plus the yearly exemption"
+                columns={["Rent paid", "Exempt HRA", "Taxable HRA", "Exempt per year"]}
+                rows={rentRows}
+              />
+              <p>
+                At low rents, "rent minus 10% of basic" is the smallest figure, so paying more rent raises the
+                exemption. Once rent is high enough, the exemption hits the cap set by your HRA or by 50% (or 40%)
+                of basic, and paying more rent no longer helps.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="How much tax does it save?">
+              <p>
+                Your exemption of {fmt(Math.round(yearlyExempt))} a year saves tax at your slab rate, plus 4% cess, under
+                the old regime:
+              </p>
+              <CalcTable caption="Yearly tax saved on your HRA exemption" columns={["Your tax slab", "Tax saved"]} rows={slabRows} />
+              <p>
+                Compare that saving with what the new regime's lower rates would save you before choosing a regime.
+                Our lesson on{" "}
+                <Link to="/learn/salary-structuring-and-tax" className={calcLinkClass}>
+                  salary structuring and tax
+                </Link>{" "}
+                explains how to weigh the two.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Claiming HRA: what you need">
+              <ul className="list-disc space-y-2 pl-5">
+                <li>
+                  <strong className={calcStrongClass}>Rent receipts or a rental agreement</strong> for the period you're
+                  claiming, given to your employer before the year's tax is finalised.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Your landlord's PAN</strong> if your rent is above ₹1 lakh a year.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Rent actually paid</strong>, ideally by bank transfer, so there's a
+                  record. Rent paid to a parent is allowed if it's genuine and they declare it as income.
+                </li>
+              </ul>
+              <p>
+                If you missed giving proof to your employer, you can still claim the exemption when you file your
+                return, as long as you have the documents. No HRA in your salary? See the FAQ below on claiming rent
+                without it. For another part of your salary, the{" "}
+                <Link to="/gratuity-calculator" className={calcLinkClass}>
+                  Gratuity Calculator
+                </Link>{" "}
+                estimates what you'll receive when you leave a job.
               </p>
             </CalcSection>
 

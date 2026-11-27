@@ -19,8 +19,10 @@ export default function CalcTable({ caption, columns, rows }) {
           </tr>
         </thead>
         <tbody className="font-mono-tech tabular-nums">
-          {rows.map(([label, ...cells]) => (
-            <tr key={label} className="border-b border-[#111814]/10 dark:border-[#eef1ec]/10">
+          {rows.map(([label, ...cells], rowIndex) => (
+            // Labels can repeat (e.g. every row reads "₹0 a month" when an
+            // input is zero), so the key includes the row's position.
+            <tr key={`${rowIndex}-${label}`} className="border-b border-[#111814]/10 dark:border-[#eef1ec]/10">
               <th scope="row" className="py-2 pr-4 font-sans font-semibold text-[#111814] dark:text-[#eef1ec]">
                 {label}
               </th>
