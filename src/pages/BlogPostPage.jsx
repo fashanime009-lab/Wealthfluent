@@ -1,6 +1,6 @@
 import { Link, Navigate, useParams } from "react-router-dom";
 import Seo, { SITE_URL } from "@/components/seo/Seo";
-import { articleSchema, breadcrumbSchema, faqSchema } from "@/components/seo/schema";
+import { articleSchema, breadcrumbSchema, faqSchema, webPageSchema } from "@/components/seo/schema";
 import { getPostBySlug } from "@/blog/posts";
 import { formatPostDate } from "@/blog/formatDate";
 import { splitIntoH2Sections, sectionHasTable, extractFaqItems } from "@/blog/markdownSections";
@@ -44,6 +44,7 @@ export default function BlogPostPage() {
   // publishing a new post never blocks on having bespoke images ready.
   const absoluteHeroUrl = `${SITE_URL}${frontmatter.heroImage || "/og-image.png"}`;
   const faqItems = extractFaqItems(content);
+  const articleId = `${SITE_URL}/blog/${post.slug}#article`;
 
   // The post body's first line is the hero image, embedded a second time
   // for authors previewing the raw Markdown file directly — it's rendered
@@ -85,8 +86,14 @@ export default function BlogPostPage() {
               publishedTime: frontmatter.datePublished,
               modifiedTime: frontmatter.dateModified,
               image: absoluteHeroUrl,
-              reviewedBy: parseReviewers(frontmatter.reviewedBy || []),
               author: parseAuthor(frontmatter.author),
+              id: articleId,
+            }),
+            webPageSchema({
+              path: `/blog/${post.slug}`,
+              name: frontmatter.seoTitle,
+              reviewedBy: parseReviewers(frontmatter.reviewedBy || []),
+              mainEntityId: articleId,
             }),
             breadcrumbSchema([
               { name: "Home", path: "/" },

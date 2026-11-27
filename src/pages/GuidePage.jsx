@@ -79,8 +79,6 @@ export default function GuidePage() {
               publishedTime: frontmatter.datePublished,
               modifiedTime: frontmatter.dateModified,
               image: absoluteHeroUrl,
-              // Reviewers belong on the WebPage node below, not the Article.
-              reviewedBy: [],
               author: parseAuthor(frontmatter.author),
               id: articleId,
             }),

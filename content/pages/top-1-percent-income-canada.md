@@ -1,7 +1,7 @@
 ---
 slug: top-1-percent-income-canada
 url: /top-1-percent-income-canada
-seoTitle: "Top 1% Income in Canada: What It Takes (2023 Data)"
+seoTitle: "Top 1% Income in Canada: What It Takes"
 h1: "How Much Do You Need to Earn to Be in Canada's Top 1%?"
 metaDescription: "Canada's top 1% starts at $293,800 a year (StatCan, 2023). See the top 0.1% cutoff, the averages by province, and where your income ranks."
 datePublished: 2026-11-13

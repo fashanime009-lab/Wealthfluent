@@ -72,9 +72,11 @@ export function faqSchema(faqs) {
 
 // Default reviewer for callers that don't pass their own (e.g. LessonPage,
 // whose 30 lessons shipped as one batch with no per-post reviewer byline).
-const DEFAULT_REVIEWER = [{ "@type": "Person", name: "Nishit B", jobTitle: "Financial Crime Risk Analyst" }];
-
-/** For blog/lesson content — eligible for Article rich results. */
+/**
+ * For blog/lesson/guide content — eligible for Article rich results.
+ * Reviewers aren't an Article property, so pages name them on a WebPage
+ * node instead (webPageSchema below), pointing at this article's "@id".
+ */
 export function articleSchema({
   title,
   description,
@@ -83,7 +85,6 @@ export function articleSchema({
   modifiedTime,
   image,
   inLanguage = "en",
-  reviewedBy,
   // A named Person when the content has an individual author; otherwise
   // the publisher organization is credited.
   author,
@@ -116,27 +117,13 @@ export function articleSchema({
       "@type": "Organization",
       name: SITE_NAME,
     },
-    // The team members who review financial content before it's published
-    // (see /about) — naming real reviewers here, not just the publisher
-    // org, is what Google's own guidance on finance content ("YMYL")
-    // specifically asks for. Should match the post's visible byline
-    // exactly, which is why callers with their own reviewers (e.g. blog
-    // posts) pass them in rather than this generic default being silently
-    // out of sync with what the page actually shows. An explicit empty
-    // list (a post with no separate reviewer) adds no reviewedBy at all.
-    ...(reviewedBy === undefined
-      ? { reviewedBy: DEFAULT_REVIEWER }
-      : reviewedBy.length
-        ? { reviewedBy }
-        : {}),
   };
 }
 
 /**
  * The page an article sits on. reviewedBy is a WebPage property, not an
- * Article one, so pages that name their reviewers put them here and pass
- * reviewedBy: [] to articleSchema. mainEntity points at the article by
- * its "@id".
+ * Article one, so the people who review a page are named here, and
+ * mainEntity points at the article by its "@id".
  */
 export function webPageSchema({ path, name, reviewedBy, mainEntityId, inLanguage = "en" }) {
   return {
