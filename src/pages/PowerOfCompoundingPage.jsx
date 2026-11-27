@@ -1,6 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
-import useExampleCurrency from "@/hooks/useExampleCurrency";
+import { Link } from "react-router-dom";
+import { defaultFor } from "@/data/calculatorDefaults";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
@@ -9,16 +10,19 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const FAQ_ITEMS = [
-  { q: "What's the actual difference between simple and compound interest?", a: "Simple interest is paid only on the original amount, every year, so it grows by the same rupee amount annually. Compound interest is paid on the original amount plus everything it's already earned, so each year's gain is a little larger than the last. Over short periods the gap is small; over long ones it becomes the whole story." },
+  { q: "What's the actual difference between simple and compound interest?", a: "Simple interest is paid only on the original amount, every year, so it grows by the same amount every year. Compound interest is paid on the original amount plus everything it's already earned, so each year's gain is a little larger than the last. Over short periods the gap is small; over long ones it becomes the whole story." },
   { q: "Why does the gap between them grow so much over time?", a: "Because the compound side is earning returns on returns — an accelerating effect — while the simple side only ever earns on the original amount. Doubling the number of years roughly doubles simple interest's result, but can multiply compound interest's result several times over, depending on the rate." },
   { q: "Does this apply to a lump sum or a monthly investment like a SIP?", a: "This tool models a one-time lump sum. A SIP compounds too, but each monthly contribution starts compounding from a different date, which needs a different formula — see the SIP Calculator for that case." },
   { q: "Is a higher rate or more time the bigger lever?", a: "Time, in almost every realistic case — because compounding is exponential in the number of periods and only linear in the rate. Starting 10 years earlier at a modest rate usually beats starting later and chasing a higher one, which is also the exact point the rule of 72 illustrates: the years needed to double your money fall fast as the rate rises, but rise just as fast if you delay." },
   { q: "Does compound interest work against me too?", a: "Yes — debt compounds by the same mechanism, which is why high-interest debt (a credit card at 30%+) grows just as relentlessly as an investment, and why paying it off is often the highest-return move available before investing elsewhere." },
+  { q: "Does compounding more often make a big difference?", a: "Less than most people think. Monthly compounding adds a little over yearly compounding at the same quoted rate, and daily adds only slightly more than monthly. The rate and the number of years matter far more than the frequency." },
 ];
 
 export default function PowerOfCompoundingPage() {
@@ -35,17 +39,30 @@ export default function PowerOfCompoundingPage() {
   const compoundingGain = compoundValue - simpleValue;
 
   const fmt = (v) => formatCurrency(v, settings.currency);
-  const { inr } = useExampleCurrency();
 
   // Fixed worked examples for the body copy below, independent of the live
-  // inputs above but currency-aware via inr().
+  // inputs above, from this currency's own default amount.
   const simpleOf = (p, r, t) => Math.round(p + (p * r * t) / 100);
   const compoundOf = (p, r, t) => Math.round(p * Math.pow(1 + r / 100, t));
-  const examplePrincipal = inr(100000);
+  const examplePrincipal = defaultFor("powerOfCompounding", "principal", settings.currency);
   const example1Simple = simpleOf(examplePrincipal, 10, 20);
   const example1Compound = compoundOf(examplePrincipal, 10, 20);
   const example2Simple = simpleOf(examplePrincipal, 12, 30);
   const example2Compound = compoundOf(examplePrincipal, 12, 30);
+
+  // Live tables from the inputs above.
+  const yearRows = [5, 10, 20, 30, 40].map((y) => {
+    const s = simpleOf(principal, rate, y);
+    const c = compoundOf(principal, rate, y);
+    return [`${y} years`, fmt(s), fmt(c), fmt(c - s)];
+  });
+  const frequencyRows = [
+    ["Yearly", 1],
+    ["Quarterly", 4],
+    ["Monthly", 12],
+    ["Daily", 365],
+  ].map(([label, n]) => [label, fmt(Math.round(principal * Math.pow(1 + rate / 100 / n, n * years)))]);
+  const doublingYears = rate > 0 ? (72 / rate).toFixed(1) : null;
 
   return (
     <>
@@ -83,7 +100,7 @@ export default function PowerOfCompoundingPage() {
               <CalcResultPanel label="Extra from compounding" value={fmt(compoundingGain)} />
               <div className="divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
                 <CalcStat label="Compound interest value" value={fmt(compoundValue)} share={100} tone="signal" />
-                <CalcStat label="Simple interest value" value={fmt(simpleValue)} share={(simpleValue / compoundValue) * 100} />
+                <CalcStat label="Simple interest value" value={fmt(simpleValue)} share={compoundValue > 0 ? (simpleValue / compoundValue) * 100 : 0} />
               </div>
               <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Illustrative only — real returns vary year to year rather than compounding at one smooth rate.
@@ -120,6 +137,63 @@ export default function PowerOfCompoundingPage() {
                 The gap isn't linear either: at 10 years the compound figure is only modestly ahead of simple; by
                 30 years, compound interest on the same {fmt(examplePrincipal)} at 12% reaches roughly {fmt(example2Compound)} against simple
                 interest's {fmt(example2Simple)} — a gap that keeps widening the longer the money is left alone.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Simple vs compound, year by year">
+              <CalcTable
+                caption={`${fmt(principal)} at ${rate}% a year`}
+                columns={["After", "Simple interest", "Compound interest", "Extra from compounding"]}
+                rows={yearRows}
+              />
+              <p>
+                Simple interest adds the same amount every year, so it grows in a straight line. Compound interest
+                adds a little more each year than the year before, so the gap widens every decade.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="The rule of 72">
+              <p>
+                Divide 72 by the yearly rate to estimate how long money takes to double with compounding.
+                {doublingYears && (
+                  <>
+                    {" "}At {rate}%, that's about <strong className={calcStrongClass}>{doublingYears} years</strong>.
+                  </>
+                )}{" "}
+                At 6% it's about 12 years, at 9% about 8 and at 12% about 6. Under simple interest, doubling takes 100
+                divided by the rate instead, so 12% simple interest takes over 8 years to double.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Does compounding frequency matter?">
+              <p>
+                The calculator above compounds once a year. Here's the same {fmt(principal)} at {rate}% over {years}{" "}
+                years, compounded more often:
+              </p>
+              <CalcTable caption="Final value by how often interest is added" columns={["Compounded", "Final value"]} rows={frequencyRows} />
+              <p>
+                More frequent compounding helps, but far less than a higher rate or more years. When comparing
+                deposits, look at the effective annual yield, which already includes the compounding. The{" "}
+                <Link to="/fd-calculator" className={calcLinkClass}>
+                  FD Calculator
+                </Link>{" "}
+                lets you choose the frequency.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Compounding works on debt too">
+              <p>
+                A credit card charging 3% a month compounds to about <strong className={calcStrongClass}>42.6% a year</strong>,
+                not 36%, if the balance isn't paid off. That's why carrying a card balance while investing rarely
+                makes sense: few investments reliably earn anywhere near that. Our{" "}
+                <Link to="/learn/debt-management" className={calcLinkClass}>
+                  debt management
+                </Link>{" "}
+                lesson covers which debts to clear first, and the{" "}
+                <Link to="/learn/compound-interest" className={calcLinkClass}>
+                  compound interest
+                </Link>{" "}
+                lesson explains the idea from the start.
               </p>
             </CalcSection>
 

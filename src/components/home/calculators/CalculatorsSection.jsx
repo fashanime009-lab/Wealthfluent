@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useSettings } from "@/context/SettingsContext";
 import { formatCurrency } from "@/utils/currency";
@@ -8,14 +7,24 @@ import useExampleCurrency from "@/hooks/useExampleCurrency";
 import useTilt from "@/hooks/useTilt";
 import GrowthChart from "../GrowthChart";
 import { CATEGORY_COLORS } from "@/data/categoryColors";
+import { assumptionsFor, defaultFor } from "@/data/calculatorDefaults";
 
-const SIP_MONTHLY = 5000;
-const SIP_YEARS = 15;
-const SIP_RATE = 12;
-
-const EMI_PRINCIPAL = 3000000;
-const EMI_RATE = 8.5;
-const EMI_YEARS = 20;
+// The two spotlight examples used fixed rupee figures (₹5,000 a month,
+// ₹30 lakh) for every currency, so a dollar visitor saw "$5,000/mo ...
+// grows to $2,522,880" and a "$3,000,000" loan. They now come from each
+// currency's own calculator defaults and assumptions. INR is unchanged:
+// ₹5,000/mo at 12% for 15 years, and ₹30 lakh (60% of the EMI page's
+// ₹50 lakh default) at 8.5% for 20 years.
+function spotlightExamples(currency) {
+  return {
+    sipMonthly: defaultFor("sip", "monthly", currency),
+    sipYears: defaultFor("sip", "years", currency),
+    sipRate: assumptionsFor(currency).equityReturn,
+    emiPrincipal: Math.round(defaultFor("emi", "loan", currency) * 0.6),
+    emiRate: defaultFor("emi", "rate", currency),
+    emiYears: defaultFor("emi", "years", currency),
+  };
+}
 
 // Only "loan" carries a category color and its own instrument panel so
 // far — the rest pick theirs up in the same pass once this one's
@@ -42,12 +51,19 @@ export default function CalculatorsSection() {
   const { ref: emiRef, style: emiStyle, onPointerMove: onEmiMove, onPointerLeave: onEmiLeave } = useTilt();
   const loan = CATEGORY_COLORS.loan;
 
+  const {
+    sipMonthly: SIP_MONTHLY,
+    sipYears: SIP_YEARS,
+    sipRate: SIP_RATE,
+    emiPrincipal: EMI_PRINCIPAL,
+    emiRate: EMI_RATE,
+    emiYears: EMI_YEARS,
+  } = spotlightExamples(settings.currency);
+
   const sipValue = sipFutureValue(SIP_MONTHLY, SIP_YEARS, SIP_RATE);
-  const sipSeries = useMemo(() => {
-    const points = [];
-    for (let y = 0; y <= SIP_YEARS; y++) points.push(sipFutureValue(SIP_MONTHLY, y, SIP_RATE));
-    return points;
-  }, []);
+  // 16 points at most; cheap enough to rebuild on every render.
+  const sipSeries = [];
+  for (let y = 0; y <= SIP_YEARS; y++) sipSeries.push(sipFutureValue(SIP_MONTHLY, y, SIP_RATE));
 
   const { emi, totalPayment, totalInterest } = emiBreakdown(EMI_PRINCIPAL, EMI_RATE, EMI_YEARS);
   const principalShare = (EMI_PRINCIPAL / totalPayment) * 100;

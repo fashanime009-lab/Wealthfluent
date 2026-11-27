@@ -1,6 +1,6 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
-import useExampleCurrency from "@/hooks/useExampleCurrency";
+import { assumptionsFor, defaultFor } from "@/data/calculatorDefaults";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
@@ -11,6 +11,8 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
@@ -26,6 +28,7 @@ const lumpFVOf = (p, annualReturn, years) => Math.round(p * Math.pow(1 + annualR
 const sipFVOf = (monthly, annualReturn, years) => {
   const r = annualReturn / 12 / 100;
   const n = years * 12;
+  if (r === 0) return Math.round(monthly * n);
   return Math.round(monthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r));
 };
 
@@ -35,6 +38,7 @@ const FAQ_ITEMS = [
   { q: "How is compounding frequency assumed here?", a: "Monthly, to match the convention used by this site's SIP Calculator — so a lumpsum and a SIP result are directly comparable on the same assumption. Some calculators assume annual compounding instead, which gives a slightly different number for the same inputs; always check which convention you're comparing against." },
   { q: "Is lumpsum investment taxed differently from SIP?", a: "No — a lumpsum investment in mutual funds is taxed the same way as SIP units: as capital gains, short or long-term depending on the holding period, not as income. The tax treatment doesn't change based on whether you invested all at once or in installments." },
   { q: "What's a realistic return rate to assume?", a: "That depends entirely on where the lumpsum goes — equity, debt, or a mix. There's no single 'correct' rate; run the calculator at a conservative and an optimistic rate to see the range, rather than trusting one number." },
+  { q: "What is an STP?", a: "A systematic transfer plan. You put the lumpsum into a low-risk fund, such as a liquid fund, and a fixed amount moves automatically into an equity fund every week or month. It spreads your entry into the market like a SIP, while the money waiting to be moved still earns a modest return." },
 ];
 
 export default function LumpsumCalculatorPage() {
@@ -57,14 +61,23 @@ export default function LumpsumCalculatorPage() {
   }, [lumpsum, annualReturn, years]);
 
   const fmt = (v) => formatCurrency(v, settings.currency);
-  const { inr } = useExampleCurrency();
+  const { equityReturn } = assumptionsFor(settings.currency);
 
-  const examplePrincipal = inr(100000);
-  const example1FV = lumpFVOf(examplePrincipal, 12, 10);
-  const exampleLumpPrincipal = inr(600000);
-  const lumpExample = lumpFVOf(exampleLumpPrincipal, 12, 5);
-  const exampleSipMonthly = inr(10000);
-  const sipExample = sipFVOf(exampleSipMonthly, 12, 5);
+  // Worked examples from this currency's default amount and return
+  // assumption (they used to be FX-converted rupees at a fixed 12%).
+  const examplePrincipal = defaultFor("lumpsum", "principal", settings.currency);
+  const example1FV = lumpFVOf(examplePrincipal, equityReturn, 10);
+  const exampleLumpPrincipal = examplePrincipal * 6;
+  const lumpExample = lumpFVOf(exampleLumpPrincipal, equityReturn, 5);
+  const exampleSipMonthly = exampleLumpPrincipal / 60;
+  const sipExample = sipFVOf(exampleSipMonthly, equityReturn, 5);
+  const monthlyFactor = Math.pow(1 + equityReturn / 12 / 100, 120);
+
+  const tableRates = [...new Set([Math.max(equityReturn - 6, 2), equityReturn - 3, equityReturn])];
+  const growthRows = [5, 10, 15, 20, 25].map((y) => [
+    `${y} years`,
+    ...tableRates.map((rate) => fmt(lumpFVOf(examplePrincipal, rate, y))),
+  ]);
 
   return (
     <>
@@ -112,7 +125,7 @@ export default function LumpsumCalculatorPage() {
               <CalcResultPanel label="Future value of your investment" value={fmt(result.futureValue)} />
 
               <div className="divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
-                <CalcStat label="Your Investment" value={fmt(lumpsum)} share={(lumpsum / result.futureValue) * 100} tone="signal" />
+                <CalcStat label="Your Investment" value={fmt(lumpsum)} share={result.futureValue > 0 ? (lumpsum / result.futureValue) * 100 : 0} tone="signal" />
                 <div className="py-3.5">
                   <div className="flex items-baseline justify-between gap-4">
                     <span className="text-[13.5px] text-[#111814]/65 dark:text-[#eef1ec]/65">Estimated Returns</span>
@@ -130,7 +143,7 @@ export default function LumpsumCalculatorPage() {
                       className={`h-full rounded-full opacity-70 dark:opacity-80 ${
                         result.returns >= 0 ? "bg-[#047857] dark:bg-[#34d399]" : "bg-red-600 dark:bg-red-400"
                       }`}
-                      style={{ width: `${Math.min(Math.abs((result.returns / lumpsum) * 100), 100)}%` }}
+                      style={{ width: `${lumpsum > 0 ? Math.min(Math.abs((result.returns / lumpsum) * 100), 100) : 0}%` }}
                     />
                   </div>
                 </div>
@@ -170,8 +183,8 @@ export default function LumpsumCalculatorPage() {
                 12).
               </p>
               <p>
-                For {fmt(examplePrincipal)} invested at 12% for 10 years: r = 12 ÷ 12 ÷ 100 = 0.01, n = 120 months, so
-                (1.01)^120 ≈ 3.30039 — multiplying by {fmt(examplePrincipal)} gives about {fmt(example1FV)}, the same figure the
+                For {fmt(examplePrincipal)} invested at {equityReturn}% for 10 years: r = {equityReturn} ÷ 12 ÷ 100, n = 120 months, so
+                (1 + r)^120 ≈ {monthlyFactor.toFixed(4)} — multiplying by {fmt(examplePrincipal)} gives about {fmt(example1FV)}, the same figure the
                 calculator above produces for those defaults.
               </p>
               <p>
@@ -188,7 +201,7 @@ export default function LumpsumCalculatorPage() {
               <p>
                 With a steady, assumed return, a lumpsum always wins on paper — every unit starts earning sooner
                 than it would in a SIP's spread-out installments. Investing {fmt(exampleLumpPrincipal)} as a lumpsum for 5 years at
-                12% grows to about {fmt(lumpExample)}; the same amount as a {fmt(exampleSipMonthly)} monthly SIP over those 5 years grows to
+                {" "}{equityReturn}% grows to about {fmt(lumpExample)}; the same amount as a {fmt(exampleSipMonthly)} monthly SIP over those 5 years grows to
                 about {fmt(sipExample)}, because most of the money hasn't started earning yet in the early months.
               </p>
               <p>
@@ -203,6 +216,32 @@ export default function LumpsumCalculatorPage() {
                   SIP vs Lump Sum
                 </Link>{" "}
                 lesson.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="What a lumpsum grows to">
+              <CalcTable
+                caption={`${fmt(examplePrincipal)} invested once, compounded monthly`}
+                columns={["Years", ...tableRates.map((rate) => `At ${rate}%`)]}
+                rows={growthRows}
+              />
+              <p>
+                The longer the money stays invested, the more the rate matters: the gap between the columns is
+                small at five years and large at twenty-five.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Investing a large lumpsum: the STP route">
+              <p>
+                If you're nervous about putting a large amount into equity on one day, a{" "}
+                <strong className={calcStrongClass}>systematic transfer plan (STP)</strong> is a common middle path. You
+                place the lumpsum in a liquid or short-term debt fund, and a fixed amount moves into an equity fund
+                every week or month, often over 6 to 12 months. You get the averaging of a SIP while the waiting
+                money still earns something.
+              </p>
+              <p>
+                Match the destination to when you need the money: debt or liquid funds for goals within about three
+                years, a hybrid fund for three to five, and equity for five years or more.
               </p>
             </CalcSection>
 

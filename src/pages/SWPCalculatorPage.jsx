@@ -1,6 +1,7 @@
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
-import useExampleCurrency from "@/hooks/useExampleCurrency";
+import { Link } from "react-router-dom";
+import { assumptionsFor, defaultFor } from "@/data/calculatorDefaults";
 import { useMemo } from "react";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
 import Seo from "@/components/seo/Seo";
@@ -10,6 +11,8 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
@@ -41,11 +44,31 @@ function swpSimulate(corpus, monthlyWithdrawal, annualRate) {
   };
 }
 
+// Months a corpus lasts when the monthly withdrawal rises by `inflation`%
+// once a year. Infinity if it's still going after CAP_YEARS.
+function swpLastsRising(corpus, monthlyWithdrawal, annualRate, inflation) {
+  const r = annualRate / 1200;
+  let balance = corpus;
+  let withdrawal = monthlyWithdrawal;
+  for (let month = 1; month <= CAP_YEARS * 12; month++) {
+    balance = balance * (1 + r) - withdrawal;
+    if (balance <= 0) return month;
+    if (month % 12 === 0) withdrawal *= 1 + inflation / 100;
+  }
+  return Infinity;
+}
+
+const describeMonths = (months) =>
+  !Number.isFinite(months) ? `${CAP_YEARS}+ years` : `${Math.floor(months / 12)} yrs ${months % 12} mo`;
+
+// Round to two significant figures, for tidy example amounts.
+const tidy = (v) => Number(v.toPrecision(2));
+
 const FAQ_ITEMS = [
   { q: "How is SWP lifespan calculated?", a: "Each month, the withdrawal comes out and the remaining balance earns a month of returns — the same balance compounds and shrinks at once. The calculator simulates this month by month until the balance reaches zero, rather than using a single formula, because the balance itself changes every month." },
   { q: "What does 'sustainable indefinitely' mean?", a: "If your monthly withdrawal is less than or equal to what the corpus earns in an average month, the balance never trends toward zero — withdrawing less than the corpus earns means it can, in principle, keep paying out forever at that rate. Markets don't return a smooth rate every month in reality, so treat this as a best-case read, not a guarantee." },
   { q: "SWP or just leaving the money invested and selling as needed?", a: "They're mathematically similar — SWP just automates a fixed, regular sale instead of ad-hoc ones. SWP's main advantage is discipline and predictable monthly income; its main risk is the same as any withdrawal plan: a poor sequence of returns early on depletes the corpus faster than the average return would suggest." },
-  { q: "Does this account for tax on the withdrawals?", a: "No — withdrawals from mutual funds via SWP are taxed as capital gains (short or long-term depending on how long each unit was held), not as income, which is often more tax-efficient than an equivalent fixed-income payout. This calculator shows the pre-tax corpus mechanics only; your actual take-home from each withdrawal will be lower after tax." },
+  { q: "Does this account for tax on the withdrawals?", a: "No. With a mutual fund SWP, only the gain inside each withdrawal is taxed, as capital gains, not the whole amount, which is often more tax-efficient than interest from a deposit. In India, equity fund gains on units held over a year are taxed at 12.5% above ₹1.25 lakh a year, and gains on debt funds bought after April 2023 are taxed at your slab rate. Tax rules change, so check the current treatment. This calculator shows pre-tax figures." },
   { q: "What return rate should I use for retirement withdrawals?", a: "A more conservative rate than your accumulation-phase assumption is common practice, since a retirement corpus is often shifted toward a more conservative mix to protect against a bad sequence of returns early in retirement. Try the calculator at a couple of rates to see how sensitive the result is." },
 ];
 
@@ -64,12 +87,25 @@ export default function SWPCalculatorPage() {
   }, [corpus, monthlyWithdrawal, rate]);
 
   const fmt = (v) => formatCurrency(v, settings.currency);
-  const { inr } = useExampleCurrency();
+  const { retirementReturn, inflation } = assumptionsFor(settings.currency);
 
-  const exampleCorpus = inr(5000000);
-  const exampleWithdrawal = inr(35000);
-  const exampleSafeWithdrawal = inr(30000);
-  const exampleResult = swpSimulate(exampleCorpus, exampleWithdrawal, 8);
+  // Worked example from this currency's default corpus and retirement
+  // return: one withdrawal above what the corpus earns, one below it. (It
+  // used to use FX-converted rupees at a fixed 8%, so the "sustainable"
+  // example wasn't true at other currencies' assumptions.)
+  const exampleCorpus = defaultFor("swp", "corpus", settings.currency);
+  const exampleEarnings = (exampleCorpus * retirementReturn) / 1200;
+  const exampleWithdrawal = tidy(exampleEarnings * 1.25);
+  const exampleSafeWithdrawal = tidy(exampleEarnings * 0.9);
+  const exampleResult = swpSimulate(exampleCorpus, exampleWithdrawal, retirementReturn);
+
+  // How long the corpus above lasts at different yearly withdrawal rates.
+  const rateRows = [3, 4, 5, 6, 8, 10].map((pct) => {
+    const monthly = (corpus * pct) / 100 / 12;
+    const flat = swpSimulate(corpus, monthly, rate);
+    const flatText = flat.sustainable ? "Indefinitely" : describeMonths(flat.years * 12 + flat.remMonths);
+    return [`${pct}% a year`, fmt(Math.round(monthly)), flatText, describeMonths(swpLastsRising(corpus, monthly, rate, inflation))];
+  });
 
   return (
     <>
@@ -167,7 +203,7 @@ export default function SWPCalculatorPage() {
                 Balance = Balance × (1 + monthly rate) − Withdrawal
               </p>
               <p>
-                On a {fmt(exampleCorpus)} corpus with a {fmt(exampleWithdrawal)} monthly withdrawal at 8%, the balance lasts about {exampleResult.years} years and
+                On a {fmt(exampleCorpus)} corpus with a {fmt(exampleWithdrawal)} monthly withdrawal at {retirementReturn}%, the balance lasts about {exampleResult.years} years and
                 {" "}{exampleResult.remMonths} months — over that time {fmt(Math.round(exampleResult.totalWithdrawn))} is withdrawn in total, of which {fmt(Math.round(exampleResult.interestEarned))} comes from
                 interest and only the original {fmt(exampleCorpus)} from the corpus itself. Drop the withdrawal to {fmt(exampleSafeWithdrawal)} a
                 month on the same corpus and rate, and it becomes sustainable indefinitely — {fmt(exampleSafeWithdrawal)} is below what
@@ -177,6 +213,55 @@ export default function SWPCalculatorPage() {
                 That gap — between a withdrawal the corpus can sustain forever and one that slowly depletes it —
                 is usually narrower than people expect, which is exactly why it's worth calculating rather than
                 guessing.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="How long it lasts at different withdrawal rates">
+              <p>
+                For your corpus of {fmt(corpus)} earning {rate}% a year, here's how long different withdrawals last,
+                both as a fixed amount and raised with {inflation}% inflation once a year:
+              </p>
+              <CalcTable
+                caption="Yearly withdrawal as a share of the starting corpus"
+                columns={["Withdrawal rate", "Monthly amount", "Fixed amount lasts", "Rising with inflation lasts"]}
+                rows={rateRows}
+              />
+              <p>
+                A fixed withdrawal loses buying power every year; one that rises with inflation keeps your standard
+                of living steady but runs out sooner. For a retirement income, plan on the right-hand column. The{" "}
+                <Link to="/annual-retirement-income" className={calcLinkClass}>
+                  Annual Retirement Income Calculator
+                </Link>{" "}
+                works out the rising income a corpus supports.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Making an SWP last">
+              <ul className="list-disc space-y-2 pl-5">
+                <li>
+                  <strong className={calcStrongClass}>Keep a few years in safer funds.</strong> Drawing the next two to
+                  three years from a debt or liquid fund means a market fall doesn't force you to sell equity at a
+                  loss, which is the biggest risk to any withdrawal plan.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Start lower than the maximum.</strong> A withdrawal near what the
+                  corpus earns leaves a buffer for bad years and rising costs.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Review once a year.</strong> Trim withdrawals after a poor year for
+                  markets; you can raise them after good ones.
+                </li>
+              </ul>
+              <p>
+                To build the corpus first, see the{" "}
+                <Link to="/retirement-calculator" className={calcLinkClass}>
+                  Retirement Calculator
+                </Link>
+                , and our lesson on{" "}
+                <Link to="/learn/mutual-fund-types" className={calcLinkClass}>
+                  types of mutual funds
+                </Link>{" "}
+                explains which funds suit each part of the plan.
               </p>
             </CalcSection>
 
