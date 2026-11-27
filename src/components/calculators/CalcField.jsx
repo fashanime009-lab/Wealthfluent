@@ -10,10 +10,15 @@ import { useId } from "react";
 // a generous typedMax well beyond the slider's range, not the slider's own
 // max, so a real-world value never gets silently capped to the slider's
 // exploratory range.
+//
+// That headroom is only for amounts (fields with a `format`). Rates, years
+// and ages stop at the slider's max: typing "5000" years or "3000"% used to
+// push results to Infinity (shown as "₹∞"), and an 8000-year retirement age
+// crashed the FIRE calculator's chart.
 export default function CalcField({ label, value, onChange, min, max, step = 1, suffix = "", format, typedMax, hint }) {
   const id = useId();
   const display = format ? format(value) : `${value}${suffix}`;
-  const effectiveTypedMax = typedMax ?? max * 100;
+  const effectiveTypedMax = typedMax ?? (format ? max * 100 : max);
 
   const handleTypedChange = (e) => {
     const raw = e.target.value;

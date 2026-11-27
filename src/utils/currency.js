@@ -4,6 +4,9 @@ import { currencies } from "../data/currencies.js";
 // cents matter (a bond's price against its face value, a monthly SIP amount).
 export function formatCurrency(value, currencyCode = "USD", compact = false, fractionDigits = 0) {
   if (value == null || Number.isNaN(value)) return "";
+  // A result too large to represent (or a division by zero upstream) would
+  // otherwise print as "₹∞".
+  if (!Number.isFinite(value)) return "—";
 
   const currency =
     currencies.find((c) => c.code === currencyCode) ||
