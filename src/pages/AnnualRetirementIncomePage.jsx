@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import { useMemo } from "react";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
+import { assumptionsFor } from "@/data/calculatorDefaults";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import CalcHeader from "@/components/calculators/CalcHeader";
@@ -9,17 +11,35 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 import useTilt from "@/hooks/useTilt";
 
 const FAQ_ITEMS = [
-  { q: "What is a realistic pre-retirement growth rate?", a: "Expected long-term investment returns vary depending on your portfolio, asset allocation, and market conditions. Stocks have historically delivered higher long-term returns than bonds or cash, but they also involve greater risk. Choose assumptions that match your investment strategy. Choose based on your asset allocation." },
+  { q: "What is a realistic pre-retirement growth rate?", a: "Expected long-term investment returns vary depending on your portfolio, asset allocation, and market conditions. Stocks have historically delivered higher long-term returns than bonds or cash, but they also involve greater risk. Choose an assumption that matches your actual mix of investments, and test a lower one to see how much the result depends on it." },
   { q: "What should I enter for \"Years to Pay Out\"?", a: "Estimate your life expectancy minus your retirement age. A common approach is to plan for 25-30 years post-retirement." },
   { q: "Can I withdraw more than the calculated amount?", a: "Withdrawing more may deplete your corpus sooner. The calculator provides a sustainable annual income assuming the corpus earns the given rate and lasts the specified years. Adjust the parameters to see different scenarios." },
-  { q: "Does this account for inflation during retirement?", a: "Not directly — the annual income figure is level (the same amount each year) rather than rising with inflation. In practice, expenses tend to rise over a 25-30 year retirement, so treat this figure as a starting point and build in some buffer or a rising withdrawal schedule." },
+  { q: "Does this account for inflation during retirement?", a: "The main figure is a level income, the same amount every year, so its buying power shrinks as prices rise. The results also show the smaller starting income you could take if you raise it with inflation each year, which keeps your standard of living steady." },
+  { q: "What is the 4% rule?", a: "A rule of thumb from US research: withdraw 4% of your corpus in the first year of retirement, raise it with inflation every year after, and the money has historically had a good chance of lasting about 30 years. With higher inflation or a longer retirement, a lower starting rate is safer." },
+  { q: "How should I invest my corpus in retirement?", a: "Many retirees keep the next few years of withdrawals in safe, easy-to-reach options such as deposits or debt funds, and leave the rest invested for growth, refilling the safe bucket as they go. A systematic withdrawal plan (SWP) from a mutual fund is a common way to draw a regular income." },
 ];
+
+// Years a corpus lasts when the first year's withdrawal is `firstWithdrawal`
+// and each later withdrawal rises by `growth`%, while the remaining balance
+// earns `rate`% a year. Withdrawals at the end of each year. Capped at 60.
+function yearsCorpusLasts(corpus, firstWithdrawal, rate, growth) {
+  let balance = corpus;
+  let withdrawal = firstWithdrawal;
+  for (let year = 1; year <= 60; year++) {
+    balance = balance * (1 + rate / 100) - withdrawal;
+    if (balance < 0) return year - 1 + (balance + withdrawal) / withdrawal;
+    withdrawal *= 1 + growth / 100;
+  }
+  return Infinity;
+}
 
 export default function AnnualRetirementIncomePage() {
   const { ref: corpusRef, style: corpusStyle, onPointerMove: onCorpusMove, onPointerLeave: onCorpusLeave } = useTilt();
@@ -83,6 +103,32 @@ export default function AnnualRetirementIncomePage() {
   // currency's own convention otherwise) — this page used to hardcode
   // en-US grouping with just the symbol, unlike the rest of the site.
   const fmt = (v) => formatCurrency(v, settings.currency);
+  const { inflation } = assumptionsFor(settings.currency);
+
+  // The same corpus paid out as an income that rises with inflation each
+  // year: the first-year amount of a growing annuity over the payout period.
+  const risingIncome = useMemo(() => {
+    const C = results.corpusAtRetirement;
+    const r = postRetGrowthRate / 100;
+    const g = inflation / 100;
+    const n = yearsToPayOut;
+    if (C <= 0 || n <= 0) return 0;
+    if (Math.abs(r - g) < 1e-9) return (C * (1 + r)) / n;
+    return (C * (r - g)) / (1 - Math.pow((1 + g) / (1 + r), n));
+  }, [results.corpusAtRetirement, postRetGrowthRate, inflation, yearsToPayOut]);
+
+  // Today's-money value of the first year's level income.
+  const incomeTodaysMoney = Math.round(results.annualIncome / Math.pow(1 + inflation / 100, yearsToGrow));
+  const fourPercent = Math.round(results.corpusAtRetirement * 0.04);
+
+  const lastsRows = [3, 4, 5, 6, 8].map((pct) => {
+    const years = yearsCorpusLasts(results.corpusAtRetirement, (results.corpusAtRetirement * pct) / 100, postRetGrowthRate, inflation);
+    return [
+      `${pct}% of the corpus`,
+      fmt(Math.round((results.corpusAtRetirement * pct) / 100)),
+      Number.isFinite(years) ? `About ${Math.floor(years)} years` : "60+ years",
+    ];
+  });
 
   return (
     <>
@@ -141,6 +187,9 @@ export default function AnnualRetirementIncomePage() {
                 </p>
               </div>
               <div className="divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
+                <CalcStat label="Monthly equivalent" value={fmt(Math.round(results.annualIncome / 12))} tone="signal" />
+                <CalcStat label={`First year's income in today's money (${inflation}% inflation)`} value={fmt(incomeTodaysMoney)} />
+                <CalcStat label={`Or a starting income that rises ${inflation}% a year`} value={fmt(Math.round(risingIncome))} />
                 <CalcStat label="Total invested (pre-retirement)" value={fmt(results.totalInvested)} />
                 <CalcStat label="Pre-retirement growth rate" value={`${preRetGrowthRate}%`} />
                 <CalcStat label="Years to grow" value={`${yearsToGrow} yrs`} />
@@ -179,6 +228,76 @@ export default function AnnualRetirementIncomePage() {
                 earning even a modest return during retirement can sustain meaningfully higher withdrawals than one
                 assumed to sit in cash, since the remaining balance keeps growing between withdrawals rather than
                 only shrinking.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Level income or an income that keeps up with inflation?">
+              <p>
+                The headline figure, {fmt(results.annualIncome)} a year, stays the same every year until the money runs
+                out. That's simple, but prices keep rising: at {inflation}% inflation, a level income buys about half as
+                much after {Math.round(72 / inflation)} years.
+              </p>
+              <p>
+                The alternative is to start lower and raise the withdrawal with inflation each year. With your
+                numbers, that means starting at about <strong className={calcStrongClass}>{fmt(Math.round(risingIncome))}</strong>{" "}
+                and increasing it {inflation}% a year, which spends the same corpus over the same {yearsToPayOut} years
+                but keeps your standard of living steady. Most retirement plans should use this version.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="How long will your money last?">
+              <p>
+                Here's how long a corpus of {fmt(results.corpusAtRetirement)} lasts for different first-year
+                withdrawals, raised with {inflation}% inflation every year, while the rest earns{" "}
+                {postRetGrowthRate}% a year:
+              </p>
+              <CalcTable
+                caption={`Corpus of ${fmt(results.corpusAtRetirement)}, earning ${postRetGrowthRate}% a year`}
+                columns={["First-year withdrawal", "Amount", "Lasts"]}
+                rows={lastsRows}
+              />
+              <p>
+                The well-known <strong className={calcStrongClass}>4% rule</strong> suggests starting at 4% of the corpus,
+                here {fmt(fourPercent)} a year, and raising it with inflation. It comes from US market history and
+                aims for about 30 years. With higher inflation, lower returns or a longer retirement, a lower
+                starting rate is safer.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Making retirement income safer">
+              <ul className="list-disc space-y-2 pl-5">
+                <li>
+                  <strong className={calcStrongClass}>Keep a safe bucket:</strong> hold the next three to five years of
+                  withdrawals in deposits or debt funds, so a market fall never forces you to sell investments at a
+                  loss.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Draw a regular income:</strong> a systematic withdrawal plan from a
+                  mutual fund pays a fixed amount each month. The{" "}
+                  <Link to="/swp-calculator" className={calcLinkClass}>
+                    SWP Calculator
+                  </Link>{" "}
+                  shows how long a monthly withdrawal lasts.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Plan for a long life:</strong> use a payout period that runs to age
+                  85–90 or beyond. Running out too early is the bigger risk.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Review every year:</strong> cut back a little after a bad year for
+                  markets, and you can spend more after good ones.
+                </li>
+              </ul>
+              <p>
+                To build the corpus in the first place, the{" "}
+                <Link to="/retirement-calculator" className={calcLinkClass}>
+                  Retirement Calculator
+                </Link>{" "}
+                projects a monthly investment, and{" "}
+                <Link to="/blog/how-much-to-save-for-retirement-by-age" className={calcLinkClass}>
+                  how much to save for retirement by age
+                </Link>{" "}
+                shows what to invest at each age.
               </p>
             </CalcSection>
 

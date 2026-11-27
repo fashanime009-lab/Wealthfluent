@@ -4,6 +4,8 @@ import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schem
 import CalcHeader from "@/components/calculators/CalcHeader";
 import WealthAgeCalculator from "@/components/calculators/WealthAgeCalculator";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
@@ -11,6 +13,17 @@ const FAQ_ITEMS = [
   { q: "What's a good wealth age?", a: "Anything below your real age means your current habits are outpacing what your age alone would predict. There's no universal target — the number is most useful tracked over time against your own past results." },
   { q: "Why did my wealth age go up instead of down?", a: "Usually a savings rate under 20% and/or a negative or low net worth (debt exceeding investments). Increasing monthly savings or paying down high-interest debt are the two most direct levers to bring it back down." },
   { q: "Is this the same as a real financial planning tool?", a: "No — treat it as a quick gut-check, not a substitute for a full financial plan. For actual retirement projections, use the Retirement or FIRE calculators, which model your specific numbers rather than producing a single comparative score." },
+  { q: "How is my savings rate worked out?", a: "Monthly savings divided by monthly income, as a percentage. Count everything you put aside each month, including SIPs, deposits and extra loan prepayments, and use take-home income so the two figures match." },
+  { q: "Should I include my home in investments?", a: "The calculator asks for investments and debt, not property. For a stricter check, leave your home out and enter only investments you could draw on. If you include your home loan in debt, include the home's value too, or your net worth will look worse than it is." },
+];
+
+const ADJUSTMENT_ROWS = [
+  ["Saving 40% or more of income", "8 years younger"],
+  ["Saving 30–39%", "5 years younger"],
+  ["Saving 20–29%", "2 years younger"],
+  ["Saving under 20%", "3 years older"],
+  ["Net worth at least one year's income", "A further 5 years younger"],
+  ["Net worth below zero", "A further 5 years older"],
 ];
 
 export default function WealthAgeCalculatorPage() {
@@ -27,20 +40,7 @@ export default function WealthAgeCalculatorPage() {
           description: "Free Wealth Age Calculator: see how your savings rate and net worth compare to your real age, with a wealth score and personalized insights.",
           path: "/wealth-age-calculator",
         }),
-        faqSchema([
-          {
-            "question": "What's a good wealth age?",
-            "answer": "Anything below your real age means your current habits are outpacing what your age alone would predict. There's no universal target — the number is most useful tracked over time against your own past results."
-          },
-          {
-            "question": "Why did my wealth age go up instead of down?",
-            "answer": "Usually a savings rate under 20% and/or a negative or low net worth (debt exceeding investments). Increasing monthly savings or paying down high-interest debt are the two most direct levers to bring it back down."
-          },
-          {
-            "question": "Is this the same as a real financial planning tool?",
-            "answer": "No — treat it as a quick gut-check, not a substitute for a full financial plan. For actual retirement projections, use the Retirement or FIRE calculators, which model your specific numbers rather than producing a single comparative score."
-          }
-        ]),
+        faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
         howToSchema({
           name: "How to Use the Wealth Age Calculator",
           description: "Compare your financial age to your real age using your income, savings, investments and debt.",
@@ -112,6 +112,69 @@ export default function WealthAgeCalculatorPage() {
                 strong net worth can show a wealth age well below their real
                 age — and the reverse is true for a high real age with a low
                 savings rate and negative net worth.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Wealth age adjustments at a glance">
+              <CalcTable
+                caption="How each factor moves your wealth age from your real age"
+                columns={["If you're…", "Your wealth age is…"]}
+                rows={ADJUSTMENT_ROWS}
+              />
+              <p>
+                Two examples. A 30-year-old saving 25% of their income with a net worth above one year's income
+                gets 30 − 2 − 5 = a <strong className={calcStrongClass}>wealth age of 23</strong>. A 30-year-old saving 10%
+                with more debt than investments gets 30 + 3 + 5 ={" "}
+                <strong className={calcStrongClass}>38</strong>. Same age, fifteen years apart financially.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="How to lower your wealth age">
+              <p>
+                Your savings rate is the lever you control month to month, and it moves the result most. Crossing
+                20% takes you from three years older to two years younger, a five-year swing.
+              </p>
+              <ul className="list-disc space-y-2 pl-5">
+                <li>
+                  <strong className={calcStrongClass}>Automate savings on payday</strong>, so they happen before spending
+                  does. Our{" "}
+                  <Link to="/learn/budgeting-basics" className={calcLinkClass}>
+                    budgeting basics
+                  </Link>{" "}
+                  lesson covers the 50/30/20 split.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Clear expensive debt first.</strong> A credit card or personal loan
+                  balance pulls net worth down and can push it below zero; the{" "}
+                  <Link to="/verdict/debt-vs-invest" className={calcLinkClass}>
+                    Debt vs Invest verdict
+                  </Link>{" "}
+                  shows whether to prepay or invest.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Save each pay rise.</strong> Putting half of every increase into
+                  savings raises your rate without cutting today's spending.
+                </li>
+              </ul>
+            </CalcSection>
+
+            <CalcSection title="What wealth age doesn't tell you">
+              <p>
+                It's a quick score with blunt bands: saving 19% and 20% land five years apart, and it doesn't
+                look at your emergency fund, insurance or how your money is invested. Use it as a motivating
+                snapshot, then check the details: the{" "}
+                <Link to="/networth-calculator" className={calcLinkClass}>
+                  Net Worth Calculator
+                </Link>{" "}
+                gives an itemised net worth, the{" "}
+                <Link to="/emergency-fund-calculator" className={calcLinkClass}>
+                  Emergency Fund Calculator
+                </Link>{" "}
+                checks your safety net, and the{" "}
+                <Link to="/net-worth-percentile" className={calcLinkClass}>
+                  Global Net Worth Percentile Calculator
+                </Link>{" "}
+                ranks your net worth worldwide.
               </p>
             </CalcSection>
 

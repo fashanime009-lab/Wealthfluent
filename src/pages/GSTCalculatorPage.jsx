@@ -7,16 +7,19 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const FAQ_ITEMS = [
-  { q: "What are common GST rates in India?", a: "Following the September 2025 GST reform, the core slabs are 0%, 5%, 18%, and 40%. The earlier 12% slab was removed, and most goods that were taxed at 28% moved to 18%. A 28% rate still applies narrowly to a small number of items, such as pan masala and gutka, until their related cess obligations are cleared. The 40% rate is reserved for sin and luxury goods — tobacco products, sugar-sweetened beverages, gambling, and high-end vehicles." },
-  { q: "How is GST calculated?", a: "GST is calculated by multiplying the taxable amount by the applicable GST percentage. The total amount is the sum of the base amount and the GST amount." },
-  { q: "Can this calculator be used for all GST types?", a: "This calculator works for both CGST+SGST (intra-state) and IGST (inter-state) by applying the combined rate. For detailed bifurcation, consult a tax advisor." },
-  { q: "How do I remove GST from a total price?", a: "Divide the GST-inclusive total by (1 + GST rate/100) to get the base amount, then subtract that from the total to find the GST portion — the reverse of adding GST to a base amount." },
-  { q: "Is GST the same across all of India?", a: "The rate slabs (0%, 5%, 18%, 40%, plus a narrow legacy 28% band) are set nationally and apply uniformly across states — what changes state to state is only the CGST/SGST split, never the total rate a buyer pays." },
+  { q: "What are the GST rates in India?", a: "Since the September 2025 GST reform, the main slabs are 0%, 5%, 18% and 40%. The old 12% and 28% slabs are gone: most goods moved down to 5% or 18%, and from 1 February 2026 tobacco products and pan masala moved from 28% to 40%. A few special rates remain, such as 3% on gold, silver and jewellery and 0.25% on rough diamonds." },
+  { q: "How is GST calculated?", a: "Multiply the price before tax by the GST rate and divide by 100 to get the GST amount, then add it to the price. At 18%, a ₹1,000 item carries ₹180 of GST, for a total of ₹1,180." },
+  { q: "Can this calculator be used for all GST types?", a: "Yes. It applies the full GST rate, which is the same whether the sale is within a state (split equally into CGST and SGST) or between states (charged as IGST). For the CGST and SGST amounts, halve the GST figure." },
+  { q: "How do I remove GST from a total price?", a: "Divide the GST-inclusive total by (1 + GST rate/100) to get the base amount, then subtract that from the total to find the GST portion — the reverse of adding GST to a base amount. Choose Remove GST above to do it automatically." },
+  { q: "Is GST the same across all of India?", a: "Yes. GST rates are set nationally by the GST Council, so the same item carries the same total rate in every state. Within a state, the tax is split equally between the centre (CGST) and the state (SGST); on sales between states, the whole amount is charged as IGST." },
+  { q: "Does the MRP include GST?", a: "Yes. In India the maximum retail price printed on packaged goods includes all taxes, so the shop can't add GST on top. To see how much of an MRP is GST, use Remove GST with the item's rate." },
 ];
 
 export default function GSTCalculatorPage() {
@@ -37,6 +40,20 @@ export default function GSTCalculatorPage() {
   // isn't a real-world scenario, so this always displays INR regardless of
   // the global currency setting.
   const fmt = (value) => formatCurrency(value, "INR");
+
+  const slabRows = [
+    ["0%", "Fresh fruit, vegetables and milk; individual life and health insurance premiums"],
+    ["5%", "Many packaged foods and daily-use items, such as soap, toothpaste and shampoo"],
+    ["18%", "Most other goods and services, including TVs, air conditioners, small cars and professional services"],
+    ["40%", "Tobacco and pan masala, sugar-sweetened and aerated drinks, large cars and other luxury items"],
+    ["3% / 0.25%", "Special rates: gold, silver and jewellery (3%); rough diamonds (0.25%)"],
+  ];
+  const quickRates = [5, 18, 40];
+  const quickRows = [1000, 10000, 100000].map((base) => [
+    fmt(base),
+    ...quickRates.map((rate) => `${fmt((base * rate) / 100)} → ${fmt(base * (1 + rate / 100))}`),
+  ]);
+  const splitBase = 10000;
 
   return (
     <>
@@ -152,6 +169,51 @@ export default function GSTCalculatorPage() {
                 For example, a {fmt(1000)} base amount at 18% GST adds {fmt(180)}, for a total of {fmt(1180)}. If you instead have a
                 GST-inclusive price and need to find the base amount, divide by (1 + rate/100): a {fmt(1180)} inclusive
                 price at 18% GST works back to a {fmt(1000)} base — the reverse of the forward calculation above.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="GST slabs at a glance">
+              <p>
+                The September 2025 reform cut India's main GST slabs to four. These are broad examples; the exact
+                rate depends on how an item is classified, so check the official rate schedule for business
+                invoices.
+              </p>
+              <CalcTable caption="Main GST rates in India" columns={["Rate", "Examples"]} rows={slabRows} />
+            </CalcSection>
+
+            <CalcSection title="CGST, SGST and IGST">
+              <p>
+                The rate a buyer pays doesn't change with where they are; only who collects it does. On a{" "}
+                {fmt(splitBase)} sale at 18%:
+              </p>
+              <ul className="list-disc space-y-2 pl-5">
+                <li>
+                  <strong className={calcStrongClass}>Within one state:</strong> {fmt(splitBase * 0.09)} CGST to the centre
+                  plus {fmt(splitBase * 0.09)} SGST to the state, {fmt(splitBase * 0.18)} in total.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Between states:</strong> {fmt(splitBase * 0.18)} IGST, collected by the
+                  centre and shared with the state where the goods are used.
+                </li>
+              </ul>
+              <p>Either way the buyer pays {fmt(splitBase * 1.18)}.</p>
+            </CalcSection>
+
+            <CalcSection title="Quick reference: GST on common amounts">
+              <CalcTable
+                caption="GST amount → total price, by base amount and rate"
+                columns={["Base amount", ...quickRates.map((rate) => `At ${rate}%`)]}
+                rows={quickRows}
+              />
+            </CalcSection>
+
+            <CalcSection title="Input tax credit, briefly">
+              <p>
+                GST is charged at every stage of the supply chain, but registered businesses can usually deduct the
+                GST they paid on their purchases (input tax credit) from the GST they collect on their sales, and
+                pay only the difference. That's why GST ends up being paid, in effect, by the final consumer. As a
+                consumer you can't claim it back; as a business, keep valid tax invoices for every purchase so you
+                can.
               </p>
             </CalcSection>
 

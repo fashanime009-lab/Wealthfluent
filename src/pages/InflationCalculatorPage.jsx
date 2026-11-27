@@ -1,14 +1,17 @@
+import { Link } from "react-router-dom";
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
-import useExampleCurrency from "@/hooks/useExampleCurrency";
 import { useMemo } from "react";
 import useDefaultableField, { useAssumptionField, useFieldBounds } from "@/hooks/useDefaultableField";
+import { assumptionsFor, defaultFor } from "@/data/calculatorDefaults";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
@@ -18,6 +21,8 @@ const FAQ_ITEMS = [
   { q: "How does inflation affect my savings?", a: "Inflation reduces the purchasing power of your savings. If your savings earn a return lower than inflation, your real wealth decreases over time. This is why it's important to invest in assets that beat inflation." },
   { q: "Which investments beat inflation?", a: "Historically, equities (stocks), real estate, and gold have beaten inflation over the long term. Fixed deposits and bonds typically offer returns that may or may not beat inflation depending on the interest rate environment." },
   { q: "Should I use the same inflation rate for every goal?", a: "No — healthcare and education costs have historically risen faster than general inflation in many economies. Use a higher rate for those specific goals rather than one blanket assumption across your entire plan." },
+  { q: "What is India's inflation target?", a: "The Reserve Bank of India targets consumer price inflation of 4%, with a tolerance band of 2% to 6%. Actual inflation moves around that target from year to year, and many long-term financial plans in India assume about 6% to stay on the safe side." },
+  { q: "How do I protect my money from inflation?", a: "Keep only what you need for emergencies and near-term spending in cash and deposits, and invest money for goals more than five years away in assets that have historically outpaced inflation, such as a diversified equity fund. Check your plan every year and raise savings as your income grows." },
 ];
 
 export default function InflationCalculatorPage() {
@@ -41,7 +46,8 @@ export default function InflationCalculatorPage() {
   // currency's own convention otherwise) — this page used to hardcode
   // en-US grouping with just the symbol, unlike the rest of the site.
   const fmt = (v) => formatCurrency(v, settings.currency, false, 2);
-  const { inr } = useExampleCurrency();
+  const fmt0 = (v) => formatCurrency(v, settings.currency);
+  const { inflation } = assumptionsFor(settings.currency);
 
   // Calculate purchasing power loss
   const purchasingPowerLoss = useMemo(() => {
@@ -51,9 +57,20 @@ export default function InflationCalculatorPage() {
     return 0;
   }, [futureCost, currentExpenses]);
 
-  const exampleToday = inr(10000);
-  const example10yr = Math.round(exampleToday * Math.pow(1.06, 10));
-  const example20yr = Math.round(exampleToday * Math.pow(1.06, 20));
+  // Worked examples, at this currency's own default amount and inflation
+  // assumption (the copy used to say 6% for every currency).
+  const exampleToday = defaultFor("inflation", "cost", settings.currency);
+  const example10yr = Math.round(exampleToday * Math.pow(1 + inflation / 100, 10));
+  const example20yr = Math.round(exampleToday * Math.pow(1 + inflation / 100, 20));
+  // What today's amount will buy at the end of the period, in today's prices.
+  const futureBuyingPower = Math.round(currentExpenses / Math.pow(1 + inflationRate / 100, timePeriod));
+
+  const tableRates = [3, 6, 9];
+  const tableYears = [5, 10, 20, 30];
+  const costRows = tableYears.map((y) => [
+    `${y} years`,
+    ...tableRates.map((rate) => fmt0(Math.round(exampleToday * Math.pow(1 + rate / 100, y)))),
+  ]);
 
   return (
     <>
@@ -144,14 +161,18 @@ export default function InflationCalculatorPage() {
                   <p className="text-[12px] text-[#111814]/60 dark:text-[#eef1ec]/50">
                     {purchasingPowerLoss}% of your money's purchasing power will be eroded by inflation
                   </p>
+                  <div className="flex justify-between text-[13.5px]">
+                    <span className="text-[#111814]/65 dark:text-[#eef1ec]/65">Today's {fmt0(currentExpenses)} will buy, in {timePeriod} years</span>
+                    <span className="font-mono-tech tabular-nums text-[#111814] dark:text-[#eef1ec]">{fmt0(futureBuyingPower)} worth</span>
+                  </div>
                 </div>
               </div>
 
               {/* Disclaimer */}
               <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 <span className="font-medium text-[#111814]/60 dark:text-[#eef1ec]/60">Disclaimer:</span>{" "}
-                Please note that these calculators are for illustrations only and do not represent actual returns.
-                Stock Market does not have a fixed rate of return and it is not possible to predict the rate of return.
+                These figures assume the same inflation rate every year. Real inflation varies from year to year and
+                differs by what you buy, so treat the result as an estimate.
               </p>
             </div>
           </div>
@@ -174,13 +195,73 @@ export default function InflationCalculatorPage() {
                 Future Cost = Current Cost × (1 + Inflation Rate/100)^Years
               </p>
               <p>
-                At just 6% annual inflation, something costing {fmt(exampleToday)} today costs
-                roughly {fmt(example10yr)} in 10 years and {fmt(example20yr)} in 20 years — which is why
-                a "safe" savings account earning 3-4% is actually losing real value
+                At {inflation}% annual inflation, something costing {fmt0(exampleToday)} today costs
+                roughly {fmt0(example10yr)} in 10 years and {fmt0(example20yr)} in 20 years — which is why
+                money in a savings account earning less than inflation is losing real value
                 every year, even while the account balance keeps growing. Healthcare
                 and education costs in particular have historically outpaced
                 general inflation, so goals tied to either deserve a higher
                 assumed rate than everyday expenses.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Future cost at different inflation rates">
+              <p>
+                Small differences in the inflation rate add up over decades. Here's what {fmt0(exampleToday)} of
+                spending today would cost later:
+              </p>
+              <CalcTable
+                caption={`Future cost of ${fmt0(exampleToday)} of today's spending`}
+                columns={["Years from now", ...tableRates.map((rate) => `At ${rate}% a year`)]}
+                rows={costRows}
+              />
+              <p>
+                A quick check: divide 72 by the inflation rate to see how many years it takes prices to double. At
+                3% it's about 24 years, at 6% about 12, and at 9% about 8.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="What inflation rate should you use?">
+              <p>
+                Central banks publish targets that make a sensible starting point. The Reserve Bank of India
+                targets consumer price inflation of <strong className={calcStrongClass}>4%, within a band of 2% to 6%</strong>,
+                and the US Federal Reserve, the European Central Bank and the Bank of England target about 2%.
+                Actual inflation moves around these targets, and long-term plans often assume a little more to stay
+                on the safe side.
+              </p>
+              <p>
+                Your personal inflation can differ from the official figure, because it depends on what you buy.
+                School and college fees and medical costs have tended to rise faster than general prices, so use a
+                higher rate for those goals. Lifestyle creep, spending more as you earn more, raises your costs too,
+                even though it isn't inflation.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="How to beat inflation">
+              <p>
+                Money only grows in real terms if it earns more than inflation after tax. Cash and savings accounts
+                usually don't, which is fine for an emergency fund but costly for long-term goals. Investments that
+                have historically outpaced inflation over long periods, such as a diversified equity fund, suit goals
+                more than five years away. Your real return is roughly your return minus inflation; the{" "}
+                <Link to="/rate-of-return-calculator" className={calcLinkClass}>
+                  Rate of Return Calculator
+                </Link>{" "}
+                works it out exactly.
+              </p>
+              <p>
+                For planning, the{" "}
+                <Link to="/goal-sip" className={calcLinkClass}>
+                  Goal SIP Calculator
+                </Link>{" "}
+                turns an inflated goal into a monthly investment, and the{" "}
+                <Link to="/retirement-calculator" className={calcLinkClass}>
+                  Retirement Calculator
+                </Link>{" "}
+                shows your corpus in today's money. Our lesson on{" "}
+                <Link to="/learn/understanding-inflation" className={calcLinkClass}>
+                  understanding inflation
+                </Link>{" "}
+                covers the basics.
               </p>
             </CalcSection>
 
