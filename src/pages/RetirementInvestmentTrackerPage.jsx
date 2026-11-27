@@ -1,4 +1,9 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
+import { assumptionsFor, defaultFor } from "@/data/calculatorDefaults";
+import { sipFutureValue } from "@/utils/projections";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema } from "@/components/seo/schema";
 import { useSettings } from "../context/SettingsContext";
@@ -11,9 +16,11 @@ import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const FAQ_ITEMS = [
-  { q: "How do I determine my annual increase percentage?", a: "A good starting point is to match the average inflation rate (the average inflation rate in your country) plus your expected income growth. Many investors use 10% as a reasonable target for annual increase in retirement investments." },
-  { q: "What should I include in my retirement investments?", a: "Include all investments earmarked for retirement, such as mutual funds (SIPs), retirement accounts, mutual funds, stocks, bonds, ETFs, and other long-term investments, stocks, bonds, and any other long-term savings vehicles." },
-  { q: "How often should I update my tracker?", a: "It's recommended to update your tracker at least annually, or whenever you make a significant contribution to your retirement investments. Regular updates help you stay on top of your progress." },
+  { q: "How do I choose my annual increase percentage?", a: "Match it to how fast you expect your income to grow. Raising your investment by the same percentage as your pay rises keeps your savings rate steady; raising it by more increases your savings rate over time. If you're unsure, start with about your expected inflation rate and raise it in good years." },
+  { q: "What should I include in my retirement investments?", a: "Everything you've set aside for retirement and won't touch before then: SIPs and other mutual fund investments, provident fund and pension contributions (yours and your employer's), PPF, NPS, and shares, bonds or ETFs held for retirement. Leave out your emergency fund and money for nearer goals." },
+  { q: "How often should I update my tracker?", a: "At least once a year, ideally at the end of each financial year, and whenever you make a large one-off investment such as investing a bonus. A yearly check is enough to spot a gap early without reacting to every market move." },
+  { q: "How do I set my first year's target?", a: "Work out the monthly amount your retirement plan needs, with the Retirement Calculator or the Retirement Corpus Planner, and multiply it by twelve. The tracker then raises each following year's target by your annual increase." },
+  { q: "What if I fall behind my target?", a: "Look at the variance, not just the progress percentage. Small gaps can be closed by investing a bonus or raising your monthly amount slightly; a large gap may mean revisiting your plan's assumptions, such as your retirement age or expected spending." },
 ];
 
 export default function RetirementInvestmentTrackerPage() {
@@ -22,8 +29,11 @@ const [annualIncrease, setAnnualIncrease] = useState(10);
 const { settings } = useSettings();
 // Symbol only, for the column headers; amounts go through the shared formatter.
 const currency = (currencies.find((c) => c.code === settings.currency) || currencies[0]).symbol;
-  const [rows, setRows] = useState([
-    { id: 1, year: new Date().getFullYear(), target: 0, actual: 0 },
+  // The first year's target used to start at 0, so every row added after it
+  // was 0 too. Start from a year of this currency's default monthly
+  // retirement investment (₹15,000 × 12, $1,000 × 12, ...), editable.
+  const [rows, setRows] = useState(() => [
+    { id: 1, year: new Date().getFullYear(), target: defaultFor("retirement", "monthly", settings.currency) * 12, actual: 0 },
   ]);
 
   // ─── Add / Remove Rows ──────────────────────────────────────────
@@ -77,31 +87,52 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
   };
 
   // ─── Computed Totals ─────────────────────────────────────────────
+  // Progress and variance are measured against the targets for years up to
+  // and including this one. They used to include every future year's
+  // target too, so anyone planning ahead always looked behind.
+  const thisYear = new Date().getFullYear();
   const totals = useMemo(() => {
     let totalTarget = 0;
+    let targetToDate = 0;
     let totalActual = 0;
-    let rowsWithData = 0;
 
     rows.forEach((row) => {
       totalTarget += row.target || 0;
+      if (row.year <= thisYear) targetToDate += row.target || 0;
       totalActual += row.actual || 0;
-      if (row.actual > 0 || row.target > 0) rowsWithData++;
     });
 
-    const progress = totalTarget > 0 ? (totalActual / totalTarget) * 100 : 0;
+    const progress = targetToDate > 0 ? (totalActual / targetToDate) * 100 : 0;
 
     return {
       totalTarget,
+      targetToDate,
       totalActual,
-      rowsWithData,
       progress: Math.min(progress, 100),
-      variance: totalActual - totalTarget,
+      variance: totalActual - targetToDate,
     };
-  }, [rows]);
+  }, [rows, thisYear]);
 
   // ─── Format currency ──────────────────────────────────────────
   // Shared, currency-aware formatter (lakh/crore grouping for INR).
   const fmt = (v) => formatCurrency(v, settings.currency);
+
+  // Step-up comparison: 20 years from the first row's target, invested
+  // monthly at this currency's equity assumption.
+  const { equityReturn } = assumptionsFor(settings.currency);
+  const firstYearTarget = rows[0]?.target || defaultFor("retirement", "monthly", settings.currency) * 12;
+  const stepUpRows = [0, 5, 10].map((step) => {
+    let invested = 0;
+    let corpus = 0;
+    let yearly = firstYearTarget;
+    for (let y = 0; y < 20; y++) {
+      invested += yearly;
+      // Monthly compounding throughout, matching sipFutureValue.
+      corpus = corpus * Math.pow(1 + equityReturn / 1200, 12) + sipFutureValue(yearly / 12, 1, equityReturn);
+      yearly *= 1 + step / 100;
+    }
+    return [step === 0 ? "No increase" : `${step}% a year`, fmt(Math.round(invested)), fmt(Math.round(corpus))];
+  });
 
   return (
     <>
@@ -273,10 +304,11 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
             {/* Summary Cards */}
             <div className="mt-8 grid grid-cols-1 gap-6 border-t border-[#111814]/10 pt-8 dark:border-[#eef1ec]/10 sm:grid-cols-2 lg:grid-cols-4">
               <div>
-                <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">Total target</p>
+                <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">Target to date (to {thisYear})</p>
                 <p className="font-mono-tech mt-1 text-[19px] font-medium tabular-nums text-[#111814] dark:text-[#eef1ec]">
-                  {fmt(totals.totalTarget)}
+                  {fmt(totals.targetToDate)}
                 </p>
+                <p className="mt-1 text-[12px] text-[#111814]/55 dark:text-[#eef1ec]/50">All rows: {fmt(totals.totalTarget)}</p>
               </div>
               <div>
                 <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">Total actual</p>
@@ -297,7 +329,7 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
                 </div>
               </div>
               <div>
-                <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">Variance</p>
+                <p className="text-[13px] text-[#111814]/65 dark:text-[#eef1ec]/65">Variance vs target to date</p>
                 <p className={`font-mono-tech mt-1 text-[19px] font-medium tabular-nums ${totals.variance >= 0 ? "text-[#047857] dark:text-[#34d399]" : "text-red-500"}`}>
                   {totals.variance >= 0 ? "+" : ""}
                   {fmt(totals.variance)}
@@ -308,10 +340,8 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
             {/* Disclaimer */}
             <div className="mt-8 space-y-1 border-t border-[#111814]/10 pt-4 text-[12px] leading-5 text-[#111814]/60 dark:border-[#eef1ec]/10 dark:text-[#eef1ec]/50">
               <p>
-                Please note that these calculators are for illustrations only and do not represent actual returns.
-              </p>
-              <p>
-                Stock Market does not have a fixed rate of return and it is not possible to predict the rate of return.
+                Progress and variance compare what you've invested with your targets for years up to {thisYear}.
+                Your entries aren't saved when you leave the page, so note them down or keep a copy.
               </p>
             </div>
           </div>
@@ -335,6 +365,50 @@ const currency = (currencies.find((c) => c.code === settings.currency) || curren
                 <li>Add more rows as needed to track investments over multiple years.</li>
                 <li>Monitor your progress through the summary cards showing total target, actual, and progress percentage.</li>
               </ol>
+            </CalcSection>
+
+            <CalcSection title="Setting your first target">
+              <p>
+                Start from the monthly amount your retirement plan needs. The{" "}
+                <Link to="/retirement-calculator" className={calcLinkClass}>
+                  Retirement Calculator
+                </Link>{" "}
+                shows what a monthly amount grows to, and the{" "}
+                <Link to="/goal-planner" className={calcLinkClass}>
+                  Retirement Corpus Planner
+                </Link>{" "}
+                works out the monthly SIP needed to close your gap. Multiply that by twelve for the first year's
+                target, then set the annual increase to roughly how fast you expect your income to grow.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Why the annual increase matters">
+              <p>
+                Raising your investment a little each year makes a big difference over a career. Starting at{" "}
+                {fmt(firstYearTarget)} a year, invested monthly at {equityReturn}% for 20 years:
+              </p>
+              <CalcTable
+                caption={`20 years from a first-year target of ${fmt(firstYearTarget)}`}
+                columns={["Yearly increase", "Total invested", "Value after 20 years"]}
+                rows={stepUpRows}
+              />
+              <p>
+                The{" "}
+                <Link to="/step-up-sip-calculator" className={calcLinkClass}>
+                  Step-Up SIP Calculator
+                </Link>{" "}
+                runs the same comparison for any amount and period.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="If you fall behind">
+              <p>
+                Look at the <strong className={calcStrongClass}>variance</strong> as well as the progress percentage: it
+                tells you the amount you're short. Small gaps close quickly by investing a bonus or raising your
+                monthly SIP a little. If you're behind several years running, revisit the plan itself: a later
+                retirement age, lower planned spending or a higher annual increase can each bring it back on track.
+                Don't try to catch up by moving into riskier investments than you're comfortable holding.
+              </p>
             </CalcSection>
 
             <CalcSection title="Why track retirement investments?">
