@@ -326,7 +326,7 @@ export const FIELD_BOUNDS = {
     monthlyExpenses: { source: "defaults", bounds: MEDIUM_MONTHLY_EXPENSE },
     recommendedMonths: { source: "defaults", bounds: { min: 1, max: 24, step: 1 } },
     currentSavings: { source: "defaults", bounds: SAVINGS_POOL_MEDIUM },
-    additionalIncome: { source: "defaults", bounds: MEDIUM_MONTHLY_INCOME },
+    monthlySaving: { source: "defaults", bounds: SMALL_MONTHLY },
   },
   fire: {
     currentAge: { source: "defaults", bounds: { min: 18, max: 80, step: 1 } },

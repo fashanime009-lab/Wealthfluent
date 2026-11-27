@@ -1,5 +1,6 @@
 import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import CalcHeader from "@/components/calculators/CalcHeader";
@@ -7,36 +8,41 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const FAQ_ITEMS = [
   { q: "How is RD maturity calculated?", a: "Each monthly deposit compounds from the month it's made until maturity, the same way a SIP does — so the first deposit earns interest for the longest and the last deposit earns almost none. The total maturity value is the sum of all deposits plus all the interest they've individually earned." },
-  { q: "Is RD interest compounded quarterly or monthly?", a: "Most Indian banks compound RD interest quarterly, which gives a very slightly different result from the monthly-compounding figure this calculator shows — usually a small difference on a typical RD. Check your bank's specific compounding frequency for an exact figure; this calculator is accurate enough for comparing RD against other options." },
+  { q: "Is RD interest compounded quarterly or monthly?", a: "Most Indian banks compound RD interest quarterly, and this calculator does the same, using the standard bank formula. Each monthly deposit earns quarterly-compounded interest for the time it stays in the account, so the result should be close to your bank's maturity figure for the same rate and tenure." },
   { q: "Is RD interest taxable?", a: "Yes — RD interest is added to your taxable income and taxed at your slab rate, the same as FD interest. Banks deduct TDS once interest crosses the threshold set for the year, but tax is owed on the full interest regardless of TDS." },
   { q: "RD or FD — which is better?", a: "An FD suits a lump sum you already have; an RD suits building one up through monthly savings you don't yet have in hand. For the same total amount invested over the same period, FD generally earns slightly more, since the full sum compounds from day one rather than arriving gradually." },
   { q: "What happens if I miss an RD installment?", a: "Most banks charge a small penalty per missed installment, and missing several can lead to the account being closed early on some banks' terms. Check your specific bank's policy before committing to a monthly amount you might not sustain." },
+  { q: "Can I close an RD early?", a: "Usually yes, but banks pay a lower rate on early closure, often the rate for the period the money actually stayed, minus a penalty of around 1%. Some banks don't allow partial withdrawals from an RD at all, so pick an amount and tenure you can keep up." },
 ];
+
+// Maturity of an RD with interest compounded quarterly — the formula most
+// Indian banks use. Deposit m (1-based) stays for n − m + 1 months, i.e.
+// (n − m + 1)/3 quarters, at i = rate/400 per quarter. Summing that
+// geometric series gives M = R × ((1+i)^(n/3) − 1) / (1 − (1+i)^(−1/3)).
+function rdMaturity(monthly, annualRate, months) {
+  if (months <= 0) return 0;
+  const i = annualRate / 400;
+  if (i === 0) return monthly * months;
+  return (monthly * (Math.pow(1 + i, months / 3) - 1)) / (1 - Math.pow(1 + i, -1 / 3));
+}
 
 export default function RDCalculatorPage() {
   const [monthlyDeposit, setMonthlyDeposit] = useState(5000);
   const [rate, setRate] = useState(7);
   const [years, setYears] = useState(5);
 
-  // Same future-value-of-an-annuity formula the SIP calculator uses —
-  // an RD is mechanically identical to a SIP (a fixed deposit made every
-  // month that compounds until maturity), just conventionally offered by
-  // banks at a fixed rate instead of market-linked. Most banks actually
-  // compound RD interest quarterly rather than monthly, which gives a
-  // slightly different number — see the FAQ below.
+  // Quarterly compounding, as most Indian banks do it (this page used to
+  // compound monthly and warn that the bank's figure would differ).
   const months = years * 12;
-  const monthlyRate = rate / 1200;
-  const maturityAmount = Math.round(
-    monthlyRate === 0
-      ? monthlyDeposit * months
-      : monthlyDeposit * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate)
-  );
+  const maturityAmount = Math.round(rdMaturity(monthlyDeposit, rate, months));
   const totalDeposited = monthlyDeposit * months;
   const interestEarned = maturityAmount - totalDeposited;
 
@@ -45,13 +51,14 @@ export default function RDCalculatorPage() {
   // the global currency setting and always displays INR.
   const fmt = (v) => formatCurrency(v, "INR");
 
-  const rdMaturityOf = (monthly, annualRate, yrs) => {
-    const n = yrs * 12;
-    const r = annualRate / 1200;
-    return Math.round(r === 0 ? monthly * n : monthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r));
-  };
   const exampleDeposited = 5000 * 60;
-  const exampleMaturity = rdMaturityOf(5000, 7, 5);
+  const exampleMaturity = Math.round(rdMaturity(5000, 7, 60));
+
+  const tableYears = [1, 3, 5];
+  const maturityRows = [1000, 5000, 10000].map((amount) => [
+    `${fmt(amount)} a month`,
+    ...tableYears.map((y) => fmt(Math.round(rdMaturity(amount, rate, y * 12)))),
+  ]);
 
   return (
     <>
@@ -103,8 +110,8 @@ export default function RDCalculatorPage() {
                 <CalcStat label="Total deposited" value={fmt(totalDeposited)} share={maturityAmount > 0 ? (totalDeposited / maturityAmount) * 100 : 0} />
               </div>
               <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
-                Illustrative only — most banks compound RD interest quarterly rather than monthly, which can give a
-                slightly different figure. Check your bank's actual terms before relying on this for a real decision.
+                Calculated with quarterly compounding, as most Indian banks do. Rates differ by bank and tenure, and
+                senior citizens often get a higher rate, so check your bank's current rate before you open an RD.
               </p>
             </div>
           </div>
@@ -128,19 +135,68 @@ export default function RDCalculatorPage() {
             <CalcSection title="How is RD maturity calculated?">
               <p>Each monthly deposit compounds from the month it's made until maturity:</p>
               <p className="font-mono-tech border border-[#111814]/12 px-4 py-3 text-[13px] tabular-nums text-[#111814] dark:border-[#eef1ec]/12 dark:text-[#eef1ec]">
-                Maturity Value = R × [(1 + i)^n − 1] / i × (1 + i)
+                M = R × [(1 + i)^n − 1] / [1 − (1 + i)^(−1/3)]
               </p>
               <p>
-                Here <strong className="text-[#111814] dark:text-[#eef1ec]">R</strong> is the monthly deposit,{" "}
-                <strong className="text-[#111814] dark:text-[#eef1ec]">i</strong> is the monthly interest rate (annual
-                rate ÷ 12), and <strong className="text-[#111814] dark:text-[#eef1ec]">n</strong> is the number of
-                months. A {fmt(5000)} monthly deposit at 7% for 5 years (60 months) matures at about {fmt(exampleMaturity)} — {fmt(exampleDeposited)}{" "}
+                Here <strong className={calcStrongClass}>R</strong> is the monthly deposit,{" "}
+                <strong className={calcStrongClass}>i</strong> is the quarterly interest rate (annual rate ÷ 400), and{" "}
+                <strong className={calcStrongClass}>n</strong> is the number of quarters. It's the standard formula Indian
+                banks use: each deposit earns quarterly-compounded interest for the time it stays in. A {fmt(5000)} monthly
+                deposit at 7% for 5 years (60 months) matures at about {fmt(exampleMaturity)}: {fmt(exampleDeposited)}{" "}
                 deposited and about {fmt(exampleMaturity - exampleDeposited)} earned in interest.
               </p>
+            </CalcSection>
+
+            <CalcSection title="RD maturity at a glance">
+              <CalcTable
+                caption={`Maturity value at ${rate}% a year, compounded quarterly`}
+                columns={["Monthly deposit", ...tableYears.map((y) => `${y} year${y > 1 ? "s" : ""}`)]}
+                rows={maturityRows}
+              />
+              <p>Change the interest rate above and the table updates with it.</p>
+            </CalcSection>
+
+            <CalcSection title="RD vs FD vs SIP">
+              <ul className="list-disc space-y-2 pl-5">
+                <li>
+                  <strong className={calcStrongClass}>RD:</strong> a fixed monthly amount at a guaranteed rate. Best for a
+                  goal one to five years away that you're saving towards from your salary.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>FD:</strong> a lump sum at a guaranteed rate. For the same total
+                  money, an FD earns more, because all of it earns interest from day one. Use the{" "}
+                  <Link to="/fd-calculator" className={calcLinkClass}>
+                    FD Calculator
+                  </Link>{" "}
+                  for a lump sum.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>SIP:</strong> a fixed monthly amount in a mutual fund. Returns aren't
+                  guaranteed and can fall in the short run, but equity SIPs have historically beaten deposit rates
+                  over five years or more. The{" "}
+                  <Link to="/sip-calculator" className={calcLinkClass}>
+                    SIP Calculator
+                  </Link>{" "}
+                  shows what a monthly SIP could grow to.
+                </li>
+              </ul>
               <p>
-                This calculator compounds monthly for simplicity; most Indian banks actually compound RD interest
-                quarterly, which gives a slightly different number on the same inputs — close enough for comparing
-                options, but check your bank's exact terms before relying on it for a real decision.
+                A common split: RDs or FDs for goals within a few years and for your emergency fund, SIPs for goals
+                five or more years away.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Bank RD or Post Office RD?">
+              <p>
+                Banks offer RDs from 6 months to 10 years, with rates set by each bank. The Post Office RD runs for a
+                fixed 5 years at a rate set by the government each quarter (6.7% for October–December 2026), and is
+                backed by the government. Bank deposits are insured by DICGC up to ₹5 lakh per depositor per bank,
+                including interest.
+              </p>
+              <p>
+                RD interest is taxed at your income-tax slab rate in the year it's earned, even though you only
+                receive it at maturity, and banks may deduct TDS once your interest crosses the yearly threshold.
+                Senior citizens usually get a higher rate.
               </p>
             </CalcSection>
 

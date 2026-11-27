@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import { useSettings } from "../context/SettingsContext";
@@ -9,6 +10,8 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
@@ -21,8 +24,17 @@ const FAQ_ITEMS = [
   { q: "How do I calculate my emergency fund?", a: "Add up your essential monthly expenses: rent or home-loan EMI, groceries, utilities, insurance premiums, other loan repayments, school fees and transport. Leave out spending you would cut in a crisis. Multiply that total by the number of months you want covered, 3 to 6 for most households and 6 to 9 if your income is irregular. That is your target. Subtract the savings you already have set aside to find your shortfall. The calculator above does exactly this." },
   { q: "How much should I save for an emergency fund?", a: "Enough to cover 3 to 6 months of essential expenses, or 6 to 9 months if you are self-employed, freelance or the only earner. For example, if your essentials cost 40,000 a month, a 6-month fund is 240,000. You don't have to build it at once: aim for one month first, then three, then six, by setting aside a fixed amount every month." },
   { q: "How many months of expenses should I save?", a: "3 months is a common starting point for stable, dual-income households; 6–9 months is safer for freelancers, single-income households, or anyone with variable income." },
-  { q: "Where should I keep my emergency fund?", a: "Somewhere accessible within a day or two without penalty or market risk — a high-yield savings account or a liquid mutual fund, not equity and not a long-tenure fixed deposit." },
+  { q: "Where should I keep my emergency fund?", a: "Somewhere you can reach within a day or two without a penalty or market risk: a separate savings account for the first month or two, and a sweep-in fixed deposit or a liquid or overnight mutual fund for the rest. Not in equity, and not in a long fixed deposit with a heavy early-withdrawal penalty." },
   { q: "Should I invest my emergency fund for better returns?", a: "No — the purpose of this money is reliability, not growth. Investing it defeats the point: if a downturn coincides with your emergency (a common pattern, since layoffs often spike during downturns), you'd be forced to sell at a loss." },
+  { q: "How long will it take to build my emergency fund?", a: "Divide the shortfall by what you can save each month. The calculator shows this for your numbers. If it's more than two years, start with a one-month target, then three, and add windfalls like bonuses or tax refunds to speed it up." },
+];
+
+const MONTHS_ROWS = [
+  ["Two stable incomes, no dependants", "3 months"],
+  ["One stable salary, or a family to support", "6 months"],
+  ["Home loan or other large EMIs", "6 months or more"],
+  ["Self-employed, freelance or commission-based", "9–12 months"],
+  ["Industry where finding a new job takes long", "9–12 months"],
 ];
 
 export default function EmergencyFundCalculatorPage() {
@@ -36,7 +48,7 @@ export default function EmergencyFundCalculatorPage() {
     "monthlyExpenses",
     "recommendedMonths",
     "currentSavings",
-    "additionalIncome",
+    "monthlySaving",
   ]);
 
   // ─── Update handler ──────────────────────────────────────────────
@@ -47,26 +59,42 @@ export default function EmergencyFundCalculatorPage() {
   const monthlyExpensesBounds = useFieldBounds("emergencyFund", "monthlyExpenses");
   const recommendedMonthsBounds = useFieldBounds("emergencyFund", "recommendedMonths");
   const currentSavingsBounds = useFieldBounds("emergencyFund", "currentSavings");
-  const additionalIncomeBounds = useFieldBounds("emergencyFund", "additionalIncome");
+  const monthlySavingBounds = useFieldBounds("emergencyFund", "monthlySaving");
 
   // ─── Calculations ──────────────────────────────────────────────
   const results = useMemo(() => {
-    const { monthlyExpenses, recommendedMonths, currentSavings, additionalIncome } = inputs;
+    const { monthlyExpenses, recommendedMonths, currentSavings, monthlySaving } = inputs;
 
     const target = monthlyExpenses * recommendedMonths;
-    const netSavings = currentSavings + additionalIncome;
-    const shortfall = Math.max(0, target - netSavings);
-    const monthsCovered = netSavings > 0 && monthlyExpenses > 0 ? netSavings / monthlyExpenses : 0;
+    const shortfall = Math.max(0, target - currentSavings);
+    const monthsCovered = currentSavings > 0 && monthlyExpenses > 0 ? currentSavings / monthlyExpenses : 0;
+    // Months of saving to close the gap (no interest assumed).
+    const monthsToTarget = shortfall > 0 && monthlySaving > 0 ? Math.ceil(shortfall / monthlySaving) : 0;
 
     return {
       target: Math.round(target),
-      netSavings: Math.round(netSavings),
       shortfall: Math.round(shortfall),
       monthsCovered: Math.round(monthsCovered * 10) / 10,
-      isFullyFunded: netSavings >= target,
+      monthsToTarget,
+      isFullyFunded: currentSavings >= target,
     };
   }, [inputs]);
 
+  const durationText = (months) => {
+    const y = Math.floor(months / 12);
+    const m = months % 12;
+    return [y && `${y} year${y > 1 ? "s" : ""}`, m && `${m} month${m > 1 ? "s" : ""}`].filter(Boolean).join(" ");
+  };
+
+  // Timeline table: months to reach the target from today's savings, at
+  // half, one and two times the monthly saving entered above.
+  const timelineRows = [0.5, 1, 2]
+    .map((k) => Math.round(inputs.monthlySaving * k))
+    .filter((amount) => amount > 0)
+    .map((amount) => [
+      `${fmt(amount)} a month`,
+      results.shortfall > 0 ? durationText(Math.ceil(results.shortfall / amount)) : "Already there",
+    ]);
   return (
     <>
       <Seo
@@ -88,8 +116,8 @@ export default function EmergencyFundCalculatorPage() {
             { name: "Enter your monthly living expenses", text: "Enter your average monthly living expenses in the Monthly Living Expenses field." },
             { name: "Enter months of expenses to cover", text: "Enter how many months of expenses you'd like to cover in the Months of Expenses to Cover field." },
             { name: "Enter your current savings", text: "Enter how much you've already saved in the Current Savings field." },
-            { name: "Enter any additional income", text: "Optionally enter rental, freelance or other extra monthly income in the Additional Income Source field." },
-            { name: "View your result instantly", text: "The calculator instantly shows your recommended emergency fund and whether you're fully funded." },
+            { name: "Enter what you can save each month", text: "Enter how much you can put towards the fund every month in the Amount You Can Save Each Month field." },
+            { name: "View your result instantly", text: "The calculator instantly shows your recommended emergency fund, your shortfall and how long it will take to build." },
           ],
         }),
       ]}
@@ -138,14 +166,14 @@ export default function EmergencyFundCalculatorPage() {
 
               <div>
                 <CalcField
-                  label="Additional Income Source"
-                  value={inputs.additionalIncome}
-                  onChange={(v) => handleChange("additionalIncome", v)}
-                  {...additionalIncomeBounds}
+                  label="Amount You Can Save Each Month"
+                  value={inputs.monthlySaving}
+                  onChange={(v) => handleChange("monthlySaving", v)}
+                  {...monthlySavingBounds}
                   format={fmt}
                 />
                 <p className="mt-2 text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
-                  Optional: Include rental income, freelance earnings, or any additional monthly income.
+                  What you can put towards the fund each month, to see how long it will take to build.
                 </p>
               </div>
             </div>
@@ -177,6 +205,11 @@ export default function EmergencyFundCalculatorPage() {
                     <p className="text-[13.5px] text-[#111814]/65 dark:text-[#eef1ec]/65">
                       Shortfall: <span className="font-mono-tech font-bold tabular-nums text-amber-800 dark:text-amber-400">{fmt(results.shortfall)}</span>
                     </p>
+                    <p className="text-[13.5px] text-[#111814]/65 dark:text-[#eef1ec]/65">
+                      {results.monthsToTarget > 0
+                        ? <>Saving {fmt(inputs.monthlySaving)} a month, you'll reach it in <strong className="text-[#111814] dark:text-[#eef1ec]">{durationText(results.monthsToTarget)}</strong>.</>
+                        : "Enter what you can save each month to see how long it will take."}
+                    </p>
                   </>
                 )}
               </div>
@@ -185,9 +218,9 @@ export default function EmergencyFundCalculatorPage() {
               <div className="divide-y divide-[#111814]/10 border border-[#111814]/12 bg-[#ffffff] px-6 dark:divide-[#eef1ec]/10 dark:border-[#eef1ec]/12 dark:bg-[#0b1210]">
                 <CalcStat label="Monthly Expenses" value={fmt(inputs.monthlyExpenses)} />
                 <CalcStat label="Months to Cover" value={`${inputs.recommendedMonths} months`} />
-                <CalcStat label="Current Savings" value={fmt(inputs.currentSavings)} />
-                <CalcStat label="Additional Income" value={fmt(inputs.additionalIncome)} />
-                <CalcStat label="Total Available" value={fmt(results.netSavings)} tone="signal" />
+                <CalcStat label="Current Savings" value={fmt(inputs.currentSavings)} tone="signal" />
+                <CalcStat label="Monthly Saving" value={fmt(inputs.monthlySaving)} />
+                <CalcStat label="Time to Target" value={results.isFullyFunded ? "Reached" : results.monthsToTarget > 0 ? durationText(results.monthsToTarget) : "—"} />
               </div>
 
               {/* Disclaimer */}
@@ -207,12 +240,64 @@ export default function EmergencyFundCalculatorPage() {
               </p>
             </CalcSection>
 
+            <CalcSection title="How many months should you cover?">
+              <p>
+                Three to six months of essential expenses suits most people, but the right number depends on how
+                quickly your income could stop and how long it might take to replace it:
+              </p>
+              <CalcTable caption="A starting point by situation" columns={["Your situation", "Months to cover"]} rows={MONTHS_ROWS} />
+              <p>
+                Count only essentials: rent or EMI, groceries, utilities, insurance premiums, minimum loan payments,
+                school fees and transport. Good health insurance lets you hold less, because it covers the biggest
+                medical bills.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="How long will it take to build?">
+              <p>
+                With {fmt(inputs.currentSavings)} already saved towards a {fmt(results.target)} target, here's how long the
+                rest takes at different monthly amounts:
+              </p>
+              {timelineRows.length > 0 ? (
+                <CalcTable caption={`Time to close a ${fmt(results.shortfall)} gap`} columns={["Saving", "Time to target"]} rows={timelineRows} />
+              ) : (
+                <p>Enter a monthly saving above to see the timeline.</p>
+              )}
+              <p>
+                If it's a long way off, build in stages: one month of expenses first, then three, then your full
+                target. Automate a transfer on salary day, and send part of every bonus or tax refund to the fund.
+                If you have expensive credit card or personal loan debt, build one month first, clear the debt, then
+                finish the fund.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Where to keep it">
+              <p>
+                Safe and quick to reach come first; return comes last. A common setup is{" "}
+                <strong className={calcStrongClass}>one month in a separate savings account</strong> for instant access and
+                the rest in a <strong className={calcStrongClass}>sweep-in fixed deposit or a liquid or overnight fund</strong>.
+                Avoid equity, long fixed deposits with heavy penalties and locked-in schemes. Our{" "}
+                <Link to="/learn/emergency-funds" className={calcLinkClass}>
+                  emergency funds lesson
+                </Link>{" "}
+                compares the options, including deposit insurance limits and instant-redemption rules.
+              </p>
+              <p>
+                When you use the fund, refill it before you raise other investments. And review the target once a
+                year, or whenever your expenses change. To find room in your budget for the monthly saving, see{" "}
+                <Link to="/learn/budgeting-basics" className={calcLinkClass}>
+                  budgeting basics
+                </Link>
+                .
+              </p>
+            </CalcSection>
+
             <CalcSection title="How to Use This Calculator">
               <ol className="list-decimal space-y-2 pl-5">
                 <li>Enter your average monthly living expenses (rent, food, utilities, etc.).</li>
                 <li>Select how many months you'd like to cover (usually 3–12).</li>
-                <li>Add your current savings and any additional income sources.</li>
-                <li>See your target emergency fund and whether you're on track.</li>
+                <li>Add your current savings and what you can save each month.</li>
+                <li>See your target emergency fund, your shortfall and how long it will take to build.</li>
               </ol>
             </CalcSection>
 

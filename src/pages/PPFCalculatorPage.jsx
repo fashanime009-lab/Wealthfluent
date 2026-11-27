@@ -1,5 +1,6 @@
 import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import CalcHeader from "@/components/calculators/CalcHeader";
@@ -7,13 +8,15 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 // Government-declared PPF rate, reset quarterly — an assumption you can
-// change, not a promise. Confirm the current rate before relying on this
-// for a real decision; it was 7.1% at the time this was written.
+// change, not a promise. 7.1% for October–December 2026 (unchanged for
+// more than two years); confirm the current quarter's rate when updating.
 const DEFAULT_RATE = 7.1;
 const ANNUAL_LIMIT = 150000;
 
@@ -30,9 +33,9 @@ function ppfMaturityOf(annualContribution, rate, years) {
 function buildFaqItems(fmt) {
   return [
     { q: "How is PPF interest calculated?", a: "PPF interest is actually computed monthly on the lowest balance between the 5th and the last day of the month, then credited to the account once a year. This calculator simplifies that to annual compounding on your yearly contribution, which is accurate enough for planning but won't match your passbook exactly — deposit before the 5th of the month to earn interest on that month's contribution for real." },
-    { q: "What is the PPF contribution limit?", a: `${fmt(150000)} per financial year is the current maximum that earns interest and qualifies for an 80C deduction; depositing more doesn't earn additional interest and may be refunded without interest. The minimum is ${fmt(500)} a year to keep the account active.` },
-    { q: "Can I withdraw from PPF before 15 years?", a: "Partial withdrawal is allowed from the 7th financial year onward, up to a limit tied to the balance a few years prior. The account can also be extended in blocks of 5 years after maturity, either with or without further contributions." },
-    { q: "Is PPF really fully tax-free?", a: "Yes — PPF is one of the few Indian instruments with exempt-exempt-exempt (EEE) tax status: the contribution qualifies for an 80C deduction, the interest earned is tax-free, and the maturity withdrawal is tax-free too. No other common deduction-eligible instrument matches this on all three stages." },
+    { q: "What is the PPF contribution limit?", a: `${fmt(150000)} per financial year is the maximum that earns interest and counts towards the tax deduction; depositing more doesn't earn additional interest and may be refunded without interest. The minimum is ${fmt(500)} a year to keep the account active.` },
+    { q: "Can I withdraw from PPF before 15 years?", a: "Partly. From the 7th financial year you can withdraw up to 50% of the balance at the end of the 4th preceding year (or the preceding year, if lower), once a year. From the 3rd to the 6th year you can take a loan of up to 25% of an earlier year's balance instead. Closing the account early is allowed after 5 years only for specific reasons, such as serious illness or higher education, with a 1% interest penalty." },
+    { q: "Is PPF really fully tax-free?", a: "Yes. PPF has exempt-exempt-exempt (EEE) status: deposits qualify for the ₹1.5 lakh deduction under the old tax regime (Section 80C until March 2026, section 123 of the Income-tax Act, 2025 from April 2026), and the interest and maturity amount are tax-free under both regimes. On the new regime you don't get the deduction, but the tax-free interest still makes PPF attractive for safe, long-term money." },
     { q: "Can I have more than one PPF account?", a: `No — only one PPF account per person is allowed (a separate account can be opened for a minor child, with a combined ${fmt(150000)} limit across both if you're the guardian). Opening a second account in your own name is against the rules and can forfeit the interest on it.` },
   ];
 }
@@ -59,6 +62,12 @@ export default function PPFCalculatorPage() {
   const example15yr = ppfMaturityOf(150000, 7.1, 15);
   const example15yrInvested = 150000 * 15;
   const example20yr = ppfMaturityOf(150000, 7.1, 20);
+
+  const tableYears = [15, 20, 25];
+  const maturityRows = [50000, 100000, 150000].map((amount) => [
+    `${fmt(amount)} a year`,
+    ...tableYears.map((y) => fmt(ppfMaturityOf(amount, rate, y))),
+  ]);
 
   return (
     <>
@@ -103,7 +112,7 @@ export default function PPFCalculatorPage() {
               <CalcField label="Duration (Years)" value={years} onChange={setYears} min={15} max={50} step={5} suffix=" Years" />
               {annualContribution >= ANNUAL_LIMIT && (
                 <p className="text-[12px] text-[#111814]/55 dark:text-[#eef1ec]/50">
-                  {fmt(ANNUAL_LIMIT)} is the current annual limit that earns interest and qualifies for an 80C
+                  {fmt(ANNUAL_LIMIT)} is the annual limit that earns interest and counts towards the tax
                   deduction.
                 </p>
               )}
@@ -152,10 +161,71 @@ export default function PPFCalculatorPage() {
               </p>
             </CalcSection>
 
+            <CalcSection title="PPF maturity at a glance">
+              <CalcTable
+                caption={`Maturity value at ${rate}% a year, deposited at the start of each year`}
+                columns={["Yearly deposit", ...tableYears.map((y) => `${y} years`)]}
+                rows={maturityRows}
+              />
+              <p>
+                The extra five-year blocks add more than the first five years did, because interest is now being
+                earned on a large, tax-free balance. If you don't need the money at 15 years, extending is usually
+                worth it.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Deposit by 5 April to earn the most">
+              <p>
+                PPF interest for each month is worked out on the lowest balance between the 5th and the last day of
+                that month. So money deposited after the 5th earns nothing for that month. If you invest a lump sum,
+                put it in <strong className={calcStrongClass}>by 5 April</strong>, at the start of the financial year, and
+                it earns interest for all twelve months. If you invest monthly, deposit by the 5th of each month.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Getting money out before 15 years">
+              <ul className="list-disc space-y-2 pl-5">
+                <li>
+                  <strong className={calcStrongClass}>Loan, years 3 to 6:</strong> up to 25% of the balance at the end of the
+                  second year before the loan, repaid with interest.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Partial withdrawal, from year 7:</strong> once a year, up to 50% of the
+                  balance at the end of the fourth preceding year, or the preceding year if that's lower. It's
+                  tax-free.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Early closure, after 5 years:</strong> only for specific reasons, such
+                  as serious illness or higher education, with 1% less interest for the whole period.
+                </li>
+              </ul>
+              <p>
+                After 15 years you can withdraw everything, or extend in five-year blocks with or without new
+                deposits. Rules are set by the government and can change, so check the latest before acting.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="PPF vs other long-term options">
+              <p>
+                PPF's appeal is a guaranteed, government-backed and tax-free return. Its limits are the 15-year
+                lock-in and a return that roughly matches long-run inflation rather than beating it by much. That
+                makes it a good home for the safe part of long-term savings, next to equity for growth. Our lesson
+                on{" "}
+                <Link to="/learn/nps-vs-ppf-vs-epf" className={calcLinkClass}>
+                  NPS vs PPF vs EPF
+                </Link>{" "}
+                compares the three retirement options, and the{" "}
+                <Link to="/sip-calculator" className={calcLinkClass}>
+                  SIP Calculator
+                </Link>{" "}
+                shows what the same yearly amount could grow to in an equity fund.
+              </p>
+            </CalcSection>
+
             <CalcSection title="Benefits of PPF">
               <CalcBenefitGrid
                 items={[
-                  { title: "Fully tax-free", text: "Contribution, interest and maturity are all exempt — a genuinely rare combination among 80C-eligible instruments." },
+                  { title: "Fully tax-free", text: "Deposits qualify for a deduction under the old tax regime, and interest and maturity are tax-free under both regimes — a rare combination." },
                   { title: "Government-backed", text: "Among the lowest-risk long-term investments available, with returns set and guaranteed by the government." },
                   { title: "Open to anyone", text: "Unlike EPF, PPF doesn't require a salaried job — self-employed and non-earning individuals can open an account too." },
                   { title: "Partial liquidity after year 7", text: "Despite the 15-year lock-in, limited withdrawals and loans against the balance are allowed from the 7th year." },

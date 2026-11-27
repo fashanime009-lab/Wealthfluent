@@ -135,7 +135,9 @@ export const DEFAULTS = {
     monthlyExpenses: { INR: 30000, USD: 3000, GBP: 2000, EUR: 1800, JPY: 280000, AUD: 4200, CAD: 4200, FALLBACK: 2500 },
     recommendedMonths: { INR: 6, USD: 6, GBP: 6, EUR: 6, JPY: 6, AUD: 6, CAD: 6, FALLBACK: 6 },
     currentSavings: { INR: 100000, USD: 10000, GBP: 7000, EUR: 6000, JPY: 500000, AUD: 14000, CAD: 14000, FALLBACK: 8000 },
-    additionalIncome: { INR: 0, USD: 0, GBP: 0, EUR: 0, JPY: 0, AUD: 0, CAD: 0, FALLBACK: 0 },
+    // What you can put towards the fund each month (was "additional income",
+    // which wrongly counted a monthly income as money already saved).
+    monthlySaving: { INR: 10000, USD: 500, GBP: 400, EUR: 400, JPY: 50000, AUD: 700, CAD: 700, FALLBACK: 400 },
   },
   fire: {
     currentAge: { INR: 25, USD: 25, GBP: 25, EUR: 25, JPY: 25, AUD: 25, CAD: 25, FALLBACK: 25 },

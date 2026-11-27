@@ -1,11 +1,14 @@
 import { formatCurrency } from "../utils/currency";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
 import CalcHeader from "@/components/calculators/CalcHeader";
 import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
@@ -19,11 +22,12 @@ const EXEMPTION_LIMIT = 2000000;
 
 function buildFaqItems(fmt) {
   return [
-    { q: "What is the gratuity formula in India?", a: "For employees covered under the Payment of Gratuity Act, 1972: Gratuity = (Last drawn basic salary + DA) × 15 × completed years of service ÷ 26. The 26 represents working days in a month under the Act's convention, and 15 represents 15 days' wages per year of service." },
+    { q: "What is the gratuity formula in India?", a: "Gratuity = last drawn wages (basic pay + DA) × 15 × completed years of service ÷ 26. The 26 is the working days in a month by convention, and 15 means 15 days' wages for each year of service. The formula comes from the Payment of Gratuity Act, 1972, which has been part of the Code on Social Security, 2020 since 21 November 2025." },
     { q: "Am I eligible for gratuity?", a: "Generally, yes, after 5 years of continuous service with the same employer, at establishments with 10 or more employees. The 5-year requirement is waived in cases of death or disability. Since India's new labour codes took effect in November 2025, fixed-term employees are also eligible for gratuity on a pro-rata basis after just 1 year of continuous service — a separate, shorter path from the 5-year rule for permanent employees. Check your specific employment terms and the latest notified rules, since some details were still being finalized at the time of writing." },
     { q: "How are years of service rounded?", a: "A completed year with more than 6 months of service in the final year rounds up to the next full year; 6 months or less rounds down. Someone with 7 years 8 months of service is treated as 8 years; someone with 7 years 4 months is treated as 7." },
     { q: "Is gratuity taxable?", a: `For private-sector employees covered under the Act, gratuity is tax-exempt up to ${fmt(EXEMPTION_LIMIT)} (the limit is set by government notification and has changed before, so confirm the current figure). Government employees receive full tax exemption. Any amount above the exemption limit is taxed as salary income.` },
     { q: "What if my employer isn't covered under the Gratuity Act?", a: "A different formula applies: (Last drawn salary × 15 × completed years of service) ÷ 30, using actual days in a month rather than the Act's 26-day convention, and years of service aren't rounded the same way. This calculator uses the Act's formula, which covers most organized-sector employers." },
+    { q: "Did the new labour codes change gratuity?", a: "Yes, in two main ways, from 21 November 2025. Fixed-term employees became eligible after one year of service instead of five. And 'wages' now has a wider definition: if allowances make up more than half of your total pay, the excess is added back to wages, which can raise the salary figure gratuity is based on. Check with your employer how they apply it to your service." },
   ];
 }
 
@@ -47,6 +51,14 @@ export default function GratuityCalculatorPage() {
   const exampleSalary = 50000;
   const exampleYears = 8;
   const exampleGratuity = Math.round((exampleSalary * 15 * exampleYears) / 26);
+
+  const tableYears = [5, 10, 20, 30];
+  const gratuityRows = [25000, 50000, 100000].map((salary) => [
+    `${fmt(salary)} a month`,
+    ...tableYears.map((y) => fmt(Math.round((salary * 15 * y) / 26))),
+  ]);
+  // Salary at which 30 years of service reaches the exemption limit.
+  const salaryAtLimit = Math.round((EXEMPTION_LIMIT * 26) / (15 * 30));
 
   return (
     <>
@@ -120,9 +132,9 @@ export default function GratuityCalculatorPage() {
                 </div>
               )}
               <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
-                For employees covered under the Payment of Gratuity Act, 1972. The exemption limit is set by
-                government notification and can change — confirm the current figure before relying on this for a
-                tax decision.
+                For employees covered by gratuity law (the Payment of Gratuity Act, 1972, now part of the Code on
+                Social Security, 2020). The exemption limit is set by government notification and can change —
+                confirm the current figure before relying on this for a tax decision.
               </p>
             </div>
           </div>
@@ -153,6 +165,77 @@ export default function GratuityCalculatorPage() {
                 basic+DA with {exampleYears} completed years of service works out to about {fmt(exampleGratuity)}. Years of service are
                 rounded: more than 6 months in the final year rounds up to the next full year, 6 months or less
                 rounds down — 12 years 7 months is treated as 13 years, 12 years 4 months as 12.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Gratuity at a glance">
+              <CalcTable
+                caption="Gratuity by monthly basic pay + DA and completed years of service"
+                columns={["Basic + DA", ...tableYears.map((y) => `${y} years`)]}
+                rows={gratuityRows}
+              />
+              <p>
+                Gratuity grows in a straight line with salary and years. It's tax-free for private-sector employees
+                up to {fmt(EXEMPTION_LIMIT)}; with 30 years of service, you'd cross that limit only on a last drawn
+                basic + DA above about {fmt(salaryAtLimit)} a month.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="What changed with the labour codes">
+              <p>
+                From <strong className={calcStrongClass}>21 November 2025</strong>, gratuity rules sit in the Code on
+                Social Security, 2020, which replaced the Payment of Gratuity Act. The formula above is unchanged,
+                but two things are new:
+              </p>
+              <ul className="list-disc space-y-2 pl-5">
+                <li>
+                  <strong className={calcStrongClass}>Fixed-term employees</strong> are eligible after one year of
+                  continuous service, on a pro-rata basis, instead of five.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>A wider definition of wages.</strong> If allowances (everything
+                  except basic pay, DA and retaining allowance) are more than half of your total pay, the excess
+                  counts as wages. For salaries built on a small basic and large allowances, that raises the
+                  figure gratuity is calculated on. If that applies to you, enter the higher wage figure above.
+                </li>
+              </ul>
+              <p>
+                Some details, such as how the new wage definition applies to service before November 2025, depend
+                on official guidance and your employer's approach, so confirm with your HR team.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Leaving, getting paid and tax">
+              <ul className="list-disc space-y-2 pl-5">
+                <li>
+                  <strong className={calcStrongClass}>Before five years:</strong> permanent employees usually get no
+                  gratuity, except on death or disability. If you're close to five years, the timing of a job change
+                  can be worth a lot.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>When it's paid:</strong> the employer must pay within 30 days of it
+                  becoming due, or pay interest on the delay.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Tax:</strong> government employees' gratuity is fully tax-free;
+                  for others, it's tax-free up to {fmt(EXEMPTION_LIMIT)} across their whole career, and any excess is
+                  taxed as salary.
+                </li>
+                <li>
+                  <strong className={calcStrongClass}>Nominate someone:</strong> fill in your employer's gratuity
+                  nomination form so the money reaches your family without delay.
+                </li>
+              </ul>
+              <p>
+                Gratuity is one part of your retirement money, alongside EPF and your own investments. The{" "}
+                <Link to="/retirement-calculator" className={calcLinkClass}>
+                  Retirement Calculator
+                </Link>{" "}
+                shows what your own monthly investing adds, and the{" "}
+                <Link to="/hra-calculator" className={calcLinkClass}>
+                  HRA Calculator
+                </Link>{" "}
+                helps with another part of your salary's tax.
               </p>
             </CalcSection>
 
