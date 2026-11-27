@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
 import { useSettings } from "../context/SettingsContext";
 import { formatCurrency } from "../utils/currency";
 import useExampleCurrency from "@/hooks/useExampleCurrency";
 import useDefaultableField, { useFieldBounds } from "@/hooks/useDefaultableField";
+import { assumptionsFor } from "@/data/calculatorDefaults";
 import { useMemo } from "react";
 import Seo from "@/components/seo/Seo";
 import { calculatorSchema, faqSchema, howToSchema } from "@/components/seo/schema";
@@ -10,15 +12,19 @@ import CalcField from "@/components/calculators/CalcField";
 import CalcResultPanel from "@/components/calculators/CalcResultPanel";
 import CalcStat from "@/components/calculators/CalcStat";
 import CalcSection from "@/components/calculators/CalcSection";
+import CalcTable from "@/components/calculators/CalcTable";
+import { calcLinkClass, calcStrongClass } from "@/components/calculators/calcStyles";
 import RelatedLinks from "@/components/calculators/RelatedLinks";
 import CalcBenefitGrid from "@/components/calculators/CalcBenefitGrid";
 import VerdictFAQ from "@/components/verdict/VerdictFAQ";
 
 const FAQ_ITEMS = [
-  { q: "What is a good rate of return?", a: "Historically, stock markets have delivered positive long-term returns, but performance varies by country, asset class, and time period. A good rate of return depends on your goals, risk tolerance, and investment horizon. Debt instruments typically offer 6-9% returns. The ideal return depends on your risk tolerance and investment goals." },
+  { q: "What is a good rate of return?", a: "One that beats inflation by a comfortable margin and holds up against a fair benchmark for the same kind of investment, such as a broad market index for an equity fund. Stock markets have delivered higher long-term returns than deposits and bonds, with much bigger swings, and results vary by country and period. The right target depends on your goals, risk tolerance and how long you're investing." },
   { q: "How is rate of return different from simple interest?", a: "Rate of return (CAGR) accounts for compound growth, while simple interest is calculated only on the principal. CAGR provides a more accurate picture of investment performance over time." },
   { q: "Can the rate of return be negative?", a: "Yes, if the future value is less than the present value, the rate of return will be negative, indicating a loss on the investment." },
   { q: "Is this the same as CAGR?", a: "Yes — annualized rate of return and CAGR describe the same calculation: the constant yearly growth rate that would take a present value to a future value over a given number of years." },
+  { q: "Can I use this for a SIP?", a: "Not accurately. This calculation assumes one investment at the start. With a SIP, each instalment is invested at a different time, so use XIRR, which accounts for the date of every payment. Spreadsheets have an XIRR function, and most fund statements show it." },
+  { q: "How do I work out my real return after inflation?", a: "Divide (1 + your return) by (1 + inflation) and subtract 1. A 10% return with 6% inflation is a real return of about 3.8%, slightly less than the 4% you'd get by simply subtracting." },
 ];
 
 export default function RateOfReturnCalculatorPage() {
@@ -45,6 +51,10 @@ export default function RateOfReturnCalculatorPage() {
   const { inr } = useExampleCurrency();
   const examplePresent = inr(10000);
   const exampleFuture = inr(20000);
+  const { inflation } = assumptionsFor(settings.currency);
+  // Real (inflation-adjusted) annual return: (1 + r) / (1 + i) − 1.
+  const realReturn = ((1 + rateOfReturn / 100) / (1 + inflation / 100) - 1) * 100;
+  const doublingRows = [2, 5, 10, 20].map((y) => [`${y} years`, "100%", `${((Math.pow(2, 1 / y) - 1) * 100).toFixed(1)}%`]);
 
   // ─── Format percentage ──────────────────────────────────────────
   const formatPercentage = (value) => {
@@ -68,24 +78,7 @@ export default function RateOfReturnCalculatorPage() {
           description: "Calculate the annualized rate of return (CAGR) on any investment from its start value, end value and time held. See how much your money really grew.",
           path: "/rate-of-return-calculator",
         }),
-        faqSchema([
-          {
-            "question": "What is a good rate of return?",
-            "answer": "Historically, stock markets have delivered positive long-term returns, but performance varies by country, asset class, and time period. A good rate of return depends on your goals, risk tolerance, and investment horizon. Debt instruments typically offer 6-9% returns. The ideal return depends on your risk tolerance and investment goals."
-          },
-          {
-            "question": "How is rate of return different from simple interest?",
-            "answer": "Rate of return (CAGR) accounts for compound growth, while simple interest is calculated only on the principal. CAGR provides a more accurate picture of investment performance over time."
-          },
-          {
-            "question": "Can the rate of return be negative?",
-            "answer": "Yes, if the future value is less than the present value, the rate of return will be negative, indicating a loss on the investment."
-          },
-          {
-            "question": "Is this the same as CAGR?",
-            "answer": "Yes — annualized rate of return and CAGR describe the same calculation: the constant yearly growth rate that would take a present value to a future value over a given number of years."
-          }
-        ]),
+        faqSchema(FAQ_ITEMS.map((f) => ({ question: f.q, answer: f.a }))),
         howToSchema({
           name: "How to Use the Rate of Return Calculator",
           description: "Calculate the annualized rate of return (CAGR) for an investment from its present value, future value and holding period.",
@@ -136,6 +129,7 @@ export default function RateOfReturnCalculatorPage() {
                   </div>
                 </div>
                 <CalcStat label="Time period" value={`${yearsToGrow} Years`} />
+                <CalcStat label={`Real return (after ${inflation}% inflation)`} value={`${realReturn.toFixed(2)}%`} />
               </div>
               <p className="text-[12px] leading-5 text-[#111814]/60 dark:text-[#eef1ec]/50">
                 Please note that these calculators are for illustrations only and do not represent actual returns.
@@ -166,6 +160,59 @@ export default function RateOfReturnCalculatorPage() {
               </p>
             </CalcSection>
 
+            <CalcSection title="Absolute return vs annualized return">
+              <p>
+                An <strong className={calcStrongClass}>absolute return</strong> is the total gain over the whole period: if
+                your money doubled, that's 100%. An <strong className={calcStrongClass}>annualized return</strong> spreads
+                that gain evenly over the years it took. The same 100% gain is impressive over two years and
+                disappointing over twenty:
+              </p>
+              <CalcTable
+                caption="The same doubling of your money, annualized over different periods"
+                columns={["Time taken", "Absolute return", "Annualized return"]}
+                rows={doublingRows}
+              />
+              <p>
+                That's why investments held for different lengths of time should be compared on their annualized
+                return, never on the absolute figure a brochure or app highlights.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="When to use XIRR instead">
+              <p>
+                This calculation assumes you invested one amount at the start and left it alone. That's right for a
+                lump sum, a property or a single share purchase. It's wrong for a SIP or any investment where you
+                added or withdrew money along the way, because later instalments had less time to grow.
+              </p>
+              <p>
+                For those, use <strong className={calcStrongClass}>XIRR</strong> (extended internal rate of return), which
+                takes the date and amount of every payment into account. Spreadsheets have an XIRR function: list each
+                investment as a negative amount with its date, the current value as a positive amount with today's
+                date, and it returns the annualized return. Most mutual fund statements show XIRR for your SIPs.
+              </p>
+            </CalcSection>
+
+            <CalcSection title="Real return: what's left after inflation">
+              <p>
+                A return only builds wealth if it beats inflation. Your real return is{" "}
+                <strong className={calcStrongClass}>(1 + return) ÷ (1 + inflation) − 1</strong>. With the numbers above, your{" "}
+                {formatPercentage(rateOfReturn)}% a year becomes about {realReturn.toFixed(2)}% a year after {inflation}%
+                inflation. A deposit earning about the same as inflation keeps your money's value but doesn't grow it.
+              </p>
+              <p>
+                To judge whether a return is good, compare it with inflation and with a fair benchmark for the same
+                kind of investment, such as a broad market index for an equity fund. Our lesson on{" "}
+                <Link to="/learn/understanding-cagr" className={calcLinkClass}>
+                  understanding CAGR
+                </Link>{" "}
+                covers the common mistakes, and the{" "}
+                <Link to="/cagr-calculator" className={calcLinkClass}>
+                  CAGR Calculator
+                </Link>{" "}
+                gives the same result with a few extra details.
+              </p>
+            </CalcSection>
+
             <CalcSection title="How to Use This Calculator">
               <ol className="list-decimal list-inside space-y-2">
                 <li>Enter the present value (initial investment amount).</li>
@@ -182,7 +229,7 @@ export default function RateOfReturnCalculatorPage() {
                   { title: "CAGR (Compound Annual Growth Rate)", text: "CAGR measures the average annual growth rate of an investment over a specific period. It smooths out volatility to show a consistent annual return." },
                   { title: "Absolute vs. Annualized Returns", text: "Absolute return is the total percentage gain over the entire period. Annualized return (CAGR) shows the average annual gain, making it easier to compare investments with different time horizons." },
                   { title: "Risk and Return", text: "Higher returns generally come with higher risk. Understanding your rate of return helps you assess whether the risk you're taking is justified." },
-                  { title: "Inflation-Adjusted Returns", text: "To calculate real returns, subtract the inflation rate from your rate of return. This shows the actual increase in purchasing power." },
+                  { title: "Inflation-Adjusted Returns", text: "Your real return is (1 + return) ÷ (1 + inflation) − 1, roughly your return minus inflation. It shows the actual increase in purchasing power." },
                 ]}
               />
             </CalcSection>
